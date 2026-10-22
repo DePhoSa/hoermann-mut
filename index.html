@@ -1,0 +1,1648 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hörmann Mut-Portal | Gib mir Mut & Das Mut-Spiel</title>
+  <meta name="description" content="Tägliche Mut-Impulse, inspirierende Zitate mit visuellen Effekten und das Hörmann Mut-Tor Minigame.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --hoermann-blue-dark: #001f3b;
+      --hoermann-blue: #002d62;
+      --hoermann-blue-light: #0d448a;
+      --hoermann-orange: #f59c00;
+      --hoermann-orange-hover: #e08b00;
+      --hoermann-accent: #ffaa1d;
+      --card-bg: #ffffff;
+      --text-dark: #111827;
+      --text-muted: #4b5563;
+      --border-gray: #e5e7eb;
+      --shadow-lg: 0 20px 45px -10px rgba(0, 20, 50, 0.45), 0 10px 20px -5px rgba(0, 0, 0, 0.2);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: radial-gradient(circle at 50% 20%, #083c77 0%, var(--hoermann-blue) 45%, var(--hoermann-blue-dark) 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.25rem;
+      color: var(--text-dark);
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Subtle background grid pattern reminiscent of steel architectural drawings */
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Canvas for full screen particles/confetti/effects */
+    #fx-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    /* Container matching screenshot proportions */
+    .container {
+      width: 100%;
+      max-width: 860px;
+      background: var(--card-bg);
+      box-shadow: var(--shadow-lg);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+      z-index: 10;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Top bar exactly like screenshot */
+    .top-bar {
+      background-color: var(--hoermann-blue);
+      height: 52px;
+      display: flex;
+      align-items: center;
+      padding: 0 1.5rem;
+      gap: 1.5rem;
+      position: relative;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .week-label {
+      color: var(--hoermann-orange);
+      font-weight: 800;
+      font-size: 0.88rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .top-divider {
+      flex: 1;
+      height: 3px;
+      background: var(--hoermann-orange);
+      border-radius: 2px;
+    }
+
+    .brand-watermark {
+      font-weight: 900;
+      font-size: 1.15rem;
+      letter-spacing: 0.12em;
+      color: rgba(255, 255, 255, 0.12);
+      text-transform: uppercase;
+      pointer-events: none;
+    }
+
+    .top-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .icon-btn {
+      background: transparent;
+      border: none;
+      color: #ffffff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 4px;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+
+    .icon-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .icon-btn svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      stroke-width: 2.2;
+    }
+
+    /* Content Area */
+    .card-content {
+      padding: 3.5rem 2.5rem 3rem 2.5rem;
+      text-align: center;
+      min-height: 440px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    /* Main Headline style from screenshot */
+    .headline {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #000000;
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.02em;
+      max-width: 720px;
+      transition: all 0.35s ease;
+    }
+
+    .subline {
+      font-size: 1.25rem;
+      color: #222222;
+      line-height: 1.55;
+      font-weight: 400;
+      max-width: 620px;
+      margin-bottom: 2.5rem;
+      transition: all 0.35s ease;
+    }
+
+    /* Highlight badge for active effect */
+    .effect-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--hoermann-blue);
+      background: rgba(0, 45, 98, 0.08);
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-bottom: 1.25rem;
+      opacity: 0;
+      transform: translateY(-8px);
+      transition: all 0.3s ease;
+    }
+
+    .effect-pill.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Quote Author / Tag */
+    .quote-author {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--hoermann-orange);
+      margin-top: 0.5rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      display: block;
+    }
+
+    /* Action Buttons Row */
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 1.25rem;
+      margin-top: 1rem;
+      width: 100%;
+    }
+
+    .btn-primary {
+      background: linear-gradient(180deg, var(--hoermann-orange) 0%, #e08800 100%);
+      color: #ffffff;
+      border: none;
+      padding: 1.05rem 2.5rem;
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      box-shadow: 0 6px 16px rgba(245, 156, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      transition: all 0.18s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(180deg, #ffa71a 0%, #f09200 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 22px rgba(245, 156, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    }
+
+    .btn-primary:active {
+      transform: translateY(1px);
+      box-shadow: 0 3px 10px rgba(245, 156, 0, 0.4);
+    }
+
+    .btn-primary::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -60%;
+      width: 40%;
+      height: 200%;
+      background: rgba(255, 255, 255, 0.25);
+      transform: rotate(30deg);
+      transition: all 0.6s ease;
+    }
+
+    .btn-primary:hover::after {
+      left: 120%;
+    }
+
+    .btn-game {
+      background: var(--hoermann-blue);
+      color: #ffffff;
+      border: 2px solid transparent;
+      padding: 1rem 2.2rem;
+      font-size: 1.15rem;
+      font-weight: 800;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      box-shadow: 0 6px 16px rgba(0, 45, 98, 0.3);
+      transition: all 0.18s ease;
+    }
+
+    .btn-game:hover {
+      background: var(--hoermann-blue-light);
+      border-color: var(--hoermann-orange);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 22px rgba(0, 45, 98, 0.45);
+    }
+
+    .btn-game:active {
+      transform: translateY(1px);
+    }
+
+    /* Small Utility Buttons below */
+    .utility-bar {
+      margin-top: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .utility-link {
+      background: none;
+      border: none;
+      color: var(--hoermann-blue);
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .utility-link:hover {
+      color: var(--hoermann-orange);
+    }
+
+    /* Interactive "Drei Gedanken" Accordion / Drawer */
+    .thoughts-section {
+      width: 100%;
+      max-width: 620px;
+      margin-top: 1.8rem;
+      padding-top: 1.5rem;
+      border-top: 1px dashed var(--border-gray);
+      display: none;
+      flex-direction: column;
+      gap: 0.75rem;
+      text-align: left;
+    }
+
+    .thoughts-section.open {
+      display: flex;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .thought-input-group {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .thought-num {
+      width: 26px;
+      height: 26px;
+      background: var(--hoermann-blue);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .thought-input {
+      flex: 1;
+      padding: 0.6rem 0.9rem;
+      border: 1px solid var(--border-gray);
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      color: var(--text-dark);
+      outline: none;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    .thought-input:focus {
+      border-color: var(--hoermann-orange);
+      box-shadow: 0 0 0 2px rgba(245, 156, 0, 0.2);
+    }
+
+    .save-thoughts-btn {
+      align-self: flex-end;
+      background: var(--hoermann-blue);
+      color: #fff;
+      border: none;
+      padding: 0.45rem 1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .save-thoughts-btn:hover {
+      background: var(--hoermann-blue-light);
+    }
+
+    /* Sectional Door Animation Overlay Effect */
+    #sectional-door-overlay {
+      position: absolute;
+      top: 52px; /* right below top bar */
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: transparent;
+      pointer-events: none;
+      z-index: 50;
+      overflow: hidden;
+      display: none;
+    }
+
+    .door-panel {
+      position: absolute;
+      left: 0;
+      right: 0;
+      background: linear-gradient(180deg, #1f2937 0%, #111827 50%, #1f2937 100%);
+      border-bottom: 2px solid #374151;
+      border-top: 1px solid #4b5563;
+      box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #9ca3af;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 700;
+      transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .door-panel::before {
+      content: "";
+      position: absolute;
+      left: 20px;
+      right: 20px;
+      height: 4px;
+      background: repeating-linear-gradient(90deg, #374151, #374151 10px, transparent 10px, transparent 20px);
+    }
+
+    /* MINIGAME MODAL / CONTAINER */
+    #game-container {
+      display: none;
+      width: 100%;
+      height: 100%;
+      position: relative;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #gameCanvas {
+      background: #001830;
+      border: 3px solid var(--hoermann-blue);
+      border-radius: 6px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      max-width: 100%;
+      touch-action: none;
+    }
+
+    .game-ui-header {
+      width: 100%;
+      max-width: 640px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+      padding: 0 4px;
+    }
+
+    .game-stat {
+      font-weight: 800;
+      font-size: 1rem;
+      color: var(--hoermann-blue);
+    }
+
+    .game-stat span {
+      color: var(--hoermann-orange);
+      font-size: 1.25rem;
+    }
+
+    .game-instructions {
+      margin-top: 0.75rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .key-badge {
+      background: #e5e7eb;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-weight: 700;
+      color: #111827;
+      border: 1px solid #d1d5db;
+    }
+
+    /* Toast Notification */
+    #toast {
+      position: fixed;
+      bottom: 2rem;
+      background: var(--hoermann-blue-dark);
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      border-left: 4px solid var(--hoermann-orange);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s ease;
+      z-index: 1000;
+      pointer-events: none;
+    }
+
+    #toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Sound indicator button */
+    .sound-badge {
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.7);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+    }
+
+    /* Footer branding */
+    footer {
+      margin-top: 1.5rem;
+      font-size: 0.82rem;
+      color: rgba(255, 255, 255, 0.6);
+      text-align: center;
+      z-index: 10;
+    }
+
+    footer a {
+      color: var(--hoermann-orange);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulseHeart {
+      0% { transform: scale(1); }
+      30% { transform: scale(1.18); }
+      60% { transform: scale(0.95); }
+      100% { transform: scale(1); }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 640px) {
+      body {
+        padding: 0.75rem;
+      }
+      .card-content {
+        padding: 2rem 1.25rem 2rem 1.25rem;
+        min-height: 400px;
+      }
+      .headline {
+        font-size: 1.75rem;
+      }
+      .subline {
+        font-size: 1.05rem;
+        margin-bottom: 1.75rem;
+      }
+      .btn-primary, .btn-game {
+        width: 100%;
+        justify-content: center;
+        padding: 0.9rem 1.5rem;
+        font-size: 1.05rem;
+      }
+      .top-bar {
+        padding: 0 1rem;
+        gap: 0.75rem;
+      }
+      .brand-watermark {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Fullscreen Particle / Effect Canvas -->
+  <canvas id="fx-canvas"></canvas>
+
+  <div class="container" id="main-card">
+    <!-- Header matching screenshot -->
+    <header class="top-bar">
+      <div class="week-label" id="date-label">WOCHE 1 - MONTAG</div>
+      <div class="top-divider"></div>
+      <div class="brand-watermark">HÖRMANN</div>
+      <div class="top-controls">
+        <button class="icon-btn" id="sound-toggle-btn" title="Ton an / ausschalten">
+          <svg id="sound-icon-on" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          </svg>
+          <svg id="sound-icon-off" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <line x1="1" y1="1" x2="23" y2="23"></line>
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          </svg>
+        </button>
+        <button class="icon-btn" id="reset-view-btn" title="Ansicht zurücksetzen">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Animated Sectional Door Effect Layers (Opens up) -->
+    <div id="sectional-door-overlay">
+      <div class="door-panel" style="top: 0%; height: 25%;">HÖRMANN SEKTIONALTOR // SICHERHEIT &amp; MUT</div>
+      <div class="door-panel" style="top: 25%; height: 25%;">STAHLZARGE VERSTÄRKT</div>
+      <div class="door-panel" style="top: 50%; height: 25%;">QUALITÄT DIE BEWEGT</div>
+      <div class="door-panel" style="top: 75%; height: 25%;">TOR ÖFFNET SICH...</div>
+    </div>
+
+    <!-- Main Interactive Card View -->
+    <main class="card-content" id="portal-view">
+      
+      <div class="effect-pill" id="effect-badge">
+        <span id="effect-icon">✨</span>
+        <span id="effect-name">Konfetti-Power</span>
+      </div>
+
+      <h1 class="headline" id="main-headline">Was bedeutet Mut für Sie?</h1>
+
+      <p class="subline" id="main-subline">
+        Nehmen Sie sich einen Moment Zeit und notieren Sie drei Gedanken zum Thema Mut.
+      </p>
+
+      <!-- Action Buttons -->
+      <div class="btn-row">
+        <button class="btn-primary" id="mut-btn">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
+          Gib mir Mut
+        </button>
+
+        <button class="btn-game" id="game-btn">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="6" width="20" height="12" rx="3"></rect>
+            <path d="M6 12h4m-2-2v4"></path>
+            <line x1="15" y1="11" x2="15.01" y2="11"></line>
+            <line x1="18" y1="13" x2="18.01" y2="13"></line>
+          </svg>
+          Das Mut-Spiel
+        </button>
+      </div>
+
+      <!-- Thought Recorder (matches original screenshot prompt) -->
+      <div class="utility-bar">
+        <button class="utility-link" id="toggle-thoughts-btn">
+          ✍️ 3 Gedanken zu Mut notieren
+        </button>
+        <button class="utility-link" id="copy-quote-btn" style="display:none;">
+          📋 Spruch kopieren
+        </button>
+      </div>
+
+      <div class="thoughts-section" id="thoughts-box">
+        <div class="thought-input-group">
+          <span class="thought-num">1</span>
+          <input type="text" id="thought-1" class="thought-input" placeholder="Erster Gedanke...">
+        </div>
+        <div class="thought-input-group">
+          <span class="thought-num">2</span>
+          <input type="text" id="thought-2" class="thought-input" placeholder="Zweiter Gedanke...">
+        </div>
+        <div class="thought-input-group">
+          <span class="thought-num">3</span>
+          <input type="text" id="thought-3" class="thought-input" placeholder="Dritter Gedanke...">
+        </div>
+        <button class="save-thoughts-btn" id="save-thoughts-btn">Speichern</button>
+      </div>
+
+    </main>
+
+    <!-- Minigame View: Hörmann Mut-Tor Parcours -->
+    <section class="card-content" id="game-view" style="display: none;">
+      <div class="game-ui-header">
+        <div class="game-stat">Tore geöffnet: <span id="game-score">0</span></div>
+        <div class="game-stat">Mut-Highscore: <span id="game-highscore">0</span></div>
+        <button class="utility-link" id="exit-game-btn" style="text-decoration:none; font-size:1rem;">
+          ✕ Zurück
+        </button>
+      </div>
+
+      <canvas id="gameCanvas" width="640" height="380"></canvas>
+
+      <div class="game-instructions">
+        <span>Steuerung: <span class="key-badge">Leertaste</span> / <span class="key-badge">Klick / Tippen</span> zum Springen / Heben</span>
+        <button class="utility-link" id="restart-game-btn">Neustart</button>
+      </div>
+    </section>
+
+  </div>
+
+  <footer>
+    Hörmann Mut-Initiative &bull; Sektionaltore &bull; Schwingtore &bull; Türen &bull; Stahlzargen &bull; Qualität mit Mut
+  </footer>
+
+  <div id="toast">Gedanken gespeichert!</div>
+
+  <!-- Audio & Game Logic -->
+  <script>
+    /* ==========================================================
+       1. DATE / WEEK HEADER DISPLAY (Matches Screenshot)
+       ========================================================== */
+    const days = ['SONNTAG', 'MONTAG', 'DIENSTAG', 'MITTWOCH', 'DONNERSTAG', 'FREITAG', 'SAMSTAG'];
+    const now = new Date();
+    const dayName = days[now.getDay()];
+    // Get calendar week
+    const firstJan = new Date(now.getFullYear(), 0, 1);
+    const pastDays = (now - firstJan) / 86400000;
+    const weekNum = Math.ceil((pastDays + firstJan.getDay() + 1) / 7);
+    document.getElementById('date-label').textContent = `WOCHE ${weekNum} - ${dayName}`;
+
+    /* ==========================================================
+       2. SOUND EFFECTS (Web Audio API - No external dependencies)
+       ========================================================== */
+    let audioCtx = null;
+    let soundEnabled = true;
+
+    function getAudioContext() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function playSound(type) {
+      if (!soundEnabled) return;
+      try {
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+
+        if (type === 'chime' || type === 'mut') {
+          // Cheerful uplifting major chord (C - E - G - C)
+          const notes = [523.25, 659.25, 783.99, 1046.50];
+          notes.forEach((freq, idx) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+            gain.gain.setValueAtTime(0.001, now + idx * 0.08);
+            gain.gain.exponentialRampToValueAtTime(0.2, now + idx * 0.08 + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.08 + 0.6);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now + idx * 0.08);
+            osc.stop(now + idx * 0.08 + 0.65);
+          });
+        } else if (type === 'gate') {
+          // Mechanical rolling Hörmann gate sound
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(110, now);
+          osc.frequency.linearRampToValueAtTime(220, now + 0.5);
+          gain.gain.setValueAtTime(0.12, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.65);
+        } else if (type === 'jump') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(260, now);
+          osc.frequency.exponentialRampToValueAtTime(540, now + 0.15);
+          gain.gain.setValueAtTime(0.18, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.16);
+        } else if (type === 'score') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(880, now);
+          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.13);
+        } else if (type === 'hit') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(180, now);
+          osc.frequency.exponentialRampToValueAtTime(60, now + 0.25);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.26);
+        } else if (type === 'confetti') {
+          // Popping sound
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(600, now);
+          osc.frequency.exponentialRampToValueAtTime(120, now + 0.1);
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.11);
+        }
+      } catch (e) {
+        console.warn('Web Audio error:', e);
+      }
+    }
+
+    // Sound toggle
+    const soundToggleBtn = document.getElementById('sound-toggle-btn');
+    const soundIconOn = document.getElementById('sound-icon-on');
+    const soundIconOff = document.getElementById('sound-icon-off');
+
+    soundToggleBtn.addEventListener('click', () => {
+      soundEnabled = !soundEnabled;
+      soundIconOn.style.display = soundEnabled ? 'block' : 'none';
+      soundIconOff.style.display = soundEnabled ? 'none' : 'block';
+      showToast(soundEnabled ? 'Ton aktiviert' : 'Ton stummgeschaltet');
+      if (soundEnabled) playSound('score');
+    });
+
+    /* ==========================================================
+       3. 80+ MUT-SPRÜCHE (Tiefgründig, Hörmann & Alltags-Mut)
+       ========================================================== */
+    const mutSpruche = [
+      { quote: "Mut ist nicht die Abwesenheit von Angst, sondern das Urteil, dass etwas anderes wichtiger ist als die Angst.", author: "Ambrose Redmoon" },
+      { quote: "Wer Tore öffnen will, muss den Mut haben, an die Klinke zu fassen.", author: "Hörmann Mut-Impuls" },
+      { quote: "Es ist nicht gesagt, dass es besser wird, wenn es anders wird; aber es muss anders werden, wenn es besser werden soll.", author: "Georg Christoph Lichtenberg" },
+      { quote: "Stabilität entsteht durch einen starken Rahmen. Steh fest wie eine Stahlzarge und gehe mutig voran.", author: "Handwerksweisheit" },
+      { quote: "Der beste Weg, die Zukunft vorherzusagen, ist, sie mutig selbst zu gestalten.", author: "Peter Drucker" },
+      { quote: "Wenn der Wind des Wandels weht, bauen die einen Mauern und die anderen Sektionaltore zur Zukunft.", author: "Modernes Sprichwort" },
+      { quote: "Mut brüllt nicht immer. Manchmal ist Mut die leise Stimme am Ende des Tages, die sagt: 'Ich versuche es morgen noch einmal.'", author: "Mary Anne Radmacher" },
+      { quote: "Du kannst nicht neue Ozeane entdecken, wenn du nicht den Mut hast, die Küste aus den Augen zu verlieren.", author: "André Gide" },
+      { quote: "Ein geschlossenes Tor ist keine Sackgasse – es wartet nur auf deinen Antrieb.", author: "Hörmann Philosophie" },
+      { quote: "Was wäre das Leben, hätten wir nicht den Mut, etwas zu riskieren?", author: "Vincent van Gogh" },
+      { quote: "Jeder Meister hat einmal als jemand begonnen, der den Mut hatte, unvollkommen anzufangen.", author: "Zen-Weisheit" },
+      { quote: "Mut wächst mit jedem Schritt, den man trotz Zweifel setzt.", author: "Lebensweisheit" },
+      { quote: "Qualität verlangt Präzision. Erfolg verlangt Mut.", author: "Hörmann Leitgedanke" },
+      { quote: "Wer immer nur das tut, was er schon kann, bleibt immer nur das, was er schon ist.", author: "Henry Ford" },
+      { quote: "Selbst das schwerste Schwingtor lässt sich mit der richtigen Hebelwirkung und Courage mühelos öffnen.", author: "Technik & Mut" },
+      { quote: "Mut ist der Zauber, der Träume in Realität verwandelt.", author: "Asterix & Weisheit" },
+      { quote: "Gib deinen Zielen ein stabiles Fundament und öffne die Tore für das Unbekannte.", author: "Mut-Motto" },
+      { quote: "Habe Mut, dich deines eigenen Verstandes zu bedienen.", author: "Immanuel Kant" },
+      { quote: "Der einzige Fehler, den man im Leben machen kann, ist die Angst, einen Fehler zu machen.", author: "Elbert Hubbard" },
+      { quote: "Hinter jedem Hindernis steht ein neues Panorama – drück auf den Toröffner und schreite voran!", author: "Tagesimpuls" },
+      { quote: "Große Dinge entstehen nie in der Komfortzone. Trau dich!", author: "Erfolgsregel" },
+      { quote: "Stahl wird im Feuer gehärtet. Charakter durch mutige Entscheidungen.", author: "Hörmann Spirit" },
+      { quote: "Man muss das Unmögliche versuchen, um das Mögliche zu erreichen.", author: "Hermann Hesse" },
+      { quote: "Nicht weil es schwer ist, wagen wir es nicht, sondern weil wir es nicht wagen, ist es schwer.", author: "Seneca" },
+      { quote: "Öffne das Tor zum Tag mit einem Lächeln und dem festen Willen, heute mutig zu sein.", author: "Morgenimpuls" },
+      { quote: "Mut bedeutet, loszulassen, was war, um zu empfangen, was kommt.", author: "Inspiration" },
+      { quote: "Ein klares Ziel schützt vor Unsicherheit wie eine Brandschutztür vor Feuer.", author: "Sicherheit & Fokus" },
+      { quote: "Sei stolz auf jeden kleinen Schritt. Auch ein Sektionaltor öffnet sich Lamelle für Lamelle.", author: "Schritt-für-Schritt" },
+      { quote: "Entscheidungen zu treffen erfordert Mut. Keine zu treffen, kostet Lebenszeit.", author: "Klartext" },
+      { quote: "In dir steckt mehr Kraft, als du dir in deinen kühnsten Momenten zutraust.", author: "Kraft-Impuls" },
+      { quote: "Ein fester Halt im Leben ist wie eine perfekt eingebaute Stahlzarge: Unerschütterlich.", author: "Hörmann Handwerk" },
+      { quote: "Die größte Entdeckung einer Generation ist, dass der Mensch sein Leben ändern kann, indem er seine Einstellung ändert.", author: "William James" },
+      { quote: "Wage es, heute der Mensch zu sein, der den Unterschied macht.", author: "Teamgeist" },
+      { quote: "Wer Schwingtore baut, weiß: Mit dem richtigen Schwung meistert man jedes Gewicht.", author: "Schwung & Mut" },
+      { quote: "Zweifel töten mehr Träume als Versagen es je könnte.", author: "Suzy Kassem" },
+      { quote: "Der erste Schritt ist immer der schwerste. Danach rollt es wie geschmiert.", author: "Hörmann Montage-Weisheit" },
+      { quote: "Verändere deine Gedanken und du veränderst deine Welt.", author: "Norman Vincent Peale" },
+      { quote: "Mut ist die Fähigkeit, nach einem Rückschlag wieder die Ärmel hochzukrempeln.", author: "Praktiker-Weisheit" },
+      { quote: "Auch die stärkste Tür braucht jemanden, der sie aufstößt. Sei du diese Kraft!", author: "Tagesmotto" },
+      { quote: "Glaube an deine Fähigkeiten. Du bist für Herausforderungen gebaut.", author: "Resilienz" },
+      { quote: "Kein Tor ist für immer verriegelt, wenn man den passenden Schlüssel des Mutes besitzt.", author: "Hörmann Inspiration" },
+      { quote: "Mutig sein heißt: Auch mit zittrigen Knien voranzugehen.", author: "Echter Mut" },
+      { quote: "Die beste Zeit, einen Baum zu pflanzen, war vor 20 Jahren. Die zweitbeste Zeit ist jetzt.", author: "Chinesisches Sprichwort" },
+      { quote: "Ein starker Wille überwindet jede Barriere.", author: "Hörmann Power" },
+      { quote: "Gib jedem Tag die Chance, der mutigste deines Lebens zu werden.", author: "Frei nach Mark Twain" },
+      { quote: "Wer nach vorne blickt, braucht keine Angst vor dem Rückspiegel zu haben.", author: "Fokus" },
+      { quote: "Stabilität nach außen, Zuversicht nach innen – wie Qualitätsstahl von Hörmann.", author: "Stärke-Formel" },
+      { quote: "Mut ist die Brücke zwischen dem Wunsch und dem Ergebnis.", author: "Erfolgsfaktor" },
+      { quote: "Das Geheimnis des Vorwärtskommens besteht darin, den ersten Schritt zu tun.", author: "Mark Twain" },
+      { quote: "Wo Mut den Weg bahnt, folgt der Erfolg auf dem Fuße.", author: "Wegbereiter" },
+      { quote: "Lass deine Taten lauter sprechen als deine Bedenken.", author: "Tatkraft" },
+      { quote: "Ein Tor schützt, was dir wertvoll ist – und öffnet sich für neue Chancen.", author: "Hörmann Werte" }
+    ];
+
+    /* ==========================================================
+       4. DYNAMIC MUT-EFFECTS (Konfetti, Hände, Sektionaltor etc.)
+       ========================================================== */
+    const effects = [
+      { id: 'confetti', name: 'Konfetti-Regen', icon: '🎉', sound: 'confetti' },
+      { id: 'hands', name: 'Jubelnde Hände & Kraft', icon: '🙌', sound: 'mut' },
+      { id: 'door', name: 'Hörmann Sektionaltor öffnet sich', icon: '🚪', sound: 'gate' },
+      { id: 'gold', name: 'Goldener Mut-Schein', icon: '✨', sound: 'chime' },
+      { id: 'firework', name: 'Mut-Feuerwerk', icon: '🎆', sound: 'confetti' },
+      { id: 'heart', name: 'Herzklopfen & Puls', icon: '❤️‍🔥', sound: 'mut' },
+      { id: 'rocket', name: 'Raketen-Durchbruch', icon: '🚀', sound: 'gate' }
+    ];
+
+    let lastEffectIndex = -1;
+    let lastQuoteIndex = -1;
+
+    // Canvas particle engine
+    const fxCanvas = document.getElementById('fx-canvas');
+    const fxCtx = fxCanvas.getContext('2d');
+    let particles = [];
+    let animationFrameId = null;
+
+    function resizeFxCanvas() {
+      fxCanvas.width = window.innerWidth;
+      fxCanvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeFxCanvas);
+    resizeFxCanvas();
+
+    function triggerParticleEffect(effectType) {
+      particles = [];
+      const w = fxCanvas.width;
+      const h = fxCanvas.height;
+
+      if (effectType === 'confetti') {
+        const colors = ['#f59c00', '#002d62', '#ffaa1d', '#10b981', '#3b82f6', '#ec4899', '#ffffff'];
+        for (let i = 0; i < 180; i++) {
+          particles.push({
+            type: 'confetti',
+            x: w * 0.5 + (Math.random() - 0.5) * 200,
+            y: h * 0.55,
+            vx: (Math.random() - 0.5) * 16,
+            vy: -Math.random() * 18 - 4,
+            size: Math.random() * 10 + 6,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            rotation: Math.random() * 360,
+            rotationSpeed: (Math.random() - 0.5) * 12,
+            gravity: 0.42,
+            drag: 0.98,
+            life: 1
+          });
+        }
+      } else if (effectType === 'hands') {
+        const emojis = ['🙌', '👏', '💪', '🦁', '🌟', '🚀', '🔥', '⚡'];
+        for (let i = 0; i < 35; i++) {
+          particles.push({
+            type: 'emoji',
+            emoji: emojis[Math.floor(Math.random() * emojis.length)],
+            x: Math.random() * w,
+            y: h + 40,
+            vx: (Math.random() - 0.5) * 3,
+            vy: -Math.random() * 7 - 4,
+            size: Math.floor(Math.random() * 24 + 28),
+            life: 1,
+            fadeSpeed: 0.008 + Math.random() * 0.006
+          });
+        }
+      } else if (effectType === 'gold') {
+        for (let i = 0; i < 90; i++) {
+          const angle = Math.random() * Math.PI * 2;
+          const speed = Math.random() * 9 + 2;
+          particles.push({
+            type: 'spark',
+            x: w * 0.5,
+            y: h * 0.5,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            size: Math.random() * 6 + 3,
+            color: Math.random() > 0.3 ? '#f59c00' : '#ffffff',
+            life: 1,
+            fadeSpeed: 0.015
+          });
+        }
+      } else if (effectType === 'firework') {
+        const bursts = 3;
+        for (let b = 0; b < bursts; b++) {
+          const cx = w * 0.25 + Math.random() * (w * 0.5);
+          const cy = h * 0.2 + Math.random() * (h * 0.3);
+          const color = ['#f59c00', '#38bdf8', '#fb7185', '#34d399'][b % 4];
+          for (let i = 0; i < 50; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const spd = Math.random() * 8 + 1;
+            particles.push({
+              type: 'firework',
+              x: cx,
+              y: cy,
+              vx: Math.cos(angle) * spd,
+              vy: Math.sin(angle) * spd,
+              size: Math.random() * 4 + 2,
+              color: color,
+              life: 1,
+              gravity: 0.15,
+              fadeSpeed: 0.016
+            });
+          }
+        }
+      } else if (effectType === 'heart') {
+        // Heart shockwave animation on main card
+        const card = document.getElementById('main-card');
+        card.style.animation = 'pulseHeart 0.6s ease';
+        setTimeout(() => { card.style.animation = ''; }, 650);
+
+        const heartEmojis = ['❤️‍🔥', '🧡', '💪', '🛡️', '⚡'];
+        for (let i = 0; i < 28; i++) {
+          particles.push({
+            type: 'emoji',
+            emoji: heartEmojis[Math.floor(Math.random() * heartEmojis.length)],
+            x: w * 0.5 + (Math.random() - 0.5) * 120,
+            y: h * 0.5 + (Math.random() - 0.5) * 80,
+            vx: (Math.random() - 0.5) * 8,
+            vy: -Math.random() * 9 - 3,
+            size: Math.floor(Math.random() * 20 + 26),
+            life: 1,
+            fadeSpeed: 0.012
+          });
+        }
+      } else if (effectType === 'rocket') {
+        const icons = ['🚀', '💨', '✨', '🔥'];
+        for (let i = 0; i < 20; i++) {
+          particles.push({
+            type: 'emoji',
+            emoji: icons[i % icons.length],
+            x: w * 0.5 + (Math.random() - 0.5) * 150,
+            y: h * 0.65,
+            vx: (Math.random() - 0.5) * 6,
+            vy: -Math.random() * 12 - 6,
+            size: Math.floor(Math.random() * 22 + 28),
+            life: 1,
+            fadeSpeed: 0.012
+          });
+        }
+      } else if (effectType === 'door') {
+        // Hörmann Sectional door open overlay animation
+        const overlay = document.getElementById('sectional-door-overlay');
+        const panels = overlay.querySelectorAll('.door-panel');
+        overlay.style.display = 'block';
+        panels.forEach((p, idx) => {
+          p.style.transform = 'translateY(0%)';
+        });
+
+        setTimeout(() => {
+          panels.forEach((p, idx) => {
+            p.style.transform = `translateY(-${(idx + 1) * 120}%)`;
+          });
+        }, 100);
+
+        setTimeout(() => {
+          overlay.style.display = 'none';
+          panels.forEach((p) => { p.style.transform = 'translateY(0%)'; });
+        }, 1100);
+      }
+
+      if (!animationFrameId) {
+        animateParticles();
+      }
+    }
+
+    function animateParticles() {
+      fxCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
+      let aliveCount = 0;
+
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        if (p.life <= 0) continue;
+        aliveCount++;
+
+        if (p.type === 'confetti') {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += p.gravity;
+          p.vx *= p.drag;
+          p.rotation += p.rotationSpeed;
+          p.life -= 0.007;
+
+          fxCtx.save();
+          fxCtx.translate(p.x, p.y);
+          fxCtx.rotate((p.rotation * Math.PI) / 180);
+          fxCtx.fillStyle = p.color;
+          fxCtx.globalAlpha = Math.max(0, p.life);
+          fxCtx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+          fxCtx.restore();
+        } else if (p.type === 'emoji') {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.life -= p.fadeSpeed;
+
+          fxCtx.save();
+          fxCtx.font = `${p.size}px sans-serif`;
+          fxCtx.globalAlpha = Math.max(0, p.life);
+          fxCtx.fillText(p.emoji, p.x, p.y);
+          fxCtx.restore();
+        } else if (p.type === 'spark' || p.type === 'firework') {
+          p.x += p.vx;
+          p.y += p.vy;
+          if (p.gravity) p.vy += p.gravity;
+          p.life -= p.fadeSpeed;
+
+          fxCtx.save();
+          fxCtx.fillStyle = p.color;
+          fxCtx.globalAlpha = Math.max(0, p.life);
+          fxCtx.beginPath();
+          fxCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          fxCtx.fill();
+          fxCtx.restore();
+        }
+      }
+
+      if (aliveCount > 0) {
+        animationFrameId = requestAnimationFrame(animateParticles);
+      } else {
+        fxCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
+        animationFrameId = null;
+      }
+    }
+
+    /* ==========================================================
+       5. "GIB MIR MUT" BUTTON CLICK LOGIC
+       ========================================================== */
+    const mutBtn = document.getElementById('mut-btn');
+    const mainHeadline = document.getElementById('main-headline');
+    const mainSubline = document.getElementById('main-subline');
+    const effectBadge = document.getElementById('effect-badge');
+    const effectIcon = document.getElementById('effect-icon');
+    const effectName = document.getElementById('effect-name');
+    const copyQuoteBtn = document.getElementById('copy-quote-btn');
+
+    let currentQuoteText = "";
+
+    function giveMeMut() {
+      // Pick a random quote that isn't the same as the last one
+      let qIndex;
+      do {
+        qIndex = Math.floor(Math.random() * mutSpruche.length);
+      } while (qIndex === lastQuoteIndex && mutSpruche.length > 1);
+      lastQuoteIndex = qIndex;
+      const item = mutSpruche[qIndex];
+
+      // Pick a random effect
+      let effIndex;
+      do {
+        effIndex = Math.floor(Math.random() * effects.length);
+      } while (effIndex === lastEffectIndex && effects.length > 1);
+      lastEffectIndex = effIndex;
+      const effect = effects[effIndex];
+
+      // Update badge
+      effectIcon.textContent = effect.icon;
+      effectName.textContent = `Muteffekt: ${effect.name}`;
+      effectBadge.classList.add('show');
+
+      // Update text with transition
+      mainHeadline.style.opacity = '0';
+      mainSubline.style.opacity = '0';
+
+      setTimeout(() => {
+        mainHeadline.innerHTML = `„${item.quote}“`;
+        mainSubline.innerHTML = `<span class="quote-author">&mdash; ${item.author}</span>`;
+        mainHeadline.style.opacity = '1';
+        mainSubline.style.opacity = '1';
+        currentQuoteText = `„${item.quote}“ — ${item.author}`;
+        copyQuoteBtn.style.display = 'inline-flex';
+      }, 200);
+
+      // Trigger audio & visual effect
+      playSound(effect.sound);
+      triggerParticleEffect(effect.id);
+    }
+
+    mutBtn.addEventListener('click', giveMeMut);
+
+    // Copy Quote Button
+    copyQuoteBtn.addEventListener('click', () => {
+      if (!currentQuoteText) return;
+      navigator.clipboard.writeText(currentQuoteText).then(() => {
+        showToast('Mutspruch in die Zwischenablage kopiert! 📋');
+      }).catch(() => {
+        showToast('Konnte nicht kopiert werden.');
+      });
+    });
+
+    /* ==========================================================
+       6. THOUGHTS NOTEBOOK (Matching original prompt in screenshot)
+       ========================================================== */
+    const toggleThoughtsBtn = document.getElementById('toggle-thoughts-btn');
+    const thoughtsBox = document.getElementById('thoughts-box');
+    const saveThoughtsBtn = document.getElementById('save-thoughts-btn');
+    const t1 = document.getElementById('thought-1');
+    const t2 = document.getElementById('thought-2');
+    const t3 = document.getElementById('thought-3');
+
+    // Load saved thoughts
+    try {
+      const saved = JSON.parse(localStorage.getItem('hoermann_mut_thoughts') || '[]');
+      if (saved[0]) t1.value = saved[0];
+      if (saved[1]) t2.value = saved[1];
+      if (saved[2]) t3.value = saved[2];
+    } catch(e){}
+
+    toggleThoughtsBtn.addEventListener('click', () => {
+      thoughtsBox.classList.toggle('open');
+      if (thoughtsBox.classList.contains('open')) {
+        t1.focus();
+      }
+    });
+
+    saveThoughtsBtn.addEventListener('click', () => {
+      const arr = [t1.value, t2.value, t3.value];
+      localStorage.setItem('hoermann_mut_thoughts', JSON.stringify(arr));
+      playSound('score');
+      showToast('Deine Mut-Gedanken wurden gesichert! 💡');
+    });
+
+    // Reset button in top bar
+    document.getElementById('reset-view-btn').addEventListener('click', () => {
+      mainHeadline.textContent = "Was bedeutet Mut für Sie?";
+      mainSubline.textContent = "Nehmen Sie sich einen Moment Zeit und notieren Sie drei Gedanken zum Thema Mut.";
+      effectBadge.classList.remove('show');
+      copyQuoteBtn.style.display = 'none';
+      thoughtsBox.classList.remove('open');
+      showToast('Startansicht geladen');
+    });
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => { toast.classList.remove('show'); }, 2600);
+    }
+
+    /* ==========================================================
+       7. DAS MUT-SPIEL: HÖRMANN SEKTIONAL-TOR RUNNER
+       ========================================================== */
+    const gameBtn = document.getElementById('game-btn');
+    const portalView = document.getElementById('portal-view');
+    const gameView = document.getElementById('game-view');
+    const exitGameBtn = document.getElementById('exit-game-btn');
+    const restartGameBtn = document.getElementById('restart-game-btn');
+    const gameScoreSpan = document.getElementById('game-score');
+    const gameHighscoreSpan = document.getElementById('game-highscore');
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let gameActive = false;
+    let gameLoopId = null;
+    let score = 0;
+    let highscore = parseInt(localStorage.getItem('hoermann_mut_highscore') || '0', 10);
+    gameHighscoreSpan.textContent = highscore;
+
+    // Switch to Game View
+    gameBtn.addEventListener('click', () => {
+      portalView.style.display = 'none';
+      gameView.style.display = 'flex';
+      startGame();
+    });
+
+    // Exit Game View
+    exitGameBtn.addEventListener('click', () => {
+      stopGame();
+      gameView.style.display = 'none';
+      portalView.style.display = 'flex';
+    });
+
+    restartGameBtn.addEventListener('click', () => {
+      startGame();
+    });
+
+    // Game Objects
+    let player = {
+      x: 90,
+      y: 190,
+      radius: 18,
+      vy: 0,
+      gravity: 0.38,
+      jumpForce: -7.5,
+      trail: [],
+      shieldActive: false,
+      shieldTime: 0
+    };
+
+    let gates = [];
+    let gameSpeed = 2.8;
+    let frameCount = 0;
+    let gameOver = false;
+    let encouragingMessage = "";
+
+    const encouragementList = [
+      "Mut bedeutet, nach jedem Fall wieder aufzustehen!",
+      "Starke Leistung! Jedes geöffnete Tor bringt dich weiter.",
+      "Selbst Hörmann Meister haben klein angefangen. Noch ein Versuch!",
+      "Ein Hindernis ist nur ein Test für deine Entschlossenheit.",
+      "Du hast den Mut-Funken in dir – probier es gleich noch einmal!"
+    ];
+
+    function startGame() {
+      score = 0;
+      gameScoreSpan.textContent = '0';
+      gameSpeed = 2.8;
+      frameCount = 0;
+      gameOver = false;
+      encouragingMessage = "";
+
+      player.y = canvas.height / 2;
+      player.vy = 0;
+      player.trail = [];
+      player.shieldActive = false;
+      gates = [];
+
+      // Spawn initial gates
+      spawnGate(canvas.width + 100);
+      spawnGate(canvas.width + 360);
+
+      gameActive = true;
+      if (gameLoopId) cancelAnimationFrame(gameLoopId);
+      gameLoop();
+      playSound('mut');
+    }
+
+    function stopGame() {
+      gameActive = false;
+      if (gameLoopId) cancelAnimationFrame(gameLoopId);
+    }
+
+    function spawnGate(posX) {
+      const gap = 135; // Passage size
+      const minHeight = 45;
+      const maxHeight = canvas.height - gap - minHeight;
+      const topHeight = Math.floor(Math.random() * (maxHeight - minHeight) + minHeight);
+
+      const gateTypes = [
+        { name: 'Sektionaltor', color: '#002d62', accent: '#f59c00' },
+        { name: 'Schwingtor', color: '#1e3a8a', accent: '#38bdf8' },
+        { name: 'Stahlzarge', color: '#1f2937', accent: '#fbbf24' },
+        { name: 'Feuerschutztür', color: '#991b1b', accent: '#f87171' }
+      ];
+      const type = gateTypes[Math.floor(Math.random() * gateTypes.length)];
+
+      gates.push({
+        x: posX,
+        topHeight: topHeight,
+        bottomY: topHeight + gap,
+        width: 58,
+        type: type,
+        passed: false
+      });
+    }
+
+    function playerJump() {
+      if (gameOver) {
+        startGame();
+        return;
+      }
+      player.vy = player.jumpForce;
+      playSound('jump');
+    }
+
+    // Input listeners for game
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' && gameView.style.display !== 'none') {
+        e.preventDefault();
+        playerJump();
+      }
+    });
+
+    canvas.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      playerJump();
+    });
+
+    function gameLoop() {
+      if (!gameActive) return;
+      updateGame();
+      drawGame();
+      gameLoopId = requestAnimationFrame(gameLoop);
+    }
+
+    function updateGame() {
+      if (gameOver) return;
+
+      frameCount++;
+      // Physics
+      player.vy += player.gravity;
+      player.y += player.vy;
+
+      // Particle Trail
+      if (frameCount % 2 === 0) {
+        player.trail.push({ x: player.x - 10, y: player.y, alpha: 0.8 });
+      }
+      for (let i = player.trail.length - 1; i >= 0; i--) {
+        player.trail[i].x -= gameSpeed;
+        player.trail[i].alpha -= 0.04;
+        if (player.trail[i].alpha <= 0) player.trail.splice(i, 1);
+      }
+
+      // Canvas boundary limits
+      if (player.y - player.radius < 0) {
+        player.y = player.radius;
+        player.vy = 0;
+      }
+      if (player.y + player.radius > canvas.height) {
+        handleGameOver();
+      }
+
+      // Move gates
+      for (let i = gates.length - 1; i >= 0; i--) {
+        const g = gates[i];
+        g.x -= gameSpeed;
+
+        // Score tracking
+        if (!g.passed && g.x + g.width < player.x) {
+          g.passed = true;
+          score++;
+          gameScoreSpan.textContent = score;
+          playSound('score');
+
+          if (score > highscore) {
+            highscore = score;
+            localStorage.setItem('hoermann_mut_highscore', highscore);
+            gameHighscoreSpan.textContent = highscore;
+          }
+
+          // Progressive speed increase
+          if (score % 4 === 0 && gameSpeed < 5.5) {
+            gameSpeed += 0.25;
+          }
+        }
+
+        // Collision detection
+        if (
+          player.x + player.radius > g.x &&
+          player.x - player.radius < g.x + g.width
+        ) {
+          if (player.y - player.radius < g.topHeight || player.y + player.radius > g.bottomY) {
+            handleGameOver();
+          }
+        }
+
+        // Remove offscreen gates & spawn new ones
+        if (g.x + g.width < -10) {
+          gates.splice(i, 1);
+        }
+      }
+
+      // Spawn next gate
+      const lastGate = gates[gates.length - 1];
+      if (lastGate && lastGate.x < canvas.width - 230) {
+        spawnGate(canvas.width);
+      }
+    }
+
+    function handleGameOver() {
+      if (gameOver) return;
+      gameOver = true;
+      playSound('hit');
+      encouragingMessage = encouragementList[Math.floor(Math.random() * encouragementList.length)];
+      triggerParticleEffect('confetti');
+    }
+
+    function drawGame() {
+      // Clear canvas with architectural grid
+      ctx.fillStyle = '#001a35';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Grid lines
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+      ctx.lineWidth = 1;
+      for (let x = 0; x < canvas.width; x += 30) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
+        ctx.stroke();
+      }
+      for (let y = 0; y < canvas.height; y += 30) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+        ctx.stroke();
+      }
+
+      // Draw Gates (Hörmann Sektionaltore / Stahlzargen styling)
+      gates.forEach(g => {
+        // TOP GATE / SEKTIONALTOR
+        drawSectionalDoor(g.x, 0, g.width, g.topHeight, g.type, true);
+
+        // BOTTOM GATE / TÜR
+        drawSectionalDoor(g.x, g.bottomY, g.width, canvas.height - g.bottomY, g.type, false);
+
+        // Draw opening warning / amber reflector on the gate edge
+        ctx.fillStyle = '#f59c00';
+        ctx.fillRect(g.x + 4, g.topHeight - 5, g.width - 8, 5);
+        ctx.fillRect(g.x + 4, g.bottomY, g.width - 8, 5);
+      });
+
+      // Draw Player Trail
+      player.trail.forEach(t => {
+        ctx.fillStyle = `rgba(245, 156, 0, ${t.alpha * 0.7})`;
+        ctx.beginPath();
+        ctx.arc(t.x, t.y, player.radius * 0.55 * t.alpha, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      // Draw Player: "Mut-Impuls / Hörmann Power-Orb"
+      ctx.save();
+      ctx.translate(player.x, player.y);
+
+      // Outer glow
+      const glowGrad = ctx.createRadialGradient(0, 0, 5, 0, 0, player.radius + 10);
+      glowGrad.addColorStop(0, 'rgba(245, 156, 0, 0.9)');
+      glowGrad.addColorStop(0.6, 'rgba(245, 156, 0, 0.3)');
+      glowGrad.addColorStop(1, 'rgba(245, 156, 0, 0)');
+      ctx.fillStyle = glowGrad;
+      ctx.beginPath();
+      ctx.arc(0, 0, player.radius + 10, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Main Orb body
+      const orbGrad = ctx.createLinearGradient(-player.radius, -player.radius, player.radius, player.radius);
+      orbGrad.addColorStop(0, '#ffffff');
+      orbGrad.addColorStop(0.3, '#ffaa1d');
+      orbGrad.addColorStop(1, '#e08800');
+      ctx.fillStyle = orbGrad;
+      ctx.beginPath();
+      ctx.arc(0, 0, player.radius, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Industrial border
+      ctx.strokeStyle = '#002d62';
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+
+      // Inner Hörmann 'H' or Lion icon
+      ctx.fillStyle = '#002d62';
+      ctx.font = 'bold 15px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('H', 0, 1);
+
+      ctx.restore();
+
+      // Game Over Screen Overlay
+      if (gameOver) {
+        ctx.fillStyle = 'rgba(0, 31, 59, 0.88)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = '#f59c00';
+        ctx.font = '800 28px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('MUT-PARCOURS BEENDET', canvas.width / 2, 110);
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '700 20px Inter, sans-serif';
+        ctx.fillText(`Erfolgreich gemeisterte Tore: ${score}`, canvas.width / 2, 150);
+
+        ctx.fillStyle = '#9ca3af';
+        ctx.font = 'italic 15px Inter, sans-serif';
+        ctx.fillText(`„${encouragingMessage}“`, canvas.width / 2, 195);
+
+        // Restart button UI
+        ctx.fillStyle = '#f59c00';
+        ctx.beginPath();
+        ctx.roundRect(canvas.width / 2 - 120, 235, 240, 48, 6);
+        ctx.fill();
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '800 16px Inter, sans-serif';
+        ctx.fillText('NOCHMAL VERSUCHEN ↺', canvas.width / 2, 265);
+
+        ctx.fillStyle = '#9ca3af';
+        ctx.font = '12px Inter, sans-serif';
+        ctx.fillText('Oder drücke die Leertaste', canvas.width / 2, 310);
+      }
+    }
+
+    // Helper: Draw Sectional Door Panels
+    function drawSectionalDoor(x, y, width, height, type, isTop) {
+      if (height <= 0) return;
+
+      // Outer frame / Stahlzarge
+      ctx.fillStyle = type.color;
+      ctx.fillRect(x, y, width, height);
+
+      // Draw horizontal sectional door slats (Lamellen)
+      const slatHeight = 22;
+      ctx.strokeStyle = 'rgba(0, 0, 0, 0.45)';
+      ctx.lineWidth = 2;
+
+      for (let s = y; s < y + height; s += slatHeight) {
+        ctx.beginPath();
+        ctx.moveTo(x, s);
+        ctx.lineTo(x + width, s);
+        ctx.stroke();
+
+        // Highlight line on top of each slat
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+        ctx.beginPath();
+        ctx.moveTo(x + 2, s + 1);
+        ctx.lineTo(x + width - 2, s + 1);
+        ctx.stroke();
+      }
+
+      // Outer side steel frame (Stahlzarge)
+      ctx.fillStyle = '#374151';
+      ctx.fillRect(x, y, 4, height);
+      ctx.fillRect(x + width - 4, y, 4, height);
+
+      // Label on the gate
+      if (height > 40) {
+        ctx.save();
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
+        ctx.font = '900 9px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        const labelY = isTop ? height - 15 : y + 25;
+        ctx.fillText(type.name.toUpperCase(), x + width / 2, labelY);
+        ctx.restore();
+      }
+    }
+
+  </script>
+</body>
+</html>
