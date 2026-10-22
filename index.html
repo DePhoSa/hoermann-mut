@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hörmann Mut-Portal | Gib mir Mut & Das Mut-Spiel</title>
-  <meta name="description" content="Tägliche Mut-Impulse, inspirierende Zitate mit visuellen Effekten und das Hörmann Mut-Tor Minigame.">
+  <meta name="description" content="Tägliche Mut-Impulse, exklusive eigens verfasste Mut-Sprüche, visuelle Muteffekte und das Hörmann Mut-Tor Minigame mit Bestenliste.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
       --hoermann-blue-dark: #001f3b;
@@ -45,7 +45,6 @@
       position: relative;
     }
 
-    /* Subtle background grid pattern reminiscent of steel architectural drawings */
     body::before {
       content: "";
       position: absolute;
@@ -58,7 +57,7 @@
       z-index: 0;
     }
 
-    /* Canvas for full screen particles/confetti/effects */
+    /* Fullscreen canvas for particle effects */
     #fx-canvas {
       position: fixed;
       top: 0;
@@ -69,7 +68,7 @@
       z-index: 999;
     }
 
-    /* Container matching screenshot proportions */
+    /* Main container card */
     .container {
       width: 100%;
       max-width: 860px;
@@ -82,7 +81,7 @@
       transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    /* Top bar exactly like screenshot */
+    /* Top bar exactly matching the screenshot */
     .top-bar {
       background-color: var(--hoermann-blue);
       height: 52px;
@@ -114,7 +113,7 @@
       font-weight: 900;
       font-size: 1.15rem;
       letter-spacing: 0.12em;
-      color: rgba(255, 255, 255, 0.12);
+      color: rgba(255, 255, 255, 0.14);
       text-transform: uppercase;
       pointer-events: none;
     }
@@ -136,11 +135,11 @@
       width: 32px;
       height: 32px;
       border-radius: 4px;
-      transition: background-color 0.2s, transform 0.1s;
+      transition: background-color 0.2s;
     }
 
     .icon-btn:hover {
-      background: rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.18);
     }
 
     .icon-btn svg {
@@ -162,40 +161,39 @@
       position: relative;
     }
 
-    /* Main Headline style from screenshot */
+    /* Main Headline */
     .headline {
-      font-size: 2.5rem;
+      font-size: 2.35rem;
       font-weight: 800;
       color: #000000;
-      line-height: 1.2;
+      line-height: 1.25;
       margin-bottom: 1.5rem;
       letter-spacing: -0.02em;
       max-width: 720px;
-      transition: all 0.35s ease;
+      transition: all 0.3s ease;
     }
 
     .subline {
-      font-size: 1.25rem;
+      font-size: 1.22rem;
       color: #222222;
       line-height: 1.55;
       font-weight: 400;
       max-width: 620px;
       margin-bottom: 2.5rem;
-      transition: all 0.35s ease;
+      transition: all 0.3s ease;
     }
 
-    /* Highlight badge for active effect */
     .effect-pill {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      font-size: 0.75rem;
+      font-size: 0.78rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.08em;
       color: var(--hoermann-blue);
       background: rgba(0, 45, 98, 0.08);
-      padding: 4px 12px;
+      padding: 5px 14px;
       border-radius: 100px;
       margin-bottom: 1.25rem;
       opacity: 0;
@@ -208,12 +206,11 @@
       transform: translateY(0);
     }
 
-    /* Quote Author / Tag */
     .quote-author {
       font-size: 0.95rem;
       font-weight: 700;
       color: var(--hoermann-orange);
-      margin-top: 0.5rem;
+      margin-top: 0.6rem;
       letter-spacing: 0.04em;
       text-transform: uppercase;
       display: block;
@@ -226,7 +223,7 @@
       align-items: center;
       justify-content: center;
       gap: 1.25rem;
-      margin-top: 1rem;
+      margin-top: 0.75rem;
       width: 100%;
     }
 
@@ -257,23 +254,6 @@
 
     .btn-primary:active {
       transform: translateY(1px);
-      box-shadow: 0 3px 10px rgba(245, 156, 0, 0.4);
-    }
-
-    .btn-primary::after {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -60%;
-      width: 40%;
-      height: 200%;
-      background: rgba(255, 255, 255, 0.25);
-      transform: rotate(30deg);
-      transition: all 0.6s ease;
-    }
-
-    .btn-primary:hover::after {
-      left: 120%;
     }
 
     .btn-game {
@@ -330,7 +310,7 @@
       color: var(--hoermann-orange);
     }
 
-    /* Interactive "Drei Gedanken" Accordion / Drawer */
+    /* Interactive "Drei Gedanken" Section */
     .thoughts-section {
       width: 100%;
       max-width: 620px;
@@ -402,10 +382,10 @@
       background: var(--hoermann-blue-light);
     }
 
-    /* Sectional Door Animation Overlay Effect */
+    /* Animated Sectional Door Effect Overlay */
     #sectional-door-overlay {
       position: absolute;
-      top: 52px; /* right below top bar */
+      top: 52px;
       left: 0;
       right: 0;
       bottom: 0;
@@ -435,24 +415,13 @@
       transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
     }
 
-    .door-panel::before {
-      content: "";
-      position: absolute;
-      left: 20px;
-      right: 20px;
-      height: 4px;
-      background: repeating-linear-gradient(90deg, #374151, #374151 10px, transparent 10px, transparent 20px);
-    }
-
-    /* MINIGAME MODAL / CONTAINER */
-    #game-container {
+    /* MINIGAME VIEW */
+    #game-view {
       display: none;
-      width: 100%;
-      height: 100%;
-      position: relative;
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      padding: 1.5rem 1.5rem 2rem 1.5rem;
     }
 
     #gameCanvas {
@@ -471,18 +440,23 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 0.75rem;
-      padding: 0 4px;
     }
 
     .game-stat {
       font-weight: 800;
-      font-size: 1rem;
+      font-size: 0.95rem;
       color: var(--hoermann-blue);
     }
 
     .game-stat span {
       color: var(--hoermann-orange);
       font-size: 1.25rem;
+    }
+
+    .game-actions-bar {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
     }
 
     .game-instructions {
@@ -492,6 +466,8 @@
       display: flex;
       gap: 1.5rem;
       align-items: center;
+      flex-wrap: wrap;
+      justify-content: center;
     }
 
     .key-badge {
@@ -501,6 +477,130 @@
       font-weight: 700;
       color: #111827;
       border: 1px solid #d1d5db;
+    }
+
+    /* HIGHSCORE LEADERBOARD MODAL & PANEL */
+    .highscore-card {
+      width: 100%;
+      max-width: 640px;
+      margin-top: 1rem;
+      background: #f8fafc;
+      border: 1px solid var(--border-gray);
+      border-radius: 6px;
+      padding: 1rem 1.25rem;
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .highscore-card.show {
+      display: block;
+    }
+
+    .highscore-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--hoermann-orange);
+    }
+
+    .highscore-title {
+      font-weight: 800;
+      color: var(--hoermann-blue);
+      font-size: 1.05rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .highscore-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    .highscore-table th {
+      text-align: left;
+      padding: 6px 8px;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--border-gray);
+    }
+
+    .highscore-table td {
+      padding: 7px 8px;
+      border-bottom: 1px solid #edf2f7;
+    }
+
+    .highscore-table tr.highlight {
+      background: rgba(245, 156, 0, 0.12);
+      font-weight: 700;
+    }
+
+    /* Name input dialog after Game Over */
+    #score-submit-dialog {
+      display: none;
+      width: 100%;
+      max-width: 640px;
+      background: #ffffff;
+      border: 2px solid var(--hoermann-orange);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      border-radius: 6px;
+      padding: 1.2rem;
+      margin-top: 1rem;
+      text-align: center;
+      animation: fadeIn 0.3s ease;
+    }
+
+    #score-submit-dialog.show {
+      display: block;
+    }
+
+    .submit-title {
+      font-weight: 800;
+      color: var(--hoermann-blue);
+      font-size: 1.1rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .submit-form {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+      justify-content: center;
+    }
+
+    .submit-input {
+      padding: 0.55rem 0.9rem;
+      border: 1px solid var(--border-gray);
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      width: 260px;
+      outline: none;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    .submit-input:focus {
+      border-color: var(--hoermann-orange);
+      box-shadow: 0 0 0 2px rgba(245, 156, 0, 0.2);
+    }
+
+    .submit-btn {
+      background: var(--hoermann-orange);
+      color: #ffffff;
+      font-weight: 700;
+      border: none;
+      padding: 0.55rem 1.2rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .submit-btn:hover {
+      background: var(--hoermann-orange-hover);
     }
 
     /* Toast Notification */
@@ -527,33 +627,12 @@
       transform: translateY(0);
     }
 
-    /* Sound indicator button */
-    .sound-badge {
-      font-size: 0.75rem;
-      color: rgba(255, 255, 255, 0.7);
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      cursor: pointer;
-    }
-
-    /* Footer branding */
     footer {
       margin-top: 1.5rem;
       font-size: 0.82rem;
       color: rgba(255, 255, 255, 0.6);
       text-align: center;
       z-index: 10;
-    }
-
-    footer a {
-      color: var(--hoermann-orange);
-      text-decoration: none;
-      font-weight: 600;
-    }
-
-    footer a:hover {
-      text-decoration: underline;
     }
 
     @keyframes fadeIn {
@@ -568,17 +647,16 @@
       100% { transform: scale(1); }
     }
 
-    /* Responsive adjustments */
     @media (max-width: 640px) {
       body {
         padding: 0.75rem;
       }
       .card-content {
-        padding: 2rem 1.25rem 2rem 1.25rem;
+        padding: 2rem 1.25rem;
         min-height: 400px;
       }
       .headline {
-        font-size: 1.75rem;
+        font-size: 1.7rem;
       }
       .subline {
         font-size: 1.05rem;
@@ -596,6 +674,12 @@
       }
       .brand-watermark {
         display: none;
+      }
+      .submit-form {
+        flex-direction: column;
+      }
+      .submit-input {
+        width: 100%;
       }
     }
   </style>
@@ -631,15 +715,15 @@
       </div>
     </header>
 
-    <!-- Animated Sectional Door Effect Layers (Opens up) -->
+    <!-- Animated Sectional Door Effect Overlay -->
     <div id="sectional-door-overlay">
-      <div class="door-panel" style="top: 0%; height: 25%;">HÖRMANN SEKTIONALTOR // SICHERHEIT &amp; MUT</div>
+      <div class="door-panel" style="top: 0%; height: 25%;">HÖRMANN SEKTIONALTOR // MUT-IMPULS</div>
       <div class="door-panel" style="top: 25%; height: 25%;">STAHLZARGE VERSTÄRKT</div>
       <div class="door-panel" style="top: 50%; height: 25%;">QUALITÄT DIE BEWEGT</div>
       <div class="door-panel" style="top: 75%; height: 25%;">TOR ÖFFNET SICH...</div>
     </div>
 
-    <!-- Main Interactive Card View -->
+    <!-- Main View: Mut-Portal -->
     <main class="card-content" id="portal-view">
       
       <div class="effect-pill" id="effect-badge">
@@ -702,32 +786,67 @@
     </main>
 
     <!-- Minigame View: Hörmann Mut-Tor Parcours -->
-    <section class="card-content" id="game-view" style="display: none;">
+    <section class="card-content" id="game-view">
       <div class="game-ui-header">
-        <div class="game-stat">Tore geöffnet: <span id="game-score">0</span></div>
-        <div class="game-stat">Mut-Highscore: <span id="game-highscore">0</span></div>
-        <button class="utility-link" id="exit-game-btn" style="text-decoration:none; font-size:1rem;">
-          ✕ Zurück
-        </button>
+        <div class="game-stat">Tore gemeistert: <span id="game-score">0</span></div>
+        <div class="game-stat">Rekord: <span id="game-highscore">0</span></div>
+        <div class="game-actions-bar">
+          <button class="utility-link" id="toggle-leaderboard-btn" style="text-decoration:none;">
+            🏆 Bestenliste
+          </button>
+          <button class="utility-link" id="exit-game-btn" style="text-decoration:none; font-size:1.1rem; font-weight:800;">
+            ✕ Zurück
+          </button>
+        </div>
       </div>
 
-      <canvas id="gameCanvas" width="640" height="380"></canvas>
+      <canvas id="gameCanvas" width="640" height="360"></canvas>
 
       <div class="game-instructions">
         <span>Steuerung: <span class="key-badge">Leertaste</span> / <span class="key-badge">Klick / Tippen</span> zum Springen / Heben</span>
-        <button class="utility-link" id="restart-game-btn">Neustart</button>
+        <button class="utility-link" id="restart-game-btn">Neustart ↺</button>
+      </div>
+
+      <!-- Highscore Submission Dialog (appears on Game Over) -->
+      <div id="score-submit-dialog">
+        <div class="submit-title" id="submit-dialog-title">Neuer Mut-Rekord!</div>
+        <p style="font-size:0.9rem; color:var(--text-muted);">Trage deinen Namen in die Hörmann Mut-Bestenliste ein:</p>
+        <div class="submit-form">
+          <input type="text" id="player-name-input" class="submit-input" maxlength="20" placeholder="Dein Name oder Spitzname">
+          <button class="submit-btn" id="save-score-btn">Eintragen 🏆</button>
+        </div>
+      </div>
+
+      <!-- Highscore Leaderboard Table -->
+      <div class="highscore-card" id="highscore-card">
+        <div class="highscore-header">
+          <div class="highscore-title">🏆 Hörmann Mut-Bestenliste</div>
+          <button class="utility-link" id="close-leaderboard-btn" style="text-decoration:none; font-size:0.9rem;">✕ Schließen</button>
+        </div>
+        <table class="highscore-table">
+          <thead>
+            <tr>
+              <th style="width:15%;">Platz</th>
+              <th style="width:50%;">Name</th>
+              <th style="width:20%; text-align:right;">Tore</th>
+              <th style="width:15%; text-align:right;">Datum</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboard-body">
+            <!-- Dynamically populated -->
+          </tbody>
+        </table>
       </div>
     </section>
 
   </div>
 
   <footer>
-    Hörmann Mut-Initiative &bull; Sektionaltore &bull; Schwingtore &bull; Türen &bull; Stahlzargen &bull; Qualität mit Mut
+    Hörmann Mut-Portal &bull; Sektionaltore &bull; Schwingtore &bull; Türen &bull; Stahlzargen &bull; Qualität mit Mut
   </footer>
 
   <div id="toast">Gedanken gespeichert!</div>
 
-  <!-- Audio & Game Logic -->
   <script>
     /* ==========================================================
        1. DATE / WEEK HEADER DISPLAY (Matches Screenshot)
@@ -735,14 +854,13 @@
     const days = ['SONNTAG', 'MONTAG', 'DIENSTAG', 'MITTWOCH', 'DONNERSTAG', 'FREITAG', 'SAMSTAG'];
     const now = new Date();
     const dayName = days[now.getDay()];
-    // Get calendar week
     const firstJan = new Date(now.getFullYear(), 0, 1);
     const pastDays = (now - firstJan) / 86400000;
     const weekNum = Math.ceil((pastDays + firstJan.getDay() + 1) / 7);
     document.getElementById('date-label').textContent = `WOCHE ${weekNum} - ${dayName}`;
 
     /* ==========================================================
-       2. SOUND EFFECTS (Web Audio API - No external dependencies)
+       2. SOUND EFFECTS (Web Audio API - Completely Standalone)
        ========================================================== */
     let audioCtx = null;
     let soundEnabled = true;
@@ -761,92 +879,88 @@
       if (!soundEnabled) return;
       try {
         const ctx = getAudioContext();
-        const now = ctx.currentTime;
+        const nowTime = ctx.currentTime;
 
         if (type === 'chime' || type === 'mut') {
-          // Cheerful uplifting major chord (C - E - G - C)
           const notes = [523.25, 659.25, 783.99, 1046.50];
           notes.forEach((freq, idx) => {
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
             osc.type = 'triangle';
-            osc.frequency.setValueAtTime(freq, now + idx * 0.08);
-            gain.gain.setValueAtTime(0.001, now + idx * 0.08);
-            gain.gain.exponentialRampToValueAtTime(0.2, now + idx * 0.08 + 0.02);
-            gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.08 + 0.6);
+            osc.frequency.setValueAtTime(freq, nowTime + idx * 0.08);
+            gain.gain.setValueAtTime(0.001, nowTime + idx * 0.08);
+            gain.gain.exponentialRampToValueAtTime(0.2, nowTime + idx * 0.08 + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.0001, nowTime + idx * 0.08 + 0.6);
             osc.connect(gain);
             gain.connect(ctx.destination);
-            osc.start(now + idx * 0.08);
-            osc.stop(now + idx * 0.08 + 0.65);
+            osc.start(nowTime + idx * 0.08);
+            osc.stop(nowTime + idx * 0.08 + 0.65);
           });
         } else if (type === 'gate') {
-          // Mechanical rolling Hörmann gate sound
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
           osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(110, now);
-          osc.frequency.linearRampToValueAtTime(220, now + 0.5);
-          gain.gain.setValueAtTime(0.12, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+          osc.frequency.setValueAtTime(110, nowTime);
+          osc.frequency.linearRampToValueAtTime(220, nowTime + 0.5);
+          gain.gain.setValueAtTime(0.12, nowTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, nowTime + 0.6);
           osc.connect(gain);
           gain.connect(ctx.destination);
-          osc.start(now);
-          osc.stop(now + 0.65);
+          osc.start(nowTime);
+          osc.stop(nowTime + 0.65);
         } else if (type === 'jump') {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
           osc.type = 'sine';
-          osc.frequency.setValueAtTime(260, now);
-          osc.frequency.exponentialRampToValueAtTime(540, now + 0.15);
-          gain.gain.setValueAtTime(0.18, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+          osc.frequency.setValueAtTime(260, nowTime);
+          osc.frequency.exponentialRampToValueAtTime(540, nowTime + 0.15);
+          gain.gain.setValueAtTime(0.18, nowTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, nowTime + 0.15);
           osc.connect(gain);
           gain.connect(ctx.destination);
-          osc.start(now);
-          osc.stop(now + 0.16);
+          osc.start(nowTime);
+          osc.stop(nowTime + 0.16);
         } else if (type === 'score') {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
           osc.type = 'square';
-          osc.frequency.setValueAtTime(880, now);
-          gain.gain.setValueAtTime(0.1, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+          osc.frequency.setValueAtTime(880, nowTime);
+          gain.gain.setValueAtTime(0.08, nowTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, nowTime + 0.12);
           osc.connect(gain);
           gain.connect(ctx.destination);
-          osc.start(now);
-          osc.stop(now + 0.13);
+          osc.start(nowTime);
+          osc.stop(nowTime + 0.13);
         } else if (type === 'hit') {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
           osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(180, now);
-          osc.frequency.exponentialRampToValueAtTime(60, now + 0.25);
-          gain.gain.setValueAtTime(0.2, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+          osc.frequency.setValueAtTime(180, nowTime);
+          osc.frequency.exponentialRampToValueAtTime(60, nowTime + 0.25);
+          gain.gain.setValueAtTime(0.2, nowTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, nowTime + 0.25);
           osc.connect(gain);
           gain.connect(ctx.destination);
-          osc.start(now);
-          osc.stop(now + 0.26);
+          osc.start(nowTime);
+          osc.stop(nowTime + 0.26);
         } else if (type === 'confetti') {
-          // Popping sound
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
           osc.type = 'sine';
-          osc.frequency.setValueAtTime(600, now);
-          osc.frequency.exponentialRampToValueAtTime(120, now + 0.1);
-          gain.gain.setValueAtTime(0.25, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+          osc.frequency.setValueAtTime(600, nowTime);
+          osc.frequency.exponentialRampToValueAtTime(120, nowTime + 0.1);
+          gain.gain.setValueAtTime(0.25, nowTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, nowTime + 0.1);
           osc.connect(gain);
           gain.connect(ctx.destination);
-          osc.start(now);
-          osc.stop(now + 0.11);
+          osc.start(nowTime);
+          osc.stop(nowTime + 0.11);
         }
       } catch (e) {
-        console.warn('Web Audio error:', e);
+        console.warn('Audio error:', e);
       }
     }
 
-    // Sound toggle
     const soundToggleBtn = document.getElementById('sound-toggle-btn');
     const soundIconOn = document.getElementById('sound-icon-on');
     const soundIconOff = document.getElementById('sound-icon-off');
@@ -855,85 +969,77 @@
       soundEnabled = !soundEnabled;
       soundIconOn.style.display = soundEnabled ? 'block' : 'none';
       soundIconOff.style.display = soundEnabled ? 'none' : 'block';
-      showToast(soundEnabled ? 'Ton aktiviert' : 'Ton stummgeschaltet');
+      showToast(soundEnabled ? 'Ton aktiviert 🔊' : 'Ton stummgeschaltet 🔇');
       if (soundEnabled) playSound('score');
     });
 
     /* ==========================================================
-       3. 80+ MUT-SPRÜCHE (Tiefgründig, Hörmann & Alltags-Mut)
+       3. 100% EIGENS ERSTELLTE MUT-SPRÜCHE (Hörmann, Kraft & Mut)
        ========================================================== */
     const mutSpruche = [
-      { quote: "Mut ist nicht die Abwesenheit von Angst, sondern das Urteil, dass etwas anderes wichtiger ist als die Angst.", author: "Ambrose Redmoon" },
-      { quote: "Wer Tore öffnen will, muss den Mut haben, an die Klinke zu fassen.", author: "Hörmann Mut-Impuls" },
-      { quote: "Es ist nicht gesagt, dass es besser wird, wenn es anders wird; aber es muss anders werden, wenn es besser werden soll.", author: "Georg Christoph Lichtenberg" },
-      { quote: "Stabilität entsteht durch einen starken Rahmen. Steh fest wie eine Stahlzarge und gehe mutig voran.", author: "Handwerksweisheit" },
-      { quote: "Der beste Weg, die Zukunft vorherzusagen, ist, sie mutig selbst zu gestalten.", author: "Peter Drucker" },
-      { quote: "Wenn der Wind des Wandels weht, bauen die einen Mauern und die anderen Sektionaltore zur Zukunft.", author: "Modernes Sprichwort" },
-      { quote: "Mut brüllt nicht immer. Manchmal ist Mut die leise Stimme am Ende des Tages, die sagt: 'Ich versuche es morgen noch einmal.'", author: "Mary Anne Radmacher" },
-      { quote: "Du kannst nicht neue Ozeane entdecken, wenn du nicht den Mut hast, die Küste aus den Augen zu verlieren.", author: "André Gide" },
-      { quote: "Ein geschlossenes Tor ist keine Sackgasse – es wartet nur auf deinen Antrieb.", author: "Hörmann Philosophie" },
-      { quote: "Was wäre das Leben, hätten wir nicht den Mut, etwas zu riskieren?", author: "Vincent van Gogh" },
-      { quote: "Jeder Meister hat einmal als jemand begonnen, der den Mut hatte, unvollkommen anzufangen.", author: "Zen-Weisheit" },
-      { quote: "Mut wächst mit jedem Schritt, den man trotz Zweifel setzt.", author: "Lebensweisheit" },
-      { quote: "Qualität verlangt Präzision. Erfolg verlangt Mut.", author: "Hörmann Leitgedanke" },
-      { quote: "Wer immer nur das tut, was er schon kann, bleibt immer nur das, was er schon ist.", author: "Henry Ford" },
-      { quote: "Selbst das schwerste Schwingtor lässt sich mit der richtigen Hebelwirkung und Courage mühelos öffnen.", author: "Technik & Mut" },
-      { quote: "Mut ist der Zauber, der Träume in Realität verwandelt.", author: "Asterix & Weisheit" },
-      { quote: "Gib deinen Zielen ein stabiles Fundament und öffne die Tore für das Unbekannte.", author: "Mut-Motto" },
-      { quote: "Habe Mut, dich deines eigenen Verstandes zu bedienen.", author: "Immanuel Kant" },
-      { quote: "Der einzige Fehler, den man im Leben machen kann, ist die Angst, einen Fehler zu machen.", author: "Elbert Hubbard" },
-      { quote: "Hinter jedem Hindernis steht ein neues Panorama – drück auf den Toröffner und schreite voran!", author: "Tagesimpuls" },
-      { quote: "Große Dinge entstehen nie in der Komfortzone. Trau dich!", author: "Erfolgsregel" },
-      { quote: "Stahl wird im Feuer gehärtet. Charakter durch mutige Entscheidungen.", author: "Hörmann Spirit" },
-      { quote: "Man muss das Unmögliche versuchen, um das Mögliche zu erreichen.", author: "Hermann Hesse" },
-      { quote: "Nicht weil es schwer ist, wagen wir es nicht, sondern weil wir es nicht wagen, ist es schwer.", author: "Seneca" },
-      { quote: "Öffne das Tor zum Tag mit einem Lächeln und dem festen Willen, heute mutig zu sein.", author: "Morgenimpuls" },
-      { quote: "Mut bedeutet, loszulassen, was war, um zu empfangen, was kommt.", author: "Inspiration" },
-      { quote: "Ein klares Ziel schützt vor Unsicherheit wie eine Brandschutztür vor Feuer.", author: "Sicherheit & Fokus" },
-      { quote: "Sei stolz auf jeden kleinen Schritt. Auch ein Sektionaltor öffnet sich Lamelle für Lamelle.", author: "Schritt-für-Schritt" },
-      { quote: "Entscheidungen zu treffen erfordert Mut. Keine zu treffen, kostet Lebenszeit.", author: "Klartext" },
-      { quote: "In dir steckt mehr Kraft, als du dir in deinen kühnsten Momenten zutraust.", author: "Kraft-Impuls" },
-      { quote: "Ein fester Halt im Leben ist wie eine perfekt eingebaute Stahlzarge: Unerschütterlich.", author: "Hörmann Handwerk" },
-      { quote: "Die größte Entdeckung einer Generation ist, dass der Mensch sein Leben ändern kann, indem er seine Einstellung ändert.", author: "William James" },
-      { quote: "Wage es, heute der Mensch zu sein, der den Unterschied macht.", author: "Teamgeist" },
-      { quote: "Wer Schwingtore baut, weiß: Mit dem richtigen Schwung meistert man jedes Gewicht.", author: "Schwung & Mut" },
-      { quote: "Zweifel töten mehr Träume als Versagen es je könnte.", author: "Suzy Kassem" },
-      { quote: "Der erste Schritt ist immer der schwerste. Danach rollt es wie geschmiert.", author: "Hörmann Montage-Weisheit" },
-      { quote: "Verändere deine Gedanken und du veränderst deine Welt.", author: "Norman Vincent Peale" },
-      { quote: "Mut ist die Fähigkeit, nach einem Rückschlag wieder die Ärmel hochzukrempeln.", author: "Praktiker-Weisheit" },
-      { quote: "Auch die stärkste Tür braucht jemanden, der sie aufstößt. Sei du diese Kraft!", author: "Tagesmotto" },
-      { quote: "Glaube an deine Fähigkeiten. Du bist für Herausforderungen gebaut.", author: "Resilienz" },
-      { quote: "Kein Tor ist für immer verriegelt, wenn man den passenden Schlüssel des Mutes besitzt.", author: "Hörmann Inspiration" },
-      { quote: "Mutig sein heißt: Auch mit zittrigen Knien voranzugehen.", author: "Echter Mut" },
-      { quote: "Die beste Zeit, einen Baum zu pflanzen, war vor 20 Jahren. Die zweitbeste Zeit ist jetzt.", author: "Chinesisches Sprichwort" },
-      { quote: "Ein starker Wille überwindet jede Barriere.", author: "Hörmann Power" },
-      { quote: "Gib jedem Tag die Chance, der mutigste deines Lebens zu werden.", author: "Frei nach Mark Twain" },
-      { quote: "Wer nach vorne blickt, braucht keine Angst vor dem Rückspiegel zu haben.", author: "Fokus" },
-      { quote: "Stabilität nach außen, Zuversicht nach innen – wie Qualitätsstahl von Hörmann.", author: "Stärke-Formel" },
-      { quote: "Mut ist die Brücke zwischen dem Wunsch und dem Ergebnis.", author: "Erfolgsfaktor" },
-      { quote: "Das Geheimnis des Vorwärtskommens besteht darin, den ersten Schritt zu tun.", author: "Mark Twain" },
-      { quote: "Wo Mut den Weg bahnt, folgt der Erfolg auf dem Fuße.", author: "Wegbereiter" },
-      { quote: "Lass deine Taten lauter sprechen als deine Bedenken.", author: "Tatkraft" },
-      { quote: "Ein Tor schützt, was dir wertvoll ist – und öffnet sich für neue Chancen.", author: "Hörmann Werte" }
+      { quote: "Ein geschlossenes Tor ist kein Stoppschild – es ist die Einladung, den Hebel mutig in die Hand zu nehmen.", author: "Dein Mut-Macher" },
+      { quote: "Manche warten ihr Leben lang, bis sich Türen von alleine öffnen. Die Mutigen bauen den Torantrieb einfach selbst ein.", author: "Hörmann Mut-Schmiede" },
+      { quote: "Steh fest wie eine verzinkte Stahlzarge: Lass dich von Gegenwind nicht verbiegen und gib deinen Träumen verlässlichen Halt.", author: "Zargenfeste Zuversicht" },
+      { quote: "Ein Sektionaltor öffnet sich Lamelle für Lamelle. Genauso wächst dein Mut: Nicht auf einen Schlag, sondern Schritt für Schritt, bis der ganze Horizont frei ist.", author: "Der innere Toröffner" },
+      { quote: "Schwingtore beweisen es jeden Tag aufs Neue: Mit dem richtigen Schwung und Ausgleich wird selbst das schwerste Gewicht federleicht.", author: "Meister-Impuls" },
+      { quote: "Zweifel sind wie Flugrost auf blankem Stahl: Wenn du sie sofort kraftvoll abwischst, bleibt deine Entschlossenheit unzerstörbar.", author: "Hörmann Philosophie" },
+      { quote: "Wenn das Leben dir eine Mauer vor die Nase setzt, bau ein Hörmann-Industrietor hinein und fahre mit Vollgas hindurch.", author: "Tatkraft & Power" },
+      { quote: "Hinter dem Tor, vor dem du am meisten zögerst, liegt fast immer die größte Erleichterung deines Lebens.", author: "Mut-Pionier" },
+      { quote: "Wahres Selbstvertrauen braucht kein lautes Poltern. Es steht so felsenfest und passgenau wie eine meisterhaft verankerte Blockzarge.", author: "Stahlharte Entschlossenheit" },
+      { quote: "Angst fragt dich: ‚Was, wenn etwas schiefgeht?‘ – Mut lächelt und antwortet: ‚Aber stell dir vor, wie gigantisch es wird, wenn es gelingt!‘", author: "Dein Mut-Macher" },
+      { quote: "Wer immer nur in der warmen Garage parkt, wird nie erfahren, welche atemberaubenden Straßen die Welt zu bieten hat. Öffne das Tor und fahr los!", author: "Hörmann Mut-Schmiede" },
+      { quote: "Kein Tor ist für die Ewigkeit verriegelt, wenn man die Funkfernbedienung des eigenen Mutes betätigt.", author: "BiSecur Mut-Impuls" },
+      { quote: "Ein klares Ziel schützt dich vor Unsicherheit und Chaos genauso zuverlässig wie eine geprüfte Feuerschutztür vor den Flammen.", author: "Sicherheit & Fokus" },
+      { quote: "Zögern verbraucht exakt dieselbe Energie wie Handeln – nur dass Handeln dich am Ende des Tages stolz in den Feierabend entlässt.", author: "Meister-Impuls" },
+      { quote: "Lass dir niemals einreden, du wärst zu schwach. In dir steckt das Fundament und die Widerstandskraft von echtem Qualitätsstahl.", author: "Stahlharte Entschlossenheit" },
+      { quote: "Fehler sind keine irreparablen Bauschäden, sondern wertvolle Montage-Erfahrungen für dein nächstes Meisterstück.", author: "Praktiker-Weisheit" },
+      { quote: "Ein Tor schützt, was dir wertvoll ist – aber schließe es niemals vor den Chancen und Überraschungen ab, die heute eintreten wollen.", author: "Tagesimpuls" },
+      { quote: "Gemeinsam heben wir Lasten, an denen sich ein Einzelner verheben würde. Echter Mut verdoppelt sich, sobald man ihn im Team teilt.", author: "Teamgeist Hörmann" },
+      { quote: "Hör auf zu warten, bis du dich ‚bereit‘ fühlst. Das Gefühl von Mut entsteht nicht vor dem Schritt, sondern mitten im Gehen.", author: "Dein Mut-Macher" },
+      { quote: "Zweifel? Einmal mit 500 Newtonmetern Zuversicht nachziehen, bitte! Jetzt sitzt alles bombenfest.", author: "Werkstatt-Mut" },
+      { quote: "Der schwerste Teil jeder Aufgabe ist der Moment, in dem die Hand nach dem Schlüssel greift. Danach läuft die Mechanik fast wie von selbst.", author: "Hörmann Mut-Schmiede" },
+      { quote: "Aufschieben ist die Rostlaube des Alltags. Geh heute mutig voran und mach den Weg für Neues frei.", author: "Tatkraft & Power" },
+      { quote: "Mut ist der Funke, der aus einem gewöhnlichen Tag eine unverwechselbare Erfolgsgeschichte zimmert.", author: "Mut-Pionier" },
+      { quote: "Sei stolz auf jede Herausforderung, die du bisher gemeistert hast. Jede einzelne hat deine innere Zarge stabiler gemacht.", author: "Zargenfeste Zuversicht" },
+      { quote: "Wenn dir der Mut fehlt, atme tief durch, erinnere dich an deine Stärken und drücke entschlossen auf den Startknopf.", author: "Hörmann Impuls" },
+      { quote: "Eine Tür öffnet sich nicht durch langes Anstarren, sondern durch den Mut, an die Klinke zu fassen und sie aufzustoßen.", author: "Dein Mut-Macher" },
+      { quote: "Qualität verlangt Präzision im Detail. Erfolg verlangt den Mut zur klaren Entscheidung.", author: "Hörmann Philosophie" },
+      { quote: "Du bist nicht dazu bestimmt, klein beizugeben. Richte dich auf, zieh die Schultern zurück und betritt die Bühne des Lebens.", author: "Stahlharte Entschlossenheit" },
+      { quote: "Das größte Projekt deines Lebens bist du selbst. Spare nicht an der Motivation und spare niemals an deinem Mut.", author: "Meister-Impuls" },
+      { quote: "Manchmal ist Mut einfach nur der Entschluss: ‚Ich probiere es jetzt trotzdem, egal was die Zweifel flüstern.‘", author: "Dein Mut-Macher" },
+      { quote: "Jedes Mal, wenn du dich überwindest, öffnest du ein neues Panorama, das dir zuvor verborgen war.", author: "Hörmann Mut-Schmiede" },
+      { quote: "Wer Tore baut, der weiß: Hindernisse sind nur dazu da, um überwunden und passiert zu werden.", author: "Tore & Tatkraft" },
+      { quote: "Entscheidungen aus Mut bringen dich immer weiter – selbst ein Umweg schenkt dir wertvolle Ortskenntnis.", author: "Mut-Pionier" },
+      { quote: "Setze deine Standards hoch, baue auf verlässliche Werte und gehe keinen Millimeter vor der Angst zurück.", author: "Zargenfeste Zuversicht" },
+      { quote: "Lass dein Lächeln heute der Toröffner für deine Mitmenschen sein.", author: "Teamgeist Hörmann" },
+      { quote: "Selbst die massivste Panzerung nützt nichts, wenn man das Tor nicht aufmacht. Zeig der Welt, was in dir steckt!", author: "Tatkraft & Power" },
+      { quote: "Ein Tag voller Mut beginnt mit dem einfachen Gedanken: ‚Ich packe das heute an. Punkt.‘", author: "Morgen-Impuls" },
+      { quote: "Es gibt keine verschlossenen Wege – es gibt nur Tore, die darauf warten, schwungvoll geöffnet zu werden.", author: "Hörmann Mut-Schmiede" },
+      { quote: "Mut ist wie ein Qualitäts-Kugellager: Gut geschmiert läuft es reibungslos durch jede Lebenslage.", author: "Werkstatt-Mut" },
+      { quote: "Halte den Kurs, auch wenn es mal ruckelt. Die besten Tore gleiten auch nach tausenden Zyklen noch butterweich.", author: "Stahlharte Entschlossenheit" },
+      { quote: "Dein Mut von heute ist das Fundament, auf dem dein Erfolg von morgen steht.", author: "Dein Mut-Macher" },
+      { quote: "Trau dich, den ersten Satz zu sagen, die Hand zu heben oder die Idee vorzuschlagen. Echte Größe beginnt im Kleinen.", author: "Mut-Pionier" },
+      { quote: "Wie eine solide Stahlzarge: Wenn die Basis stimmt, kann dich kein Stoß der Welt aus der Fassung bringen.", author: "Zargenfeste Zuversicht" },
+      { quote: "Erfolg ist kein Zufall, sondern das Ergebnis unzähliger kleiner mutiger Entscheidungen.", author: "Hörmann Philosophie" },
+      { quote: "Wirf die Zweifel über Bord, schalte den Motor an und fahr mit erhobenem Kopf durch das offene Tor der Zukunft!", author: "Meister-Impuls" }
     ];
 
     /* ==========================================================
-       4. DYNAMIC MUT-EFFECTS (Konfetti, Hände, Sektionaltor etc.)
+       4. DYNAMIC MUT-EFFECTS (Konfetti, Jubelnde Hände, Sektionaltor etc.)
        ========================================================== */
     const effects = [
       { id: 'confetti', name: 'Konfetti-Regen', icon: '🎉', sound: 'confetti' },
-      { id: 'hands', name: 'Jubelnde Hände & Kraft', icon: '🙌', sound: 'mut' },
+      { id: 'hands', name: 'Jubelnde Hände & Power', icon: '🙌', sound: 'mut' },
       { id: 'door', name: 'Hörmann Sektionaltor öffnet sich', icon: '🚪', sound: 'gate' },
       { id: 'gold', name: 'Goldener Mut-Schein', icon: '✨', sound: 'chime' },
       { id: 'firework', name: 'Mut-Feuerwerk', icon: '🎆', sound: 'confetti' },
-      { id: 'heart', name: 'Herzklopfen & Puls', icon: '❤️‍🔥', sound: 'mut' },
+      { id: 'heart', name: 'Herzklopfen & Energie-Puls', icon: '❤️‍🔥', sound: 'mut' },
       { id: 'rocket', name: 'Raketen-Durchbruch', icon: '🚀', sound: 'gate' }
     ];
 
     let lastEffectIndex = -1;
     let lastQuoteIndex = -1;
 
-    // Canvas particle engine
     const fxCanvas = document.getElementById('fx-canvas');
     const fxCtx = fxCanvas.getContext('2d');
     let particles = [];
@@ -1001,8 +1107,7 @@
           });
         }
       } else if (effectType === 'firework') {
-        const bursts = 3;
-        for (let b = 0; b < bursts; b++) {
+        for (let b = 0; b < 3; b++) {
           const cx = w * 0.25 + Math.random() * (w * 0.5);
           const cy = h * 0.2 + Math.random() * (h * 0.3);
           const color = ['#f59c00', '#38bdf8', '#fb7185', '#34d399'][b % 4];
@@ -1024,7 +1129,6 @@
           }
         }
       } else if (effectType === 'heart') {
-        // Heart shockwave animation on main card
         const card = document.getElementById('main-card');
         card.style.animation = 'pulseHeart 0.6s ease';
         setTimeout(() => { card.style.animation = ''; }, 650);
@@ -1059,13 +1163,10 @@
           });
         }
       } else if (effectType === 'door') {
-        // Hörmann Sectional door open overlay animation
         const overlay = document.getElementById('sectional-door-overlay');
         const panels = overlay.querySelectorAll('.door-panel');
         overlay.style.display = 'block';
-        panels.forEach((p, idx) => {
-          p.style.transform = 'translateY(0%)';
-        });
+        panels.forEach((p) => { p.style.transform = 'translateY(0%)'; });
 
         setTimeout(() => {
           panels.forEach((p, idx) => {
@@ -1143,7 +1244,7 @@
     }
 
     /* ==========================================================
-       5. "GIB MIR MUT" BUTTON CLICK LOGIC
+       5. "GIB MIR MUT" BUTTON CLICK
        ========================================================== */
     const mutBtn = document.getElementById('mut-btn');
     const mainHeadline = document.getElementById('main-headline');
@@ -1156,7 +1257,6 @@
     let currentQuoteText = "";
 
     function giveMeMut() {
-      // Pick a random quote that isn't the same as the last one
       let qIndex;
       do {
         qIndex = Math.floor(Math.random() * mutSpruche.length);
@@ -1164,7 +1264,6 @@
       lastQuoteIndex = qIndex;
       const item = mutSpruche[qIndex];
 
-      // Pick a random effect
       let effIndex;
       do {
         effIndex = Math.floor(Math.random() * effects.length);
@@ -1172,12 +1271,10 @@
       lastEffectIndex = effIndex;
       const effect = effects[effIndex];
 
-      // Update badge
       effectIcon.textContent = effect.icon;
       effectName.textContent = `Muteffekt: ${effect.name}`;
       effectBadge.classList.add('show');
 
-      // Update text with transition
       mainHeadline.style.opacity = '0';
       mainSubline.style.opacity = '0';
 
@@ -1190,14 +1287,12 @@
         copyQuoteBtn.style.display = 'inline-flex';
       }, 200);
 
-      // Trigger audio & visual effect
       playSound(effect.sound);
       triggerParticleEffect(effect.id);
     }
 
     mutBtn.addEventListener('click', giveMeMut);
 
-    // Copy Quote Button
     copyQuoteBtn.addEventListener('click', () => {
       if (!currentQuoteText) return;
       navigator.clipboard.writeText(currentQuoteText).then(() => {
@@ -1208,7 +1303,7 @@
     });
 
     /* ==========================================================
-       6. THOUGHTS NOTEBOOK (Matching original prompt in screenshot)
+       6. THOUGHTS NOTEBOOK (Matches original screenshot prompt)
        ========================================================== */
     const toggleThoughtsBtn = document.getElementById('toggle-thoughts-btn');
     const thoughtsBox = document.getElementById('thoughts-box');
@@ -1217,7 +1312,6 @@
     const t2 = document.getElementById('thought-2');
     const t3 = document.getElementById('thought-3');
 
-    // Load saved thoughts
     try {
       const saved = JSON.parse(localStorage.getItem('hoermann_mut_thoughts') || '[]');
       if (saved[0]) t1.value = saved[0];
@@ -1239,7 +1333,6 @@
       showToast('Deine Mut-Gedanken wurden gesichert! 💡');
     });
 
-    // Reset button in top bar
     document.getElementById('reset-view-btn').addEventListener('click', () => {
       mainHeadline.textContent = "Was bedeutet Mut für Sie?";
       mainSubline.textContent = "Nehmen Sie sich einen Moment Zeit und notieren Sie drei Gedanken zum Thema Mut.";
@@ -1257,7 +1350,7 @@
     }
 
     /* ==========================================================
-       7. DAS MUT-SPIEL: HÖRMANN SEKTIONAL-TOR RUNNER
+       7. DAS MUT-SPIEL: HÖRMANN SEKTIONAL-TOR PARCOURS & HIGHSCORE
        ========================================================== */
     const gameBtn = document.getElementById('game-btn');
     const portalView = document.getElementById('portal-view');
@@ -1269,20 +1362,111 @@
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
 
+    const scoreSubmitDialog = document.getElementById('score-submit-dialog');
+    const playerNameInput = document.getElementById('player-name-input');
+    const saveScoreBtn = document.getElementById('save-score-btn');
+    const submitDialogTitle = document.getElementById('submit-dialog-title');
+    const toggleLeaderboardBtn = document.getElementById('toggle-leaderboard-btn');
+    const closeLeaderboardBtn = document.getElementById('close-leaderboard-btn');
+    const highscoreCard = document.getElementById('highscore-card');
+    const leaderboardBody = document.getElementById('leaderboard-body');
+
     let gameActive = false;
     let gameLoopId = null;
     let score = 0;
-    let highscore = parseInt(localStorage.getItem('hoermann_mut_highscore') || '0', 10);
-    gameHighscoreSpan.textContent = highscore;
 
-    // Switch to Game View
+    function getLeaderboard() {
+      try {
+        const stored = localStorage.getItem('hoermann_mut_leaderboard');
+        if (stored) return JSON.parse(stored);
+      } catch (e) {}
+      return [
+        { name: "Meister Torsten", score: 12, date: "Gestern" },
+        { name: "Mut-Pionierin Anna", score: 9, date: "21.10." },
+        { name: "Zargen-Profi Dennis", score: 7, date: "20.10." },
+        { name: "Technik-Tobi", score: 5, date: "19.10." },
+        { name: "Montage-Hero", score: 3, date: "18.10." }
+      ];
+    }
+
+    function saveLeaderboard(list) {
+      localStorage.setItem('hoermann_mut_leaderboard', JSON.stringify(list));
+    }
+
+    let leaderboard = getLeaderboard();
+    let currentHighscore = leaderboard.length > 0 ? Math.max(...leaderboard.map(x => x.score)) : 0;
+    gameHighscoreSpan.textContent = currentHighscore;
+
+    function renderLeaderboard(highlightName = "") {
+      leaderboardBody.innerHTML = "";
+      leaderboard.sort((a, b) => b.score - a.score);
+      const top10 = leaderboard.slice(0, 10);
+
+      top10.forEach((entry, idx) => {
+        const tr = document.createElement('tr');
+        if (highlightName && entry.name === highlightName) {
+          tr.classList.add('highlight');
+        }
+        let rankBadge = `${idx + 1}.`;
+        if (idx === 0) rankBadge = '🥇 1.';
+        if (idx === 1) rankBadge = '🥈 2.';
+        if (idx === 2) rankBadge = '🥉 3.';
+
+        tr.innerHTML = `
+          <td>${rankBadge}</td>
+          <td><strong>${escapeHtml(entry.name)}</strong></td>
+          <td style="text-align:right; color:var(--hoermann-orange); font-weight:800;">${entry.score}</td>
+          <td style="text-align:right; color:var(--text-muted); font-size:0.8rem;">${entry.date || 'Heute'}</td>
+        `;
+        leaderboardBody.appendChild(tr);
+      });
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    toggleLeaderboardBtn.addEventListener('click', () => {
+      renderLeaderboard();
+      highscoreCard.classList.toggle('show');
+    });
+
+    closeLeaderboardBtn.addEventListener('click', () => {
+      highscoreCard.classList.remove('show');
+    });
+
+    saveScoreBtn.addEventListener('click', submitPlayerScore);
+    playerNameInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') submitPlayerScore();
+    });
+
+    function submitPlayerScore() {
+      const name = playerNameInput.value.trim() || 'Anonymer Mutmacher';
+      const today = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' });
+      leaderboard.push({ name: name, score: score, date: today });
+      leaderboard.sort((a, b) => b.score - a.score);
+      saveLeaderboard(leaderboard);
+
+      currentHighscore = Math.max(...leaderboard.map(x => x.score));
+      gameHighscoreSpan.textContent = currentHighscore;
+
+      scoreSubmitDialog.classList.remove('show');
+      renderLeaderboard(name);
+      highscoreCard.classList.add('show');
+      playSound('score');
+      showToast(`Super Leistung, ${name}! In Bestenliste verewigt! 🏅`);
+    }
+
     gameBtn.addEventListener('click', () => {
       portalView.style.display = 'none';
       gameView.style.display = 'flex';
+      scoreSubmitDialog.classList.remove('show');
+      highscoreCard.classList.remove('show');
       startGame();
     });
 
-    // Exit Game View
     exitGameBtn.addEventListener('click', () => {
       stopGame();
       gameView.style.display = 'none';
@@ -1290,20 +1474,18 @@
     });
 
     restartGameBtn.addEventListener('click', () => {
+      scoreSubmitDialog.classList.remove('show');
       startGame();
     });
 
-    // Game Objects
     let player = {
       x: 90,
-      y: 190,
+      y: 180,
       radius: 18,
       vy: 0,
       gravity: 0.38,
       jumpForce: -7.5,
-      trail: [],
-      shieldActive: false,
-      shieldTime: 0
+      trail: []
     };
 
     let gates = [];
@@ -1315,9 +1497,9 @@
     const encouragementList = [
       "Mut bedeutet, nach jedem Fall wieder aufzustehen!",
       "Starke Leistung! Jedes geöffnete Tor bringt dich weiter.",
-      "Selbst Hörmann Meister haben klein angefangen. Noch ein Versuch!",
+      "Selbst erfahrene Hörmann Meister haben klein angefangen. Gleich noch einmal!",
       "Ein Hindernis ist nur ein Test für deine Entschlossenheit.",
-      "Du hast den Mut-Funken in dir – probier es gleich noch einmal!"
+      "Du hast den Mut-Funken in dir – pack es gleich nochmal an!"
     ];
 
     function startGame() {
@@ -1327,14 +1509,13 @@
       frameCount = 0;
       gameOver = false;
       encouragingMessage = "";
+      scoreSubmitDialog.classList.remove('show');
 
       player.y = canvas.height / 2;
       player.vy = 0;
       player.trail = [];
-      player.shieldActive = false;
       gates = [];
 
-      // Spawn initial gates
       spawnGate(canvas.width + 100);
       spawnGate(canvas.width + 360);
 
@@ -1350,7 +1531,7 @@
     }
 
     function spawnGate(posX) {
-      const gap = 135; // Passage size
+      const gap = 135;
       const minHeight = 45;
       const maxHeight = canvas.height - gap - minHeight;
       const topHeight = Math.floor(Math.random() * (maxHeight - minHeight) + minHeight);
@@ -1375,15 +1556,17 @@
 
     function playerJump() {
       if (gameOver) {
-        startGame();
+        if (!scoreSubmitDialog.classList.contains('show')) {
+          startGame();
+        }
         return;
       }
       player.vy = player.jumpForce;
       playSound('jump');
     }
 
-    // Input listeners for game
     window.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT') return;
       if (e.code === 'Space' && gameView.style.display !== 'none') {
         e.preventDefault();
         playerJump();
@@ -1406,11 +1589,9 @@
       if (gameOver) return;
 
       frameCount++;
-      // Physics
       player.vy += player.gravity;
       player.y += player.vy;
 
-      // Particle Trail
       if (frameCount % 2 === 0) {
         player.trail.push({ x: player.x - 10, y: player.y, alpha: 0.8 });
       }
@@ -1420,7 +1601,6 @@
         if (player.trail[i].alpha <= 0) player.trail.splice(i, 1);
       }
 
-      // Canvas boundary limits
       if (player.y - player.radius < 0) {
         player.y = player.radius;
         player.vy = 0;
@@ -1429,31 +1609,26 @@
         handleGameOver();
       }
 
-      // Move gates
       for (let i = gates.length - 1; i >= 0; i--) {
         const g = gates[i];
         g.x -= gameSpeed;
 
-        // Score tracking
         if (!g.passed && g.x + g.width < player.x) {
           g.passed = true;
           score++;
           gameScoreSpan.textContent = score;
           playSound('score');
 
-          if (score > highscore) {
-            highscore = score;
-            localStorage.setItem('hoermann_mut_highscore', highscore);
-            gameHighscoreSpan.textContent = highscore;
+          if (score > currentHighscore) {
+            currentHighscore = score;
+            gameHighscoreSpan.textContent = currentHighscore;
           }
 
-          // Progressive speed increase
           if (score % 4 === 0 && gameSpeed < 5.5) {
             gameSpeed += 0.25;
           }
         }
 
-        // Collision detection
         if (
           player.x + player.radius > g.x &&
           player.x - player.radius < g.x + g.width
@@ -1463,13 +1638,11 @@
           }
         }
 
-        // Remove offscreen gates & spawn new ones
         if (g.x + g.width < -10) {
           gates.splice(i, 1);
         }
       }
 
-      // Spawn next gate
       const lastGate = gates[gates.length - 1];
       if (lastGate && lastGate.x < canvas.width - 230) {
         spawnGate(canvas.width);
@@ -1482,14 +1655,20 @@
       playSound('hit');
       encouragingMessage = encouragementList[Math.floor(Math.random() * encouragementList.length)];
       triggerParticleEffect('confetti');
+
+      if (score > 0) {
+        submitDialogTitle.textContent = score > currentHighscore 
+          ? `🎉 Neuer Hörmann Mut-Rekord: ${score} Tore!` 
+          : `Klasse Ergebnis: ${score} gemeisterte Tore!`;
+        scoreSubmitDialog.classList.add('show');
+        setTimeout(() => { playerNameInput.focus(); }, 150);
+      }
     }
 
     function drawGame() {
-      // Clear canvas with architectural grid
       ctx.fillStyle = '#001a35';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Grid lines
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
       ctx.lineWidth = 1;
       for (let x = 0; x < canvas.width; x += 30) {
@@ -1505,21 +1684,15 @@
         ctx.stroke();
       }
 
-      // Draw Gates (Hörmann Sektionaltore / Stahlzargen styling)
       gates.forEach(g => {
-        // TOP GATE / SEKTIONALTOR
         drawSectionalDoor(g.x, 0, g.width, g.topHeight, g.type, true);
-
-        // BOTTOM GATE / TÜR
         drawSectionalDoor(g.x, g.bottomY, g.width, canvas.height - g.bottomY, g.type, false);
 
-        // Draw opening warning / amber reflector on the gate edge
         ctx.fillStyle = '#f59c00';
         ctx.fillRect(g.x + 4, g.topHeight - 5, g.width - 8, 5);
         ctx.fillRect(g.x + 4, g.bottomY, g.width - 8, 5);
       });
 
-      // Draw Player Trail
       player.trail.forEach(t => {
         ctx.fillStyle = `rgba(245, 156, 0, ${t.alpha * 0.7})`;
         ctx.beginPath();
@@ -1527,11 +1700,9 @@
         ctx.fill();
       });
 
-      // Draw Player: "Mut-Impuls / Hörmann Power-Orb"
       ctx.save();
       ctx.translate(player.x, player.y);
 
-      // Outer glow
       const glowGrad = ctx.createRadialGradient(0, 0, 5, 0, 0, player.radius + 10);
       glowGrad.addColorStop(0, 'rgba(245, 156, 0, 0.9)');
       glowGrad.addColorStop(0.6, 'rgba(245, 156, 0, 0.3)');
@@ -1541,7 +1712,6 @@
       ctx.arc(0, 0, player.radius + 10, 0, Math.PI * 2);
       ctx.fill();
 
-      // Main Orb body
       const orbGrad = ctx.createLinearGradient(-player.radius, -player.radius, player.radius, player.radius);
       orbGrad.addColorStop(0, '#ffffff');
       orbGrad.addColorStop(0.3, '#ffaa1d');
@@ -1551,12 +1721,10 @@
       ctx.arc(0, 0, player.radius, 0, Math.PI * 2);
       ctx.fill();
 
-      // Industrial border
       ctx.strokeStyle = '#002d62';
       ctx.lineWidth = 2.5;
       ctx.stroke();
 
-      // Inner Hörmann 'H' or Lion icon
       ctx.fillStyle = '#002d62';
       ctx.font = 'bold 15px sans-serif';
       ctx.textAlign = 'center';
@@ -1565,49 +1733,44 @@
 
       ctx.restore();
 
-      // Game Over Screen Overlay
       if (gameOver) {
         ctx.fillStyle = 'rgba(0, 31, 59, 0.88)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         ctx.fillStyle = '#f59c00';
-        ctx.font = '800 28px Inter, sans-serif';
+        ctx.font = '800 26px Inter, sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText('MUT-PARCOURS BEENDET', canvas.width / 2, 110);
+        ctx.fillText('MUT-PARCOURS BEENDET', canvas.width / 2, 95);
 
         ctx.fillStyle = '#ffffff';
-        ctx.font = '700 20px Inter, sans-serif';
-        ctx.fillText(`Erfolgreich gemeisterte Tore: ${score}`, canvas.width / 2, 150);
+        ctx.font = '700 19px Inter, sans-serif';
+        ctx.fillText(`Erfolgreich gemeisterte Tore: ${score}`, canvas.width / 2, 135);
 
         ctx.fillStyle = '#9ca3af';
-        ctx.font = 'italic 15px Inter, sans-serif';
-        ctx.fillText(`„${encouragingMessage}“`, canvas.width / 2, 195);
+        ctx.font = 'italic 14px Inter, sans-serif';
+        ctx.fillText(`„${encouragingMessage}“`, canvas.width / 2, 175);
 
-        // Restart button UI
         ctx.fillStyle = '#f59c00';
         ctx.beginPath();
-        ctx.roundRect(canvas.width / 2 - 120, 235, 240, 48, 6);
+        ctx.roundRect(canvas.width / 2 - 110, 215, 220, 44, 6);
         ctx.fill();
 
         ctx.fillStyle = '#ffffff';
-        ctx.font = '800 16px Inter, sans-serif';
-        ctx.fillText('NOCHMAL VERSUCHEN ↺', canvas.width / 2, 265);
+        ctx.font = '800 15px Inter, sans-serif';
+        ctx.fillText('NOCHMAL VERSUCHEN ↺', canvas.width / 2, 242);
 
         ctx.fillStyle = '#9ca3af';
         ctx.font = '12px Inter, sans-serif';
-        ctx.fillText('Oder drücke die Leertaste', canvas.width / 2, 310);
+        ctx.fillText('Oder Leertaste / Tippen', canvas.width / 2, 290);
       }
     }
 
-    // Helper: Draw Sectional Door Panels
     function drawSectionalDoor(x, y, width, height, type, isTop) {
       if (height <= 0) return;
 
-      // Outer frame / Stahlzarge
       ctx.fillStyle = type.color;
       ctx.fillRect(x, y, width, height);
 
-      // Draw horizontal sectional door slats (Lamellen)
       const slatHeight = 22;
       ctx.strokeStyle = 'rgba(0, 0, 0, 0.45)';
       ctx.lineWidth = 2;
@@ -1618,7 +1781,6 @@
         ctx.lineTo(x + width, s);
         ctx.stroke();
 
-        // Highlight line on top of each slat
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
         ctx.beginPath();
         ctx.moveTo(x + 2, s + 1);
@@ -1626,15 +1788,13 @@
         ctx.stroke();
       }
 
-      // Outer side steel frame (Stahlzarge)
       ctx.fillStyle = '#374151';
       ctx.fillRect(x, y, 4, height);
       ctx.fillRect(x + width - 4, y, 4, height);
 
-      // Label on the gate
       if (height > 40) {
         ctx.save();
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.28)';
         ctx.font = '900 9px Inter, sans-serif';
         ctx.textAlign = 'center';
         const labelY = isTop ? height - 15 : y + 25;
