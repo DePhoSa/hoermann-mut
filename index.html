@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hörmann Mut-Portal | Gib mir Mut & Mut-Spiele</title>
-  <meta name="description" content="Tägliche Mut-Impulse, exklusive eigene Mut-Sprüche, visuelle Muteffekte und 3 Hörmann Mut-Spiele mit Highscore-Bestenlisten für alle Spiele.">
+  <meta name="description" content="Tägliche Mut-Impulse, exklusive eigene Mut-Sprüche, visuelle Muteffekte und 4 Hörmann Mut-Spiele inklusive Super Dennis (Mario-Plattformer) mit Bestenliste.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -69,7 +69,7 @@
 
     .container {
       width: 100%;
-      max-width: 860px;
+      max-width: 890px;
       background: var(--card-bg);
       box-shadow: var(--shadow-lg);
       border-radius: 4px;
@@ -147,7 +147,7 @@
     }
 
     .card-content {
-      padding: 3rem 2.2rem;
+      padding: 2.6rem 2rem;
       text-align: center;
       min-height: 440px;
       display: flex;
@@ -410,35 +410,35 @@
       width: 100%;
       flex-direction: column;
       align-items: center;
-      padding: 2.5rem 1.5rem;
+      padding: 2.2rem 1.5rem;
     }
 
     .menu-title {
       font-size: 2rem;
       font-weight: 900;
       color: var(--hoermann-blue);
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.4rem;
     }
 
     .menu-subtitle {
       color: var(--text-muted);
-      font-size: 1rem;
-      margin-bottom: 1.8rem;
+      font-size: 0.95rem;
+      margin-bottom: 1.6rem;
     }
 
     .games-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-      gap: 1.25rem;
+      grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
+      gap: 1.1rem;
       width: 100%;
-      max-width: 780px;
+      max-width: 820px;
     }
 
     .game-choice-card {
       background: #f8fafc;
       border: 2px solid var(--border-gray);
       border-radius: 8px;
-      padding: 1.5rem 1.2rem;
+      padding: 1.3rem 1.1rem;
       text-align: center;
       cursor: pointer;
       transition: all 0.22s ease;
@@ -461,7 +461,7 @@
       right: 12px;
       background: var(--hoermann-orange);
       color: #ffffff;
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       font-weight: 800;
       padding: 3px 8px;
       border-radius: 100px;
@@ -470,22 +470,22 @@
     }
 
     .game-icon-large {
-      font-size: 2.6rem;
-      margin-bottom: 0.75rem;
+      font-size: 2.4rem;
+      margin-bottom: 0.5rem;
     }
 
     .game-card-title {
-      font-size: 1.2rem;
+      font-size: 1.15rem;
       font-weight: 800;
       color: var(--hoermann-blue);
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.35rem;
     }
 
     .game-card-desc {
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       color: var(--text-muted);
       line-height: 1.4;
-      margin-bottom: 1.25rem;
+      margin-bottom: 1.1rem;
       flex: 1;
     }
 
@@ -493,10 +493,10 @@
       background: var(--hoermann-blue);
       color: #ffffff;
       border: none;
-      padding: 0.65rem 1rem;
+      padding: 0.6rem 0.9rem;
       border-radius: 5px;
       font-weight: 700;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       cursor: pointer;
       transition: background 0.15s;
     }
@@ -508,15 +508,15 @@
     /* ==========================================================
        GAMES COMMON VIEWS
        ========================================================== */
-    #buster-view, #nerve-view, #parcours-view {
+    #mario-view, #buster-view, #nerve-view, #parcours-view {
       display: none;
       width: 100%;
       flex-direction: column;
       align-items: center;
-      padding: 1.5rem 1.5rem 2rem 1.5rem;
+      padding: 1.25rem 1.25rem 1.8rem 1.25rem;
     }
 
-    #busterCanvas, #parcoursCanvas {
+    #marioCanvas, #busterCanvas, #parcoursCanvas {
       background: #001830;
       border: 3px solid var(--hoermann-blue);
       border-radius: 6px;
@@ -528,6 +528,45 @@
     #busterCanvas {
       cursor: crosshair;
       background: radial-gradient(circle at 50% 50%, #002244 0%, #001224 100%);
+    }
+
+    /* SUPER DENNIS (MARIO) TOUCH CONTROLS */
+    .mario-touch-bar {
+      display: none;
+      width: 100%;
+      max-width: 680px;
+      margin-top: 0.75rem;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 10px;
+    }
+
+    .touch-btn {
+      background: #e2e8f0;
+      border: 2px solid #cbd5e1;
+      color: #1e293b;
+      font-size: 1.4rem;
+      font-weight: 900;
+      width: 58px;
+      height: 52px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      touch-action: manipulation;
+    }
+
+    .touch-btn:active {
+      background: var(--hoermann-orange);
+      color: #fff;
+    }
+
+    .touch-btn-jump {
+      width: 80px;
+      background: var(--hoermann-orange);
+      color: #fff;
+      border-color: #d97706;
+      font-size: 1.05rem;
     }
 
     /* DIE MUT-PROBE ARENA */
@@ -600,11 +639,13 @@
 
     .game-ui-header {
       width: 100%;
-      max-width: 640px;
+      max-width: 680px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.65rem;
+      flex-wrap: wrap;
+      gap: 8px;
     }
 
     .game-stat {
@@ -649,7 +690,7 @@
        ========================================================== */
     .highscore-card {
       width: 100%;
-      max-width: 640px;
+      max-width: 680px;
       margin-top: 1.2rem;
       background: #f8fafc;
       border: 2px solid var(--border-gray);
@@ -682,18 +723,19 @@
       gap: 6px;
     }
 
-    /* Tabs for 3 games inside the Leaderboard */
     .leaderboard-tabs {
       display: flex;
-      gap: 0.5rem;
+      gap: 0.4rem;
       margin-bottom: 1rem;
       width: 100%;
+      flex-wrap: wrap;
     }
 
     .lb-tab-btn {
       flex: 1;
+      min-width: 130px;
       padding: 0.5rem 0.4rem;
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       font-weight: 700;
       background: #e2e8f0;
       color: var(--text-muted);
@@ -733,11 +775,10 @@
       font-weight: 700;
     }
 
-    /* Submit Dialog (Appears on Game Over in any game) */
     #score-submit-dialog {
       display: none;
       width: 100%;
-      max-width: 640px;
+      max-width: 680px;
       background: #ffffff;
       border: 3px solid var(--hoermann-orange);
       box-shadow: 0 14px 30px rgba(0, 0, 0, 0.18);
@@ -842,12 +883,18 @@
       100% { transform: scale(1); }
     }
 
+    @media (hover: none) and (pointer: coarse) {
+      .mario-touch-bar {
+        display: flex;
+      }
+    }
+
     @media (max-width: 640px) {
       body {
         padding: 0.75rem;
       }
       .card-content {
-        padding: 2rem 1.25rem;
+        padding: 1.8rem 1rem;
         min-height: 400px;
       }
       .headline {
@@ -884,6 +931,9 @@
       }
       .leaderboard-tabs {
         flex-direction: column;
+      }
+      .mario-touch-bar {
+        display: flex;
       }
     }
   </style>
@@ -988,9 +1038,20 @@
       <p class="menu-subtitle">Welche Mutprobe soll es heute sein?</p>
 
       <div class="games-grid">
+        <!-- Game 0: Super Dennis (Mario-Plattformer) -->
+        <div class="game-choice-card" id="choose-mario-btn" style="border-color: #f59c00;">
+          <div class="card-badge-rec">⭐ NEU &bull; Jump 'n' Run</div>
+          <div class="game-icon-large">🍄👷‍♂️</div>
+          <div class="game-card-title">Super Dennis</div>
+          <div class="game-card-desc">
+            Steuere <strong>Dennis Ressemann</strong> im Mario-Stil durch die Hörmann-Welt! Hüpfe auf Zweifel, knacke [?] Blöcke und stürme das Werkstor!
+          </div>
+          <button class="btn-card-start" style="background:var(--hoermann-orange);">Level 1-1 starten 🚀</button>
+        </div>
+
         <!-- Game 1: Zweifel-Buster -->
         <div class="game-choice-card" id="choose-buster-btn">
-          <div class="card-badge-rec">⭐ Empfohlen &bull; Null Frust</div>
+          <div class="card-badge-rec" style="background:#10b981;">Null Frust</div>
           <div class="game-icon-large">🔨💥</div>
           <div class="game-card-title">Zweifel-Buster</div>
           <div class="game-card-desc">
@@ -1016,7 +1077,7 @@
           <div class="game-icon-large">🕹️⚡</div>
           <div class="game-card-title">Tor-Parcours</div>
           <div class="game-card-desc">
-            Der Geschicklichkeits-Lauf durch Hörmann Sektionaltore. Jetzt mit fairem, breiterem Durchgang für Reflex-Meister!
+            Der Geschicklichkeits-Lauf durch Hörmann Sektionaltore. Mit breitem Durchgang für echte Reflex-Meister!
           </div>
           <button class="btn-card-start">Parcours wagen 🚀</button>
         </div>
@@ -1032,7 +1093,37 @@
       </div>
     </section>
 
-    <!-- 3. SPIEL 1: ZWEIFEL-BUSTER -->
+    <!-- 3. SPIEL 0: SUPER DENNIS (MARIO PLATTFORMER) -->
+    <section class="card-content" id="mario-view">
+      <div class="game-ui-header">
+        <div class="game-stat">Leben: <span id="mario-lives">❤️❤️❤️</span></div>
+        <div class="game-stat">Münzen: <span id="mario-coins">🪙 0</span></div>
+        <div class="game-stat">MUT: <span id="mario-letters" style="letter-spacing:2px; font-weight:900; color:#cbd5e1;">---</span></div>
+        <div class="game-stat">Punkte: <span id="mario-score">0</span></div>
+        <div class="game-actions-bar">
+          <button class="utility-link" id="mario-leaderboard-btn" style="text-decoration:none; font-weight:700;">🏆 Bestenliste</button>
+          <button class="utility-link" id="exit-mario-btn" style="text-decoration:none; font-weight:800;">✕ Menü</button>
+        </div>
+      </div>
+
+      <canvas id="marioCanvas" width="680" height="380"></canvas>
+
+      <!-- Mobile Touch Controls -->
+      <div class="mario-touch-bar">
+        <div style="display:flex; gap:8px;">
+          <button class="touch-btn" id="btn-left">◀</button>
+          <button class="touch-btn" id="btn-right">▶</button>
+        </div>
+        <button class="touch-btn touch-btn-jump" id="btn-jump">SPRUNG</button>
+      </div>
+
+      <div class="game-instructions">
+        <span>Steuerung: <span class="key-badge">A / D</span> oder <span class="key-badge">◀ ▶</span> Laufen &bull; <span class="key-badge">W / Leertaste / ▲</span> Springen &bull; Springe auf <strong>Zweifel</strong>!</span>
+        <button class="utility-link" id="restart-mario-btn">Neustart ↺</button>
+      </div>
+    </section>
+
+    <!-- 4. SPIEL 1: ZWEIFEL-BUSTER -->
     <section class="card-content" id="buster-view">
       <div class="game-ui-header">
         <div class="game-stat">Mut-Punkte: <span id="buster-score">0</span></div>
@@ -1051,7 +1142,7 @@
       </div>
     </section>
 
-    <!-- 4. SPIEL 2: DIE MUT-PROBE (Risk & Reward) -->
+    <!-- 5. SPIEL 2: DIE MUT-PROBE (Risk & Reward) -->
     <section class="card-content" id="nerve-view">
       <div class="game-ui-header">
         <div class="game-stat">Gesicherter Mut: <span id="nerve-banked">0</span></div>
@@ -1111,7 +1202,7 @@
       </div>
     </section>
 
-    <!-- 5. SPIEL 3: TOR-PARCOURS -->
+    <!-- 6. SPIEL 3: TOR-PARCOURS -->
     <section class="card-content" id="parcours-view">
       <div class="game-ui-header">
         <div class="game-stat">Tore gemeistert: <span id="parcours-score">0</span></div>
@@ -1130,7 +1221,7 @@
       </div>
     </section>
 
-    <!-- GLOBAL HIGHSCORE SUBMISSION MODAL (Available for ALL 3 Games) -->
+    <!-- GLOBAL HIGHSCORE SUBMISSION MODAL (Available for ALL 4 Games) -->
     <div id="score-submit-dialog" style="margin: 0 auto 1.5rem auto;">
       <div class="submit-title" id="submit-dialog-title">Neuer Mut-Rekord!</div>
       <p id="submit-dialog-subtitle" style="font-size:0.95rem; color:var(--text-muted);">
@@ -1142,16 +1233,17 @@
       </div>
     </div>
 
-    <!-- GLOBAL LEADERBOARD CARD WITH TABS (For ALL 3 Games) -->
+    <!-- GLOBAL LEADERBOARD CARD WITH TABS (For ALL 4 Games) -->
     <div class="highscore-card" id="highscore-card" style="margin: 0 auto 1.5rem auto;">
       <div class="highscore-header">
         <div class="highscore-title" id="global-lb-title">🏆 Hörmann Mut-Bestenliste</div>
         <button class="utility-link" id="close-leaderboard-btn" style="text-decoration:none; font-size:0.95rem; font-weight:700;">✕ Schließen</button>
       </div>
 
-      <!-- Tabs to switch between games -->
+      <!-- Tabs to switch between 4 games -->
       <div class="leaderboard-tabs">
-        <button class="lb-tab-btn active" id="tab-buster-btn">🔨 Zweifel-Buster</button>
+        <button class="lb-tab-btn active" id="tab-mario-btn">🍄 Super Dennis</button>
+        <button class="lb-tab-btn" id="tab-buster-btn">🔨 Zweifel-Buster</button>
         <button class="lb-tab-btn" id="tab-nerve-btn">🎲 Die Mut-Probe</button>
         <button class="lb-tab-btn" id="tab-parcours-btn">🕹️ Tor-Parcours</button>
       </div>
@@ -1172,7 +1264,7 @@
   </div>
 
   <footer>
-    Hörmann Mut-Portal &bull; Sektionaltore &bull; Schwingtore &bull; Türen &bull; Stahlzargen &bull; Qualität mit Mut
+    Hörmann Mut-Portal &bull; Sektionaltore &bull; Schwingtore &bull; Türen &bull; Stahlzargen &bull; Dennis Ressemann Edition
   </footer>
 
   <div id="toast">Gedanken gespeichert!</div>
@@ -1226,18 +1318,82 @@
             osc.start(nowTime + idx * 0.08);
             osc.stop(nowTime + idx * 0.08 + 0.65);
           });
-        } else if (type === 'smash') {
+        } else if (type === 'coin') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(987.77, nowTime);
+          osc.frequency.setValueAtTime(1318.51, nowTime + 0.08);
+          gain.gain.setValueAtTime(0.12, nowTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, nowTime + 0.35);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(nowTime);
+          osc.stop(nowTime + 0.36);
+        } else if (type === 'stomp' || type === 'smash') {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
           osc.type = 'triangle';
-          osc.frequency.setValueAtTime(320, nowTime);
-          osc.frequency.exponentialRampToValueAtTime(80, nowTime + 0.12);
-          gain.gain.setValueAtTime(0.3, nowTime);
+          osc.frequency.setValueAtTime(340, nowTime);
+          osc.frequency.exponentialRampToValueAtTime(70, nowTime + 0.12);
+          gain.gain.setValueAtTime(0.25, nowTime);
           gain.gain.exponentialRampToValueAtTime(0.001, nowTime + 0.12);
           osc.connect(gain);
           gain.connect(ctx.destination);
           osc.start(nowTime);
           osc.stop(nowTime + 0.13);
+        } else if (type === 'bump') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(140, nowTime);
+          osc.frequency.linearRampToValueAtTime(80, nowTime + 0.1);
+          gain.gain.setValueAtTime(0.2, nowTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, nowTime + 0.1);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(nowTime);
+          osc.stop(nowTime + 0.11);
+        } else if (type === 'powerup') {
+          const notes = [330, 392, 659, 523, 587, 784];
+          notes.forEach((f, i) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(f, nowTime + i * 0.05);
+            gain.gain.setValueAtTime(0.1, nowTime + i * 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.001, nowTime + i * 0.05 + 0.09);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(nowTime + i * 0.05);
+            osc.stop(nowTime + i * 0.05 + 0.1);
+          });
+        } else if (type === 'victory') {
+          const notes = [523, 659, 783, 1046, 783, 1046];
+          notes.forEach((f, i) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(f, nowTime + i * 0.14);
+            gain.gain.setValueAtTime(0.15, nowTime + i * 0.14);
+            gain.gain.exponentialRampToValueAtTime(0.001, nowTime + i * 0.14 + 0.28);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(nowTime + i * 0.14);
+            osc.stop(nowTime + i * 0.14 + 0.3);
+          });
+        } else if (type === 'jump') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(150, nowTime);
+          osc.frequency.exponentialRampToValueAtTime(600, nowTime + 0.15);
+          gain.gain.setValueAtTime(0.12, nowTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, nowTime + 0.15);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(nowTime);
+          osc.stop(nowTime + 0.16);
         } else if (type === 'gate') {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
@@ -1250,18 +1406,6 @@
           gain.connect(ctx.destination);
           osc.start(nowTime);
           osc.stop(nowTime + 0.6);
-        } else if (type === 'score' || type === 'powerup') {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          osc.type = 'square';
-          osc.frequency.setValueAtTime(659.25, nowTime);
-          osc.frequency.setValueAtTime(880, nowTime + 0.07);
-          gain.gain.setValueAtTime(0.12, nowTime);
-          gain.gain.exponentialRampToValueAtTime(0.001, nowTime + 0.22);
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.start(nowTime);
-          osc.stop(nowTime + 0.23);
         } else if (type === 'hit' || type === 'alarm') {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
@@ -1274,18 +1418,6 @@
           gain.connect(ctx.destination);
           osc.start(nowTime);
           osc.stop(nowTime + 0.26);
-        } else if (type === 'jump') {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(260, nowTime);
-          osc.frequency.exponentialRampToValueAtTime(540, nowTime + 0.14);
-          gain.gain.setValueAtTime(0.18, nowTime);
-          gain.gain.exponentialRampToValueAtTime(0.001, nowTime + 0.14);
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.start(nowTime);
-          osc.stop(nowTime + 0.15);
         }
       } catch (e) {
         console.warn('Audio error:', e);
@@ -1308,46 +1440,24 @@
        3. 100% EIGENE MUT-SPRÜCHE
        ========================================================== */
     const mutSpruche = [
-      { quote: "Ein geschlossenes Tor ist kein Stoppschild – es ist die Einladung, den Hebel mutig in die Hand zu nehmen.", author: "Dein Mut-Macher" },
+      { quote: "Ein geschlossenes Tor ist kein Stoppschild – es ist die Einladung, den Hebel mutig in die Hand zu nehmen.", author: "Dennis Ressemann" },
       { quote: "Manche warten ihr Leben lang, bis sich Türen von alleine öffnen. Die Mutigen bauen den Torantrieb einfach selbst ein.", author: "Hörmann Mut-Schmiede" },
-      { quote: "Steh fest wie eine verzinkte Stahlzarge: Lass dich von Gegenwind nicht verbiegen und gib deinen Träumen verlässlichen Halt.", author: "Zargenfeste Zuversicht" },
+      { quote: "Steh fest wie eine verzinkte Stahlzarge: Lass dich von Gegenwind nicht verbiegen und gib deinen Träumen verlässlichen Halt.", author: "Dennis Ressemann" },
       { quote: "Ein Sektionaltor öffnet sich Lamelle für Lamelle. Genauso wächst dein Mut: Nicht auf einen Schlag, sondern Schritt für Schritt, bis der ganze Horizont frei ist.", author: "Der innere Toröffner" },
-      { quote: "Schwingtore beweisen es jeden Tag aufs Neue: Mit dem richtigen Schwung und Ausgleich wird selbst das schwerste Gewicht federleicht.", author: "Meister-Impuls" },
+      { quote: "Schwingtore beweisen es jeden Tag aufs Neue: Mit dem richtigen Schwung und Ausgleich wird selbst das schwerste Gewicht federleicht.", author: "Meister Dennis" },
       { quote: "Zweifel sind wie Flugrost auf blankem Stahl: Wenn du sie sofort kraftvoll abwischst, bleibt deine Entschlossenheit unzerstörbar.", author: "Hörmann Philosophie" },
-      { quote: "Wenn das Leben dir eine Mauer vor die Nase setzt, bau ein Hörmann-Industrietor hinein und fahre mit Vollgas hindurch.", author: "Tatkraft & Power" },
-      { quote: "Hinter dem Tor, vor dem du am meisten zögerst, liegt fast immer die größte Erleichterung deines Lebens.", author: "Mut-Pionier" },
+      { quote: "Wenn das Leben dir eine Mauer vor die Nase setzt, bau ein Hörmann-Industrietor hinein und fahre mit Vollgas hindurch.", author: "Dennis Ressemann" },
+      { quote: "Hinter dem Tor, vor dem du am meisten zögerst, liegt fast immer die größte Erleichterung deines Lebens.", author: "Mut-Pionier Dennis" },
       { quote: "Wahres Selbstvertrauen braucht kein lautes Poltern. Es steht so felsenfest und passgenau wie eine meisterhaft verankerte Blockzarge.", author: "Stahlharte Entschlossenheit" },
-      { quote: "Angst fragt dich: ‚Was, wenn etwas schiefgeht?‘ – Mut lächelt und antwortet: ‚Aber stell dir vor, wie gigantisch es wird, wenn es gelingt!‘", author: "Dein Mut-Macher" },
-      { quote: "Wer immer nur in der warmen Garage parkt, wird nie erfahren, welche atemberaubenden Straßen die Welt zu bieten hat. Öffne das Tor und fahr los!", author: "Hörmann Mut-Schmiede" },
+      { quote: "Angst fragt dich: ‚Was, wenn etwas schiefgeht?‘ – Mut lächelt und antwortet: ‚Aber stell dir vor, wie gigantisch es wird, wenn es gelingt!‘", author: "Dennis Ressemann" },
+      { quote: "Wer immer nur in der warmen Garage parkt, wird nie erfahren, welche Straßen die Welt zu bieten hat. Öffne das Tor und fahr los!", author: "Hörmann Mut-Schmiede" },
       { quote: "Kein Tor ist für die Ewigkeit verriegelt, wenn man die Funkfernbedienung des eigenen Mutes betätigt.", author: "BiSecur Mut-Impuls" },
-      { quote: "Ein klares Ziel schützt dich vor Unsicherheit und Chaos genauso zuverlässig wie eine geprüfte Feuerschutztür vor den Flammen.", author: "Sicherheit & Fokus" },
-      { quote: "Zögern verbraucht exakt dieselbe Energie wie Handeln – nur dass Handeln dich am Ende des Tages stolz in den Feierabend entlässt.", author: "Meister-Impuls" },
-      { quote: "Lass dir niemals einreden, du wärst zu schwach. In dir steckt das Fundament und die Widerstandskraft von echtem Qualitätsstahl.", author: "Stahlharte Entschlossenheit" },
-      { quote: "Fehler sind keine irreparablen Bauschäden, sondern wertvolle Montage-Erfahrungen für dein nächstes Meisterstück.", author: "Praktiker-Weisheit" },
-      { quote: "Ein Tor schützt, was dir wertvoll ist – aber schließe es niemals vor den Chancen und Überraschungen ab, die heute eintreten wollen.", author: "Tagesimpuls" },
-      { quote: "Gemeinsam heben wir Lasten, an denen sich ein Einzelner verheben würde. Echter Mut verdoppelt sich, sobald man ihn im Team teilt.", author: "Teamgeist Hörmann" },
-      { quote: "Hör auf zu warten, bis du dich ‚bereit‘ fühlst. Das Gefühl von Mut entsteht nicht vor dem Schritt, sondern mitten im Gehen.", author: "Dein Mut-Macher" },
-      { quote: "Zweifel? Einmal mit 500 Newtonmetern Zuversicht nachziehen, bitte! Jetzt sitzt alles bombenfest.", author: "Werkstatt-Mut" },
-      { quote: "Der schwerste Teil jeder Aufgabe ist der Moment, in dem die Hand nach dem Schlüssel greift. Danach läuft die Mechanik fast wie von selbst.", author: "Hörmann Mut-Schmiede" },
-      { quote: "Aufschieben ist die Rostlaube des Alltags. Geh heute mutig voran und mach den Weg für Neues frei.", author: "Tatkraft & Power" },
-      { quote: "Mut ist der Funke, der aus einem gewöhnlichen Tag eine unverwechselbare Erfolgsgeschichte zimmert.", author: "Mut-Pionier" },
-      { quote: "Sei stolz auf jede Herausforderung, die du bisher gemeistert hast. Jede einzelne hat deine innere Zarge stabiler gemacht.", author: "Zargenfeste Zuversicht" },
-      { quote: "Wenn dir der Mut fehlt, atme tief durch, erinnere dich an deine Stärken und drücke entschlossen auf den Startknopf.", author: "Hörmann Impuls" },
-      { quote: "Eine Tür öffnet sich nicht durch langes Anstarren, sondern durch den Mut, an die Klinke zu fassen und sie aufzustoßen.", author: "Dein Mut-Macher" },
-      { quote: "Qualität verlangt Präzision im Detail. Erfolg verlangt den Mut zur klaren Entscheidung.", author: "Hörmann Philosophie" },
-      { quote: "Du bist nicht dazu bestimmt, klein beizugeben. Richte dich auf, zieh die Schultern zurück und betritt die Bühne des Lebens.", author: "Stahlharte Entschlossenheit" },
-      { quote: "Das größte Projekt deines Lebens bist du selbst. Spare nicht an der Motivation und spare niemals an deinem Mut.", author: "Meister-Impuls" },
-      { quote: "Manchmal ist Mut einfach nur der Entschluss: ‚Ich probiere es jetzt trotzdem, egal was die Zweifel flüstern.‘", author: "Dein Mut-Macher" },
-      { quote: "Jedes Mal, wenn du dich überwindest, öffnest du ein neues Panorama, das dir zuvor verborgen war.", author: "Hörmann Mut-Schmiede" },
-      { quote: "Wer Tore baut, der weiß: Hindernisse sind nur dazu da, um überwunden und passiert zu werden.", author: "Tore & Tatkraft" },
-      { quote: "Entscheidungen aus Mut bringen dich immer weiter – selbst ein Umweg schenkt dir wertvolle Ortskenntnis.", author: "Mut-Pionier" },
-      { quote: "Setze deine Standards hoch, baue auf verlässliche Werte und gehe keinen Millimeter vor der Angst zurück.", author: "Zargenfeste Zuversicht" },
-      { quote: "Lass dein Lächeln heute der Toröffner für deine Mitmenschen sein.", author: "Teamgeist Hörmann" },
-      { quote: "Selbst die massivste Panzerung nützt nichts, wenn man das Tor nicht aufmacht. Zeig der Welt, was in dir steckt!", author: "Tatkraft & Power" },
-      { quote: "Ein Tag voller Mut beginnt mit dem einfachen Gedanken: ‚Ich packe das heute an. Punkt.‘", author: "Morgen-Impuls" },
-      { quote: "Es gibt keine verschlossenen Wege – es gibt nur Tore, die darauf warten, schwungvoll geöffnet zu werden.", author: "Hörmann Mut-Schmiede" },
+      { quote: "Ein klares Ziel schützt dich vor Unsicherheit und Chaos genauso zuverlässig wie eine geprüfte Feuerschutztür vor den Flammen.", author: "Dennis Ressemann" },
+      { quote: "Zögern verbraucht exakt dieselbe Energie wie Handeln – nur dass Handeln dich am Ende des Tages stolz in den Feierabend entlässt.", author: "Feierabend-Motto" },
+      { quote: "Fehler sind keine Bauschäden, sondern wertvolle Montage-Erfahrungen für dein nächstes Meisterstück.", author: "Dennis Ressemann" },
+      { quote: "Ein Tag voller Mut beginnt mit dem einfachen Gedanken: ‚Ich packe das heute an. Punkt.‘", author: "Dennis Ressemann" },
       { quote: "Mut ist wie ein Qualitäts-Kugellager: Gut geschmiert läuft es reibungslos durch jede Lebenslage.", author: "Werkstatt-Mut" },
-      { quote: "Halte den Kurs, auch wenn es mal ruckelt. Die besten Tore gleiten auch nach tausenden Zyklen noch butterweich.", author: "Stahlharte Entschlossenheit" }
+      { quote: "Halte den Kurs, auch wenn es mal ruckelt. Die besten Tore gleiten auch nach tausenden Zyklen noch butterweich.", author: "Dennis Ressemann" }
     ];
 
     /* ==========================================================
@@ -1473,21 +1583,6 @@
             fadeSpeed: 0.012
           });
         }
-      } else if (effectType === 'rocket') {
-        const icons = ['🚀', '💨', '✨', '🔥'];
-        for (let i = 0; i < 20; i++) {
-          particles.push({
-            type: 'emoji',
-            emoji: icons[i % icons.length],
-            x: w * 0.5 + (Math.random() - 0.5) * 150,
-            y: h * 0.65,
-            vx: (Math.random() - 0.5) * 6,
-            vy: -Math.random() * 12 - 6,
-            size: Math.floor(Math.random() * 22 + 28),
-            life: 1,
-            fadeSpeed: 0.012
-          });
-        }
       } else if (effectType === 'door') {
         const overlay = document.getElementById('sectional-door-overlay');
         const panels = overlay.querySelectorAll('.door-panel');
@@ -1506,9 +1601,7 @@
         }, 1100);
       }
 
-      if (!animationFrameId) {
-        animateParticles();
-      }
+      if (!animationFrameId) animateParticles();
     }
 
     function animateParticles() {
@@ -1650,7 +1743,7 @@
     saveThoughtsBtn.addEventListener('click', () => {
       const arr = [t1.value, t2.value, t3.value];
       localStorage.setItem('hoermann_mut_thoughts', JSON.stringify(arr));
-      playSound('score');
+      playSound('coin');
       showToast('Deine Mut-Gedanken wurden gesichert! 💡');
     });
 
@@ -1668,6 +1761,7 @@
        ========================================================== */
     const portalView = document.getElementById('portal-view');
     const gamesMenuView = document.getElementById('games-menu-view');
+    const marioView = document.getElementById('mario-view');
     const busterView = document.getElementById('buster-view');
     const nerveView = document.getElementById('nerve-view');
     const parcoursView = document.getElementById('parcours-view');
@@ -1675,11 +1769,13 @@
     function hideAllViews() {
       portalView.style.display = 'none';
       gamesMenuView.style.display = 'none';
+      marioView.style.display = 'none';
       busterView.style.display = 'none';
       nerveView.style.display = 'none';
       parcoursView.style.display = 'none';
       scoreSubmitDialog.classList.remove('show');
       highscoreCard.classList.remove('show');
+      stopMarioGame();
       stopBusterGame();
       stopParcoursGame();
     }
@@ -1697,11 +1793,17 @@
     function showGamesMenu() {
       hideAllViews();
       gamesMenuView.style.display = 'flex';
-      playSound('score');
+      playSound('coin');
     }
 
     document.getElementById('menu-btn').addEventListener('click', showGamesMenu);
     document.getElementById('back-to-portal-btn').addEventListener('click', showPortalView);
+
+    document.getElementById('choose-mario-btn').addEventListener('click', () => {
+      hideAllViews();
+      marioView.style.display = 'flex';
+      startMarioGame();
+    });
 
     document.getElementById('choose-buster-btn').addEventListener('click', () => {
       hideAllViews();
@@ -1721,12 +1823,13 @@
       startParcoursGame();
     });
 
+    document.getElementById('exit-mario-btn').addEventListener('click', showGamesMenu);
     document.getElementById('exit-buster-btn').addEventListener('click', showGamesMenu);
     document.getElementById('exit-nerve-btn').addEventListener('click', showGamesMenu);
     document.getElementById('exit-parcours-btn').addEventListener('click', showGamesMenu);
 
     /* ==========================================================
-       7. UNIFIED HIGHSCORE & LEADERBOARD SYSTEM (All 3 Games)
+       7. UNIFIED HIGHSCORE & LEADERBOARD SYSTEM (All 4 Games)
        ========================================================== */
     const scoreSubmitDialog = document.getElementById('score-submit-dialog');
     const submitDialogTitle = document.getElementById('submit-dialog-title');
@@ -1740,34 +1843,42 @@
     const globalLbTitle = document.getElementById('global-lb-title');
     const lbScoreColHeader = document.getElementById('lb-score-col-header');
 
+    const tabMarioBtn = document.getElementById('tab-mario-btn');
     const tabBusterBtn = document.getElementById('tab-buster-btn');
     const tabNerveBtn = document.getElementById('tab-nerve-btn');
     const tabParcoursBtn = document.getElementById('tab-parcours-btn');
 
-    let activeGameCategory = 'buster';
-    let pendingSubmitGame = 'buster';
+    let activeGameCategory = 'mario';
+    let pendingSubmitGame = 'mario';
     let pendingScoreToSave = 0;
 
     const defaultLeaderboards = {
+      mario: [
+        { name: "Dennis Ressemann", score: 2850, date: "Gestern" },
+        { name: "Meister Torsten", score: 2100, date: "21.10." },
+        { name: "Mut-Pionierin Anna", score: 1750, date: "20.10." },
+        { name: "Zargen-Profi Dennis", score: 1200, date: "19.10." },
+        { name: "Montage-Hero", score: 850, date: "18.10." }
+      ],
       buster: [
         { name: "Meister Torsten", score: 840, date: "Gestern" },
-        { name: "Mut-Pionierin Anna", score: 650, date: "21.10." },
-        { name: "Zargen-Profi Dennis", score: 520, date: "20.10." },
+        { name: "Dennis Ressemann", score: 720, date: "21.10." },
+        { name: "Mut-Pionierin Anna", score: 650, date: "20.10." },
         { name: "Technik-Tobi", score: 380, date: "19.10." },
         { name: "Montage-Hero", score: 240, date: "18.10." }
       ],
       nerve: [
         { name: "Risiko-Rudi", score: 2450, date: "Gestern" },
-        { name: "Stahlmut Sandra", score: 1600, date: "21.10." },
-        { name: "Meister Torsten", score: 1100, date: "20.10." },
+        { name: "Dennis Ressemann", score: 1800, date: "21.10." },
+        { name: "Stahlmut Sandra", score: 1600, date: "20.10." },
         { name: "Zargen-König", score: 750, date: "19.10." },
         { name: "Courage-Chris", score: 400, date: "18.10." }
       ],
       parcours: [
         { name: "Reflex-Robin", score: 18, date: "Gestern" },
-        { name: "Meister Torsten", score: 14, date: "21.10." },
-        { name: "Anna Hörmann", score: 11, date: "20.10." },
-        { name: "Flieger-Frank", score: 8, date: "19.10." },
+        { name: "Dennis Ressemann", score: 16, date: "21.10." },
+        { name: "Meister Torsten", score: 14, date: "20.10." },
+        { name: "Anna Hörmann", score: 11, date: "19.10." },
         { name: "Tor-Tobi", score: 5, date: "18.10." }
       ]
     };
@@ -1786,11 +1897,13 @@
 
     function switchLeaderboardTab(category, highlightName = "") {
       activeGameCategory = category;
+      tabMarioBtn.classList.toggle('active', category === 'mario');
       tabBusterBtn.classList.toggle('active', category === 'buster');
       tabNerveBtn.classList.toggle('active', category === 'nerve');
       tabParcoursBtn.classList.toggle('active', category === 'parcours');
 
       const titles = {
+        mario: "🏆 Bestenliste: 🍄 Super Dennis (Mut-Welt)",
         buster: "🏆 Bestenliste: 🔨 Zweifel-Buster",
         nerve: "🏆 Bestenliste: 🎲 Die Mut-Probe",
         parcours: "🏆 Bestenliste: 🕹️ Tor-Parcours"
@@ -1833,11 +1946,12 @@
       return div.innerHTML;
     }
 
+    tabMarioBtn.addEventListener('click', () => switchLeaderboardTab('mario'));
     tabBusterBtn.addEventListener('click', () => switchLeaderboardTab('buster'));
     tabNerveBtn.addEventListener('click', () => switchLeaderboardTab('nerve'));
     tabParcoursBtn.addEventListener('click', () => switchLeaderboardTab('parcours'));
 
-    function openGlobalLeaderboard(category = 'buster', highlightName = "") {
+    function openGlobalLeaderboard(category = 'mario', highlightName = "") {
       switchLeaderboardTab(category, highlightName);
       highscoreCard.classList.add('show');
     }
@@ -1846,18 +1960,17 @@
       highscoreCard.classList.remove('show');
     });
 
-    // Bestenliste buttons in each game view
-    document.getElementById('menu-view-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('buster'));
+    document.getElementById('menu-view-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('mario'));
+    document.getElementById('mario-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('mario'));
     document.getElementById('buster-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('buster'));
     document.getElementById('nerve-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('nerve'));
     document.getElementById('parcours-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('parcours'));
 
-    // Universal Score Trigger (Called when a player finishes any game)
     function promptScoreSubmit(score, category, gameDisplayName) {
       pendingScoreToSave = score;
       pendingSubmitGame = category;
 
-      submitDialogTitle.textContent = `🎉 Klasse gemacht! ${score} ${category === 'parcours' ? 'Tore' : 'Mut-Punkte'}!`;
+      submitDialogTitle.textContent = `🎉 Klasse Leistung: ${score} ${category === 'parcours' ? 'Tore' : 'Punkte'}!`;
       submitDialogSubtitle.textContent = `Trage deinen Namen in die Bestenliste für „${gameDisplayName}“ ein:`;
       scoreSubmitDialog.classList.add('show');
       setTimeout(() => { playerNameInput.focus(); }, 120);
@@ -1869,7 +1982,7 @@
     });
 
     function executeScoreSubmit() {
-      const name = playerNameInput.value.trim() || 'Mut-Pionier';
+      const name = playerNameInput.value.trim() || 'Dennis-Fan';
       const today = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' });
 
       const list = getGameLeaderboard(pendingSubmitGame);
@@ -1879,13 +1992,725 @@
 
       scoreSubmitDialog.classList.remove('show');
       openGlobalLeaderboard(pendingSubmitGame, name);
-      playSound('score');
+      playSound('victory');
       triggerParticleEffect('confetti');
-      showToast(`Super ${name}! Erfolgreich in der Bestenliste verewigt! 🏅`);
+      showToast(`Super ${name}! In Bestenliste verewigt! 🏅`);
     }
 
     /* ==========================================================
-       8. GAME 1: ZWEIFEL-BUSTER (Anti-Rage & Satisfying)
+       8. GAME 0: SUPER DENNIS (MARIO PLATTFORMER)
+       ========================================================== */
+    const mCanvas = document.getElementById('marioCanvas');
+    const mCtx = mCanvas.getContext('2d');
+    const mLivesSpan = document.getElementById('mario-lives');
+    const mCoinsSpan = document.getElementById('mario-coins');
+    const mLettersSpan = document.getElementById('mario-letters');
+    const mScoreSpan = document.getElementById('mario-score');
+    const restartMarioBtn = document.getElementById('restart-mario-btn');
+
+    // Load Dennis Ressemann Character Sprite
+    const dennisImg = new Image();
+    let dennisImgLoaded = false;
+    dennisImg.onload = () => { dennisImgLoaded = true; };
+    dennisImg.src = 'characters-clean.png';
+
+    let marioActive = false;
+    let marioLoopId = null;
+    let cameraX = 0;
+    let mScore = 0;
+    let mCoins = 0;
+    let mLives = 3;
+    let mLetters = { M: false, U: false, T: false };
+
+    // Dennis Player Object
+    let dennis = {
+      x: 60,
+      y: 260,
+      w: 36,
+      h: 52,
+      vx: 0,
+      vy: 0,
+      speed: 3.8,
+      jumpForce: -11.5,
+      grounded: false,
+      facing: 1, // 1: right, -1: left
+      invincibleTimer: 0,
+      starTimer: 0,
+      dead: false,
+      won: false
+    };
+
+    // Keyboard state
+    let mKeys = { left: false, right: false, up: false, run: false };
+
+    window.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT') return;
+      if (marioView.style.display !== 'none') {
+        if (e.code === 'KeyA' || e.code === 'ArrowLeft') { mKeys.left = true; e.preventDefault(); }
+        if (e.code === 'KeyD' || e.code === 'ArrowRight') { mKeys.right = true; e.preventDefault(); }
+        if (e.code === 'KeyW' || e.code === 'Space' || e.code === 'ArrowUp') {
+          mKeys.up = true;
+          e.preventDefault();
+        }
+      }
+    });
+
+    window.addEventListener('keyup', (e) => {
+      if (e.code === 'KeyA' || e.code === 'ArrowLeft') mKeys.left = false;
+      if (e.code === 'KeyD' || e.code === 'ArrowRight') mKeys.right = false;
+      if (e.code === 'KeyW' || e.code === 'Space' || e.code === 'ArrowUp') mKeys.up = false;
+    });
+
+    // Touch controls
+    const btnLeft = document.getElementById('btn-left');
+    const btnRight = document.getElementById('btn-right');
+    const btnJump = document.getElementById('btn-jump');
+
+    const bindTouch = (elem, pressHandler, releaseHandler) => {
+      elem.addEventListener('pointerdown', (e) => { e.preventDefault(); pressHandler(); });
+      elem.addEventListener('pointerup', (e) => { e.preventDefault(); releaseHandler(); });
+      elem.addEventListener('pointercancel', (e) => { e.preventDefault(); releaseHandler(); });
+    };
+
+    bindTouch(btnLeft, () => { mKeys.left = true; }, () => { mKeys.left = false; });
+    bindTouch(btnRight, () => { mKeys.right = true; }, () => { mKeys.right = false; });
+    bindTouch(btnJump, () => { mKeys.up = true; }, () => { mKeys.up = false; });
+
+    // Mario World 1-1 Layout (Hörmann Werksgelände)
+    let mPlatforms = [];
+    let mBlocks = [];
+    let mCoinsList = [];
+    let mEnemies = [];
+    let mParticles = [];
+    let mFloatingTexts = [];
+    let levelGoal = { x: 2550, y: 130, w: 70, h: 200, touched: false };
+
+    function initMarioLevel() {
+      mScore = 0;
+      mCoins = 0;
+      mLives = 3;
+      mLetters = { M: false, U: false, T: false };
+      updateMarioHUD();
+
+      cameraX = 0;
+      dennis.x = 80;
+      dennis.y = 260;
+      dennis.vx = 0;
+      dennis.vy = 0;
+      dennis.grounded = false;
+      dennis.dead = false;
+      dennis.won = false;
+      dennis.invincibleTimer = 0;
+      dennis.starTimer = 0;
+
+      mParticles = [];
+      mFloatingTexts = [];
+      levelGoal.touched = false;
+
+      // Platforms / Ground segments
+      mPlatforms = [
+        // Main floor segments with gaps to jump over
+        { x: 0, y: 320, w: 720, h: 60, type: 'ground' },
+        { x: 790, y: 320, w: 680, h: 60, type: 'ground' },
+        { x: 1540, y: 320, w: 600, h: 60, type: 'ground' },
+        { x: 2200, y: 320, w: 600, h: 60, type: 'ground' },
+
+        // Steel girders & high platforms (Hörmann Stahlträger)
+        { x: 340, y: 220, w: 140, h: 18, type: 'steel' },
+        { x: 580, y: 180, w: 120, h: 18, type: 'steel' },
+        { x: 920, y: 200, w: 160, h: 18, type: 'steel' },
+        { x: 1220, y: 170, w: 140, h: 18, type: 'steel' },
+        { x: 1700, y: 210, w: 160, h: 18, type: 'steel' },
+        { x: 1940, y: 160, w: 140, h: 18, type: 'steel' },
+
+        // Hörmann Sektionaltor Pipes / Pillars
+        { x: 240, y: 250, w: 46, h: 70, type: 'pipe' },
+        { x: 710, y: 230, w: 50, h: 90, type: 'pipe' },
+        { x: 1460, y: 240, w: 52, h: 80, type: 'pipe' },
+        { x: 2130, y: 220, w: 56, h: 100, type: 'pipe' }
+      ];
+
+      // Question blocks [?] & Bricks [🧱]
+      mBlocks = [
+        { x: 180, y: 200, w: 32, h: 32, type: 'question', content: 'coin', hit: false, bumpY: 0 },
+        { x: 380, y: 200, w: 32, h: 32, type: 'question', content: 'star', hit: false, bumpY: 0 },
+        { x: 420, y: 200, w: 32, h: 32, type: 'brick', bumpY: 0 },
+        { x: 460, y: 200, w: 32, h: 32, type: 'question', content: 'coin', hit: false, bumpY: 0 },
+
+        { x: 980, y: 120, w: 32, h: 32, type: 'question', content: 'coin', hit: false, bumpY: 0 },
+        { x: 1020, y: 120, w: 32, h: 32, type: 'question', content: 'bisecur', hit: false, bumpY: 0 },
+
+        { x: 1620, y: 200, w: 32, h: 32, type: 'question', content: 'coin', hit: false, bumpY: 0 },
+        { x: 1660, y: 200, w: 32, h: 32, type: 'brick', bumpY: 0 },
+        { x: 1700, y: 200, w: 32, h: 32, type: 'question', content: 'coin', hit: false, bumpY: 0 }
+      ];
+
+      // Coins scattered across level
+      mCoinsList = [
+        { x: 250, y: 160, collected: false },
+        { x: 360, y: 180, collected: false },
+        { x: 400, y: 180, collected: false },
+        { x: 600, y: 140, collected: false },
+        { x: 640, y: 140, collected: false },
+        { x: 860, y: 280, collected: false },
+        { x: 940, y: 160, collected: false },
+        { x: 1260, y: 130, collected: false },
+        { x: 1300, y: 130, collected: false },
+        { x: 1750, y: 170, collected: false },
+        { x: 1980, y: 120, collected: false },
+        { x: 2320, y: 280, collected: false }
+      ];
+
+      // M-U-T Giant letters
+      mCoinsList.push({ x: 600, y: 100, collected: false, letter: 'M' });
+      mCoinsList.push({ x: 1280, y: 90, collected: false, letter: 'U' });
+      mCoinsList.push({ x: 2000, y: 80, collected: false, letter: 'T' });
+
+      // Zweifel-Enemies (Stompable like Goombas)
+      mEnemies = [
+        { x: 440, y: 288, w: 32, h: 32, vx: -1.2, name: "Zweifel", alive: true },
+        { x: 620, y: 288, w: 32, h: 32, vx: 1.1, name: "Angst", alive: true },
+        { x: 1060, y: 288, w: 32, h: 32, vx: -1.3, name: "Aufschieberitis", alive: true },
+        { x: 1320, y: 288, w: 32, h: 32, vx: 1.2, name: "Zweifel", alive: true },
+        { x: 1800, y: 288, w: 32, h: 32, vx: -1.4, name: "Blues", alive: true },
+        { x: 2380, y: 288, w: 32, h: 32, vx: -1.3, name: "Angst", alive: true }
+      ];
+    }
+
+    function updateMarioHUD() {
+      let hearts = "";
+      for (let i = 0; i < mLives; i++) hearts += "❤️";
+      mLivesSpan.textContent = hearts || "💀";
+      mCoinsSpan.textContent = `🪙 ${mCoins}`;
+      mScoreSpan.textContent = mScore;
+
+      let lStr = "";
+      lStr += mLetters.M ? "<span style='color:var(--hoermann-orange)'>M</span>" : "-";
+      lStr += mLetters.U ? "<span style='color:var(--hoermann-orange)'>U</span>" : "-";
+      lStr += mLetters.T ? "<span style='color:var(--hoermann-orange)'>T</span>" : "-";
+      mLettersSpan.innerHTML = lStr;
+    }
+
+    function startMarioGame() {
+      initMarioLevel();
+      scoreSubmitDialog.classList.remove('show');
+      highscoreCard.classList.remove('show');
+
+      marioActive = true;
+      if (marioLoopId) cancelAnimationFrame(marioLoopId);
+      marioLoop();
+      playSound('coin');
+    }
+
+    function stopMarioGame() {
+      marioActive = false;
+      if (marioLoopId) cancelAnimationFrame(marioLoopId);
+    }
+
+    restartMarioBtn.addEventListener('click', startMarioGame);
+
+    function marioLoop() {
+      if (!marioActive) return;
+      updateMarioPhysics();
+      drawMarioScene();
+      marioLoopId = requestAnimationFrame(marioLoop);
+    }
+
+    function updateMarioPhysics() {
+      if (dennis.dead || dennis.won) return;
+
+      // Horizontal movement
+      if (mKeys.left) {
+        dennis.vx = -dennis.speed;
+        dennis.facing = -1;
+      } else if (mKeys.right) {
+        dennis.vx = dennis.speed;
+        dennis.facing = 1;
+      } else {
+        dennis.vx *= 0.75;
+        if (Math.abs(dennis.vx) < 0.2) dennis.vx = 0;
+      }
+
+      // Jump
+      if (mKeys.up && dennis.grounded) {
+        dennis.vy = dennis.jumpForce;
+        dennis.grounded = false;
+        playSound('jump');
+      }
+
+      // Gravity
+      dennis.vy += 0.55;
+      if (dennis.vy > 12) dennis.vy = 12;
+
+      // Temporary positions
+      dennis.x += dennis.vx;
+
+      // Platform collisions X
+      mPlatforms.forEach(p => {
+        if (dennis.x < p.x + p.w && dennis.x + dennis.w > p.x &&
+            dennis.y < p.y + p.h && dennis.y + dennis.h > p.y) {
+          if (dennis.vx > 0) dennis.x = p.x - dennis.w;
+          else if (dennis.vx < 0) dennis.x = p.x + p.w;
+        }
+      });
+
+      // Blocks collisions X
+      mBlocks.forEach(b => {
+        if (dennis.x < b.x + b.w && dennis.x + dennis.w > b.x &&
+            dennis.y < b.y + b.h && dennis.y + dennis.h > b.y) {
+          if (dennis.vx > 0) dennis.x = b.x - dennis.w;
+          else if (dennis.vx < 0) dennis.x = b.x + b.w;
+        }
+      });
+
+      dennis.y += dennis.vy;
+      dennis.grounded = false;
+
+      // Platform collisions Y
+      mPlatforms.forEach(p => {
+        if (dennis.x < p.x + p.w && dennis.x + dennis.w > p.x &&
+            dennis.y < p.y + p.h && dennis.y + dennis.h > p.y) {
+          if (dennis.vy > 0) {
+            dennis.y = p.y - dennis.h;
+            dennis.vy = 0;
+            dennis.grounded = true;
+          } else if (dennis.vy < 0) {
+            dennis.y = p.y + p.h;
+            dennis.vy = 0;
+          }
+        }
+      });
+
+      // Blocks collision Y (Hit from below!)
+      mBlocks.forEach(b => {
+        if (dennis.x < b.x + b.w && dennis.x + dennis.w > b.x &&
+            dennis.y < b.y + b.h && dennis.y + dennis.h > b.y) {
+          if (dennis.vy > 0) {
+            dennis.y = b.y - dennis.h;
+            dennis.vy = 0;
+            dennis.grounded = true;
+          } else if (dennis.vy < 0) {
+            dennis.y = b.y + b.h;
+            dennis.vy = 1;
+            hitMarioBlock(b);
+          }
+        }
+      });
+
+      // Fell into pit
+      if (dennis.y > mCanvas.height + 60) {
+        dennisHurt(true);
+      }
+
+      // Collect Coins & MUT Letters
+      mCoinsList.forEach(c => {
+        if (!c.collected && Math.hypot((dennis.x + dennis.w / 2) - c.x, (dennis.y + dennis.h / 2) - c.y) < 28) {
+          c.collected = true;
+          if (c.letter) {
+            mLetters[c.letter] = true;
+            mScore += 300;
+            playSound('powerup');
+            mFloatingTexts.push({ x: c.x, y: c.y, text: `MUT-BUCHSTABE '${c.letter}'! +300`, color: '#f59c00', alpha: 1 });
+            if (mLetters.M && mLetters.U && mLetters.T) {
+              mScore += 1000;
+              mFloatingTexts.push({ x: c.x, y: c.y - 30, text: `🌟 MUT VOLLSTÄNDIG! +1000`, color: '#f59c00', alpha: 1 });
+              triggerParticleEffect('gold');
+            }
+          } else {
+            mCoins++;
+            mScore += 50;
+            playSound('coin');
+            mFloatingTexts.push({ x: c.x, y: c.y, text: "+50", color: '#ffaa1d', alpha: 1 });
+          }
+          updateMarioHUD();
+        }
+      });
+
+      // Update Enemies
+      mEnemies.forEach(e => {
+        if (!e.alive) return;
+        e.x += e.vx;
+        // Rebound on level boundaries
+        if (e.x < 10 || e.x > 2600) e.vx *= -1;
+
+        // Collision Dennis with Enemy
+        if (dennis.x < e.x + e.w && dennis.x + dennis.w > e.x &&
+            dennis.y < e.y + e.h && dennis.y + dennis.h > e.y) {
+          // Stomp from above or Star Power
+          if (dennis.vy > 0 && dennis.y + dennis.h - dennis.vy <= e.y + 16 || dennis.starTimer > 0) {
+            e.alive = false;
+            dennis.vy = -8.5; // bounce
+            mScore += 200;
+            updateMarioHUD();
+            playSound('stomp');
+            mFloatingTexts.push({ x: e.x, y: e.y, text: "ZWEIFEL BESIEGT! +200", color: '#10b981', alpha: 1 });
+          } else {
+            dennisHurt(false);
+          }
+        }
+      });
+
+      // Check Werkstor Goal
+      if (!levelGoal.touched && dennis.x + dennis.w > levelGoal.x) {
+        levelGoal.touched = true;
+        dennisWinLevel();
+      }
+
+      // Smooth Camera follows Dennis
+      const targetCamX = dennis.x - mCanvas.width * 0.35;
+      cameraX += (targetCamX - cameraX) * 0.12;
+      if (cameraX < 0) cameraX = 0;
+      if (cameraX > 2650 - mCanvas.width) cameraX = 2650 - mCanvas.width;
+
+      // Timers
+      if (dennis.invincibleTimer > 0) dennis.invincibleTimer--;
+      if (dennis.starTimer > 0) dennis.starTimer--;
+
+      // Animate block bumps
+      mBlocks.forEach(b => {
+        if (b.bumpY > 0) b.bumpY -= 1.5;
+        else b.bumpY = 0;
+      });
+    }
+
+    function hitMarioBlock(b) {
+      if (b.hit && b.type === 'question') return;
+      b.bumpY = 8;
+
+      if (b.type === 'question') {
+        b.hit = true;
+        if (b.content === 'coin') {
+          mCoins++;
+          mScore += 100;
+          playSound('coin');
+          mFloatingTexts.push({ x: b.x + 16, y: b.y - 10, text: "+100 MÜNZE", color: '#ffaa1d', alpha: 1 });
+        } else if (b.content === 'star') {
+          dennis.starTimer = 400; // invincible star power!
+          playSound('powerup');
+          triggerParticleEffect('gold');
+          mFloatingTexts.push({ x: b.x + 16, y: b.y - 10, text: "⭐ MUT-STERN POWER!", color: '#f59c00', alpha: 1 });
+        } else if (b.content === 'bisecur') {
+          mScore += 350;
+          playSound('powerup');
+          mFloatingTexts.push({ x: b.x + 16, y: b.y - 10, text: "🚪 BISECUR SCHLÜSSEL! +350", color: '#38bdf8', alpha: 1 });
+        }
+        updateMarioHUD();
+      } else if (b.type === 'brick') {
+        playSound('bump');
+        mScore += 10;
+        updateMarioHUD();
+      }
+    }
+
+    function dennisHurt(fellInPit) {
+      if (dennis.invincibleTimer > 0 || dennis.starTimer > 0) return;
+
+      mLives--;
+      updateMarioHUD();
+      playSound('hit');
+
+      if (mLives <= 0 || fellInPit) {
+        if (mLives <= 0) {
+          dennis.dead = true;
+          setTimeout(() => {
+            promptScoreSubmit(mScore, 'mario', 'Super Dennis (Mut-Welt)');
+          }, 800);
+        } else {
+          // Reset position to last safe spot
+          dennis.x = Math.max(60, dennis.x - 220);
+          dennis.y = 200;
+          dennis.vx = 0;
+          dennis.vy = 0;
+          dennis.invincibleTimer = 80;
+        }
+      } else {
+        dennis.vy = -7;
+        dennis.invincibleTimer = 70;
+      }
+    }
+
+    function dennisWinLevel() {
+      dennis.won = true;
+      dennis.vx = 0;
+      mScore += 1500;
+      updateMarioHUD();
+      playSound('victory');
+      triggerParticleEffect('confetti');
+
+      setTimeout(() => {
+        promptScoreSubmit(mScore, 'mario', 'Super Dennis (Mut-Welt)');
+      }, 1200);
+    }
+
+    function drawMarioScene() {
+      // Background Sky: Hörmann Dark Blue Gradient
+      const skyGrad = mCtx.createLinearGradient(0, 0, 0, mCanvas.height);
+      skyGrad.addColorStop(0, '#001a35');
+      skyGrad.addColorStop(1, '#002f6c');
+      mCtx.fillStyle = skyGrad;
+      mCtx.fillRect(0, 0, mCanvas.width, mCanvas.height);
+
+      mCtx.save();
+      mCtx.translate(-Math.round(cameraX), 0);
+
+      // Background Parallax: Warehouse silhouettes & steel beams
+      mCtx.fillStyle = 'rgba(0, 20, 50, 0.4)';
+      for (let i = 0; i < 8; i++) {
+        mCtx.fillRect(i * 380, 160, 260, 160);
+        // Roof triangle
+        mCtx.beginPath();
+        mCtx.moveTo(i * 380, 160);
+        mCtx.lineTo(i * 380 + 130, 110);
+        mCtx.lineTo(i * 380 + 260, 160);
+        mCtx.fill();
+      }
+
+      // Draw Platforms & Pillars
+      mPlatforms.forEach(p => {
+        if (p.type === 'ground') {
+          // Asphalt Ground
+          mCtx.fillStyle = '#1e293b';
+          mCtx.fillRect(p.x, p.y, p.w, p.h);
+
+          // Top hazard stripe bar (Hörmann industrial yellow/black)
+          mCtx.fillStyle = '#f59c00';
+          mCtx.fillRect(p.x, p.y, p.w, 8);
+          mCtx.fillStyle = '#111827';
+          for (let s = p.x; s < p.x + p.w; s += 24) {
+            mCtx.fillRect(s, p.y, 10, 8);
+          }
+        } else if (p.type === 'steel') {
+          // Hörmann Stahlträger
+          mCtx.fillStyle = '#002d62';
+          mCtx.fillRect(p.x, p.y, p.w, p.h);
+          mCtx.strokeStyle = '#f59c00';
+          mCtx.lineWidth = 2;
+          mCtx.strokeRect(p.x, p.y, p.w, p.h);
+
+          // Rivets
+          mCtx.fillStyle = '#ffffff';
+          for (let r = p.x + 8; r < p.x + p.w; r += 25) {
+            mCtx.beginPath();
+            mCtx.arc(r, p.y + p.h / 2, 2.5, 0, Math.PI * 2);
+            mCtx.fill();
+          }
+        } else if (p.type === 'pipe') {
+          // Hörmann Tor-Säule
+          mCtx.fillStyle = '#334155';
+          mCtx.fillRect(p.x, p.y, p.w, p.h);
+          mCtx.fillStyle = '#f59c00';
+          mCtx.fillRect(p.x - 3, p.y, p.w + 6, 12);
+          mCtx.fillStyle = '#ffffff';
+          mCtx.font = 'bold 8px Inter, sans-serif';
+          mCtx.textAlign = 'center';
+          mCtx.fillText("HÖRMANN", p.x + p.w / 2, p.y + 9);
+        }
+      });
+
+      // Draw Blocks
+      mBlocks.forEach(b => {
+        const drawY = b.y - b.bumpY;
+        if (b.type === 'question') {
+          mCtx.fillStyle = b.hit ? '#475569' : '#f59c00';
+          mCtx.fillRect(b.x, drawY, b.w, b.h);
+          mCtx.strokeStyle = '#ffffff';
+          mCtx.lineWidth = 2;
+          mCtx.strokeRect(b.x, drawY, b.w, b.h);
+
+          mCtx.fillStyle = '#ffffff';
+          mCtx.font = 'bold 18px Inter, sans-serif';
+          mCtx.textAlign = 'center';
+          mCtx.textBaseline = 'middle';
+          mCtx.fillText(b.hit ? '⬛' : '?', b.x + b.w / 2, drawY + b.h / 2);
+        } else if (b.type === 'brick') {
+          mCtx.fillStyle = '#991b1b';
+          mCtx.fillRect(b.x, drawY, b.w, b.h);
+          mCtx.strokeStyle = '#fca5a5';
+          mCtx.lineWidth = 1.5;
+          mCtx.strokeRect(b.x, drawY, b.w, b.h);
+        }
+      });
+
+      // Draw Coins & MUT Letters
+      mCoinsList.forEach(c => {
+        if (c.collected) return;
+        if (c.letter) {
+          // Big glowing letter
+          mCtx.fillStyle = '#f59c00';
+          mCtx.beginPath();
+          mCtx.arc(c.x, c.y, 16, 0, Math.PI * 2);
+          mCtx.fill();
+          mCtx.strokeStyle = '#ffffff';
+          mCtx.lineWidth = 2.5;
+          mCtx.stroke();
+
+          mCtx.fillStyle = '#002d62';
+          mCtx.font = '900 16px Inter, sans-serif';
+          mCtx.textAlign = 'center';
+          mCtx.textBaseline = 'middle';
+          mCtx.fillText(c.letter, c.x, c.y);
+        } else {
+          // Rotating coin
+          mCtx.fillStyle = '#f59c00';
+          mCtx.beginPath();
+          mCtx.arc(c.x, c.y, 9, 0, Math.PI * 2);
+          mCtx.fill();
+          mCtx.fillStyle = '#ffffff';
+          mCtx.font = 'bold 10px sans-serif';
+          mCtx.textAlign = 'center';
+          mCtx.textBaseline = 'middle';
+          mCtx.fillText("H", c.x, c.y);
+        }
+      });
+
+      // Draw Zweifel Enemies (Gumbas)
+      mEnemies.forEach(e => {
+        if (!e.alive) return;
+        mCtx.fillStyle = '#dc2626';
+        mCtx.beginPath();
+        mCtx.roundRect(e.x, e.y, e.w, e.h, 6);
+        mCtx.fill();
+        mCtx.strokeStyle = '#f87171';
+        mCtx.lineWidth = 2;
+        mCtx.stroke();
+
+        // Grumpy eyes
+        mCtx.fillStyle = '#ffffff';
+        mCtx.fillRect(e.x + 5, e.y + 7, 7, 7);
+        mCtx.fillRect(e.x + 19, e.y + 7, 7, 7);
+        mCtx.fillStyle = '#000000';
+        mCtx.fillRect(e.x + 7, e.y + 9, 4, 4);
+        mCtx.fillRect(e.x + 21, e.y + 9, 4, 4);
+
+        // Name
+        mCtx.fillStyle = '#ffffff';
+        mCtx.font = 'bold 8px Inter, sans-serif';
+        mCtx.textAlign = 'center';
+        mCtx.fillText(e.name, e.x + e.w / 2, e.y + 25);
+      });
+
+      // Draw Level Goal: Grand Hörmann Werkstor & Flagpole
+      mCtx.fillStyle = '#64748b';
+      mCtx.fillRect(levelGoal.x + 15, levelGoal.y, 8, levelGoal.h);
+      // Gold ball on pole
+      mCtx.fillStyle = '#f59c00';
+      mCtx.beginPath();
+      mCtx.arc(levelGoal.x + 19, levelGoal.y, 10, 0, Math.PI * 2);
+      mCtx.fill();
+
+      // Flag banner
+      mCtx.fillStyle = '#002d62';
+      mCtx.fillRect(levelGoal.x + 23, levelGoal.y + 12, 65, 34);
+      mCtx.fillStyle = '#f59c00';
+      mCtx.font = '900 11px Inter, sans-serif';
+      mCtx.textAlign = 'center';
+      mCtx.fillText("HÖRMANN", levelGoal.x + 55, levelGoal.y + 28);
+      mCtx.fillText("WERKSTOR", levelGoal.x + 55, levelGoal.y + 40);
+
+      // DRAW PLAYER: DENNIS RESSEMANN!
+      if (!dennis.dead || (dennis.dead && Math.floor(Date.now() / 100) % 2 === 0)) {
+        mCtx.save();
+        mCtx.translate(dennis.x + dennis.w / 2, dennis.y + dennis.h / 2);
+
+        // Star Power Rainbow Glow
+        if (dennis.starTimer > 0) {
+          const rainbow = ['#f59c00', '#10b981', '#3b82f6', '#ec4899'][Math.floor(Date.now() / 80) % 4];
+          mCtx.shadowColor = rainbow;
+          mCtx.shadowBlur = 18;
+        }
+
+        // Flashing when hurt
+        if (dennis.invincibleTimer > 0 && Math.floor(Date.now() / 80) % 2 === 0) {
+          mCtx.globalAlpha = 0.45;
+        }
+
+        // Facing direction flip
+        mCtx.scale(dennis.facing, 1);
+
+        if (dennisImgLoaded) {
+          // Draw Dennis from SpriteSheet (Tile 0: Dennis in green hoodie!)
+          const sw = dennisImg.width / 3;
+          const sh = dennisImg.height / 2;
+          mCtx.drawImage(
+            dennisImg,
+            0, 0, sw, sh,
+            -dennis.w / 2 - 6, -dennis.h / 2 - 6, dennis.w + 12, dennis.h + 12
+          );
+        } else {
+          // High quality procedural Dennis Ressemann fallback
+          // Green hoodie body
+          mCtx.fillStyle = '#15803d';
+          mCtx.fillRect(-dennis.w / 2 + 2, -dennis.h / 2 + 18, dennis.w - 4, dennis.h - 18);
+
+          // Head & Face
+          mCtx.fillStyle = '#fed7aa';
+          mCtx.fillRect(-dennis.w / 2 + 4, -dennis.h / 2 + 2, dennis.w - 8, 16);
+
+          // Brown hair
+          mCtx.fillStyle = '#78350f';
+          mCtx.fillRect(-dennis.w / 2 + 3, -dennis.h / 2, dennis.w - 6, 6);
+
+          // Glasses & Smile
+          mCtx.fillStyle = '#0f172a';
+          mCtx.fillRect(-dennis.w / 2 + 8, -dennis.h / 2 + 7, 6, 4);
+          mCtx.fillRect(-dennis.w / 2 + 18, -dennis.h / 2 + 7, 6, 4);
+          mCtx.fillStyle = '#b91c1c';
+          mCtx.fillRect(-dennis.w / 2 + 11, -dennis.h / 2 + 13, 8, 2);
+        }
+
+        mCtx.restore();
+      }
+
+      // Draw Floating Points/Texts
+      for (let i = mFloatingTexts.length - 1; i >= 0; i--) {
+        const ft = mFloatingTexts[i];
+        ft.y -= 1.2;
+        ft.alpha -= 0.025;
+
+        mCtx.save();
+        mCtx.fillStyle = ft.color;
+        mCtx.globalAlpha = Math.max(0, ft.alpha);
+        mCtx.font = '800 13px Inter, sans-serif';
+        mCtx.textAlign = 'center';
+        mCtx.fillText(ft.text, ft.x, ft.y);
+        mCtx.restore();
+
+        if (ft.alpha <= 0) mFloatingTexts.splice(i, 1);
+      }
+
+      mCtx.restore(); // Restore camera translation
+
+      // Overlay if Dennis Won
+      if (dennis.won) {
+        mCtx.fillStyle = 'rgba(0, 31, 59, 0.88)';
+        mCtx.fillRect(0, 0, mCanvas.width, mCanvas.height);
+
+        mCtx.fillStyle = '#f59c00';
+        mCtx.font = '900 28px Inter, sans-serif';
+        mCtx.textAlign = 'center';
+        mCtx.fillText("🎉 WERKSTOR ERREICHT!", mCanvas.width / 2, 130);
+
+        mCtx.fillStyle = '#ffffff';
+        mCtx.font = '700 18px Inter, sans-serif';
+        mCtx.fillText("Dennis hat den Feierabend & vollen Mut verdient!", mCanvas.width / 2, 170);
+        mCtx.fillText(`Erreichte Punkte: ${mScore}`, mCanvas.width / 2, 205);
+      } else if (dennis.dead) {
+        mCtx.fillStyle = 'rgba(0, 20, 40, 0.9)';
+        mCtx.fillRect(0, 0, mCanvas.width, mCanvas.height);
+
+        mCtx.fillStyle = '#ef4444';
+        mCtx.font = '900 28px Inter, sans-serif';
+        mCtx.textAlign = 'center';
+        mCtx.fillText("DENNIS BRAUCHT EINE PAUSE!", mCanvas.width / 2, 140);
+
+        mCtx.fillStyle = '#ffffff';
+        mCtx.font = '700 18px Inter, sans-serif';
+        mCtx.fillText(`Endstand: ${mScore} Mut-Punkte`, mCanvas.width / 2, 185);
+      }
+    }
+
+    /* ==========================================================
+       9. GAME 1: ZWEIFEL-BUSTER (Anti-Rage & Satisfying)
        ========================================================== */
     const busterCanvas = document.getElementById('busterCanvas');
     const busterCtx = busterCanvas.getContext('2d');
@@ -1978,7 +2803,7 @@
             busterScore += 100;
             playSound('powerup');
             triggerParticleEffect('gold');
-            splats.push({ x: t.x, y: t.y, text: "+100 STAHLHARTER MUT!", color: "#f59c00", alpha: 1 });
+            splats.push({ x: t.x, y: t.y, text: "+100 DENNIS-POWER!", color: "#f59c00", alpha: 1 });
           } else {
             busterScore += 35;
             playSound('smash');
@@ -2099,7 +2924,7 @@
     }
 
     /* ==========================================================
-       9. GAME 2: DIE MUT-PROBE (Risk & Reward)
+       10. GAME 2: DIE MUT-PROBE (Risk & Reward)
        ========================================================== */
     const nerveBankedSpan = document.getElementById('nerve-banked');
     const nerveCurrentSpan = document.getElementById('nerve-current');
@@ -2222,7 +3047,7 @@
     restartNerveBtn.addEventListener('click', startNerveGame);
 
     /* ==========================================================
-       10. GAME 3: TOR-PARCOURS (Flappy)
+       11. GAME 3: TOR-PARCOURS (Flappy)
        ========================================================== */
     const parcoursCanvas = document.getElementById('parcoursCanvas');
     const parcoursCtx = parcoursCanvas.getContext('2d');
@@ -2235,7 +3060,6 @@
     let parcoursLoopId = null;
     let parcoursGameOver = false;
 
-    // Load top score from parcours leaderboard
     function updateParcoursHighscoreDisplay() {
       const pList = getGameLeaderboard('parcours');
       const maxScore = pList.length > 0 ? Math.max(...pList.map(x => x.score)) : 0;
@@ -2345,7 +3169,7 @@
             g.passed = true;
             parcoursScore++;
             parcoursScoreSpan.textContent = parcoursScore;
-            playSound('score');
+            playSound('coin');
           }
 
           if (pPlayer.x + pPlayer.radius > g.x && pPlayer.x - pPlayer.radius < g.x + g.width) {
@@ -2363,7 +3187,6 @@
         }
       }
 
-      // Draw
       parcoursCtx.fillStyle = '#001a35';
       parcoursCtx.fillRect(0, 0, parcoursCanvas.width, parcoursCanvas.height);
 

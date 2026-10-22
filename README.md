@@ -1,34 +1,45 @@
-# 🦁 Hörmann Mut-Portal & Mut-Spiele
+# 🦁 Hörmann Mut-Portal & Mut-Spiele (Dennis Ressemann Edition)
 
-Ein interaktives, motivierendes Web-Portal im originalen Hörmann-Design mit 100% eigens erstellten Mut-Sprüchen, visuellen Muteffekten und einer **Spiele-Auswahl aus 3 verschiedenen Mut-Spielen** inklusive Bestenliste und Namenseingabe!
+Ein interaktives, motivierendes Web-Portal im originalen Hörmann-Design mit 100% eigens erstellten Mut-Sprüchen, visuellen Muteffekten und **4 abwechslungsreichen Mut-Spielen** inklusive **Super Dennis (dem neuen Mario-Jump'n'Run mit Dennis Ressemann)** und Highscore-Bestenlisten!
 
 🌐 **Live-Webseite auf GitHub Pages**: [https://dephosa.github.io/hoermann-mut/](https://dephosa.github.io/hoermann-mut/)  
 📦 **GitHub Repository**: [https://github.com/DePhoSa/hoermann-mut](https://github.com/DePhoSa/hoermann-mut)
 
 ---
 
-## 🎮 Das Mut-Spiel: Jetzt mit Spiele-Auswahl!
+## 🎮 Die 4 Mut-Spiele in der Übersicht
 
-Wenn du auf **„Das Mut-Spiel 🎮“** klickst, öffnet sich eine Auswahl aus **3 verschiedenen Mut-Spielen**:
+Wenn du auf **„Das Mut-Spiel 🎮“** klickst, hast du die freie Wahl aus 4 Mut-Herausforderungen:
 
-1. 🔨 **Zweifel-Buster (⭐ Empfohlen &bull; Null Frust)**:
-   - **Anti-Rage & Stressabbau pur**: Ängste, Zweifel, Aufschieberitis und Bedenken ploppen auf dem Bildschirm auf.
-   - Klicke / tippe darauf, um sie mit sattem Soundeffekt und Mut-Partikeln zu zerschlagen!
-   - Fange goldene **Hörmann-Powerups** für 100 Bonuspunkte.
-   - Am Ende gibt es eine Bestenliste mit Namenseintrag!
+### 1. 🍄 Super Dennis: Die Hörmann-Welt (NEU! 🌟 Mario-Jump'n'Run)
+- **Hauptcharakter**: **Dennis Ressemann** (im grünen Original-Hoodie aus *Feierabend Survivors*).
+- **Gameplay**:
+  - Klassischer 2D Side-Scrolling Plattformer im Super-Mario-Stil.
+  - Laufe durch das Hörmann Werksgelände mit Stahlträgern, Sektionaltor-Säulen und Abgründen.
+  - **Köpfe Fragezeichen-Blöcke `[ ? ]`**: Fange goldene Hörmann-Münzen, den **BiSecur-Handsender** und den unbesiegbaren **Mut-Stern**!
+  - **Besiege Zweifel-Gumbas**: Springe auf Zweifel, Ängste und den Montagsblues, um sie mit `+200 MUT` zu plätten!
+  - **Sammle die 3 Riesen-Buchstaben M - U - T**: Für den ultimativen `+1000` Extra-Mut-Bonus!
+  - **Ziel**: Erreiche das große Hörmann-Werkstor mit Flagge für den wohlverdienten Feierabend!
+- **Steuerung**:
+  - `A` / `D` oder Pfeiltasten zum Laufen.
+  - `W` / `Leertaste` / Pfeil nach oben zum Springen.
+  - Bildschirm-Touchbuttons für Smartphones.
 
-2. 🎲 **Die Mut-Probe: Nerven wie Stahl (Risk & Reward)**:
-   - 3 geheimnisvolle Hörmann-Tore (Sektionaltor, Schwingtor, Stahlzargen-Tür).
-   - Hinter 2 Toren wartet gewaltiger Mut & Punktemultiplikatoren – hinter 1 Tor der Zweifel-Alarm!
-   - Du entscheidest jede Runde selbst: Nimmst du deine Punkte sicher mit oder riskierst du für den Höchstgewinn noch mehr Mut?
+### 2. 🔨 Zweifel-Buster (⭐ Null Frust & Anti-Wut)
+- Schnelles Klick- und Reflexspiel zum Stressabbau.
+- Zerschlage aufploppende Ängste und Zweifel per Klick.
+- Hörmann-Logos bringen fette Powerup-Bonuspunkte.
 
-3. 🕹️ **Hörmann Tor-Parcours (Für Hartgesottene)**:
-   - Der klassische Geschicklichkeits-Lauf durch Sektionaltore – jetzt mit fairem, breiterem Durchgang, damit es Spaß macht statt zur Weißglut zu treiben.
+### 3. 🎲 Die Mut-Probe: Nerven wie Stahl (Risk & Reward)
+- 3 Hörmann-Tore: Sektionaltor, Schwingtor und Stahlzargen-Tür.
+- Runde für Runde verdoppelt sich dein Mut – aber hinter einem Tor lauert der Zweifel-Alarm.
+- Sichere deine Punkte rechtzeitig oder riskiere alles!
+
+### 4. 🕹️ Hörmann Tor-Parcours (Für Hartgesottene)
+- Der klassische Flappy-Tor-Lauf durch Sektionaltore mit fairem Durchgang.
 
 ---
 
-## 🦁 Button: „Gib mir Mut“
-- **100% eigens verfasste Mut-Sprüche**: Kraftvolle Impulse rund um Mut, Entschlossenheit, Tatkraft, Stahlzargen, Sektionaltore und Teamgeist.
-- **7 dynamische Muteffekte**: Konfetti-Regen, Jubelnde Hände, Sektionaltor-Öffnung, Goldener Mut-Schein, Feuerwerk, Herzschlag-Puls und Raketen-Schub.
-- **Web Audio Soundeffekte** (über das Lautsprecher-Icon stummschaltbar).
-- **„3 Gedanken zu Mut notieren“**: Direkt integriertes Notizbuch mit Browserspeicherung.
+## 🏆 Universelle Hörmann Mut-Bestenliste
+- Für jedes der 4 Spiele gibt es eine eigene Bestenliste mit Namenseingabe und Top 10 Rangliste (🥇, 🥈, 🥉).
+- Jederzeit über den Button **„🏆 Alle Bestenlisten ansehen“** mit Reitern für alle 4 Spiele umschaltbar.
