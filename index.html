@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hörmann Mut-Portal | Gib mir Mut & Mut-Spiele</title>
-  <meta name="description" content="Tägliche Mut-Impulse, exklusive eigene Mut-Sprüche, visuelle Muteffekte und 3 Hörmann Mut-Spiele mit Bestenliste.">
+  <meta name="description" content="Tägliche Mut-Impulse, exklusive eigene Mut-Sprüche, visuelle Muteffekte und 3 Hörmann Mut-Spiele mit Highscore-Bestenlisten für alle Spiele.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -423,7 +423,7 @@
     .menu-subtitle {
       color: var(--text-muted);
       font-size: 1rem;
-      margin-bottom: 2rem;
+      margin-bottom: 1.8rem;
     }
 
     .games-grid {
@@ -506,9 +506,9 @@
     }
 
     /* ==========================================================
-       GAME 1: ZWEIFEL-BUSTER (Anti-Rage & Fun Smash)
+       GAMES COMMON VIEWS
        ========================================================== */
-    #buster-view {
+    #buster-view, #nerve-view, #parcours-view {
       display: none;
       width: 100%;
       flex-direction: column;
@@ -516,27 +516,21 @@
       padding: 1.5rem 1.5rem 2rem 1.5rem;
     }
 
-    #busterCanvas {
-      background: radial-gradient(circle at 50% 50%, #002244 0%, #001224 100%);
+    #busterCanvas, #parcoursCanvas {
+      background: #001830;
       border: 3px solid var(--hoermann-blue);
       border-radius: 6px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
       max-width: 100%;
       touch-action: none;
+    }
+
+    #busterCanvas {
       cursor: crosshair;
+      background: radial-gradient(circle at 50% 50%, #002244 0%, #001224 100%);
     }
 
-    /* ==========================================================
-       GAME 2: DIE MUT-PROBE (Nerven wie Stahl - Risk & Reward)
-       ========================================================== */
-    #nerve-view {
-      display: none;
-      width: 100%;
-      flex-direction: column;
-      align-items: center;
-      padding: 1.5rem 1.5rem 2rem 1.5rem;
-    }
-
+    /* DIE MUT-PROBE ARENA */
     .doors-arena {
       display: flex;
       gap: 1.2rem;
@@ -604,27 +598,6 @@
       z-index: 1;
     }
 
-    /* ==========================================================
-       GAME 3: TOR-PARCOURS (Flappy)
-       ========================================================== */
-    #parcours-view {
-      display: none;
-      width: 100%;
-      flex-direction: column;
-      align-items: center;
-      padding: 1.5rem 1.5rem 2rem 1.5rem;
-    }
-
-    #parcoursCanvas {
-      background: #001830;
-      border: 3px solid var(--hoermann-blue);
-      border-radius: 6px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-      max-width: 100%;
-      touch-action: none;
-    }
-
-    /* Common Game UI Elements */
     .game-ui-header {
       width: 100%;
       max-width: 640px;
@@ -671,17 +644,20 @@
       border: 1px solid #d1d5db;
     }
 
-    /* HIGHSCORE LEADERBOARD */
+    /* ==========================================================
+       GLOBAL HIGHSCORE & LEADERBOARD SYSTEM
+       ========================================================== */
     .highscore-card {
       width: 100%;
       max-width: 640px;
-      margin-top: 1rem;
+      margin-top: 1.2rem;
       background: #f8fafc;
-      border: 1px solid var(--border-gray);
-      border-radius: 6px;
-      padding: 1rem 1.25rem;
+      border: 2px solid var(--border-gray);
+      border-radius: 8px;
+      padding: 1.2rem 1.4rem;
       display: none;
       animation: fadeIn 0.3s ease;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
     }
 
     .highscore-card.show {
@@ -700,10 +676,36 @@
     .highscore-title {
       font-weight: 800;
       color: var(--hoermann-blue);
-      font-size: 1.05rem;
+      font-size: 1.1rem;
       display: flex;
       align-items: center;
       gap: 6px;
+    }
+
+    /* Tabs for 3 games inside the Leaderboard */
+    .leaderboard-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      width: 100%;
+    }
+
+    .lb-tab-btn {
+      flex: 1;
+      padding: 0.5rem 0.4rem;
+      font-size: 0.82rem;
+      font-weight: 700;
+      background: #e2e8f0;
+      color: var(--text-muted);
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .lb-tab-btn.active {
+      background: var(--hoermann-blue);
+      color: #ffffff;
     }
 
     .highscore-table {
@@ -722,26 +724,26 @@
     }
 
     .highscore-table td {
-      padding: 7px 8px;
+      padding: 8px;
       border-bottom: 1px solid #edf2f7;
     }
 
     .highscore-table tr.highlight {
-      background: rgba(245, 156, 0, 0.12);
+      background: rgba(245, 156, 0, 0.15);
       font-weight: 700;
     }
 
-    /* Highscore Submit Modal */
+    /* Submit Dialog (Appears on Game Over in any game) */
     #score-submit-dialog {
       display: none;
       width: 100%;
       max-width: 640px;
       background: #ffffff;
-      border: 2px solid var(--hoermann-orange);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-      border-radius: 6px;
-      padding: 1.2rem;
-      margin-top: 1rem;
+      border: 3px solid var(--hoermann-orange);
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.18);
+      border-radius: 8px;
+      padding: 1.4rem;
+      margin-top: 1.2rem;
       text-align: center;
       animation: fadeIn 0.3s ease;
     }
@@ -751,26 +753,26 @@
     }
 
     .submit-title {
-      font-weight: 800;
+      font-weight: 900;
       color: var(--hoermann-blue);
-      font-size: 1.1rem;
+      font-size: 1.25rem;
       margin-bottom: 0.4rem;
     }
 
     .submit-form {
       display: flex;
-      gap: 0.5rem;
-      margin-top: 0.75rem;
+      gap: 0.6rem;
+      margin-top: 0.85rem;
       justify-content: center;
     }
 
     .submit-input {
-      padding: 0.55rem 0.9rem;
-      border: 1px solid var(--border-gray);
-      border-radius: 4px;
+      padding: 0.65rem 1rem;
+      border: 2px solid var(--border-gray);
+      border-radius: 5px;
       font-family: inherit;
-      font-size: 0.95rem;
-      width: 260px;
+      font-size: 1rem;
+      width: 270px;
       outline: none;
       user-select: text;
       -webkit-user-select: text;
@@ -778,17 +780,19 @@
 
     .submit-input:focus {
       border-color: var(--hoermann-orange);
-      box-shadow: 0 0 0 2px rgba(245, 156, 0, 0.2);
+      box-shadow: 0 0 0 3px rgba(245, 156, 0, 0.25);
     }
 
     .submit-btn {
       background: var(--hoermann-orange);
       color: #ffffff;
-      font-weight: 700;
+      font-weight: 800;
       border: none;
-      padding: 0.55rem 1.2rem;
-      border-radius: 4px;
+      padding: 0.65rem 1.3rem;
+      border-radius: 5px;
+      font-size: 1rem;
       cursor: pointer;
+      transition: background 0.15s;
     }
 
     .submit-btn:hover {
@@ -877,6 +881,9 @@
       }
       .mystery-door {
         height: 140px;
+      }
+      .leaderboard-tabs {
+        flex-direction: column;
       }
     }
   </style>
@@ -987,7 +994,7 @@
           <div class="game-icon-large">🔨💥</div>
           <div class="game-card-title">Zweifel-Buster</div>
           <div class="game-card-desc">
-            Zerschlage Ängste, Zweifel & Aufschieberitis per Klick! Sammle Hörmann Stahlzargen-Power & Mut-Punkte. Macht richtig Laune!
+            Zerschlage Ängste, Zweifel &amp; Aufschieberitis per Klick! Sammle Hörmann Stahlzargen-Power &amp; Mut-Punkte.
           </div>
           <button class="btn-card-start">Zweifel zerschlagen 🔥</button>
         </div>
@@ -1009,13 +1016,16 @@
           <div class="game-icon-large">🕹️⚡</div>
           <div class="game-card-title">Tor-Parcours</div>
           <div class="game-card-desc">
-            Der Geschicklichkeits-Lauf durch Hörmann Sektionaltore. Jetzt mit fairerem Durchgang für echte Reflex-Meister!
+            Der Geschicklichkeits-Lauf durch Hörmann Sektionaltore. Jetzt mit fairem, breiterem Durchgang für Reflex-Meister!
           </div>
           <button class="btn-card-start">Parcours wagen 🚀</button>
         </div>
       </div>
 
-      <div style="margin-top:2rem;">
+      <div style="margin-top:2rem; display:flex; gap:1.5rem; align-items:center;">
+        <button class="utility-link" id="menu-view-leaderboard-btn" style="text-decoration:none; font-weight:800; font-size:1rem; color:var(--hoermann-orange);">
+          🏆 Alle Bestenlisten ansehen
+        </button>
         <button class="utility-link" id="back-to-portal-btn" style="text-decoration:none; font-weight:700;">
           ← Zurück zum Mut-Portal
         </button>
@@ -1028,7 +1038,7 @@
         <div class="game-stat">Mut-Punkte: <span id="buster-score">0</span></div>
         <div class="game-stat">Restzeit: <span id="buster-time">30s</span></div>
         <div class="game-actions-bar">
-          <button class="utility-link" id="buster-leaderboard-btn" style="text-decoration:none;">🏆 Rekorde</button>
+          <button class="utility-link" id="buster-leaderboard-btn" style="text-decoration:none; font-weight:700;">🏆 Bestenliste</button>
           <button class="utility-link" id="exit-buster-btn" style="text-decoration:none; font-weight:800;">✕ Menü</button>
         </div>
       </div>
@@ -1036,35 +1046,8 @@
       <canvas id="busterCanvas" width="640" height="360"></canvas>
 
       <div class="game-instructions">
-        <span>Klicke / Tippe auf <strong>Zweifel &amp; Ängste</strong>, um sie zu zerschlagen! Schnapp dir <strong>Hörmann-Logos</strong> für Bonus-Power!</span>
+        <span>Klicke / Tippe auf <strong>Zweifel &amp; Ängste</strong>! Sammle <strong>Hörmann-Logos</strong> für Bonus-Power!</span>
         <button class="utility-link" id="restart-buster-btn">Neustart ↺</button>
-      </div>
-
-      <div id="score-submit-dialog">
-        <div class="submit-title" id="submit-dialog-title">Neuer Mut-Rekord!</div>
-        <p style="font-size:0.9rem; color:var(--text-muted);">Trage deinen Namen in die Hörmann Mut-Bestenliste ein:</p>
-        <div class="submit-form">
-          <input type="text" id="player-name-input" class="submit-input" maxlength="20" placeholder="Dein Name oder Spitzname">
-          <button class="submit-btn" id="save-score-btn">Eintragen 🏆</button>
-        </div>
-      </div>
-
-      <div class="highscore-card" id="highscore-card">
-        <div class="highscore-header">
-          <div class="highscore-title">🏆 Hörmann Mut-Bestenliste</div>
-          <button class="utility-link" id="close-leaderboard-btn" style="text-decoration:none; font-size:0.9rem;">✕ Schließen</button>
-        </div>
-        <table class="highscore-table">
-          <thead>
-            <tr>
-              <th style="width:15%;">Platz</th>
-              <th style="width:45%;">Name</th>
-              <th style="width:25%; text-align:right;">Punkte</th>
-              <th style="width:15%; text-align:right;">Datum</th>
-            </tr>
-          </thead>
-          <tbody id="leaderboard-body"></tbody>
-        </table>
       </div>
     </section>
 
@@ -1074,6 +1057,7 @@
         <div class="game-stat">Gesicherter Mut: <span id="nerve-banked">0</span></div>
         <div class="game-stat">Aktueller Einsatz: <span id="nerve-current">100</span></div>
         <div class="game-actions-bar">
+          <button class="utility-link" id="nerve-leaderboard-btn" style="text-decoration:none; font-weight:700;">🏆 Bestenliste</button>
           <button class="utility-link" id="exit-nerve-btn" style="text-decoration:none; font-weight:800;">✕ Menü</button>
         </div>
       </div>
@@ -1133,6 +1117,7 @@
         <div class="game-stat">Tore gemeistert: <span id="parcours-score">0</span></div>
         <div class="game-stat">Rekord: <span id="parcours-highscore">0</span></div>
         <div class="game-actions-bar">
+          <button class="utility-link" id="parcours-leaderboard-btn" style="text-decoration:none; font-weight:700;">🏆 Bestenliste</button>
           <button class="utility-link" id="exit-parcours-btn" style="text-decoration:none; font-weight:800;">✕ Menü</button>
         </div>
       </div>
@@ -1144,6 +1129,45 @@
         <button class="utility-link" id="restart-parcours-btn">Neustart ↺</button>
       </div>
     </section>
+
+    <!-- GLOBAL HIGHSCORE SUBMISSION MODAL (Available for ALL 3 Games) -->
+    <div id="score-submit-dialog" style="margin: 0 auto 1.5rem auto;">
+      <div class="submit-title" id="submit-dialog-title">Neuer Mut-Rekord!</div>
+      <p id="submit-dialog-subtitle" style="font-size:0.95rem; color:var(--text-muted);">
+        Trage deinen Namen in die Hörmann Mut-Bestenliste ein:
+      </p>
+      <div class="submit-form">
+        <input type="text" id="player-name-input" class="submit-input" maxlength="20" placeholder="Dein Name oder Spitzname">
+        <button class="submit-btn" id="save-score-btn">In Bestenliste eintragen 🏆</button>
+      </div>
+    </div>
+
+    <!-- GLOBAL LEADERBOARD CARD WITH TABS (For ALL 3 Games) -->
+    <div class="highscore-card" id="highscore-card" style="margin: 0 auto 1.5rem auto;">
+      <div class="highscore-header">
+        <div class="highscore-title" id="global-lb-title">🏆 Hörmann Mut-Bestenliste</div>
+        <button class="utility-link" id="close-leaderboard-btn" style="text-decoration:none; font-size:0.95rem; font-weight:700;">✕ Schließen</button>
+      </div>
+
+      <!-- Tabs to switch between games -->
+      <div class="leaderboard-tabs">
+        <button class="lb-tab-btn active" id="tab-buster-btn">🔨 Zweifel-Buster</button>
+        <button class="lb-tab-btn" id="tab-nerve-btn">🎲 Die Mut-Probe</button>
+        <button class="lb-tab-btn" id="tab-parcours-btn">🕹️ Tor-Parcours</button>
+      </div>
+
+      <table class="highscore-table">
+        <thead>
+          <tr>
+            <th style="width:15%;">Platz</th>
+            <th style="width:50%;">Name</th>
+            <th style="width:20%; text-align:right;" id="lb-score-col-header">Punkte</th>
+            <th style="width:15%; text-align:right;">Datum</th>
+          </tr>
+        </thead>
+        <tbody id="leaderboard-body"></tbody>
+      </table>
+    </div>
 
   </div>
 
@@ -1203,7 +1227,6 @@
             osc.stop(nowTime + idx * 0.08 + 0.65);
           });
         } else if (type === 'smash') {
-          // Punchy satisfying crunch/shatter for Zweifel-Buster
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
           osc.type = 'triangle';
@@ -1655,6 +1678,8 @@
       busterView.style.display = 'none';
       nerveView.style.display = 'none';
       parcoursView.style.display = 'none';
+      scoreSubmitDialog.classList.remove('show');
+      highscoreCard.classList.remove('show');
       stopBusterGame();
       stopParcoursGame();
     }
@@ -1701,45 +1726,83 @@
     document.getElementById('exit-parcours-btn').addEventListener('click', showGamesMenu);
 
     /* ==========================================================
-       7. LEADERBOARD SYSTEM (Shared by Games)
+       7. UNIFIED HIGHSCORE & LEADERBOARD SYSTEM (All 3 Games)
        ========================================================== */
     const scoreSubmitDialog = document.getElementById('score-submit-dialog');
+    const submitDialogTitle = document.getElementById('submit-dialog-title');
+    const submitDialogSubtitle = document.getElementById('submit-dialog-subtitle');
     const playerNameInput = document.getElementById('player-name-input');
     const saveScoreBtn = document.getElementById('save-score-btn');
-    const submitDialogTitle = document.getElementById('submit-dialog-title');
+
     const highscoreCard = document.getElementById('highscore-card');
     const leaderboardBody = document.getElementById('leaderboard-body');
     const closeLeaderboardBtn = document.getElementById('close-leaderboard-btn');
-    const busterLeaderboardBtn = document.getElementById('buster-leaderboard-btn');
+    const globalLbTitle = document.getElementById('global-lb-title');
+    const lbScoreColHeader = document.getElementById('lb-score-col-header');
 
-    let currentSubmitGame = 'buster';
-    let currentScoreToSave = 0;
+    const tabBusterBtn = document.getElementById('tab-buster-btn');
+    const tabNerveBtn = document.getElementById('tab-nerve-btn');
+    const tabParcoursBtn = document.getElementById('tab-parcours-btn');
 
-    function getLeaderboard() {
+    let activeGameCategory = 'buster';
+    let pendingSubmitGame = 'buster';
+    let pendingScoreToSave = 0;
+
+    const defaultLeaderboards = {
+      buster: [
+        { name: "Meister Torsten", score: 840, date: "Gestern" },
+        { name: "Mut-Pionierin Anna", score: 650, date: "21.10." },
+        { name: "Zargen-Profi Dennis", score: 520, date: "20.10." },
+        { name: "Technik-Tobi", score: 380, date: "19.10." },
+        { name: "Montage-Hero", score: 240, date: "18.10." }
+      ],
+      nerve: [
+        { name: "Risiko-Rudi", score: 2450, date: "Gestern" },
+        { name: "Stahlmut Sandra", score: 1600, date: "21.10." },
+        { name: "Meister Torsten", score: 1100, date: "20.10." },
+        { name: "Zargen-König", score: 750, date: "19.10." },
+        { name: "Courage-Chris", score: 400, date: "18.10." }
+      ],
+      parcours: [
+        { name: "Reflex-Robin", score: 18, date: "Gestern" },
+        { name: "Meister Torsten", score: 14, date: "21.10." },
+        { name: "Anna Hörmann", score: 11, date: "20.10." },
+        { name: "Flieger-Frank", score: 8, date: "19.10." },
+        { name: "Tor-Tobi", score: 5, date: "18.10." }
+      ]
+    };
+
+    function getGameLeaderboard(category) {
       try {
-        const stored = localStorage.getItem('hoermann_mut_leaderboard_v2');
+        const stored = localStorage.getItem(`hoermann_lb_${category}`);
         if (stored) return JSON.parse(stored);
       } catch (e) {}
-      return [
-        { name: "Meister Torsten", score: 850, date: "Gestern" },
-        { name: "Mut-Pionierin Anna", score: 620, date: "21.10." },
-        { name: "Zargen-Profi Dennis", score: 480, date: "20.10." },
-        { name: "Technik-Tobi", score: 350, date: "19.10." },
-        { name: "Montage-Hero", score: 200, date: "18.10." }
-      ];
+      return defaultLeaderboards[category] || [];
     }
 
-    function saveLeaderboard(list) {
-      localStorage.setItem('hoermann_mut_leaderboard_v2', JSON.stringify(list));
+    function saveGameLeaderboard(category, list) {
+      localStorage.setItem(`hoermann_lb_${category}`, JSON.stringify(list));
     }
 
-    let leaderboard = getLeaderboard();
+    function switchLeaderboardTab(category, highlightName = "") {
+      activeGameCategory = category;
+      tabBusterBtn.classList.toggle('active', category === 'buster');
+      tabNerveBtn.classList.toggle('active', category === 'nerve');
+      tabParcoursBtn.classList.toggle('active', category === 'parcours');
 
-    function renderLeaderboard(highlightName = "") {
+      const titles = {
+        buster: "🏆 Bestenliste: 🔨 Zweifel-Buster",
+        nerve: "🏆 Bestenliste: 🎲 Die Mut-Probe",
+        parcours: "🏆 Bestenliste: 🕹️ Tor-Parcours"
+      };
+      globalLbTitle.textContent = titles[category];
+      lbScoreColHeader.textContent = (category === 'parcours') ? 'Tore' : 'Punkte';
+
+      const list = getGameLeaderboard(category);
+      list.sort((a, b) => b.score - a.score);
+      const top10 = list.slice(0, 10);
+
       leaderboardBody.innerHTML = "";
-      leaderboard.sort((a, b) => b.score - a.score);
-      const top10 = leaderboard.slice(0, 10);
-
       top10.forEach((entry, idx) => {
         const tr = document.createElement('tr');
         if (highlightName && entry.name === highlightName) {
@@ -1753,8 +1816,12 @@
         tr.innerHTML = `
           <td>${rankBadge}</td>
           <td><strong>${escapeHtml(entry.name)}</strong></td>
-          <td style="text-align:right; color:var(--hoermann-orange); font-weight:800;">${entry.score}</td>
-          <td style="text-align:right; color:var(--text-muted); font-size:0.8rem;">${entry.date || 'Heute'}</td>
+          <td style="text-align:right; color:var(--hoermann-orange); font-weight:800; font-size:1.05rem;">
+            ${entry.score}
+          </td>
+          <td style="text-align:right; color:var(--text-muted); font-size:0.8rem;">
+            ${entry.date || 'Heute'}
+          </td>
         `;
         leaderboardBody.appendChild(tr);
       });
@@ -1766,40 +1833,55 @@
       return div.innerHTML;
     }
 
-    busterLeaderboardBtn.addEventListener('click', () => {
-      renderLeaderboard();
-      highscoreCard.classList.toggle('show');
-    });
+    tabBusterBtn.addEventListener('click', () => switchLeaderboardTab('buster'));
+    tabNerveBtn.addEventListener('click', () => switchLeaderboardTab('nerve'));
+    tabParcoursBtn.addEventListener('click', () => switchLeaderboardTab('parcours'));
+
+    function openGlobalLeaderboard(category = 'buster', highlightName = "") {
+      switchLeaderboardTab(category, highlightName);
+      highscoreCard.classList.add('show');
+    }
 
     closeLeaderboardBtn.addEventListener('click', () => {
       highscoreCard.classList.remove('show');
     });
 
-    saveScoreBtn.addEventListener('click', submitPlayerScore);
-    playerNameInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') submitPlayerScore();
-    });
+    // Bestenliste buttons in each game view
+    document.getElementById('menu-view-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('buster'));
+    document.getElementById('buster-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('buster'));
+    document.getElementById('nerve-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('nerve'));
+    document.getElementById('parcours-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('parcours'));
 
-    function promptScoreSubmit(score, gameName) {
-      currentScoreToSave = score;
-      currentSubmitGame = gameName;
-      submitDialogTitle.textContent = `🎉 Starke Leistung: ${score} Mut-Punkte!`;
+    // Universal Score Trigger (Called when a player finishes any game)
+    function promptScoreSubmit(score, category, gameDisplayName) {
+      pendingScoreToSave = score;
+      pendingSubmitGame = category;
+
+      submitDialogTitle.textContent = `🎉 Klasse gemacht! ${score} ${category === 'parcours' ? 'Tore' : 'Mut-Punkte'}!`;
+      submitDialogSubtitle.textContent = `Trage deinen Namen in die Bestenliste für „${gameDisplayName}“ ein:`;
       scoreSubmitDialog.classList.add('show');
-      setTimeout(() => { playerNameInput.focus(); }, 150);
+      setTimeout(() => { playerNameInput.focus(); }, 120);
     }
 
-    function submitPlayerScore() {
-      const name = playerNameInput.value.trim() || 'Mut-Meister';
+    saveScoreBtn.addEventListener('click', executeScoreSubmit);
+    playerNameInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') executeScoreSubmit();
+    });
+
+    function executeScoreSubmit() {
+      const name = playerNameInput.value.trim() || 'Mut-Pionier';
       const today = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' });
-      leaderboard.push({ name: name, score: currentScoreToSave, date: today });
-      leaderboard.sort((a, b) => b.score - a.score);
-      saveLeaderboard(leaderboard);
+
+      const list = getGameLeaderboard(pendingSubmitGame);
+      list.push({ name: name, score: pendingScoreToSave, date: today });
+      list.sort((a, b) => b.score - a.score);
+      saveGameLeaderboard(pendingSubmitGame, list);
 
       scoreSubmitDialog.classList.remove('show');
-      renderLeaderboard(name);
-      highscoreCard.classList.add('show');
+      openGlobalLeaderboard(pendingSubmitGame, name);
       playSound('score');
-      showToast(`Super, ${name}! In Bestenliste verewigt! 🏅`);
+      triggerParticleEffect('confetti');
+      showToast(`Super ${name}! Erfolgreich in der Bestenliste verewigt! 🏅`);
     }
 
     /* ==========================================================
@@ -1861,7 +1943,7 @@
     restartBusterBtn.addEventListener('click', startBusterGame);
 
     function spawnBusterTarget() {
-      const isPowerup = Math.random() < 0.2;
+      const isPowerup = Math.random() < 0.22;
       const radius = isPowerup ? 30 : Math.floor(Math.random() * 15 + 32);
       const x = Math.random() * (busterCanvas.width - radius * 2) + radius;
       const y = Math.random() * (busterCanvas.height - radius * 2) + radius;
@@ -1916,16 +1998,13 @@
     function busterLoop() {
       if (!busterActive) return;
 
-      // Spawn control
       if (Math.random() < 0.05 && targets.length < 6) {
         spawnBusterTarget();
       }
 
-      // Draw Background
       busterCtx.fillStyle = '#001830';
       busterCtx.fillRect(0, 0, busterCanvas.width, busterCanvas.height);
 
-      // Grid
       busterCtx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
       for (let x = 0; x < busterCanvas.width; x += 35) {
         busterCtx.beginPath();
@@ -1934,7 +2013,6 @@
         busterCtx.stroke();
       }
 
-      // Update & Draw targets
       for (let i = targets.length - 1; i >= 0; i--) {
         const t = targets[i];
         t.life--;
@@ -1946,7 +2024,6 @@
         const scale = Math.sin((t.life / t.maxLife) * Math.PI);
         const currentR = Math.max(10, t.radius * scale);
 
-        // Draw Target Circle
         busterCtx.save();
         busterCtx.translate(t.x, t.y);
 
@@ -1982,7 +2059,6 @@
         busterCtx.restore();
       }
 
-      // Draw floating Splat texts
       for (let i = splats.length - 1; i >= 0; i--) {
         const s = splats[i];
         s.y -= 1.2;
@@ -2019,7 +2095,7 @@
       busterCtx.font = '700 20px Inter, sans-serif';
       busterCtx.fillText(`Zweifel zerschlagen: ${busterScore} Mut-Punkte!`, busterCanvas.width / 2, 165);
 
-      promptScoreSubmit(busterScore, 'buster');
+      promptScoreSubmit(busterScore, 'buster', 'Zweifel-Buster');
     }
 
     /* ==========================================================
@@ -2050,6 +2126,8 @@
       bankNerveBtn.style.display = 'inline-flex';
       nextNerveRoundBtn.style.display = 'none';
       restartNerveBtn.style.display = 'none';
+      scoreSubmitDialog.classList.remove('show');
+      highscoreCard.classList.remove('show');
       resetDoorsUI();
     }
 
@@ -2062,7 +2140,6 @@
       }
     }
 
-    // Door click handler
     for (let i = 1; i <= 3; i++) {
       const door = document.getElementById(`door-${i}`);
       door.addEventListener('click', () => {
@@ -2075,7 +2152,6 @@
       nerveCanClick = false;
       playSound('gate');
 
-      // 1 out of 3 doors has the alarm
       const alarmDoorIndex = Math.floor(Math.random() * 3) + 1;
       const isAlarm = (chosenIndex === alarmDoorIndex);
 
@@ -2105,6 +2181,10 @@
         bankNerveBtn.style.display = 'none';
         nextNerveRoundBtn.style.display = 'none';
         restartNerveBtn.style.display = 'inline-flex';
+
+        if (nerveBanked > 0) {
+          promptScoreSubmit(nerveBanked, 'nerve', 'Die Mut-Probe');
+        }
       } else {
         playSound('powerup');
         triggerParticleEffect('gold');
@@ -2131,11 +2211,12 @@
       nerveBankedSpan.textContent = nerveBanked;
       playSound('score');
       triggerParticleEffect('confetti');
-      showToast(`Fantastisch! Du hast ${nerveBanked} Mut-Punkte sicher mitgenommen! 🏆`);
       nerveTitle.textContent = `Erfolgreich gesichert: ${nerveBanked} Punkte!`;
       bankNerveBtn.style.display = 'none';
       nextNerveRoundBtn.style.display = 'none';
       restartNerveBtn.style.display = 'inline-flex';
+
+      promptScoreSubmit(nerveBanked, 'nerve', 'Die Mut-Probe');
     });
 
     restartNerveBtn.addEventListener('click', startNerveGame);
@@ -2150,10 +2231,16 @@
     const restartParcoursBtn = document.getElementById('restart-parcours-btn');
 
     let parcoursScore = 0;
-    let parcoursHighscore = 0;
     let parcoursActive = false;
     let parcoursLoopId = null;
     let parcoursGameOver = false;
+
+    // Load top score from parcours leaderboard
+    function updateParcoursHighscoreDisplay() {
+      const pList = getGameLeaderboard('parcours');
+      const maxScore = pList.length > 0 ? Math.max(...pList.map(x => x.score)) : 0;
+      parcoursHighscoreSpan.textContent = maxScore;
+    }
 
     let pPlayer = {
       x: 90,
@@ -2170,14 +2257,16 @@
     function startParcoursGame() {
       parcoursScore = 0;
       parcoursScoreSpan.textContent = '0';
-      parcoursSpeed = 2.6;
+      pSpeed = 2.6;
       parcoursGameOver = false;
       pPlayer.y = parcoursCanvas.height / 2;
       pPlayer.vy = 0;
       pPlayer.trail = [];
       pGates = [];
+      updateParcoursHighscoreDisplay();
+      scoreSubmitDialog.classList.remove('show');
+      highscoreCard.classList.remove('show');
 
-      // Fairer gap size (160 instead of 135) for much smoother, less rage-inducing gameplay!
       spawnParcoursGate(parcoursCanvas.width + 100);
       spawnParcoursGate(parcoursCanvas.width + 380);
 
@@ -2195,7 +2284,7 @@
     restartParcoursBtn.addEventListener('click', startParcoursGame);
 
     function spawnParcoursGate(posX) {
-      const gap = 160; // Fair gap
+      const gap = 160;
       const minHeight = 40;
       const maxHeight = parcoursCanvas.height - gap - minHeight;
       const topHeight = Math.floor(Math.random() * (maxHeight - minHeight) + minHeight);
@@ -2211,7 +2300,9 @@
 
     function parcoursJump() {
       if (parcoursGameOver) {
-        startParcoursGame();
+        if (!scoreSubmitDialog.classList.contains('show')) {
+          startParcoursGame();
+        }
         return;
       }
       pPlayer.vy = pPlayer.jumpForce;
@@ -2255,10 +2346,6 @@
             parcoursScore++;
             parcoursScoreSpan.textContent = parcoursScore;
             playSound('score');
-            if (parcoursScore > parcoursHighscore) {
-              parcoursHighscore = parcoursScore;
-              parcoursHighscoreSpan.textContent = parcoursHighscore;
-            }
           }
 
           if (pPlayer.x + pPlayer.radius > g.x && pPlayer.x - pPlayer.radius < g.x + g.width) {
@@ -2290,7 +2377,6 @@
         parcoursCtx.fillRect(g.x + 3, g.bottomY, g.width - 6, 5);
       });
 
-      // Draw Player
       parcoursCtx.fillStyle = '#f59c00';
       parcoursCtx.beginPath();
       parcoursCtx.arc(pPlayer.x, pPlayer.y, pPlayer.radius, 0, Math.PI * 2);
@@ -2330,6 +2416,10 @@
       parcoursGameOver = true;
       playSound('hit');
       triggerParticleEffect('confetti');
+
+      if (parcoursScore > 0) {
+        promptScoreSubmit(parcoursScore, 'parcours', 'Tor-Parcours');
+      }
     }
 
   </script>
