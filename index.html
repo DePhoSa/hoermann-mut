@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hörmann Mut-Portal | Gib mir Mut & Das Mut-Spiel</title>
-  <meta name="description" content="Tägliche Mut-Impulse, exklusive eigens verfasste Mut-Sprüche, visuelle Muteffekte und das Hörmann Mut-Tor Minigame mit Bestenliste.">
+  <title>Hörmann Mut-Portal | Gib mir Mut & Mut-Spiele</title>
+  <meta name="description" content="Tägliche Mut-Impulse, exklusive eigene Mut-Sprüche, visuelle Muteffekte und 3 Hörmann Mut-Spiele mit Bestenliste.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -57,7 +57,6 @@
       z-index: 0;
     }
 
-    /* Fullscreen canvas for particle effects */
     #fx-canvas {
       position: fixed;
       top: 0;
@@ -68,7 +67,6 @@
       z-index: 999;
     }
 
-    /* Main container card */
     .container {
       width: 100%;
       max-width: 860px;
@@ -81,7 +79,6 @@
       transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    /* Top bar exactly matching the screenshot */
     .top-bar {
       background-color: var(--hoermann-blue);
       height: 52px;
@@ -149,9 +146,8 @@
       stroke-width: 2.2;
     }
 
-    /* Content Area */
     .card-content {
-      padding: 3.5rem 2.5rem 3rem 2.5rem;
+      padding: 3rem 2.2rem;
       text-align: center;
       min-height: 440px;
       display: flex;
@@ -161,7 +157,6 @@
       position: relative;
     }
 
-    /* Main Headline */
     .headline {
       font-size: 2.35rem;
       font-weight: 800;
@@ -216,7 +211,6 @@
       display: block;
     }
 
-    /* Action Buttons Row */
     .btn-row {
       display: flex;
       flex-wrap: wrap;
@@ -231,7 +225,7 @@
       background: linear-gradient(180deg, var(--hoermann-orange) 0%, #e08800 100%);
       color: #ffffff;
       border: none;
-      padding: 1.05rem 2.5rem;
+      padding: 1.05rem 2.4rem;
       font-size: 1.15rem;
       font-weight: 800;
       letter-spacing: 0.02em;
@@ -279,11 +273,6 @@
       box-shadow: 0 8px 22px rgba(0, 45, 98, 0.45);
     }
 
-    .btn-game:active {
-      transform: translateY(1px);
-    }
-
-    /* Small Utility Buttons below */
     .utility-bar {
       margin-top: 2rem;
       display: flex;
@@ -310,7 +299,6 @@
       color: var(--hoermann-orange);
     }
 
-    /* Interactive "Drei Gedanken" Section */
     .thoughts-section {
       width: 100%;
       max-width: 620px;
@@ -382,7 +370,6 @@
       background: var(--hoermann-blue-light);
     }
 
-    /* Animated Sectional Door Effect Overlay */
     #sectional-door-overlay {
       position: absolute;
       top: 52px;
@@ -415,16 +402,220 @@
       transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
     }
 
-    /* MINIGAME VIEW */
-    #game-view {
+    /* ==========================================================
+       GAMES SELECTION VIEW
+       ========================================================== */
+    #games-menu-view {
       display: none;
+      width: 100%;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      padding: 2.5rem 1.5rem;
+    }
+
+    .menu-title {
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--hoermann-blue);
+      margin-bottom: 0.5rem;
+    }
+
+    .menu-subtitle {
+      color: var(--text-muted);
+      font-size: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 1.25rem;
+      width: 100%;
+      max-width: 780px;
+    }
+
+    .game-choice-card {
+      background: #f8fafc;
+      border: 2px solid var(--border-gray);
+      border-radius: 8px;
+      padding: 1.5rem 1.2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.22s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .game-choice-card:hover {
+      border-color: var(--hoermann-orange);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgba(0, 45, 98, 0.12);
+      background: #ffffff;
+    }
+
+    .card-badge-rec {
+      position: absolute;
+      top: -10px;
+      right: 12px;
+      background: var(--hoermann-orange);
+      color: #ffffff;
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 100px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .game-icon-large {
+      font-size: 2.6rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .game-card-title {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--hoermann-blue);
+      margin-bottom: 0.4rem;
+    }
+
+    .game-card-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+      margin-bottom: 1.25rem;
+      flex: 1;
+    }
+
+    .btn-card-start {
+      background: var(--hoermann-blue);
+      color: #ffffff;
+      border: none;
+      padding: 0.65rem 1rem;
+      border-radius: 5px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .game-choice-card:hover .btn-card-start {
+      background: var(--hoermann-orange);
+    }
+
+    /* ==========================================================
+       GAME 1: ZWEIFEL-BUSTER (Anti-Rage & Fun Smash)
+       ========================================================== */
+    #buster-view {
+      display: none;
+      width: 100%;
+      flex-direction: column;
+      align-items: center;
       padding: 1.5rem 1.5rem 2rem 1.5rem;
     }
 
-    #gameCanvas {
+    #busterCanvas {
+      background: radial-gradient(circle at 50% 50%, #002244 0%, #001224 100%);
+      border: 3px solid var(--hoermann-blue);
+      border-radius: 6px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      max-width: 100%;
+      touch-action: none;
+      cursor: crosshair;
+    }
+
+    /* ==========================================================
+       GAME 2: DIE MUT-PROBE (Nerven wie Stahl - Risk & Reward)
+       ========================================================== */
+    #nerve-view {
+      display: none;
+      width: 100%;
+      flex-direction: column;
+      align-items: center;
+      padding: 1.5rem 1.5rem 2rem 1.5rem;
+    }
+
+    .doors-arena {
+      display: flex;
+      gap: 1.2rem;
+      width: 100%;
+      max-width: 660px;
+      justify-content: center;
+      margin: 1.5rem 0;
+      flex-wrap: wrap;
+    }
+
+    .mystery-door {
+      flex: 1;
+      min-width: 180px;
+      height: 240px;
+      background: linear-gradient(180deg, #1e3a8a 0%, #0f2352 100%);
+      border: 4px solid var(--hoermann-blue);
+      border-radius: 8px;
+      position: relative;
+      cursor: pointer;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 1rem;
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+      transition: all 0.2s ease;
+    }
+
+    .mystery-door:hover {
+      transform: translateY(-5px);
+      border-color: var(--hoermann-orange);
+      box-shadow: 0 12px 28px rgba(245, 156, 0, 0.35);
+    }
+
+    .mystery-door.opened {
+      pointer-events: none;
+      transform: none;
+    }
+
+    .door-face {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(180deg, #1f2937 0%, #111827 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 4px solid #374151;
+      transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+      z-index: 2;
+    }
+
+    .mystery-door.opened .door-face {
+      transform: translateY(-90%);
+    }
+
+    .door-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      text-align: center;
+      z-index: 1;
+    }
+
+    /* ==========================================================
+       GAME 3: TOR-PARCOURS (Flappy)
+       ========================================================== */
+    #parcours-view {
+      display: none;
+      width: 100%;
+      flex-direction: column;
+      align-items: center;
+      padding: 1.5rem 1.5rem 2rem 1.5rem;
+    }
+
+    #parcoursCanvas {
       background: #001830;
       border: 3px solid var(--hoermann-blue);
       border-radius: 6px;
@@ -433,6 +624,7 @@
       touch-action: none;
     }
 
+    /* Common Game UI Elements */
     .game-ui-header {
       width: 100%;
       max-width: 640px;
@@ -479,7 +671,7 @@
       border: 1px solid #d1d5db;
     }
 
-    /* HIGHSCORE LEADERBOARD MODAL & PANEL */
+    /* HIGHSCORE LEADERBOARD */
     .highscore-card {
       width: 100%;
       max-width: 640px;
@@ -539,7 +731,7 @@
       font-weight: 700;
     }
 
-    /* Name input dialog after Game Over */
+    /* Highscore Submit Modal */
     #score-submit-dialog {
       display: none;
       width: 100%;
@@ -603,7 +795,6 @@
       background: var(--hoermann-orange-hover);
     }
 
-    /* Toast Notification */
     #toast {
       position: fixed;
       bottom: 2rem;
@@ -681,16 +872,20 @@
       .submit-input {
         width: 100%;
       }
+      .doors-arena {
+        flex-direction: column;
+      }
+      .mystery-door {
+        height: 140px;
+      }
     }
   </style>
 </head>
 <body>
 
-  <!-- Fullscreen Particle / Effect Canvas -->
   <canvas id="fx-canvas"></canvas>
 
   <div class="container" id="main-card">
-    <!-- Header matching screenshot -->
     <header class="top-bar">
       <div class="week-label" id="date-label">WOCHE 1 - MONTAG</div>
       <div class="top-divider"></div>
@@ -715,7 +910,6 @@
       </div>
     </header>
 
-    <!-- Animated Sectional Door Effect Overlay -->
     <div id="sectional-door-overlay">
       <div class="door-panel" style="top: 0%; height: 25%;">HÖRMANN SEKTIONALTOR // MUT-IMPULS</div>
       <div class="door-panel" style="top: 25%; height: 25%;">STAHLZARGE VERSTÄRKT</div>
@@ -723,9 +917,8 @@
       <div class="door-panel" style="top: 75%; height: 25%;">TOR ÖFFNET SICH...</div>
     </div>
 
-    <!-- Main View: Mut-Portal -->
+    <!-- 1. MUT-PORTAL STARTANSICHT -->
     <main class="card-content" id="portal-view">
-      
       <div class="effect-pill" id="effect-badge">
         <span id="effect-icon">✨</span>
         <span id="effect-name">Konfetti-Power</span>
@@ -737,7 +930,6 @@
         Nehmen Sie sich einen Moment Zeit und notieren Sie drei Gedanken zum Thema Mut.
       </p>
 
-      <!-- Action Buttons -->
       <div class="btn-row">
         <button class="btn-primary" id="mut-btn">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -746,18 +938,17 @@
           Gib mir Mut
         </button>
 
-        <button class="btn-game" id="game-btn">
+        <button class="btn-game" id="menu-btn">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="2" y="6" width="20" height="12" rx="3"></rect>
             <path d="M6 12h4m-2-2v4"></path>
             <line x1="15" y1="11" x2="15.01" y2="11"></line>
             <line x1="18" y1="13" x2="18.01" y2="13"></line>
           </svg>
-          Das Mut-Spiel
+          Das Mut-Spiel 🎮
         </button>
       </div>
 
-      <!-- Thought Recorder (matches original screenshot prompt) -->
       <div class="utility-bar">
         <button class="utility-link" id="toggle-thoughts-btn">
           ✍️ 3 Gedanken zu Mut notieren
@@ -782,32 +973,73 @@
         </div>
         <button class="save-thoughts-btn" id="save-thoughts-btn">Speichern</button>
       </div>
-
     </main>
 
-    <!-- Minigame View: Hörmann Mut-Tor Parcours -->
-    <section class="card-content" id="game-view">
-      <div class="game-ui-header">
-        <div class="game-stat">Tore gemeistert: <span id="game-score">0</span></div>
-        <div class="game-stat">Rekord: <span id="game-highscore">0</span></div>
-        <div class="game-actions-bar">
-          <button class="utility-link" id="toggle-leaderboard-btn" style="text-decoration:none;">
-            🏆 Bestenliste
-          </button>
-          <button class="utility-link" id="exit-game-btn" style="text-decoration:none; font-size:1.1rem; font-weight:800;">
-            ✕ Zurück
-          </button>
+    <!-- 2. SPIELE-AUSWAHL (SPIEL-MENU) -->
+    <section class="card-content" id="games-menu-view">
+      <h2 class="menu-title">Wähle dein Mut-Spiel</h2>
+      <p class="menu-subtitle">Welche Mutprobe soll es heute sein?</p>
+
+      <div class="games-grid">
+        <!-- Game 1: Zweifel-Buster -->
+        <div class="game-choice-card" id="choose-buster-btn">
+          <div class="card-badge-rec">⭐ Empfohlen &bull; Null Frust</div>
+          <div class="game-icon-large">🔨💥</div>
+          <div class="game-card-title">Zweifel-Buster</div>
+          <div class="game-card-desc">
+            Zerschlage Ängste, Zweifel & Aufschieberitis per Klick! Sammle Hörmann Stahlzargen-Power & Mut-Punkte. Macht richtig Laune!
+          </div>
+          <button class="btn-card-start">Zweifel zerschlagen 🔥</button>
+        </div>
+
+        <!-- Game 2: Die Mut-Probe -->
+        <div class="game-choice-card" id="choose-nerve-btn">
+          <div class="card-badge-rec" style="background:#0d448a;">Nervenkitzel</div>
+          <div class="game-icon-large">🚪🎲</div>
+          <div class="game-card-title">Die Mut-Probe</div>
+          <div class="game-card-desc">
+            3 Hörmann-Tore: Öffne Tor für Tor und multipliziere deinen Mut. Nimmst du deine Punkte mit oder riskierst du alles?
+          </div>
+          <button class="btn-card-start">Mut beweisen 🏆</button>
+        </div>
+
+        <!-- Game 3: Tor-Parcours -->
+        <div class="game-choice-card" id="choose-parcours-btn">
+          <div class="card-badge-rec" style="background:#4b5563;">Klassiker</div>
+          <div class="game-icon-large">🕹️⚡</div>
+          <div class="game-card-title">Tor-Parcours</div>
+          <div class="game-card-desc">
+            Der Geschicklichkeits-Lauf durch Hörmann Sektionaltore. Jetzt mit fairerem Durchgang für echte Reflex-Meister!
+          </div>
+          <button class="btn-card-start">Parcours wagen 🚀</button>
         </div>
       </div>
 
-      <canvas id="gameCanvas" width="640" height="360"></canvas>
+      <div style="margin-top:2rem;">
+        <button class="utility-link" id="back-to-portal-btn" style="text-decoration:none; font-weight:700;">
+          ← Zurück zum Mut-Portal
+        </button>
+      </div>
+    </section>
 
-      <div class="game-instructions">
-        <span>Steuerung: <span class="key-badge">Leertaste</span> / <span class="key-badge">Klick / Tippen</span> zum Springen / Heben</span>
-        <button class="utility-link" id="restart-game-btn">Neustart ↺</button>
+    <!-- 3. SPIEL 1: ZWEIFEL-BUSTER -->
+    <section class="card-content" id="buster-view">
+      <div class="game-ui-header">
+        <div class="game-stat">Mut-Punkte: <span id="buster-score">0</span></div>
+        <div class="game-stat">Restzeit: <span id="buster-time">30s</span></div>
+        <div class="game-actions-bar">
+          <button class="utility-link" id="buster-leaderboard-btn" style="text-decoration:none;">🏆 Rekorde</button>
+          <button class="utility-link" id="exit-buster-btn" style="text-decoration:none; font-weight:800;">✕ Menü</button>
+        </div>
       </div>
 
-      <!-- Highscore Submission Dialog (appears on Game Over) -->
+      <canvas id="busterCanvas" width="640" height="360"></canvas>
+
+      <div class="game-instructions">
+        <span>Klicke / Tippe auf <strong>Zweifel &amp; Ängste</strong>, um sie zu zerschlagen! Schnapp dir <strong>Hörmann-Logos</strong> für Bonus-Power!</span>
+        <button class="utility-link" id="restart-buster-btn">Neustart ↺</button>
+      </div>
+
       <div id="score-submit-dialog">
         <div class="submit-title" id="submit-dialog-title">Neuer Mut-Rekord!</div>
         <p style="font-size:0.9rem; color:var(--text-muted);">Trage deinen Namen in die Hörmann Mut-Bestenliste ein:</p>
@@ -817,7 +1049,6 @@
         </div>
       </div>
 
-      <!-- Highscore Leaderboard Table -->
       <div class="highscore-card" id="highscore-card">
         <div class="highscore-header">
           <div class="highscore-title">🏆 Hörmann Mut-Bestenliste</div>
@@ -827,15 +1058,90 @@
           <thead>
             <tr>
               <th style="width:15%;">Platz</th>
-              <th style="width:50%;">Name</th>
-              <th style="width:20%; text-align:right;">Tore</th>
+              <th style="width:45%;">Name</th>
+              <th style="width:25%; text-align:right;">Punkte</th>
               <th style="width:15%; text-align:right;">Datum</th>
             </tr>
           </thead>
-          <tbody id="leaderboard-body">
-            <!-- Dynamically populated -->
-          </tbody>
+          <tbody id="leaderboard-body"></tbody>
         </table>
+      </div>
+    </section>
+
+    <!-- 4. SPIEL 2: DIE MUT-PROBE (Risk & Reward) -->
+    <section class="card-content" id="nerve-view">
+      <div class="game-ui-header">
+        <div class="game-stat">Gesicherter Mut: <span id="nerve-banked">0</span></div>
+        <div class="game-stat">Aktueller Einsatz: <span id="nerve-current">100</span></div>
+        <div class="game-actions-bar">
+          <button class="utility-link" id="exit-nerve-btn" style="text-decoration:none; font-weight:800;">✕ Menü</button>
+        </div>
+      </div>
+
+      <h3 style="font-size:1.4rem; color:var(--hoermann-blue); margin-top:0.5rem; font-weight:800;" id="nerve-title">
+        Runde <span id="nerve-round">1</span>: Welches Tor wagst du zu öffnen?
+      </h3>
+      <p style="font-size:0.95rem; color:var(--text-muted); margin-bottom:0.5rem;">
+        Hinter 2 Toren wartet gewaltiger Mut &ndash; hinter 1 Tor ein Zweifel-Alarm!
+      </p>
+
+      <div class="doors-arena">
+        <div class="mystery-door" id="door-1">
+          <div class="door-face">
+            <span style="font-size:2rem; margin-bottom:6px;">🚪</span>
+            <strong style="color:var(--hoermann-orange);">TOR 1</strong>
+            <small style="color:#9ca3af; font-size:0.75rem;">Sektionaltor</small>
+          </div>
+          <div class="door-content" id="door-content-1"></div>
+        </div>
+
+        <div class="mystery-door" id="door-2">
+          <div class="door-face">
+            <span style="font-size:2rem; margin-bottom:6px;">🚪</span>
+            <strong style="color:var(--hoermann-orange);">TOR 2</strong>
+            <small style="color:#9ca3af; font-size:0.75rem;">Schwingtor</small>
+          </div>
+          <div class="door-content" id="door-content-2"></div>
+        </div>
+
+        <div class="mystery-door" id="door-3">
+          <div class="door-face">
+            <span style="font-size:2rem; margin-bottom:6px;">🚪</span>
+            <strong style="color:var(--hoermann-orange);">TOR 3</strong>
+            <small style="color:#9ca3af; font-size:0.75rem;">Stahlzarge &amp; Tür</small>
+          </div>
+          <div class="door-content" id="door-content-3"></div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-primary" id="bank-nerve-btn" style="padding:0.8rem 1.8rem; font-size:1.05rem;">
+          💰 Punkte sichern &amp; einsacken!
+        </button>
+        <button class="btn-game" id="next-nerve-round-btn" style="display:none; padding:0.8rem 1.8rem; font-size:1.05rem;">
+          Nächste Mut-Stufe ➔
+        </button>
+        <button class="btn-game" id="restart-nerve-btn" style="display:none; padding:0.8rem 1.8rem; font-size:1.05rem;">
+          Neuer Durchgang ↺
+        </button>
+      </div>
+    </section>
+
+    <!-- 5. SPIEL 3: TOR-PARCOURS -->
+    <section class="card-content" id="parcours-view">
+      <div class="game-ui-header">
+        <div class="game-stat">Tore gemeistert: <span id="parcours-score">0</span></div>
+        <div class="game-stat">Rekord: <span id="parcours-highscore">0</span></div>
+        <div class="game-actions-bar">
+          <button class="utility-link" id="exit-parcours-btn" style="text-decoration:none; font-weight:800;">✕ Menü</button>
+        </div>
+      </div>
+
+      <canvas id="parcoursCanvas" width="640" height="360"></canvas>
+
+      <div class="game-instructions">
+        <span>Steuerung: <span class="key-badge">Leertaste</span> / <span class="key-badge">Klick / Tippen</span> zum Heben</span>
+        <button class="utility-link" id="restart-parcours-btn">Neustart ↺</button>
       </div>
     </section>
 
@@ -849,7 +1155,7 @@
 
   <script>
     /* ==========================================================
-       1. DATE / WEEK HEADER DISPLAY (Matches Screenshot)
+       1. DATE / WEEK HEADER (Matches Screenshot)
        ========================================================== */
     const days = ['SONNTAG', 'MONTAG', 'DIENSTAG', 'MITTWOCH', 'DONNERSTAG', 'FREITAG', 'SAMSTAG'];
     const now = new Date();
@@ -860,7 +1166,7 @@
     document.getElementById('date-label').textContent = `WOCHE ${weekNum} - ${dayName}`;
 
     /* ==========================================================
-       2. SOUND EFFECTS (Web Audio API - Completely Standalone)
+       2. SOUND EFFECTS (Web Audio API)
        ========================================================== */
     let audioCtx = null;
     let soundEnabled = true;
@@ -896,65 +1202,67 @@
             osc.start(nowTime + idx * 0.08);
             osc.stop(nowTime + idx * 0.08 + 0.65);
           });
-        } else if (type === 'gate') {
+        } else if (type === 'smash') {
+          // Punchy satisfying crunch/shatter for Zweifel-Buster
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
-          osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(110, nowTime);
-          osc.frequency.linearRampToValueAtTime(220, nowTime + 0.5);
-          gain.gain.setValueAtTime(0.12, nowTime);
-          gain.gain.exponentialRampToValueAtTime(0.001, nowTime + 0.6);
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.start(nowTime);
-          osc.stop(nowTime + 0.65);
-        } else if (type === 'jump') {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(260, nowTime);
-          osc.frequency.exponentialRampToValueAtTime(540, nowTime + 0.15);
-          gain.gain.setValueAtTime(0.18, nowTime);
-          gain.gain.exponentialRampToValueAtTime(0.001, nowTime + 0.15);
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.start(nowTime);
-          osc.stop(nowTime + 0.16);
-        } else if (type === 'score') {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          osc.type = 'square';
-          osc.frequency.setValueAtTime(880, nowTime);
-          gain.gain.setValueAtTime(0.08, nowTime);
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(320, nowTime);
+          osc.frequency.exponentialRampToValueAtTime(80, nowTime + 0.12);
+          gain.gain.setValueAtTime(0.3, nowTime);
           gain.gain.exponentialRampToValueAtTime(0.001, nowTime + 0.12);
           osc.connect(gain);
           gain.connect(ctx.destination);
           osc.start(nowTime);
           osc.stop(nowTime + 0.13);
-        } else if (type === 'hit') {
+        } else if (type === 'gate') {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
           osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(180, nowTime);
-          osc.frequency.exponentialRampToValueAtTime(60, nowTime + 0.25);
+          osc.frequency.setValueAtTime(110, nowTime);
+          osc.frequency.linearRampToValueAtTime(220, nowTime + 0.45);
+          gain.gain.setValueAtTime(0.12, nowTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, nowTime + 0.55);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(nowTime);
+          osc.stop(nowTime + 0.6);
+        } else if (type === 'score' || type === 'powerup') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(659.25, nowTime);
+          osc.frequency.setValueAtTime(880, nowTime + 0.07);
+          gain.gain.setValueAtTime(0.12, nowTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, nowTime + 0.22);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(nowTime);
+          osc.stop(nowTime + 0.23);
+        } else if (type === 'hit' || type === 'alarm') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(220, nowTime);
+          osc.frequency.setValueAtTime(140, nowTime + 0.12);
           gain.gain.setValueAtTime(0.2, nowTime);
           gain.gain.exponentialRampToValueAtTime(0.001, nowTime + 0.25);
           osc.connect(gain);
           gain.connect(ctx.destination);
           osc.start(nowTime);
           osc.stop(nowTime + 0.26);
-        } else if (type === 'confetti') {
+        } else if (type === 'jump') {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
           osc.type = 'sine';
-          osc.frequency.setValueAtTime(600, nowTime);
-          osc.frequency.exponentialRampToValueAtTime(120, nowTime + 0.1);
-          gain.gain.setValueAtTime(0.25, nowTime);
-          gain.gain.exponentialRampToValueAtTime(0.001, nowTime + 0.1);
+          osc.frequency.setValueAtTime(260, nowTime);
+          osc.frequency.exponentialRampToValueAtTime(540, nowTime + 0.14);
+          gain.gain.setValueAtTime(0.18, nowTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, nowTime + 0.14);
           osc.connect(gain);
           gain.connect(ctx.destination);
           osc.start(nowTime);
-          osc.stop(nowTime + 0.11);
+          osc.stop(nowTime + 0.15);
         }
       } catch (e) {
         console.warn('Audio error:', e);
@@ -974,7 +1282,7 @@
     });
 
     /* ==========================================================
-       3. 100% EIGENS ERSTELLTE MUT-SPRÜCHE (Hörmann, Kraft & Mut)
+       3. 100% EIGENE MUT-SPRÜCHE
        ========================================================== */
     const mutSpruche = [
       { quote: "Ein geschlossenes Tor ist kein Stoppschild – es ist die Einladung, den Hebel mutig in die Hand zu nehmen.", author: "Dein Mut-Macher" },
@@ -1016,23 +1324,18 @@
       { quote: "Ein Tag voller Mut beginnt mit dem einfachen Gedanken: ‚Ich packe das heute an. Punkt.‘", author: "Morgen-Impuls" },
       { quote: "Es gibt keine verschlossenen Wege – es gibt nur Tore, die darauf warten, schwungvoll geöffnet zu werden.", author: "Hörmann Mut-Schmiede" },
       { quote: "Mut ist wie ein Qualitäts-Kugellager: Gut geschmiert läuft es reibungslos durch jede Lebenslage.", author: "Werkstatt-Mut" },
-      { quote: "Halte den Kurs, auch wenn es mal ruckelt. Die besten Tore gleiten auch nach tausenden Zyklen noch butterweich.", author: "Stahlharte Entschlossenheit" },
-      { quote: "Dein Mut von heute ist das Fundament, auf dem dein Erfolg von morgen steht.", author: "Dein Mut-Macher" },
-      { quote: "Trau dich, den ersten Satz zu sagen, die Hand zu heben oder die Idee vorzuschlagen. Echte Größe beginnt im Kleinen.", author: "Mut-Pionier" },
-      { quote: "Wie eine solide Stahlzarge: Wenn die Basis stimmt, kann dich kein Stoß der Welt aus der Fassung bringen.", author: "Zargenfeste Zuversicht" },
-      { quote: "Erfolg ist kein Zufall, sondern das Ergebnis unzähliger kleiner mutiger Entscheidungen.", author: "Hörmann Philosophie" },
-      { quote: "Wirf die Zweifel über Bord, schalte den Motor an und fahr mit erhobenem Kopf durch das offene Tor der Zukunft!", author: "Meister-Impuls" }
+      { quote: "Halte den Kurs, auch wenn es mal ruckelt. Die besten Tore gleiten auch nach tausenden Zyklen noch butterweich.", author: "Stahlharte Entschlossenheit" }
     ];
 
     /* ==========================================================
-       4. DYNAMIC MUT-EFFECTS (Konfetti, Jubelnde Hände, Sektionaltor etc.)
+       4. DYNAMIC MUT-EFFECTS
        ========================================================== */
     const effects = [
-      { id: 'confetti', name: 'Konfetti-Regen', icon: '🎉', sound: 'confetti' },
+      { id: 'confetti', name: 'Konfetti-Regen', icon: '🎉', sound: 'mut' },
       { id: 'hands', name: 'Jubelnde Hände & Power', icon: '🙌', sound: 'mut' },
       { id: 'door', name: 'Hörmann Sektionaltor öffnet sich', icon: '🚪', sound: 'gate' },
       { id: 'gold', name: 'Goldener Mut-Schein', icon: '✨', sound: 'chime' },
-      { id: 'firework', name: 'Mut-Feuerwerk', icon: '🎆', sound: 'confetti' },
+      { id: 'firework', name: 'Mut-Feuerwerk', icon: '🎆', sound: 'mut' },
       { id: 'heart', name: 'Herzklopfen & Energie-Puls', icon: '❤️‍🔥', sound: 'mut' },
       { id: 'rocket', name: 'Raketen-Durchbruch', icon: '🚀', sound: 'gate' }
     ];
@@ -1059,7 +1362,7 @@
 
       if (effectType === 'confetti') {
         const colors = ['#f59c00', '#002d62', '#ffaa1d', '#10b981', '#3b82f6', '#ec4899', '#ffffff'];
-        for (let i = 0; i < 180; i++) {
+        for (let i = 0; i < 160; i++) {
           particles.push({
             type: 'confetti',
             x: w * 0.5 + (Math.random() - 0.5) * 200,
@@ -1077,7 +1380,7 @@
         }
       } else if (effectType === 'hands') {
         const emojis = ['🙌', '👏', '💪', '🦁', '🌟', '🚀', '🔥', '⚡'];
-        for (let i = 0; i < 35; i++) {
+        for (let i = 0; i < 32; i++) {
           particles.push({
             type: 'emoji',
             emoji: emojis[Math.floor(Math.random() * emojis.length)],
@@ -1091,7 +1394,7 @@
           });
         }
       } else if (effectType === 'gold') {
-        for (let i = 0; i < 90; i++) {
+        for (let i = 0; i < 80; i++) {
           const angle = Math.random() * Math.PI * 2;
           const speed = Math.random() * 9 + 2;
           particles.push({
@@ -1111,7 +1414,7 @@
           const cx = w * 0.25 + Math.random() * (w * 0.5);
           const cy = h * 0.2 + Math.random() * (h * 0.3);
           const color = ['#f59c00', '#38bdf8', '#fb7185', '#34d399'][b % 4];
-          for (let i = 0; i < 50; i++) {
+          for (let i = 0; i < 45; i++) {
             const angle = Math.random() * Math.PI * 2;
             const spd = Math.random() * 8 + 1;
             particles.push({
@@ -1134,7 +1437,7 @@
         setTimeout(() => { card.style.animation = ''; }, 650);
 
         const heartEmojis = ['❤️‍🔥', '🧡', '💪', '🛡️', '⚡'];
-        for (let i = 0; i < 28; i++) {
+        for (let i = 0; i < 25; i++) {
           particles.push({
             type: 'emoji',
             emoji: heartEmojis[Math.floor(Math.random() * heartEmojis.length)],
@@ -1302,9 +1605,6 @@
       });
     });
 
-    /* ==========================================================
-       6. THOUGHTS NOTEBOOK (Matches original screenshot prompt)
-       ========================================================== */
     const toggleThoughtsBtn = document.getElementById('toggle-thoughts-btn');
     const thoughtsBox = document.getElementById('thoughts-box');
     const saveThoughtsBtn = document.getElementById('save-thoughts-btn');
@@ -1321,9 +1621,7 @@
 
     toggleThoughtsBtn.addEventListener('click', () => {
       thoughtsBox.classList.toggle('open');
-      if (thoughtsBox.classList.contains('open')) {
-        t1.focus();
-      }
+      if (thoughtsBox.classList.contains('open')) t1.focus();
     });
 
     saveThoughtsBtn.addEventListener('click', () => {
@@ -1333,14 +1631,7 @@
       showToast('Deine Mut-Gedanken wurden gesichert! 💡');
     });
 
-    document.getElementById('reset-view-btn').addEventListener('click', () => {
-      mainHeadline.textContent = "Was bedeutet Mut für Sie?";
-      mainSubline.textContent = "Nehmen Sie sich einen Moment Zeit und notieren Sie drei Gedanken zum Thema Mut.";
-      effectBadge.classList.remove('show');
-      copyQuoteBtn.style.display = 'none';
-      thoughtsBox.classList.remove('open');
-      showToast('Startansicht geladen');
-    });
+    document.getElementById('reset-view-btn').addEventListener('click', showPortalView);
 
     function showToast(msg) {
       const toast = document.getElementById('toast');
@@ -1350,52 +1641,99 @@
     }
 
     /* ==========================================================
-       7. DAS MUT-SPIEL: HÖRMANN SEKTIONAL-TOR PARCOURS & HIGHSCORE
+       6. VIEW NAVIGATION SYSTEM
        ========================================================== */
-    const gameBtn = document.getElementById('game-btn');
     const portalView = document.getElementById('portal-view');
-    const gameView = document.getElementById('game-view');
-    const exitGameBtn = document.getElementById('exit-game-btn');
-    const restartGameBtn = document.getElementById('restart-game-btn');
-    const gameScoreSpan = document.getElementById('game-score');
-    const gameHighscoreSpan = document.getElementById('game-highscore');
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
+    const gamesMenuView = document.getElementById('games-menu-view');
+    const busterView = document.getElementById('buster-view');
+    const nerveView = document.getElementById('nerve-view');
+    const parcoursView = document.getElementById('parcours-view');
 
+    function hideAllViews() {
+      portalView.style.display = 'none';
+      gamesMenuView.style.display = 'none';
+      busterView.style.display = 'none';
+      nerveView.style.display = 'none';
+      parcoursView.style.display = 'none';
+      stopBusterGame();
+      stopParcoursGame();
+    }
+
+    function showPortalView() {
+      hideAllViews();
+      portalView.style.display = 'flex';
+      mainHeadline.textContent = "Was bedeutet Mut für Sie?";
+      mainSubline.textContent = "Nehmen Sie sich einen Moment Zeit und notieren Sie drei Gedanken zum Thema Mut.";
+      effectBadge.classList.remove('show');
+      copyQuoteBtn.style.display = 'none';
+      thoughtsBox.classList.remove('open');
+    }
+
+    function showGamesMenu() {
+      hideAllViews();
+      gamesMenuView.style.display = 'flex';
+      playSound('score');
+    }
+
+    document.getElementById('menu-btn').addEventListener('click', showGamesMenu);
+    document.getElementById('back-to-portal-btn').addEventListener('click', showPortalView);
+
+    document.getElementById('choose-buster-btn').addEventListener('click', () => {
+      hideAllViews();
+      busterView.style.display = 'flex';
+      startBusterGame();
+    });
+
+    document.getElementById('choose-nerve-btn').addEventListener('click', () => {
+      hideAllViews();
+      nerveView.style.display = 'flex';
+      startNerveGame();
+    });
+
+    document.getElementById('choose-parcours-btn').addEventListener('click', () => {
+      hideAllViews();
+      parcoursView.style.display = 'flex';
+      startParcoursGame();
+    });
+
+    document.getElementById('exit-buster-btn').addEventListener('click', showGamesMenu);
+    document.getElementById('exit-nerve-btn').addEventListener('click', showGamesMenu);
+    document.getElementById('exit-parcours-btn').addEventListener('click', showGamesMenu);
+
+    /* ==========================================================
+       7. LEADERBOARD SYSTEM (Shared by Games)
+       ========================================================== */
     const scoreSubmitDialog = document.getElementById('score-submit-dialog');
     const playerNameInput = document.getElementById('player-name-input');
     const saveScoreBtn = document.getElementById('save-score-btn');
     const submitDialogTitle = document.getElementById('submit-dialog-title');
-    const toggleLeaderboardBtn = document.getElementById('toggle-leaderboard-btn');
-    const closeLeaderboardBtn = document.getElementById('close-leaderboard-btn');
     const highscoreCard = document.getElementById('highscore-card');
     const leaderboardBody = document.getElementById('leaderboard-body');
+    const closeLeaderboardBtn = document.getElementById('close-leaderboard-btn');
+    const busterLeaderboardBtn = document.getElementById('buster-leaderboard-btn');
 
-    let gameActive = false;
-    let gameLoopId = null;
-    let score = 0;
+    let currentSubmitGame = 'buster';
+    let currentScoreToSave = 0;
 
     function getLeaderboard() {
       try {
-        const stored = localStorage.getItem('hoermann_mut_leaderboard');
+        const stored = localStorage.getItem('hoermann_mut_leaderboard_v2');
         if (stored) return JSON.parse(stored);
       } catch (e) {}
       return [
-        { name: "Meister Torsten", score: 12, date: "Gestern" },
-        { name: "Mut-Pionierin Anna", score: 9, date: "21.10." },
-        { name: "Zargen-Profi Dennis", score: 7, date: "20.10." },
-        { name: "Technik-Tobi", score: 5, date: "19.10." },
-        { name: "Montage-Hero", score: 3, date: "18.10." }
+        { name: "Meister Torsten", score: 850, date: "Gestern" },
+        { name: "Mut-Pionierin Anna", score: 620, date: "21.10." },
+        { name: "Zargen-Profi Dennis", score: 480, date: "20.10." },
+        { name: "Technik-Tobi", score: 350, date: "19.10." },
+        { name: "Montage-Hero", score: 200, date: "18.10." }
       ];
     }
 
     function saveLeaderboard(list) {
-      localStorage.setItem('hoermann_mut_leaderboard', JSON.stringify(list));
+      localStorage.setItem('hoermann_mut_leaderboard_v2', JSON.stringify(list));
     }
 
     let leaderboard = getLeaderboard();
-    let currentHighscore = leaderboard.length > 0 ? Math.max(...leaderboard.map(x => x.score)) : 0;
-    gameHighscoreSpan.textContent = currentHighscore;
 
     function renderLeaderboard(highlightName = "") {
       leaderboardBody.innerHTML = "";
@@ -1428,7 +1766,7 @@
       return div.innerHTML;
     }
 
-    toggleLeaderboardBtn.addEventListener('click', () => {
+    busterLeaderboardBtn.addEventListener('click', () => {
       renderLeaderboard();
       highscoreCard.classList.toggle('show');
     });
@@ -1442,365 +1780,556 @@
       if (e.key === 'Enter') submitPlayerScore();
     });
 
+    function promptScoreSubmit(score, gameName) {
+      currentScoreToSave = score;
+      currentSubmitGame = gameName;
+      submitDialogTitle.textContent = `🎉 Starke Leistung: ${score} Mut-Punkte!`;
+      scoreSubmitDialog.classList.add('show');
+      setTimeout(() => { playerNameInput.focus(); }, 150);
+    }
+
     function submitPlayerScore() {
-      const name = playerNameInput.value.trim() || 'Anonymer Mutmacher';
+      const name = playerNameInput.value.trim() || 'Mut-Meister';
       const today = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' });
-      leaderboard.push({ name: name, score: score, date: today });
+      leaderboard.push({ name: name, score: currentScoreToSave, date: today });
       leaderboard.sort((a, b) => b.score - a.score);
       saveLeaderboard(leaderboard);
-
-      currentHighscore = Math.max(...leaderboard.map(x => x.score));
-      gameHighscoreSpan.textContent = currentHighscore;
 
       scoreSubmitDialog.classList.remove('show');
       renderLeaderboard(name);
       highscoreCard.classList.add('show');
       playSound('score');
-      showToast(`Super Leistung, ${name}! In Bestenliste verewigt! 🏅`);
+      showToast(`Super, ${name}! In Bestenliste verewigt! 🏅`);
     }
 
-    gameBtn.addEventListener('click', () => {
-      portalView.style.display = 'none';
-      gameView.style.display = 'flex';
-      scoreSubmitDialog.classList.remove('show');
-      highscoreCard.classList.remove('show');
-      startGame();
-    });
+    /* ==========================================================
+       8. GAME 1: ZWEIFEL-BUSTER (Anti-Rage & Satisfying)
+       ========================================================== */
+    const busterCanvas = document.getElementById('busterCanvas');
+    const busterCtx = busterCanvas.getContext('2d');
+    const busterScoreSpan = document.getElementById('buster-score');
+    const busterTimeSpan = document.getElementById('buster-time');
+    const restartBusterBtn = document.getElementById('restart-buster-btn');
 
-    exitGameBtn.addEventListener('click', () => {
-      stopGame();
-      gameView.style.display = 'none';
-      portalView.style.display = 'flex';
-    });
+    let busterScore = 0;
+    let busterTimeLeft = 30;
+    let busterTimer = null;
+    let busterActive = false;
+    let busterLoopId = null;
 
-    restartGameBtn.addEventListener('click', () => {
-      scoreSubmitDialog.classList.remove('show');
-      startGame();
-    });
+    let targets = [];
+    let splats = [];
 
-    let player = {
-      x: 90,
-      y: 180,
-      radius: 18,
-      vy: 0,
-      gravity: 0.38,
-      jumpForce: -7.5,
-      trail: []
-    };
-
-    let gates = [];
-    let gameSpeed = 2.8;
-    let frameCount = 0;
-    let gameOver = false;
-    let encouragingMessage = "";
-
-    const encouragementList = [
-      "Mut bedeutet, nach jedem Fall wieder aufzustehen!",
-      "Starke Leistung! Jedes geöffnete Tor bringt dich weiter.",
-      "Selbst erfahrene Hörmann Meister haben klein angefangen. Gleich noch einmal!",
-      "Ein Hindernis ist nur ein Test für deine Entschlossenheit.",
-      "Du hast den Mut-Funken in dir – pack es gleich nochmal an!"
+    const doubtsList = [
+      "Zweifel", "Angst", "Aufschieberitis", "Bequemlichkeit",
+      "Montagsblues", "Was denken die?", "Geht nicht", "Morgen reicht auch",
+      "Zu schwer", "Unsicherheit", "Fehlerangst"
     ];
 
-    function startGame() {
-      score = 0;
-      gameScoreSpan.textContent = '0';
-      gameSpeed = 2.8;
-      frameCount = 0;
-      gameOver = false;
-      encouragingMessage = "";
+    function startBusterGame() {
+      busterScore = 0;
+      busterScoreSpan.textContent = '0';
+      busterTimeLeft = 30;
+      busterTimeSpan.textContent = '30s';
+      targets = [];
+      splats = [];
       scoreSubmitDialog.classList.remove('show');
+      highscoreCard.classList.remove('show');
 
-      player.y = canvas.height / 2;
-      player.vy = 0;
-      player.trail = [];
-      gates = [];
+      busterActive = true;
+      if (busterTimer) clearInterval(busterTimer);
+      busterTimer = setInterval(() => {
+        if (!busterActive) return;
+        busterTimeLeft--;
+        busterTimeSpan.textContent = `${busterTimeLeft}s`;
+        if (busterTimeLeft <= 0) {
+          endBusterGame();
+        }
+      }, 1000);
 
-      spawnGate(canvas.width + 100);
-      spawnGate(canvas.width + 360);
-
-      gameActive = true;
-      if (gameLoopId) cancelAnimationFrame(gameLoopId);
-      gameLoop();
+      if (busterLoopId) cancelAnimationFrame(busterLoopId);
+      busterLoop();
       playSound('mut');
     }
 
-    function stopGame() {
-      gameActive = false;
-      if (gameLoopId) cancelAnimationFrame(gameLoopId);
+    function stopBusterGame() {
+      busterActive = false;
+      if (busterTimer) clearInterval(busterTimer);
+      if (busterLoopId) cancelAnimationFrame(busterLoopId);
     }
 
-    function spawnGate(posX) {
-      const gap = 135;
-      const minHeight = 45;
-      const maxHeight = canvas.height - gap - minHeight;
+    restartBusterBtn.addEventListener('click', startBusterGame);
+
+    function spawnBusterTarget() {
+      const isPowerup = Math.random() < 0.2;
+      const radius = isPowerup ? 30 : Math.floor(Math.random() * 15 + 32);
+      const x = Math.random() * (busterCanvas.width - radius * 2) + radius;
+      const y = Math.random() * (busterCanvas.height - radius * 2) + radius;
+
+      targets.push({
+        x: x,
+        y: y,
+        radius: radius,
+        maxLife: isPowerup ? 120 : 160,
+        life: isPowerup ? 120 : 160,
+        isPowerup: isPowerup,
+        text: isPowerup ? "HÖRMANN POWER" : doubtsList[Math.floor(Math.random() * doubtsList.length)],
+        color: isPowerup ? "#f59c00" : "#ef4444"
+      });
+    }
+
+    busterCanvas.addEventListener('pointerdown', (e) => {
+      if (!busterActive) return;
+      const rect = busterCanvas.getBoundingClientRect();
+      const scaleX = busterCanvas.width / rect.width;
+      const scaleY = busterCanvas.height / rect.height;
+      const clickX = (e.clientX - rect.left) * scaleX;
+      const clickY = (e.clientY - rect.top) * scaleY;
+
+      let hit = false;
+      for (let i = targets.length - 1; i >= 0; i--) {
+        const t = targets[i];
+        const dist = Math.hypot(clickX - t.x, clickY - t.y);
+        if (dist <= t.radius + 8) {
+          hit = true;
+          if (t.isPowerup) {
+            busterScore += 100;
+            playSound('powerup');
+            triggerParticleEffect('gold');
+            splats.push({ x: t.x, y: t.y, text: "+100 STAHLHARTER MUT!", color: "#f59c00", alpha: 1 });
+          } else {
+            busterScore += 35;
+            playSound('smash');
+            splats.push({ x: t.x, y: t.y, text: "+35 ZERSCHLAGEN!", color: "#ffffff", alpha: 1 });
+          }
+          busterScoreSpan.textContent = busterScore;
+          targets.splice(i, 1);
+          break;
+        }
+      }
+
+      if (!hit) {
+        splats.push({ x: clickX, y: clickY, text: "DANEBEN!", color: "#9ca3af", alpha: 0.8 });
+      }
+    });
+
+    function busterLoop() {
+      if (!busterActive) return;
+
+      // Spawn control
+      if (Math.random() < 0.05 && targets.length < 6) {
+        spawnBusterTarget();
+      }
+
+      // Draw Background
+      busterCtx.fillStyle = '#001830';
+      busterCtx.fillRect(0, 0, busterCanvas.width, busterCanvas.height);
+
+      // Grid
+      busterCtx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+      for (let x = 0; x < busterCanvas.width; x += 35) {
+        busterCtx.beginPath();
+        busterCtx.moveTo(x, 0);
+        busterCtx.lineTo(x, busterCanvas.height);
+        busterCtx.stroke();
+      }
+
+      // Update & Draw targets
+      for (let i = targets.length - 1; i >= 0; i--) {
+        const t = targets[i];
+        t.life--;
+        if (t.life <= 0) {
+          targets.splice(i, 1);
+          continue;
+        }
+
+        const scale = Math.sin((t.life / t.maxLife) * Math.PI);
+        const currentR = Math.max(10, t.radius * scale);
+
+        // Draw Target Circle
+        busterCtx.save();
+        busterCtx.translate(t.x, t.y);
+
+        if (t.isPowerup) {
+          busterCtx.fillStyle = '#f59c00';
+          busterCtx.beginPath();
+          busterCtx.arc(0, 0, currentR, 0, Math.PI * 2);
+          busterCtx.fill();
+          busterCtx.strokeStyle = '#ffffff';
+          busterCtx.lineWidth = 3;
+          busterCtx.stroke();
+
+          busterCtx.fillStyle = '#002d62';
+          busterCtx.font = 'bold 13px Inter, sans-serif';
+          busterCtx.textAlign = 'center';
+          busterCtx.textBaseline = 'middle';
+          busterCtx.fillText('HÖRMANN', 0, 0);
+        } else {
+          busterCtx.fillStyle = 'rgba(239, 68, 68, 0.9)';
+          busterCtx.beginPath();
+          busterCtx.arc(0, 0, currentR, 0, Math.PI * 2);
+          busterCtx.fill();
+          busterCtx.strokeStyle = '#ffffff';
+          busterCtx.lineWidth = 2;
+          busterCtx.stroke();
+
+          busterCtx.fillStyle = '#ffffff';
+          busterCtx.font = 'bold 11px Inter, sans-serif';
+          busterCtx.textAlign = 'center';
+          busterCtx.textBaseline = 'middle';
+          busterCtx.fillText(t.text, 0, 0);
+        }
+        busterCtx.restore();
+      }
+
+      // Draw floating Splat texts
+      for (let i = splats.length - 1; i >= 0; i--) {
+        const s = splats[i];
+        s.y -= 1.2;
+        s.alpha -= 0.03;
+
+        busterCtx.save();
+        busterCtx.fillStyle = s.color;
+        busterCtx.globalAlpha = Math.max(0, s.alpha);
+        busterCtx.font = '800 14px Inter, sans-serif';
+        busterCtx.textAlign = 'center';
+        busterCtx.fillText(s.text, s.x, s.y);
+        busterCtx.restore();
+
+        if (s.alpha <= 0) splats.splice(i, 1);
+      }
+
+      busterLoopId = requestAnimationFrame(busterLoop);
+    }
+
+    function endBusterGame() {
+      stopBusterGame();
+      playSound('score');
+      triggerParticleEffect('confetti');
+
+      busterCtx.fillStyle = 'rgba(0, 31, 59, 0.9)';
+      busterCtx.fillRect(0, 0, busterCanvas.width, busterCanvas.height);
+
+      busterCtx.fillStyle = '#f59c00';
+      busterCtx.font = '800 28px Inter, sans-serif';
+      busterCtx.textAlign = 'center';
+      busterCtx.fillText('ZEIT ABGELAUFEN!', busterCanvas.width / 2, 120);
+
+      busterCtx.fillStyle = '#ffffff';
+      busterCtx.font = '700 20px Inter, sans-serif';
+      busterCtx.fillText(`Zweifel zerschlagen: ${busterScore} Mut-Punkte!`, busterCanvas.width / 2, 165);
+
+      promptScoreSubmit(busterScore, 'buster');
+    }
+
+    /* ==========================================================
+       9. GAME 2: DIE MUT-PROBE (Risk & Reward)
+       ========================================================== */
+    const nerveBankedSpan = document.getElementById('nerve-banked');
+    const nerveCurrentSpan = document.getElementById('nerve-current');
+    const nerveRoundSpan = document.getElementById('nerve-round');
+    const nerveTitle = document.getElementById('nerve-title');
+    const bankNerveBtn = document.getElementById('bank-nerve-btn');
+    const nextNerveRoundBtn = document.getElementById('next-nerve-round-btn');
+    const restartNerveBtn = document.getElementById('restart-nerve-btn');
+
+    let nerveRound = 1;
+    let nerveCurrentStake = 100;
+    let nerveBanked = 0;
+    let nerveCanClick = true;
+
+    function startNerveGame() {
+      nerveRound = 1;
+      nerveCurrentStake = 100;
+      nerveBanked = 0;
+      nerveCanClick = true;
+      nerveRoundSpan.textContent = '1';
+      nerveCurrentSpan.textContent = '100';
+      nerveBankedSpan.textContent = '0';
+      nerveTitle.textContent = "Runde 1: Welches Tor wagst du zu öffnen?";
+      bankNerveBtn.style.display = 'inline-flex';
+      nextNerveRoundBtn.style.display = 'none';
+      restartNerveBtn.style.display = 'none';
+      resetDoorsUI();
+    }
+
+    function resetDoorsUI() {
+      nerveCanClick = true;
+      for (let i = 1; i <= 3; i++) {
+        const door = document.getElementById(`door-${i}`);
+        door.classList.remove('opened');
+        document.getElementById(`door-content-${i}`).innerHTML = "";
+      }
+    }
+
+    // Door click handler
+    for (let i = 1; i <= 3; i++) {
+      const door = document.getElementById(`door-${i}`);
+      door.addEventListener('click', () => {
+        if (!nerveCanClick) return;
+        openMysteryDoor(i);
+      });
+    }
+
+    function openMysteryDoor(chosenIndex) {
+      nerveCanClick = false;
+      playSound('gate');
+
+      // 1 out of 3 doors has the alarm
+      const alarmDoorIndex = Math.floor(Math.random() * 3) + 1;
+      const isAlarm = (chosenIndex === alarmDoorIndex);
+
+      for (let i = 1; i <= 3; i++) {
+        const d = document.getElementById(`door-${i}`);
+        d.classList.add('opened');
+        const content = document.getElementById(`door-content-${i}`);
+
+        if (i === alarmDoorIndex) {
+          content.innerHTML = `
+            <span style="font-size:2rem;">⚠️</span>
+            <strong style="color:#ef4444; font-size:1.1rem; margin-top:4px;">ZWEIFEL-ALARM!</strong>
+            <small style="color:#cbd5e1; font-size:0.75rem;">Mut verloren!</small>
+          `;
+        } else {
+          content.innerHTML = `
+            <span style="font-size:2rem;">🌟</span>
+            <strong style="color:var(--hoermann-orange); font-size:1.1rem; margin-top:4px;">+${nerveCurrentStake} PUNKTE!</strong>
+            <small style="color:#cbd5e1; font-size:0.75rem;">Mut-Bonus!</small>
+          `;
+        }
+      }
+
+      if (isAlarm) {
+        playSound('alarm');
+        nerveTitle.textContent = "Oh nein! Der Zweifel-Alarm hat dich erwischt!";
+        bankNerveBtn.style.display = 'none';
+        nextNerveRoundBtn.style.display = 'none';
+        restartNerveBtn.style.display = 'inline-flex';
+      } else {
+        playSound('powerup');
+        triggerParticleEffect('gold');
+        nerveCurrentStake = Math.floor(nerveCurrentStake * 1.8 + 50);
+        nerveCurrentSpan.textContent = nerveCurrentStake;
+        nerveTitle.textContent = `Geschafft! Einsatz verdoppelt! Noch mehr Mut wagen?`;
+
+        bankNerveBtn.style.display = 'inline-flex';
+        nextNerveRoundBtn.style.display = 'inline-flex';
+        restartNerveBtn.style.display = 'none';
+      }
+    }
+
+    nextNerveRoundBtn.addEventListener('click', () => {
+      nerveRound++;
+      nerveRoundSpan.textContent = nerveRound;
+      nerveTitle.textContent = `Runde ${nerveRound}: Welches Tor wagst du zu öffnen?`;
+      nextNerveRoundBtn.style.display = 'none';
+      resetDoorsUI();
+    });
+
+    bankNerveBtn.addEventListener('click', () => {
+      nerveBanked += nerveCurrentStake;
+      nerveBankedSpan.textContent = nerveBanked;
+      playSound('score');
+      triggerParticleEffect('confetti');
+      showToast(`Fantastisch! Du hast ${nerveBanked} Mut-Punkte sicher mitgenommen! 🏆`);
+      nerveTitle.textContent = `Erfolgreich gesichert: ${nerveBanked} Punkte!`;
+      bankNerveBtn.style.display = 'none';
+      nextNerveRoundBtn.style.display = 'none';
+      restartNerveBtn.style.display = 'inline-flex';
+    });
+
+    restartNerveBtn.addEventListener('click', startNerveGame);
+
+    /* ==========================================================
+       10. GAME 3: TOR-PARCOURS (Flappy)
+       ========================================================== */
+    const parcoursCanvas = document.getElementById('parcoursCanvas');
+    const parcoursCtx = parcoursCanvas.getContext('2d');
+    const parcoursScoreSpan = document.getElementById('parcours-score');
+    const parcoursHighscoreSpan = document.getElementById('parcours-highscore');
+    const restartParcoursBtn = document.getElementById('restart-parcours-btn');
+
+    let parcoursScore = 0;
+    let parcoursHighscore = 0;
+    let parcoursActive = false;
+    let parcoursLoopId = null;
+    let parcoursGameOver = false;
+
+    let pPlayer = {
+      x: 90,
+      y: 180,
+      radius: 17,
+      vy: 0,
+      gravity: 0.36,
+      jumpForce: -7.2,
+      trail: []
+    };
+    let pGates = [];
+    let pSpeed = 2.6;
+
+    function startParcoursGame() {
+      parcoursScore = 0;
+      parcoursScoreSpan.textContent = '0';
+      parcoursSpeed = 2.6;
+      parcoursGameOver = false;
+      pPlayer.y = parcoursCanvas.height / 2;
+      pPlayer.vy = 0;
+      pPlayer.trail = [];
+      pGates = [];
+
+      // Fairer gap size (160 instead of 135) for much smoother, less rage-inducing gameplay!
+      spawnParcoursGate(parcoursCanvas.width + 100);
+      spawnParcoursGate(parcoursCanvas.width + 380);
+
+      parcoursActive = true;
+      if (parcoursLoopId) cancelAnimationFrame(parcoursLoopId);
+      parcoursLoop();
+      playSound('mut');
+    }
+
+    function stopParcoursGame() {
+      parcoursActive = false;
+      if (parcoursLoopId) cancelAnimationFrame(parcoursLoopId);
+    }
+
+    restartParcoursBtn.addEventListener('click', startParcoursGame);
+
+    function spawnParcoursGate(posX) {
+      const gap = 160; // Fair gap
+      const minHeight = 40;
+      const maxHeight = parcoursCanvas.height - gap - minHeight;
       const topHeight = Math.floor(Math.random() * (maxHeight - minHeight) + minHeight);
 
-      const gateTypes = [
-        { name: 'Sektionaltor', color: '#002d62', accent: '#f59c00' },
-        { name: 'Schwingtor', color: '#1e3a8a', accent: '#38bdf8' },
-        { name: 'Stahlzarge', color: '#1f2937', accent: '#fbbf24' },
-        { name: 'Feuerschutztür', color: '#991b1b', accent: '#f87171' }
-      ];
-      const type = gateTypes[Math.floor(Math.random() * gateTypes.length)];
-
-      gates.push({
+      pGates.push({
         x: posX,
         topHeight: topHeight,
         bottomY: topHeight + gap,
-        width: 58,
-        type: type,
+        width: 56,
         passed: false
       });
     }
 
-    function playerJump() {
-      if (gameOver) {
-        if (!scoreSubmitDialog.classList.contains('show')) {
-          startGame();
-        }
+    function parcoursJump() {
+      if (parcoursGameOver) {
+        startParcoursGame();
         return;
       }
-      player.vy = player.jumpForce;
+      pPlayer.vy = pPlayer.jumpForce;
       playSound('jump');
     }
 
     window.addEventListener('keydown', (e) => {
       if (e.target.tagName === 'INPUT') return;
-      if (e.code === 'Space' && gameView.style.display !== 'none') {
+      if (e.code === 'Space' && parcoursView.style.display !== 'none') {
         e.preventDefault();
-        playerJump();
+        parcoursJump();
       }
     });
 
-    canvas.addEventListener('pointerdown', (e) => {
+    parcoursCanvas.addEventListener('pointerdown', (e) => {
       e.preventDefault();
-      playerJump();
+      parcoursJump();
     });
 
-    function gameLoop() {
-      if (!gameActive) return;
-      updateGame();
-      drawGame();
-      gameLoopId = requestAnimationFrame(gameLoop);
+    function parcoursLoop() {
+      if (!parcoursActive) return;
+
+      if (!parcoursGameOver) {
+        pPlayer.vy += pPlayer.gravity;
+        pPlayer.y += pPlayer.vy;
+
+        if (pPlayer.y - pPlayer.radius < 0) {
+          pPlayer.y = pPlayer.radius;
+          pPlayer.vy = 0;
+        }
+        if (pPlayer.y + pPlayer.radius > parcoursCanvas.height) {
+          handleParcoursOver();
+        }
+
+        for (let i = pGates.length - 1; i >= 0; i--) {
+          const g = pGates[i];
+          g.x -= pSpeed;
+
+          if (!g.passed && g.x + g.width < pPlayer.x) {
+            g.passed = true;
+            parcoursScore++;
+            parcoursScoreSpan.textContent = parcoursScore;
+            playSound('score');
+            if (parcoursScore > parcoursHighscore) {
+              parcoursHighscore = parcoursScore;
+              parcoursHighscoreSpan.textContent = parcoursHighscore;
+            }
+          }
+
+          if (pPlayer.x + pPlayer.radius > g.x && pPlayer.x - pPlayer.radius < g.x + g.width) {
+            if (pPlayer.y - pPlayer.radius < g.topHeight || pPlayer.y + pPlayer.radius > g.bottomY) {
+              handleParcoursOver();
+            }
+          }
+
+          if (g.x + g.width < -10) pGates.splice(i, 1);
+        }
+
+        const lastGate = pGates[pGates.length - 1];
+        if (lastGate && lastGate.x < parcoursCanvas.width - 240) {
+          spawnParcoursGate(parcoursCanvas.width);
+        }
+      }
+
+      // Draw
+      parcoursCtx.fillStyle = '#001a35';
+      parcoursCtx.fillRect(0, 0, parcoursCanvas.width, parcoursCanvas.height);
+
+      pGates.forEach(g => {
+        parcoursCtx.fillStyle = '#002d62';
+        parcoursCtx.fillRect(g.x, 0, g.width, g.topHeight);
+        parcoursCtx.fillRect(g.x, g.bottomY, g.width, parcoursCanvas.height - g.bottomY);
+
+        parcoursCtx.fillStyle = '#f59c00';
+        parcoursCtx.fillRect(g.x + 3, g.topHeight - 5, g.width - 6, 5);
+        parcoursCtx.fillRect(g.x + 3, g.bottomY, g.width - 6, 5);
+      });
+
+      // Draw Player
+      parcoursCtx.fillStyle = '#f59c00';
+      parcoursCtx.beginPath();
+      parcoursCtx.arc(pPlayer.x, pPlayer.y, pPlayer.radius, 0, Math.PI * 2);
+      parcoursCtx.fill();
+      parcoursCtx.strokeStyle = '#ffffff';
+      parcoursCtx.lineWidth = 2.5;
+      parcoursCtx.stroke();
+
+      if (parcoursGameOver) {
+        parcoursCtx.fillStyle = 'rgba(0, 31, 59, 0.88)';
+        parcoursCtx.fillRect(0, 0, parcoursCanvas.width, parcoursCanvas.height);
+
+        parcoursCtx.fillStyle = '#f59c00';
+        parcoursCtx.font = '800 24px Inter, sans-serif';
+        parcoursCtx.textAlign = 'center';
+        parcoursCtx.fillText('PARCOURS BEENDET', parcoursCanvas.width / 2, 130);
+
+        parcoursCtx.fillStyle = '#ffffff';
+        parcoursCtx.font = '700 18px Inter, sans-serif';
+        parcoursCtx.fillText(`Tore gemeistert: ${parcoursScore}`, parcoursCanvas.width / 2, 170);
+
+        parcoursCtx.fillStyle = '#f59c00';
+        parcoursCtx.beginPath();
+        parcoursCtx.roundRect(parcoursCanvas.width / 2 - 100, 210, 200, 42, 6);
+        parcoursCtx.fill();
+
+        parcoursCtx.fillStyle = '#ffffff';
+        parcoursCtx.font = '800 14px Inter, sans-serif';
+        parcoursCtx.fillText('NOCHMAL ↺', parcoursCanvas.width / 2, 236);
+      }
+
+      parcoursLoopId = requestAnimationFrame(parcoursLoop);
     }
 
-    function updateGame() {
-      if (gameOver) return;
-
-      frameCount++;
-      player.vy += player.gravity;
-      player.y += player.vy;
-
-      if (frameCount % 2 === 0) {
-        player.trail.push({ x: player.x - 10, y: player.y, alpha: 0.8 });
-      }
-      for (let i = player.trail.length - 1; i >= 0; i--) {
-        player.trail[i].x -= gameSpeed;
-        player.trail[i].alpha -= 0.04;
-        if (player.trail[i].alpha <= 0) player.trail.splice(i, 1);
-      }
-
-      if (player.y - player.radius < 0) {
-        player.y = player.radius;
-        player.vy = 0;
-      }
-      if (player.y + player.radius > canvas.height) {
-        handleGameOver();
-      }
-
-      for (let i = gates.length - 1; i >= 0; i--) {
-        const g = gates[i];
-        g.x -= gameSpeed;
-
-        if (!g.passed && g.x + g.width < player.x) {
-          g.passed = true;
-          score++;
-          gameScoreSpan.textContent = score;
-          playSound('score');
-
-          if (score > currentHighscore) {
-            currentHighscore = score;
-            gameHighscoreSpan.textContent = currentHighscore;
-          }
-
-          if (score % 4 === 0 && gameSpeed < 5.5) {
-            gameSpeed += 0.25;
-          }
-        }
-
-        if (
-          player.x + player.radius > g.x &&
-          player.x - player.radius < g.x + g.width
-        ) {
-          if (player.y - player.radius < g.topHeight || player.y + player.radius > g.bottomY) {
-            handleGameOver();
-          }
-        }
-
-        if (g.x + g.width < -10) {
-          gates.splice(i, 1);
-        }
-      }
-
-      const lastGate = gates[gates.length - 1];
-      if (lastGate && lastGate.x < canvas.width - 230) {
-        spawnGate(canvas.width);
-      }
-    }
-
-    function handleGameOver() {
-      if (gameOver) return;
-      gameOver = true;
+    function handleParcoursOver() {
+      if (parcoursGameOver) return;
+      parcoursGameOver = true;
       playSound('hit');
-      encouragingMessage = encouragementList[Math.floor(Math.random() * encouragementList.length)];
       triggerParticleEffect('confetti');
-
-      if (score > 0) {
-        submitDialogTitle.textContent = score > currentHighscore 
-          ? `🎉 Neuer Hörmann Mut-Rekord: ${score} Tore!` 
-          : `Klasse Ergebnis: ${score} gemeisterte Tore!`;
-        scoreSubmitDialog.classList.add('show');
-        setTimeout(() => { playerNameInput.focus(); }, 150);
-      }
-    }
-
-    function drawGame() {
-      ctx.fillStyle = '#001a35';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
-      ctx.lineWidth = 1;
-      for (let x = 0; x < canvas.width; x += 30) {
-        ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, canvas.height);
-        ctx.stroke();
-      }
-      for (let y = 0; y < canvas.height; y += 30) {
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(canvas.width, y);
-        ctx.stroke();
-      }
-
-      gates.forEach(g => {
-        drawSectionalDoor(g.x, 0, g.width, g.topHeight, g.type, true);
-        drawSectionalDoor(g.x, g.bottomY, g.width, canvas.height - g.bottomY, g.type, false);
-
-        ctx.fillStyle = '#f59c00';
-        ctx.fillRect(g.x + 4, g.topHeight - 5, g.width - 8, 5);
-        ctx.fillRect(g.x + 4, g.bottomY, g.width - 8, 5);
-      });
-
-      player.trail.forEach(t => {
-        ctx.fillStyle = `rgba(245, 156, 0, ${t.alpha * 0.7})`;
-        ctx.beginPath();
-        ctx.arc(t.x, t.y, player.radius * 0.55 * t.alpha, 0, Math.PI * 2);
-        ctx.fill();
-      });
-
-      ctx.save();
-      ctx.translate(player.x, player.y);
-
-      const glowGrad = ctx.createRadialGradient(0, 0, 5, 0, 0, player.radius + 10);
-      glowGrad.addColorStop(0, 'rgba(245, 156, 0, 0.9)');
-      glowGrad.addColorStop(0.6, 'rgba(245, 156, 0, 0.3)');
-      glowGrad.addColorStop(1, 'rgba(245, 156, 0, 0)');
-      ctx.fillStyle = glowGrad;
-      ctx.beginPath();
-      ctx.arc(0, 0, player.radius + 10, 0, Math.PI * 2);
-      ctx.fill();
-
-      const orbGrad = ctx.createLinearGradient(-player.radius, -player.radius, player.radius, player.radius);
-      orbGrad.addColorStop(0, '#ffffff');
-      orbGrad.addColorStop(0.3, '#ffaa1d');
-      orbGrad.addColorStop(1, '#e08800');
-      ctx.fillStyle = orbGrad;
-      ctx.beginPath();
-      ctx.arc(0, 0, player.radius, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.strokeStyle = '#002d62';
-      ctx.lineWidth = 2.5;
-      ctx.stroke();
-
-      ctx.fillStyle = '#002d62';
-      ctx.font = 'bold 15px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('H', 0, 1);
-
-      ctx.restore();
-
-      if (gameOver) {
-        ctx.fillStyle = 'rgba(0, 31, 59, 0.88)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        ctx.fillStyle = '#f59c00';
-        ctx.font = '800 26px Inter, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('MUT-PARCOURS BEENDET', canvas.width / 2, 95);
-
-        ctx.fillStyle = '#ffffff';
-        ctx.font = '700 19px Inter, sans-serif';
-        ctx.fillText(`Erfolgreich gemeisterte Tore: ${score}`, canvas.width / 2, 135);
-
-        ctx.fillStyle = '#9ca3af';
-        ctx.font = 'italic 14px Inter, sans-serif';
-        ctx.fillText(`„${encouragingMessage}“`, canvas.width / 2, 175);
-
-        ctx.fillStyle = '#f59c00';
-        ctx.beginPath();
-        ctx.roundRect(canvas.width / 2 - 110, 215, 220, 44, 6);
-        ctx.fill();
-
-        ctx.fillStyle = '#ffffff';
-        ctx.font = '800 15px Inter, sans-serif';
-        ctx.fillText('NOCHMAL VERSUCHEN ↺', canvas.width / 2, 242);
-
-        ctx.fillStyle = '#9ca3af';
-        ctx.font = '12px Inter, sans-serif';
-        ctx.fillText('Oder Leertaste / Tippen', canvas.width / 2, 290);
-      }
-    }
-
-    function drawSectionalDoor(x, y, width, height, type, isTop) {
-      if (height <= 0) return;
-
-      ctx.fillStyle = type.color;
-      ctx.fillRect(x, y, width, height);
-
-      const slatHeight = 22;
-      ctx.strokeStyle = 'rgba(0, 0, 0, 0.45)';
-      ctx.lineWidth = 2;
-
-      for (let s = y; s < y + height; s += slatHeight) {
-        ctx.beginPath();
-        ctx.moveTo(x, s);
-        ctx.lineTo(x + width, s);
-        ctx.stroke();
-
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
-        ctx.beginPath();
-        ctx.moveTo(x + 2, s + 1);
-        ctx.lineTo(x + width - 2, s + 1);
-        ctx.stroke();
-      }
-
-      ctx.fillStyle = '#374151';
-      ctx.fillRect(x, y, 4, height);
-      ctx.fillRect(x + width - 4, y, 4, height);
-
-      if (height > 40) {
-        ctx.save();
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.28)';
-        ctx.font = '900 9px Inter, sans-serif';
-        ctx.textAlign = 'center';
-        const labelY = isTop ? height - 15 : y + 25;
-        ctx.fillText(type.name.toUpperCase(), x + width / 2, labelY);
-        ctx.restore();
-      }
     }
 
   </script>
