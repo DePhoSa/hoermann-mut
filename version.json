@@ -1,5 +1,5 @@
 {
-  "version": "2.5.0",
-  "releasedAt": "2026-10-23T09:25:00Z",
-  "notes": "Neu: Spieler-Ideen-Box bei Highscore/Top-3 + Permanenter Online Live-Chat mit Admin-Rechten!"
+  "version": "2.6.0",
+  "releasedAt": "2026-10-23T10:01:00Z",
+  "notes": "Neu: Fester Spielername pro Gerät (kein Eintragen unter fremden Namen mehr!) + 0,0 Sek. Sofort-Speichern!"
 }

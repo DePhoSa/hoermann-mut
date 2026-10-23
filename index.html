@@ -1624,9 +1624,17 @@
         <textarea id="player-idea-input" class="idea-ticket-textarea" maxlength="500" placeholder="Deine Idee(n) fürs Spiel (optional) – z.B. neues Hindernis, lustiger Spruch, geheimes Extra..."></textarea>
       </div>
 
-      <div class="submit-form">
-        <input type="text" id="player-name-input" class="submit-input" maxlength="20" placeholder="Dein Name oder Spitzname">
-        <button class="submit-btn" id="save-score-btn">In Bestenliste eintragen 🏆</button>
+      <div class="submit-form" style="flex-direction:column; align-items:center; gap:0.65rem;">
+        <!-- Ansicht, wenn der Spieler auf diesem Gerät bereits seinen festen Namen hat (GESPERRT gegen Namens-Klau & Doppel-Eintrag!) -->
+        <div id="locked-player-badge" style="display:none; align-items:center; justify-content:center; gap:0.55rem; background:#f8fafc; border:2px solid var(--hoermann-blue); border-radius:6px; padding:0.6rem 1.1rem; font-size:0.95rem; color:var(--hoermann-blue); font-weight:800; width:100%; max-width:460px;">
+          <span>🔒 Dein fester Spielername: <strong id="locked-player-name-text" style="color:var(--hoermann-orange); font-size:1.05rem;"></strong></span>
+        </div>
+        <!-- Eingabefeld erscheint NUR beim allerersten Mal, wenn auf diesem Gerät noch kein Name festgelegt wurde -->
+        <div id="first-time-name-row" style="display:flex; flex-direction:column; gap:4px; width:100%; max-width:460px;">
+          <input type="text" id="player-name-input" class="submit-input" maxlength="20" placeholder="Einmalig deinen festen Spielernamen wählen..." style="width:100%;">
+          <small style="font-size:0.75rem; color:#64748b;">🔒 Hinweis: Dein Name wird nach dem ersten Speichern fest mit deinem Gerät verknüpft (kein Überschreiben fremder Namen möglich).</small>
+        </div>
+        <button class="submit-btn" id="save-score-btn" style="width:100%; max-width:460px; justify-content:center;">⚡ Sofort in Bestenliste speichern 🏆</button>
       </div>
     </div>
 
@@ -1737,7 +1745,7 @@
   <footer>
     Hörmann Mut-Portal &bull; Sektionaltore &bull; Schwingtore &bull; Türen &bull; Stahlzargen &bull; Lagermeister Nico &amp; Dennis Ressemann Edition
     <div style="margin-top:4px; font-size:0.74rem; color:rgba(255,255,255,0.5);">
-      <span id="app-version-badge">🟢 Version 2.5.0 (Live Auto-Update, Ideen-Box &amp; Online-Chat aktiv)</span>
+      <span id="app-version-badge">🟢 Version 2.6.0 (Fester Spieler-Namensschutz, 0,0s Sofort-Speichern, Ideen-Box &amp; Live-Chat)</span>
     </div>
   </footer>
 
@@ -2659,23 +2667,179 @@
     /* ==========================================================
        7b. GLOBAL ONLINE CLOUD HUB (HIGHSCORES, IDEEN-BOX, LIVE-CHAT & ZWANGSUPDATE)
        ========================================================== */
-    const APP_VERSION           = '2.5.0';
+    const APP_VERSION           = '2.6.0';
     const NTFY_HUB_URL          = 'https://ntfy.sh/hoermann_mut_dephosa_hub_v3';
     const NTFY_LEGACY_URL       = 'https://ntfy.sh/hoermann_mut_dephosa_online_lb_v2';
     const BYTEBIN_POST_URL      = 'https://bytebin.lucko.me/post';
     const BYTEBIN_BASE_URL      = 'https://bytebin.lucko.me/';
-    const INITIAL_SNAPSHOT_KEY  = 'HhqiUAlDhY';
+    const INITIAL_SNAPSHOT_KEY  = '3clXvrUzSU';
     const cloudSyncBadge        = document.getElementById('cloud-sync-badge');
     const submitHighscoreFeedback = document.getElementById('submit-highscore-feedback');
     const ideaTicketBox         = document.getElementById('idea-ticket-box');
     const ideaTicketBadge       = document.getElementById('idea-ticket-badge');
     const ideaTicketReason      = document.getElementById('idea-ticket-reason');
     const playerIdeaInput       = document.getElementById('player-idea-input');
+    const lockedPlayerBadge     = document.getElementById('locked-player-badge');
+    const lockedPlayerNameText  = document.getElementById('locked-player-name-text');
+    const firstTimeNameRow      = document.getElementById('first-time-name-row');
 
     let pendingGameDisplayName  = '';
     let updateForcedAlready     = false;
     let currentSnapshotKey      = localStorage.getItem('hoermann_cloud_snapshot_key_v3') || INITIAL_SNAPSHOT_KEY;
     let currentIdeaEligibility  = { eligible: false, reason: '', badge: '', oldRank: null, newRank: null, rule: 'NONE' };
+
+    // Feste Geräte-ID & Namens-Eigentümerschaft (verhindert, dass man fremde Namen eingibt oder sich mehrfach einträgt!)
+    const DEVICE_TOKEN_KEY      = 'hoermann_device_token_v1';
+    const LOCKED_NAME_KEY       = 'hoermann_locked_player_name_v1';
+    const NAME_OWNERS_KEY       = 'hoermann_name_owners_map_v1';
+
+    function getOrCreateDeviceToken() {
+      let token = '';
+      try {
+        token = localStorage.getItem(DEVICE_TOKEN_KEY) || '';
+        if (!token && window.name && window.name.includes('||DEVTOKEN:')) {
+          token = window.name.split('||DEVTOKEN:')[1].split('||')[0] || '';
+        }
+        if (!token) {
+          token = 'dev_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 10);
+        }
+        localStorage.setItem(DEVICE_TOKEN_KEY, token);
+      } catch (e) {
+        token = 'dev_fallback';
+      }
+      return token;
+    }
+
+    const MY_DEVICE_TOKEN = getOrCreateDeviceToken();
+
+    function getLockedPlayerName() {
+      try {
+        const locked = (localStorage.getItem(LOCKED_NAME_KEY) || '').trim();
+        if (locked) return locked;
+        const legacy = (localStorage.getItem('hoermann_player_name') || '').trim();
+        if (legacy) {
+          localStorage.setItem(LOCKED_NAME_KEY, legacy);
+          return legacy;
+        }
+      } catch (e) {}
+      return '';
+    }
+
+    function setLockedPlayerName(name) {
+      const clean = String(name || '').trim().slice(0, 20);
+      if (!clean) return;
+      try {
+        localStorage.setItem(LOCKED_NAME_KEY, clean);
+        localStorage.setItem('hoermann_player_name', clean);
+        const owners = loadNameOwnersMap();
+        const key = clean.toLowerCase();
+        if (!owners[key]) {
+          owners[key] = MY_DEVICE_TOKEN;
+          saveNameOwnersMap(owners);
+        }
+      } catch (e) {}
+      refreshLockedNameUi();
+    }
+
+    function loadNameOwnersMap() {
+      try {
+        const raw = localStorage.getItem(NAME_OWNERS_KEY);
+        if (raw) return JSON.parse(raw) || {};
+      } catch (e) {}
+      return {};
+    }
+
+    function saveNameOwnersMap(map) {
+      try {
+        localStorage.setItem(NAME_OWNERS_KEY, JSON.stringify(map || {}));
+      } catch (e) {}
+    }
+
+    // Prüft, ob ein Name bereits einem anderen Spieler/Gerät oder einem Hörmann-NPC gehört
+    function isNameTakenByAnotherPlayer(candidateName) {
+      const clean = String(candidateName || '').trim();
+      if (!clean) return { taken: false, reason: '' };
+      const key = clean.toLowerCase();
+      const myLocked = getLockedPlayerName().toLowerCase();
+
+      // Wenn es bereits der eigene feste Name auf diesem Gerät ist -> immer erlaubt!
+      if (myLocked && myLocked === key) {
+        return { taken: false, reason: '' };
+      }
+
+      // 1. Prüfen, ob es ein reservierter NPC-Name ist
+      const categories = ['forklift', 'mario', 'buster', 'nerve', 'parcours'];
+      for (const cat of categories) {
+        const npcs = defaultLeaderboards[cat] || [];
+        if (npcs.some(n => n.name.trim().toLowerCase() === key)) {
+          return {
+            taken: true,
+            reason: `Der Name „${clean}“ gehört einem festen Hörmann-Charakter. Bitte wähle deinen eigenen Spitznamen!`
+          };
+        }
+      }
+
+      // 2. Prüfen, ob ein anderes Gerät diesen Namen bereits registriert hat
+      const owners = loadNameOwnersMap();
+      if (owners[key] && owners[key] !== MY_DEVICE_TOKEN) {
+        return {
+          taken: true,
+          reason: `Der Name „${clean}“ ist bereits fest an einen anderen Spieler vergeben! Bitte wähle deinen eigenen Namen.`
+        };
+      }
+
+      // 3. Prüfen, ob der Name schon in den Online-Bestenlisten existiert (und nicht der eigene gespeicherte Name ist)
+      const master = loadMasterUserScores();
+      for (const cat of categories) {
+        const list = master[cat] || [];
+        if (list.some(entry => entry.name && entry.name.trim().toLowerCase() === key)) {
+          if (!owners[key] || owners[key] !== MY_DEVICE_TOKEN) {
+            return {
+              taken: true,
+              reason: `Der Name „${clean}“ steht bereits für einen anderen Spieler in der Bestenliste! Fremde Namen können nicht genutzt werden.`
+            };
+          }
+        }
+      }
+
+      return { taken: false, reason: '' };
+    }
+
+    function refreshLockedNameUi() {
+      const locked = getLockedPlayerName();
+      if (locked) {
+        if (playerNameInput) {
+          playerNameInput.value = locked;
+          playerNameInput.readOnly = true;
+        }
+        if (lockedPlayerBadge && lockedPlayerNameText) {
+          lockedPlayerNameText.textContent = locked;
+          lockedPlayerBadge.style.display = 'flex';
+        }
+        if (firstTimeNameRow) {
+          firstTimeNameRow.style.display = 'none';
+        }
+        const chatSenderEl = document.getElementById('chat-sender-input');
+        if (chatSenderEl) {
+          chatSenderEl.value = locked;
+          chatSenderEl.readOnly = true;
+          chatSenderEl.style.background = '#f1f5f9';
+          chatSenderEl.style.color = '#002d62';
+          chatSenderEl.style.fontWeight = '800';
+          chatSenderEl.title = 'Dein fester Spielername (identisch mit der Bestenliste)';
+        }
+      } else {
+        if (playerNameInput) {
+          playerNameInput.readOnly = false;
+        }
+        if (lockedPlayerBadge) {
+          lockedPlayerBadge.style.display = 'none';
+        }
+        if (firstTimeNameRow) {
+          firstTimeNameRow.style.display = 'flex';
+        }
+      }
+    }
 
     // Lokaler & Cloud-synchronisierter Status für Chat, gelöschte Nachrichten, Spieler-Ideen & Spieler-Meilensteine
     const CHAT_STORAGE_KEY      = 'hoermann_mut_live_chat_v3';
@@ -2959,6 +3123,17 @@
         });
       }
 
+      if (data.nameOwners && typeof data.nameOwners === 'object') {
+        const owners = loadNameOwnersMap();
+        Object.keys(data.nameOwners).forEach(k => {
+          if (data.nameOwners[k] && !owners[k]) {
+            owners[k] = String(data.nameOwners[k]);
+            changed = true;
+          }
+        });
+        saveNameOwnersMap(owners);
+      }
+
       if (data.customAdminHash && typeof data.customAdminHash === 'string' && data.customAdminHash.length === 64) {
         localStorage.setItem(CUSTOM_ADMIN_HASH_KEY, data.customAdminHash);
       }
@@ -2972,6 +3147,7 @@
       const chatState   = loadChatState();
       const ideasState  = loadIdeasState();
       const milestones  = loadPlayerMilestones();
+      const nameOwners  = loadNameOwnersMap();
       const customHash  = localStorage.getItem(CUSTOM_ADMIN_HASH_KEY) || '';
 
       const snapshotObj = {
@@ -2989,6 +3165,7 @@
         ideas: ideasState.ideas.slice(0, 100),
         deletedIdeaIds: ideasState.deletedIdeaIds.slice(-150),
         milestones: milestones,
+        nameOwners: nameOwners,
         customAdminHash: customHash
       };
 
@@ -3051,6 +3228,9 @@
                   triggerForcedUpdateModal(payload.version, payload.notes);
                 } else if (payload.type === 'SCORE' && payload.cat && payload.name && payload.score) {
                   mergeScoreMaps(localMaster, { [payload.cat]: [payload] });
+                  if (payload.deviceToken && payload.name) {
+                    applyIncomingCloudData({ nameOwners: { [String(payload.name).trim().toLowerCase()]: payload.deviceToken } }, localMaster, chatState, ideasState, milestones);
+                  }
                   cloudDataLoaded = true;
                 } else if (payload.type === 'CHAT_MSG' && payload.msg) {
                   applyIncomingCloudData({ chat: [payload.msg] }, localMaster, chatState, ideasState, milestones);
@@ -3150,6 +3330,7 @@
         name: entryObj.name,
         score: entryObj.score,
         date: entryObj.date,
+        deviceToken: MY_DEVICE_TOKEN,
         ts: Date.now()
       });
     }
@@ -3182,6 +3363,9 @@
             }
 
             if (item.type === 'SCORE' && item.cat && item.name && item.score) {
+              if (item.deviceToken && item.name) {
+                applyIncomingCloudData({ nameOwners: { [String(item.name).trim().toLowerCase()]: item.deviceToken } }, localMaster, chatState, ideasState, milestones);
+              }
               const wasUpdated = mergeScoreMaps(localMaster, { [item.cat]: [{ name: item.name, score: item.score, date: item.date, isUser: true }] });
               if (wasUpdated) {
                 saveMasterUserScores(localMaster);
@@ -3455,13 +3639,39 @@
     document.getElementById('nerve-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('nerve'));
     document.getElementById('parcours-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('parcours'));
 
-    // Prüft live, ob der eingegebene Name bereits einen höheren oder gleichen Highscore in der Bestenliste hat + ob ein Ideen-Ticket freigeschaltet wird
+    // Prüft live, ob der eingegebene Name frei/gültig ist, ob bereits ein höherer Highscore vorliegt + ob ein Ideen-Ticket freigeschaltet wird
     function evaluatePersonalHighscoreCheck() {
       const unit = (pendingSubmitGame === 'parcours') ? 'Tore' : 'Punkte';
-      const typedName = playerNameInput.value.trim();
-      const existingBest = findExistingPlayerBest(pendingSubmitGame, typedName);
+      const lockedName = getLockedPlayerName();
+      const typedName = lockedName || playerNameInput.value.trim();
 
       submitHighscoreFeedback.style.display = 'block';
+
+      // 1. Falls dieses Gerät noch KEINEN festen Namen hat, prüfen ob der eingegebene Name schon einem anderen Spieler gehört!
+      if (!lockedName && typedName) {
+        const ownershipCheck = isNameTakenByAnotherPlayer(typedName);
+        if (ownershipCheck.taken) {
+          submitDialogTitle.textContent = `🔒 Name bereits vergeben!`;
+          submitDialogSubtitle.textContent = `Namensschutz der Online-Bestenliste:`;
+          submitHighscoreFeedback.style.background = '#fef2f2';
+          submitHighscoreFeedback.style.color = '#b91c1c';
+          submitHighscoreFeedback.style.border = '2px solid #fca5a5';
+          submitHighscoreFeedback.innerHTML =
+            `🚫 <strong>${escapeHtml(ownershipCheck.reason)}</strong><br>` +
+            `Damit sich niemand unter fremden Namen einträgt, hat jeder Spieler seinen eigenen festen Namen.`;
+
+          if (ideaTicketBox) ideaTicketBox.classList.remove('show');
+          currentIdeaEligibility = { eligible: false, reason: '', badge: '', oldRank: null, newRank: null, rule: 'NONE' };
+
+          saveScoreBtn.disabled = true;
+          saveScoreBtn.style.opacity = '0.5';
+          saveScoreBtn.style.cursor = 'not-allowed';
+          saveScoreBtn.textContent = `🚫 Name „${typedName}“ ist schon vergeben`;
+          return false;
+        }
+      }
+
+      const existingBest = findExistingPlayerBest(pendingSubmitGame, typedName);
 
       if (existingBest && pendingScoreToSave <= existingBest.score) {
         // UNTER ODER GLEICH DEM PERSÖNLICHEN HIGHSCORE -> EINTRAGEN GESPERRT!
@@ -3472,7 +3682,7 @@
         submitHighscoreFeedback.style.border = '2px solid #fca5a5';
         submitHighscoreFeedback.innerHTML =
           `⚠️ <strong>Du bist unter deinem Highscore!</strong><br>` +
-          `Für <strong>„${escapeHtml(existingBest.name)}“</strong> steht bereits ein besserer Wert von <strong>${existingBest.score} ${unit}</strong> (Platz ${existingBest.rank}) in der Bestenliste (Aktuell: <strong>${pendingScoreToSave} ${unit}</strong>).<br>` +
+          `Für deinen festen Spielernamen <strong>„${escapeHtml(existingBest.name)}“</strong> steht bereits ein besserer Wert von <strong>${existingBest.score} ${unit}</strong> (Platz ${existingBest.rank}) in der Bestenliste (Aktuell: <strong>${pendingScoreToSave} ${unit}</strong>).<br>` +
           `Da in der Liste immer nur dein bester Wert gespeichert wird, kannst du diesen kleineren Wert nicht eintragen.`;
 
         if (ideaTicketBox) ideaTicketBox.classList.remove('show');
@@ -3508,56 +3718,68 @@
         submitHighscoreFeedback.style.color = '#047857';
         submitHighscoreFeedback.style.border = '2px solid #6ee7b7';
         submitHighscoreFeedback.innerHTML =
-          `🚀 <strong>Neuer persönlicher Bestwert für „${escapeHtml(existingBest.name)}“ (voraussichtlich Platz ${currentIdeaEligibility.newRank})!</strong><br>` +
-          `Du hast deinen bisherigen Highscore von <strong>${existingBest.score} ${unit}</strong> (Platz ${existingBest.rank}) geschlagen! Dein Eintrag wird auf <strong>${pendingScoreToSave} ${unit}</strong> aktualisiert.`;
+          `🚀 <strong>Neuer persönlicher Bestwert für „${escapeHtml(existingBest.name)}“ (Platz ${currentIdeaEligibility.newRank})!</strong><br>` +
+          `Du hast deinen bisherigen Highscore von <strong>${existingBest.score} ${unit}</strong> (Platz ${existingBest.rank}) geschlagen! Mit 1 Klick (oder Enter) wird dein Rekord sofort aktualisiert.`;
 
         saveScoreBtn.disabled = false;
         saveScoreBtn.style.opacity = '1';
         saveScoreBtn.style.cursor = 'pointer';
-        saveScoreBtn.textContent = `🏆 Bestwert auf ${pendingScoreToSave} aktualisieren!`;
+        saveScoreBtn.textContent = `⚡ Sofort auf ${pendingScoreToSave} ${unit} aktualisieren! 🏆`;
         return true;
       } else {
-        // NOCH KEIN EINTRAG UNTER DIESEM NAMEN
+        // NOCH KEIN EINTRAG UNTER DIESEM NAMEN IN DIESEM SPIEL
         submitDialogTitle.textContent = `🎉 Klasse Leistung: ${pendingScoreToSave} ${unit}!`;
-        submitDialogSubtitle.textContent = `Trage deinen Namen in die Online-Bestenliste für „${pendingGameDisplayName}“ ein:`;
+        submitDialogSubtitle.textContent = lockedName
+          ? `Speichere deinen Rekord für „${pendingGameDisplayName}“ mit 1 Klick:`
+          : `Wähle einmalig deinen festen Spielernamen für alle Hörmann Mut-Spiele:`;
         submitHighscoreFeedback.style.background = '#eff6ff';
         submitHighscoreFeedback.style.color = '#1e40af';
         submitHighscoreFeedback.style.border = '1px solid #93c5fd';
         submitHighscoreFeedback.innerHTML = typedName
-          ? `✨ Für <strong>„${escapeHtml(typedName)}“</strong> liegt noch kein höherer Wert vor – du landest mit <strong>${pendingScoreToSave} ${unit}</strong> auf <strong>Platz ${currentIdeaEligibility.newRank}</strong>!`
-          : `💡 Gib deinen Namen ein. Es wird automatisch geprüft, ob du deinen bisherigen Bestwert geschlagen hast!`;
+          ? `✨ Mit <strong>${pendingScoreToSave} ${unit}</strong> landest du als <strong>„${escapeHtml(typedName)}“</strong> direkt auf <strong>Platz ${currentIdeaEligibility.newRank}</strong>!`
+          : `💡 Wähle einmalig deinen festen Spielernamen. Danach musst du ihn nie wieder tippen!`;
 
         saveScoreBtn.disabled = false;
         saveScoreBtn.style.opacity = '1';
         saveScoreBtn.style.cursor = 'pointer';
-        saveScoreBtn.textContent = `In Bestenliste eintragen 🏆`;
+        saveScoreBtn.textContent = lockedName
+          ? `⚡ Jetzt sofort als „${lockedName}“ speichern 🏆`
+          : `⚡ Namen festlegen & sofort speichern 🏆`;
         return true;
       }
     }
 
     playerNameInput.addEventListener('input', evaluatePersonalHighscoreCheck);
 
-    async function promptScoreSubmit(score, category, gameDisplayName) {
+    function promptScoreSubmit(score, category, gameDisplayName) {
       pendingScoreToSave = score;
       pendingSubmitGame = category;
       pendingGameDisplayName = gameDisplayName;
 
       if (playerIdeaInput) playerIdeaInput.value = '';
 
-      // Letzten Spielernamen vorbelegen, falls bekannt
-      const savedName = localStorage.getItem('hoermann_player_name') || '';
-      if (savedName && !playerNameInput.value.trim()) {
-        playerNameInput.value = savedName;
-      }
+      refreshLockedNameUi();
+      const currentName = getLockedPlayerName() || playerNameInput.value.trim();
 
       scoreSubmitDialog.classList.add('show');
-      openGlobalLeaderboard(category, playerNameInput.value.trim());
+      openGlobalLeaderboard(category, currentName);
       evaluatePersonalHighscoreCheck();
 
-      // Sofortiger Online-Abgleich im Hintergrund + erneute Prüfung!
-      await syncOnlineLeaderboards(false);
-      evaluatePersonalHighscoreCheck();
-      setTimeout(() => { playerNameInput.focus(); }, 120);
+      // Fokus sofort setzen: Wenn Name schon fest ist -> direkt auf den Speichern-Button (1x Enter reicht!), sonst ins Namensfeld
+      setTimeout(() => {
+        if (getLockedPlayerName()) {
+          if (!saveScoreBtn.disabled) saveScoreBtn.focus();
+        } else if (playerNameInput) {
+          playerNameInput.focus();
+        }
+      }, 60);
+
+      // Hintergrund-Sync OHNE das Formular oder den Spieler auszubremsen
+      syncOnlineLeaderboards(false).then(() => {
+        if (scoreSubmitDialog.classList.contains('show')) {
+          evaluatePersonalHighscoreCheck();
+        }
+      }).catch(() => {});
     }
 
     saveScoreBtn.addEventListener('click', executeScoreSubmit);
@@ -3565,35 +3787,27 @@
       if (e.key === 'Enter') executeScoreSubmit();
     });
 
-    async function executeScoreSubmit() {
-      const name = playerNameInput.value.trim();
+    // INSTANT-SUBMIT (0,0 Sek. Wartezeit!): Speichert sofort lokal + aktualisiert sofort die UI, Cloud-Sync läuft im Hintergrund!
+    function executeScoreSubmit() {
+      const lockedName = getLockedPlayerName();
+      const name = (lockedName || playerNameInput.value.trim()).slice(0, 20);
       if (!name) {
-        showToast('Bitte gib deinen Namen ein! ✍️');
+        showToast('Bitte wähle einmalig deinen festen Spielernamen! ✍️');
         playerNameInput.focus();
         return;
       }
 
-      // Vor dem Speichern immer erst noch einmal live mit der Online-Liste abgleichen!
-      saveScoreBtn.disabled = true;
-      saveScoreBtn.textContent = '🔄 Prüfe Online-Highscore...';
-      await syncOnlineLeaderboards(false);
-
       const canSubmit = evaluatePersonalHighscoreCheck();
       if (!canSubmit) {
         playSound('alarm');
-        showToast('⚠️ Du bist unter deinem bestehenden Highscore – Eintrag nicht möglich!');
         return;
       }
 
-      const today = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' });
-      localStorage.setItem('hoermann_player_name', name);
-      localStorage.setItem('hoermann_last_lb_cat', pendingSubmitGame);
+      // Namen jetzt dauerhaft auf diesem Gerät sperren & als Eigentümer registrieren!
+      setLockedPlayerName(name);
 
-      // Chat-Namen automatisch mitbelegen, falls noch leer
-      const chatSenderEl = document.getElementById('chat-sender-input');
-      if (chatSenderEl && !chatSenderEl.value.trim()) {
-        chatSenderEl.value = name;
-      }
+      const today = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' });
+      localStorage.setItem('hoermann_last_lb_cat', pendingSubmitGame);
 
       // Meilenstein-Status für diesen Spieler aktualisieren & ggf. optionale Spiel-Idee ins Admin-Postfach legen
       const nameKey = name.toLowerCase();
@@ -3632,6 +3846,7 @@
         if (typeof renderAdminIdeasList === 'function') renderAdminIdeasList();
       }
 
+      // SOFORT lokal speichern & Tabelle in 0,0 Sek. aktualisieren (kein await vor dem Schließen!)
       saveGameLeaderboard(pendingSubmitGame, {
         name: name,
         score: pendingScoreToSave,
@@ -3639,24 +3854,26 @@
         isUser: true
       });
 
-      if (createdIdeaObj) {
-        await publishCloudSnapshot({
-          type: 'IDEA_ADD',
-          idea: createdIdeaObj,
-          ts: Date.now()
-        });
-      }
-
       if (playerIdeaInput) playerIdeaInput.value = '';
       scoreSubmitDialog.classList.remove('show');
-      openGlobalLeaderboard(pendingSubmitGame, name);
+      switchLeaderboardTab(pendingSubmitGame, name);
+      highscoreCard.classList.add('show');
       playSound('victory');
       triggerParticleEffect('confetti');
       showToast(
         createdIdeaObj
-          ? `Rekord (${pendingScoreToSave}) & deine Spiel-Idee wurden gespeichert! 💡🏅`
-          : `Neuer Bestwert für ${name} (${pendingScoreToSave}) online gespeichert! 🏅`
+          ? `⚡ Rekord (${pendingScoreToSave}) & deine Spiel-Idee sofort gespeichert! 💡🏅`
+          : `⚡ Rekord für ${name} (${pendingScoreToSave}) sofort gespeichert! 🏅`
       );
+
+      // Falls eine Idee eingegeben wurde, im Hintergrund in die Cloud pushen
+      if (createdIdeaObj) {
+        publishCloudSnapshot({
+          type: 'IDEA_ADD',
+          idea: createdIdeaObj,
+          ts: Date.now()
+        }).catch(() => {});
+      }
     }
 
     /* ==========================================================
@@ -3993,19 +4210,26 @@
 
     async function sendLiveChatMessage() {
       if (!chatTextInput || !chatSenderInput) return;
-      const sender = chatSenderInput.value.trim() || localStorage.getItem('hoermann_player_name') || '';
+      const locked = getLockedPlayerName();
+      const sender = (locked || chatSenderInput.value.trim()).slice(0, 20);
       const text = chatTextInput.value.trim();
 
       if (!sender) {
-        showToast('Bitte gib oben im Chat kurz deinen Namen ein! ✍️');
+        showToast('Bitte gib oben im Chat einmalig deinen festen Spielernamen ein! ✍️');
         chatSenderInput.focus();
         return;
       }
       if (!text) return;
 
-      localStorage.setItem('hoermann_player_name', sender);
-      if (playerNameInput && !playerNameInput.value.trim()) {
-        playerNameInput.value = sender;
+      if (!locked) {
+        const ownership = isNameTakenByAnotherPlayer(sender);
+        if (ownership.taken) {
+          playSound('alarm');
+          showToast('🚫 ' + ownership.reason);
+          chatSenderInput.focus();
+          return;
+        }
+        setLockedPlayerName(sender);
       }
 
       const now = new Date();
@@ -4042,6 +4266,7 @@
     }
 
     // Initiales Rendering & Online-Stream starten
+    refreshLockedNameUi();
     updateAdminUiState();
     syncOnlineLeaderboards(false);
     startLiveScoreStream();
