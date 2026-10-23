@@ -1283,12 +1283,13 @@
       </div>
     </section>
 
-    <!-- GLOBAL HIGHSCORE SUBMISSION MODAL (Available for ALL 4 Games) -->
-    <div id="score-submit-dialog" style="margin: 0 auto 1.5rem auto;">
+    <!-- GLOBAL HIGHSCORE SUBMISSION MODAL (Available for ALL 5 Games) -->
+    <div id="score-submit-dialog" style="margin: 0 auto 1.5rem auto; max-width: 780px;">
       <div class="submit-title" id="submit-dialog-title">Neuer Mut-Rekord!</div>
       <p id="submit-dialog-subtitle" style="font-size:0.95rem; color:var(--text-muted);">
         Trage deinen Namen in die Hörmann Mut-Bestenliste ein:
       </p>
+      <div id="submit-highscore-feedback" style="margin: 0.75rem auto 0.25rem auto; padding: 0.65rem 1rem; border-radius: 6px; font-size: 0.9rem; font-weight: 700; display: none; max-width: 640px; line-height: 1.4;"></div>
       <div class="submit-form">
         <input type="text" id="player-name-input" class="submit-input" maxlength="20" placeholder="Dein Name oder Spitzname">
         <button class="submit-btn" id="save-score-btn">In Bestenliste eintragen 🏆</button>
@@ -2045,6 +2046,31 @@
       return legacyNpcSignatures.has(sig) && oldDates.includes(entry.date);
     }
 
+    // Hilfsfunktion: Behält pro Spielername IMMER NUR den allerbesten Wert (keine doppelten Namen!)
+    function deduplicateKeepBestPerName(list) {
+      const byName = new Map();
+      (list || []).forEach(item => {
+        if (!item || !item.name) return;
+        const cleanName = String(item.name).trim().slice(0, 24);
+        if (!cleanName) return;
+        const key = cleanName.toLowerCase();
+        const cleanScore = Number(item.score) || 0;
+        const existing = byName.get(key);
+        if (!existing || cleanScore > existing.score || (cleanScore === existing.score && item.isUser && !existing.isUser)) {
+          byName.set(key, {
+            name: existing ? existing.name : cleanName,
+            score: cleanScore,
+            date: item.date || 'Heute',
+            isUser: Boolean(item.isUser || (existing && existing.isUser)),
+            isNpc: Boolean(item.isNpc && !(item.isUser || (existing && existing.isUser)))
+          });
+        }
+      });
+      const result = Array.from(byName.values());
+      result.sort((a, b) => b.score - a.score);
+      return result;
+    }
+
     // Permanente Speicherung echter Spieler-Highscores (Update-sicher + Dual-Backup in localStorage & window.name)
     const USER_SCORES_MASTER_KEY = 'hoermann_mut_user_scores_v1';
 
@@ -2055,7 +2081,7 @@
         if (raw) {
           const parsed = JSON.parse(raw);
           Object.keys(master).forEach(k => {
-            if (Array.isArray(parsed[k])) master[k] = parsed[k];
+            if (Array.isArray(parsed[k])) master[k] = deduplicateKeepBestPerName(parsed[k]);
           });
         }
       } catch (e) {}
@@ -2066,10 +2092,7 @@
           const backup = JSON.parse(window.name.replace('HOERMANN_LB_BACKUP:', ''));
           Object.keys(master).forEach(k => {
             if (Array.isArray(backup[k])) {
-              backup[k].forEach(bEntry => {
-                const exists = master[k].some(m => m.name === bEntry.name && m.score === bEntry.score && m.date === bEntry.date);
-                if (!exists) master[k].push(bEntry);
-              });
+              master[k] = deduplicateKeepBestPerName([...master[k], ...backup[k]]);
             }
           });
         }
@@ -2080,18 +2103,72 @@
 
     function saveMasterUserScores(master) {
       try {
+        Object.keys(master).forEach(k => {
+          if (Array.isArray(master[k])) {
+            master[k] = deduplicateKeepBestPerName(master[k]);
+          }
+        });
         const serialized = JSON.stringify(master);
         localStorage.setItem(USER_SCORES_MASTER_KEY, serialized);
         window.name = 'HOERMANN_LB_BACKUP:' + serialized;
       } catch (e) {}
     }
 
-    // Einmalige & laufende Migration: Rettet ALLE jemals eingetragenen echten Spielernamen aus allen bisherigen Schlüsseln!
+    // Hilfsfunktion: Führt zwei Master-Objekte konfliktfrei zusammen – pro Name zählt NUR der höchste Wert!
+    function mergeScoreMaps(targetMap, incomingMap) {
+      const categories = ['forklift', 'mario', 'buster', 'nerve', 'parcours'];
+      let changed = false;
+
+      categories.forEach(cat => {
+        if (!Array.isArray(targetMap[cat])) targetMap[cat] = [];
+        // Zuerst bestehende Liste bereinigen (falls noch doppelte Namen aus der Vergangenheit existieren)
+        const beforeDedupeLen = targetMap[cat].length;
+        targetMap[cat] = deduplicateKeepBestPerName(targetMap[cat]);
+        if (targetMap[cat].length !== beforeDedupeLen) changed = true;
+
+        const incomingList = (incomingMap && Array.isArray(incomingMap[cat])) ? incomingMap[cat] : [];
+
+        incomingList.forEach(item => {
+          if (!item || !item.name || isLegacyNpcEntry(item)) return;
+          const cleanScore = Number(item.score) || 0;
+          if (cleanScore <= 0) return;
+          const cleanName = String(item.name).trim().slice(0, 24);
+          if (!cleanName) return;
+          const cleanDate = item.date || 'Heute';
+          const nameKey = cleanName.toLowerCase();
+
+          const existing = targetMap[cat].find(e => e.name.trim().toLowerCase() === nameKey);
+          if (!existing) {
+            targetMap[cat].push({
+              name: cleanName,
+              score: cleanScore,
+              date: cleanDate,
+              isUser: true
+            });
+            changed = true;
+          } else if (cleanScore > Number(existing.score)) {
+            // Neuer Rekord für diesen Spieler -> alten Wert aktualisieren!
+            existing.score = cleanScore;
+            existing.date = cleanDate;
+            existing.isUser = true;
+            changed = true;
+          }
+        });
+
+        targetMap[cat] = deduplicateKeepBestPerName(targetMap[cat]);
+        if (targetMap[cat].length > 30) targetMap[cat] = targetMap[cat].slice(0, 30);
+      });
+
+      return changed;
+    }
+
+    // Einmalige & laufende Migration: Rettet ALLE jemals eingetragenen echten Spielernamen und behält pro Name nur den Bestwert!
     function migrateAndPreserveAllUserScores() {
       const master = loadMasterUserScores();
       const categories = ['forklift', 'mario', 'buster', 'nerve', 'parcours'];
 
       categories.forEach(cat => {
+        master[cat] = deduplicateKeepBestPerName(master[cat]);
         try {
           const stored = localStorage.getItem(`hoermann_lb_${cat}`);
           if (stored) {
@@ -2099,9 +2176,7 @@
             if (Array.isArray(arr)) {
               arr.forEach(item => {
                 if (!isLegacyNpcEntry(item)) {
-                  const cleanItem = { name: item.name, score: Number(item.score) || 0, date: item.date || 'Heute', isUser: true };
-                  const exists = master[cat].some(m => m.name === cleanItem.name && m.score === cleanItem.score);
-                  if (!exists) master[cat].push(cleanItem);
+                  mergeScoreMaps(master, { [cat]: [{ name: item.name, score: Number(item.score) || 0, date: item.date || 'Heute', isUser: true }] });
                 }
               });
             }
@@ -2119,9 +2194,7 @@
               arr.forEach(item => {
                 if (!isLegacyNpcEntry(item)) {
                   const targetCat = (item.score <= 40) ? 'parcours' : 'buster';
-                  const cleanItem = { name: item.name, score: Number(item.score) || 0, date: item.date || 'Heute', isUser: true };
-                  const exists = master[targetCat].some(m => m.name === cleanItem.name && m.score === cleanItem.score);
-                  if (!exists) master[targetCat].push(cleanItem);
+                  mergeScoreMaps(master, { [targetCat]: [{ name: item.name, score: Number(item.score) || 0, date: item.date || 'Heute', isUser: true }] });
                 }
               });
             }
@@ -2131,10 +2204,8 @@
 
       saveMasterUserScores(master);
 
-      // Aktualisiere auch die Einzel-Keys mit der sauberen Kombination aus ECHTEN Spielern + neuen niedrigen NPC-Werten
       categories.forEach(cat => {
-        const combined = [...master[cat], ...(defaultLeaderboards[cat] || [])];
-        combined.sort((a, b) => b.score - a.score);
+        const combined = deduplicateKeepBestPerName([...master[cat], ...(defaultLeaderboards[cat] || [])]);
         try {
           localStorage.setItem(`hoermann_lb_${cat}`, JSON.stringify(combined));
         } catch (e) {}
@@ -2151,6 +2222,8 @@
     const CLOUD_MIRROR_URL  = 'https://api.restful-api.dev/objects/ff808181a09d98f701a167796f6166c7';
     const NTFY_TOPIC_URL    = 'https://ntfy.sh/hoermann_mut_dephosa_online_lb_v2';
     const cloudSyncBadge    = document.getElementById('cloud-sync-badge');
+    const submitHighscoreFeedback = document.getElementById('submit-highscore-feedback');
+    let pendingGameDisplayName = '';
 
     function setCloudBadgeState(status, text) {
       if (!cloudSyncBadge) return;
@@ -2163,7 +2236,7 @@
         cloudSyncBadge.style.background = '#dcfce7';
         cloudSyncBadge.style.color = '#15803d';
         cloudSyncBadge.style.borderColor = '#86efac';
-        cloudSyncBadge.textContent = text || '🟢 ONLINE LIVE-BESTENLISTE (ALLE SPIELER)';
+        cloudSyncBadge.textContent = text || '🟢 ONLINE LIVE-BESTENLISTE (NUR BESTWERT PRO SPIELER)';
       } else {
         cloudSyncBadge.style.background = '#f1f5f9';
         cloudSyncBadge.style.color = '#475569';
@@ -2172,49 +2245,10 @@
       }
     }
 
-    // Hilfsfunktion: Führt zwei Master-Objekte konfliktfrei und ohne Duplikate zusammen
-    function mergeScoreMaps(targetMap, incomingMap) {
-      const categories = ['forklift', 'mario', 'buster', 'nerve', 'parcours'];
-      let addedNew = false;
-
-      categories.forEach(cat => {
-        if (!Array.isArray(targetMap[cat])) targetMap[cat] = [];
-        const incomingList = (incomingMap && Array.isArray(incomingMap[cat])) ? incomingMap[cat] : [];
-
-        incomingList.forEach(item => {
-          if (!item || !item.name || isLegacyNpcEntry(item)) return;
-          const cleanScore = Number(item.score) || 0;
-          if (cleanScore <= 0) return;
-          const cleanName = String(item.name).trim().slice(0, 24);
-          const cleanDate = item.date || 'Heute';
-
-          const exists = targetMap[cat].some(
-            existing => existing.name === cleanName && Number(existing.score) === cleanScore
-          );
-          if (!exists) {
-            targetMap[cat].push({
-              name: cleanName,
-              score: cleanScore,
-              date: cleanDate,
-              isUser: true
-            });
-            addedNew = true;
-          }
-        });
-
-        // Sortiere absteigend und behalte Top 25 echte Spieler pro Kategorie
-        targetMap[cat].sort((a, b) => b.score - a.score);
-        if (targetMap[cat].length > 25) targetMap[cat] = targetMap[cat].slice(0, 25);
-      });
-
-      return addedNew;
-    }
-
     // Lädt alle Online-Highscores von Cloud-DB + Live-Stream und gleicht sie mit lokalen Highscores ab
     async function syncOnlineLeaderboards(pushIfLocalHasMore = true) {
       setCloudBadgeState('syncing');
       const localMaster = loadMasterUserScores();
-      const beforeJson = JSON.stringify(localMaster);
       let cloudDataLoaded = false;
       let cloudBeforeJson = '';
 
@@ -2267,17 +2301,15 @@
         }
       } catch (e) {}
 
-      // Lokal speichern
+      // Lokal speichern (streng dedupliziert: nur 1 Bestwert pro Name)
       saveMasterUserScores(localMaster);
       ['forklift', 'mario', 'buster', 'nerve', 'parcours'].forEach(cat => {
-        const combined = [...(localMaster[cat] || []), ...(defaultLeaderboards[cat] || [])];
-        combined.sort((a, b) => b.score - a.score);
+        const combined = deduplicateKeepBestPerName([...(localMaster[cat] || []), ...(defaultLeaderboards[cat] || [])]);
         try {
           localStorage.setItem(`hoermann_lb_${cat}`, JSON.stringify(combined));
         } catch (e) {}
       });
 
-      // Falls dieser Browser lokale Highscores hatte, die noch nicht in der Cloud standen -> automatisch hochladen!
       const afterJson = JSON.stringify(localMaster);
       const hasAnyUserScores = Object.values(localMaster).some(arr => arr.length > 0);
       if (pushIfLocalHasMore && hasAnyUserScores && afterJson !== cloudBeforeJson) {
@@ -2285,7 +2317,10 @@
       }
 
       if (highscoreCard.classList.contains('show')) {
-        switchLeaderboardTab(activeGameCategory);
+        switchLeaderboardTab(activeGameCategory, playerNameInput.value.trim());
+      }
+      if (scoreSubmitDialog.classList.contains('show')) {
+        evaluatePersonalHighscoreCheck();
       }
       if (typeof updateParcoursHighscoreDisplay === 'function') {
         updateParcoursHighscoreDisplay();
@@ -2319,7 +2354,6 @@
     }
 
     async function broadcastSingleScoreLive(category, entryObj) {
-      // 1. Sofort per Echtzeit-Push an alle offenen Browser senden
       try {
         fetch(NTFY_TOPIC_URL, {
           method: 'POST',
@@ -2332,11 +2366,10 @@
         }).catch(() => {});
       } catch (e) {}
 
-      // 2. Cloud-DB abrufen, zusammenführen und zurückschreiben (verhindert Überschreiben bei gleichzeitigem Spielen)
       await syncOnlineLeaderboards(true);
     }
 
-    // Echtzeit-Empfänger (SSE): Wenn ein anderer Spieler einen Highscore einträgt, erscheint er sofort live!
+    // Echtzeit-Empfänger (SSE): Wenn ein anderer Spieler einen neuen Bestwert einträgt, erscheint er sofort live!
     function startLiveScoreStream() {
       if (typeof EventSource === 'undefined') return;
       try {
@@ -2348,13 +2381,16 @@
               const item = JSON.parse(data.message);
               if (item && item.cat && item.name && item.score) {
                 const master = loadMasterUserScores();
-                const wasNew = mergeScoreMaps(master, { [item.cat]: [{ name: item.name, score: item.score, date: item.date, isUser: true }] });
-                if (wasNew) {
+                const wasUpdated = mergeScoreMaps(master, { [item.cat]: [{ name: item.name, score: item.score, date: item.date, isUser: true }] });
+                if (wasUpdated) {
                   saveMasterUserScores(master);
                   if (highscoreCard.classList.contains('show')) {
                     switchLeaderboardTab(activeGameCategory, item.name);
                   }
-                  showToast(`🌐 Live-Rekord: ${item.name} hat ${item.score} Pkt erreicht! 🏆`);
+                  if (scoreSubmitDialog.classList.contains('show')) {
+                    evaluatePersonalHighscoreCheck();
+                  }
+                  showToast(`🌐 Neuer Bestwert: ${item.name} hat ${item.score} Pkt erreicht! 🏆`);
                 }
               }
             }
@@ -2372,7 +2408,7 @@
     if (refreshLbBtn) {
       refreshLbBtn.addEventListener('click', () => {
         syncOnlineLeaderboards(true);
-        showToast('Online-Bestenliste wird aktualisiert... 🌐');
+        showToast('Online-Bestenliste wird abgeglichen... 🌐');
       });
     }
 
@@ -2380,9 +2416,16 @@
       const master = loadMasterUserScores();
       const userEntries = master[category] || [];
       const npcEntries = defaultLeaderboards[category] || [];
-      const combined = [...userEntries, ...npcEntries];
-      combined.sort((a, b) => b.score - a.score);
-      return combined;
+      return deduplicateKeepBestPerName([...userEntries, ...npcEntries]);
+    }
+
+    // Sucht den bestehenden Bestwert eines Spielernamens in der gesamten Bestenliste der Spielkategorie
+    function findExistingPlayerBest(category, playerName) {
+      if (!playerName) return null;
+      const key = String(playerName).trim().toLowerCase();
+      if (!key) return null;
+      const fullList = getGameLeaderboard(category);
+      return fullList.find(e => e.name.trim().toLowerCase() === key) || null;
     }
 
     function saveGameLeaderboard(category, newEntry) {
@@ -2404,7 +2447,6 @@
         localStorage.setItem(`hoermann_lb_${category}`, JSON.stringify(combined));
       } catch (e) {}
 
-      // Sofort online an Cloud-DB & Live-Stream senden!
       if (cleanEntry) {
         broadcastSingleScoreLive(category, cleanEntry);
       }
@@ -2429,13 +2471,13 @@
       lbScoreColHeader.textContent = (category === 'parcours') ? 'Tore' : 'Punkte';
 
       const list = getGameLeaderboard(category);
-      list.sort((a, b) => b.score - a.score);
       const top10 = list.slice(0, 10);
+      const highlightKey = highlightName ? highlightName.trim().toLowerCase() : '';
 
       leaderboardBody.innerHTML = "";
       top10.forEach((entry, idx) => {
         const tr = document.createElement('tr');
-        if (highlightName && entry.name === highlightName) {
+        if (highlightKey && entry.name.trim().toLowerCase() === highlightKey) {
           tr.classList.add('highlight');
         }
         let rankBadge = `${idx + 1}.`;
@@ -2448,7 +2490,7 @@
           : entry.score;
 
         const userBadge = entry.isUser
-          ? ` <span style="background:rgba(245,156,0,0.18); color:#d97706; font-size:0.68rem; padding:1px 6px; border-radius:99px; margin-left:4px; font-weight:800;">⭐ SPIELER</span>`
+          ? ` <span style="background:rgba(245,156,0,0.18); color:#d97706; font-size:0.68rem; padding:1px 6px; border-radius:99px; margin-left:4px; font-weight:800;">⭐ BESTWERT</span>`
           : '';
 
         tr.innerHTML = `
@@ -2497,13 +2539,89 @@
     document.getElementById('nerve-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('nerve'));
     document.getElementById('parcours-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('parcours'));
 
-    function promptScoreSubmit(score, category, gameDisplayName) {
+    // Prüft live, ob der eingegebene Name bereits einen höheren oder gleichen Highscore in der Bestenliste hat
+    function evaluatePersonalHighscoreCheck() {
+      const unit = (pendingSubmitGame === 'parcours') ? 'Tore' : 'Punkte';
+      const typedName = playerNameInput.value.trim();
+      const existingBest = findExistingPlayerBest(pendingSubmitGame, typedName);
+
+      submitHighscoreFeedback.style.display = 'block';
+
+      if (existingBest && pendingScoreToSave <= existingBest.score) {
+        // UNTER ODER GLEICH DEM PERSÖNLICHEN HIGHSCORE -> EINTRAGEN GESPERRT!
+        submitDialogTitle.textContent = `📊 Unter deinem Highscore geblieben! (${pendingScoreToSave} ${unit})`;
+        submitDialogSubtitle.textContent = `Abgleich mit der Online-Bestenliste für „${pendingGameDisplayName}“:`;
+        submitHighscoreFeedback.style.background = '#fef2f2';
+        submitHighscoreFeedback.style.color = '#b91c1c';
+        submitHighscoreFeedback.style.border = '2px solid #fca5a5';
+        submitHighscoreFeedback.innerHTML =
+          `⚠️ <strong>Du bist unter deinem Highscore!</strong><br>` +
+          `Für <strong>„${escapeHtml(existingBest.name)}“</strong> steht bereits ein besserer Wert von <strong>${existingBest.score} ${unit}</strong> in der Bestenliste (Aktuell: <strong>${pendingScoreToSave} ${unit}</strong>).<br>` +
+          `Da in der Liste immer nur dein bester Wert gespeichert wird, kannst du diesen kleineren Wert nicht eintragen.`;
+
+        saveScoreBtn.disabled = true;
+        saveScoreBtn.style.opacity = '0.5';
+        saveScoreBtn.style.cursor = 'not-allowed';
+        saveScoreBtn.textContent = `🚫 Unter deinem Rekord (${existingBest.score} ${unit})`;
+        if (highscoreCard.classList.contains('show')) {
+          switchLeaderboardTab(pendingSubmitGame, existingBest.name);
+        }
+        return false;
+      } else if (existingBest && pendingScoreToSave > existingBest.score) {
+        // NEUER PERSÖNLICHER REKORD -> ALTER WERT WIRD ERSETZT!
+        submitDialogTitle.textContent = `🎉 Neuer persönlicher Rekord: ${pendingScoreToSave} ${unit}!`;
+        submitDialogSubtitle.textContent = `Abgleich mit der Online-Bestenliste für „${pendingGameDisplayName}“:`;
+        submitHighscoreFeedback.style.background = '#ecfdf5';
+        submitHighscoreFeedback.style.color = '#047857';
+        submitHighscoreFeedback.style.border = '2px solid #6ee7b7';
+        submitHighscoreFeedback.innerHTML =
+          `🚀 <strong>Neuer persönlicher Bestwert für „${escapeHtml(existingBest.name)}“!</strong><br>` +
+          `Du hast deinen bisherigen Highscore von <strong>${existingBest.score} ${unit}</strong> geschlagen! Dein Eintrag in der Bestenliste wird auf <strong>${pendingScoreToSave} ${unit}</strong> aktualisiert.`;
+
+        saveScoreBtn.disabled = false;
+        saveScoreBtn.style.opacity = '1';
+        saveScoreBtn.style.cursor = 'pointer';
+        saveScoreBtn.textContent = `🏆 Bestwert auf ${pendingScoreToSave} aktualisieren!`;
+        return true;
+      } else {
+        // NOCH KEIN EINTRAG UNTER DIESEM NAMEN
+        submitDialogTitle.textContent = `🎉 Klasse Leistung: ${pendingScoreToSave} ${unit}!`;
+        submitDialogSubtitle.textContent = `Trage deinen Namen in die Online-Bestenliste für „${pendingGameDisplayName}“ ein:`;
+        submitHighscoreFeedback.style.background = '#eff6ff';
+        submitHighscoreFeedback.style.color = '#1e40af';
+        submitHighscoreFeedback.style.border = '1px solid #93c5fd';
+        submitHighscoreFeedback.innerHTML = typedName
+          ? `✨ Für <strong>„${escapeHtml(typedName)}“</strong> liegt noch kein höherer Wert vor – du kannst deinen Highscore (<strong>${pendingScoreToSave} ${unit}</strong>) direkt eintragen!`
+          : `💡 Gib deinen Namen ein. Es wird automatisch geprüft, ob du deinen bisherigen Bestwert geschlagen hast!`;
+
+        saveScoreBtn.disabled = false;
+        saveScoreBtn.style.opacity = '1';
+        saveScoreBtn.style.cursor = 'pointer';
+        saveScoreBtn.textContent = `In Bestenliste eintragen 🏆`;
+        return true;
+      }
+    }
+
+    playerNameInput.addEventListener('input', evaluatePersonalHighscoreCheck);
+
+    async function promptScoreSubmit(score, category, gameDisplayName) {
       pendingScoreToSave = score;
       pendingSubmitGame = category;
+      pendingGameDisplayName = gameDisplayName;
 
-      submitDialogTitle.textContent = `🎉 Klasse Leistung: ${score} ${category === 'parcours' ? 'Tore' : 'Punkte'}!`;
-      submitDialogSubtitle.textContent = `Trage deinen Namen in die Bestenliste für „${gameDisplayName}“ ein:`;
+      // Letzten Spielernamen vorbelegen, falls bekannt
+      const savedName = localStorage.getItem('hoermann_player_name') || '';
+      if (savedName && !playerNameInput.value.trim()) {
+        playerNameInput.value = savedName;
+      }
+
       scoreSubmitDialog.classList.add('show');
+      openGlobalLeaderboard(category, playerNameInput.value.trim());
+      evaluatePersonalHighscoreCheck();
+
+      // Sofortiger Online-Abgleich im Hintergrund + erneute Prüfung!
+      await syncOnlineLeaderboards(false);
+      evaluatePersonalHighscoreCheck();
       setTimeout(() => { playerNameInput.focus(); }, 120);
     }
 
@@ -2512,11 +2630,30 @@
       if (e.key === 'Enter') executeScoreSubmit();
     });
 
-    function executeScoreSubmit() {
-      const name = playerNameInput.value.trim() || 'Lager-Profi';
-      const today = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' });
+    async function executeScoreSubmit() {
+      const name = playerNameInput.value.trim();
+      if (!name) {
+        showToast('Bitte gib deinen Namen ein! ✍️');
+        playerNameInput.focus();
+        return;
+      }
 
+      // Vor dem Speichern immer erst noch einmal live mit der Online-Liste abgleichen!
+      saveScoreBtn.disabled = true;
+      saveScoreBtn.textContent = '🔄 Prüfe Online-Highscore...';
+      await syncOnlineLeaderboards(false);
+
+      const canSubmit = evaluatePersonalHighscoreCheck();
+      if (!canSubmit) {
+        playSound('alarm');
+        showToast('⚠️ Du bist unter deinem bestehenden Highscore – Eintrag nicht möglich!');
+        return;
+      }
+
+      const today = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' });
+      localStorage.setItem('hoermann_player_name', name);
       localStorage.setItem('hoermann_last_lb_cat', pendingSubmitGame);
+
       saveGameLeaderboard(pendingSubmitGame, {
         name: name,
         score: pendingScoreToSave,
@@ -2528,7 +2665,7 @@
       openGlobalLeaderboard(pendingSubmitGame, name);
       playSound('victory');
       triggerParticleEffect('confetti');
-      showToast(`Super ${name}! Dauerhaft in der Bestenliste gesichert! 🏅`);
+      showToast(`Neuer Bestwert für ${name} (${pendingScoreToSave}) online gespeichert! 🏅`);
     }
 
     /* ==========================================================
