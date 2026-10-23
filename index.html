@@ -1797,7 +1797,7 @@
         </div>
       </div>
 
-      <canvas id="pacmanCanvas" width="672" height="696"></canvas>
+      <canvas id="pacmanCanvas" width="672" height="720"></canvas>
 
       <!-- Mobile D-Pad & Controls Bar -->
       <div style="display:flex; flex-wrap:wrap; gap:8px; width:100%; max-width:672px; justify-content:space-between; align-items:center; margin-top:0.65rem;">
@@ -3326,7 +3326,7 @@
     /* ==========================================================
        7b. GLOBAL ONLINE CLOUD HUB (HIGHSCORES, IDEEN-BOX, LIVE-CHAT & ZWANGSUPDATE)
        ========================================================== */
-    const APP_VERSION           = '3.1.0';
+    const APP_VERSION           = '3.1.1';
     const NTFY_HUB_URL          = 'https://ntfy.sh/hoermann_mut_dephosa_hub_v3';
     const NTFY_LEGACY_URL       = 'https://ntfy.sh/hoermann_mut_dephosa_online_lb_v2';
     const BYTEBIN_POST_URL      = 'https://bytebin.lucko.me/post';
@@ -10940,13 +10940,14 @@
 
     const PAC_TILE = 24;
     const PAC_COLS = 28;
-    const PAC_ROWS = 29;
+    const PAC_ROWS = 30;
 
-    // 0: Leer/Weg (kein Pellet), 1: Mut-Pellet, 2: Wand, 3: Power-Pellet (Goldenes Hörmann-Tor), 4: Geisterhaus-Tür/Bereich
+    // 0: Weg ohne Pellet / Tunnel, 1: Mut-Pellet, 2: Hörmann-Stahlwand, 3: Power-Pellet (Goldenes Sektionaltor), 4: Geisterhaus-Schranke
     const PAC_MAZE_TEMPLATE = [
       [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
-      [2,3,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,3,2],
+      [2,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,2],
       [2,1,2,2,2,2,1,2,2,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,2,1,2],
+      [2,3,2,2,2,2,1,2,2,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,2,3,2],
       [2,1,2,2,2,2,1,2,2,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,2,1,2],
       [2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],
       [2,1,2,2,2,2,1,2,2,1,2,2,2,2,2,2,2,2,1,2,2,1,2,2,2,2,1,2],
@@ -10993,10 +10994,10 @@
       mouthDir: 1,
       player: {
         x: 13.5 * PAC_TILE,
-        y: 22 * PAC_TILE,
-        dirX: 0,
+        y: 22.5 * PAC_TILE,
+        dirX: -1,
         dirY: 0,
-        nextDirX: 0,
+        nextDirX: -1,
         nextDirY: 0,
         speed: 2.4
       },
@@ -11029,16 +11030,16 @@
 
       resetPacmanActors();
       pacState.bannerText = `LEVEL ${lvl} — BEREIT? MUTIG VORAN!`;
-      pacState.bannerTimer = 110;
+      pacState.bannerTimer = 90;
       updatePacmanUI();
     }
 
     function resetPacmanActors() {
       pacState.player.x = 13.5 * PAC_TILE;
-      pacState.player.y = 22 * PAC_TILE;
-      pacState.player.dirX = 0;
+      pacState.player.y = 22.5 * PAC_TILE;
+      pacState.player.dirX = -1;
       pacState.player.dirY = 0;
-      pacState.player.nextDirX = 0;
+      pacState.player.nextDirX = -1;
       pacState.player.nextDirY = 0;
       pacState.player.speed = 2.4;
 
@@ -11050,56 +11051,60 @@
           name: 'Zweifel-Blinky',
           color: '#ef4444',
           x: 13.5 * PAC_TILE,
-          y: 10 * PAC_TILE,
+          y: 11.5 * PAC_TILE,
           dirX: -1,
           dirY: 0,
           speed: baseGhostSpeed,
-          state: 'chase', // chase, scatter, fright, eyes
+          state: 'chase',
+          houseTimer: 0,
           homeX: 13.5 * PAC_TILE,
-          homeY: 13 * PAC_TILE,
-          targetCorner: { x: (PAC_COLS - 2) * PAC_TILE, y: 1 * PAC_TILE }
+          homeY: 14.5 * PAC_TILE,
+          targetCorner: { x: (PAC_COLS - 2) * PAC_TILE, y: 1.5 * PAC_TILE }
         },
         {
           id: 'pinky',
           name: 'Zauder-Pinky',
           color: '#f472b6',
           x: 13.5 * PAC_TILE,
-          y: 13 * PAC_TILE,
+          y: 14.5 * PAC_TILE,
           dirX: 0,
           dirY: -1,
           speed: baseGhostSpeed * 0.95,
-          state: 'scatter',
+          state: 'leaveHouse',
+          houseTimer: 45,
           homeX: 13.5 * PAC_TILE,
-          homeY: 13 * PAC_TILE,
-          targetCorner: { x: 1 * PAC_TILE, y: 1 * PAC_TILE }
+          homeY: 14.5 * PAC_TILE,
+          targetCorner: { x: 1.5 * PAC_TILE, y: 1.5 * PAC_TILE }
         },
         {
           id: 'inky',
           name: 'Aufschieber-Inky',
           color: '#06b6d4',
-          x: 11.5 * PAC_TILE,
-          y: 13 * PAC_TILE,
+          x: 12.0 * PAC_TILE,
+          y: 14.5 * PAC_TILE,
           dirX: 0,
           dirY: -1,
           speed: baseGhostSpeed * 0.9,
-          state: 'scatter',
-          homeX: 11.5 * PAC_TILE,
-          homeY: 13 * PAC_TILE,
+          state: 'leaveHouse',
+          houseTimer: 140,
+          homeX: 13.5 * PAC_TILE,
+          homeY: 14.5 * PAC_TILE,
           targetCorner: { x: (PAC_COLS - 2) * PAC_TILE, y: (PAC_ROWS - 2) * PAC_TILE }
         },
         {
           id: 'clyde',
           name: 'Angst-Clyde',
           color: '#f97316',
-          x: 15.5 * PAC_TILE,
-          y: 13 * PAC_TILE,
+          x: 15.0 * PAC_TILE,
+          y: 14.5 * PAC_TILE,
           dirX: 0,
           dirY: -1,
           speed: baseGhostSpeed * 0.85,
-          state: 'scatter',
-          homeX: 15.5 * PAC_TILE,
-          homeY: 13 * PAC_TILE,
-          targetCorner: { x: 1 * PAC_TILE, y: (PAC_ROWS - 2) * PAC_TILE }
+          state: 'leaveHouse',
+          houseTimer: 240,
+          homeX: 13.5 * PAC_TILE,
+          homeY: 14.5 * PAC_TILE,
+          targetCorner: { x: 1.5 * PAC_TILE, y: (PAC_ROWS - 2) * PAC_TILE }
         }
       ];
     }
@@ -11115,41 +11120,40 @@
       }
     }
 
-    function isPacWall(tileX, tileY) {
-      if (tileY < 0 || tileY >= PAC_ROWS) return false; // Tunnel
-      if (tileX < 0 || tileX >= PAC_COLS) return false; // Tunnel
-      const v = pacState.grid[tileY][tileX];
-      return v === 2;
+    function isTileBlockedForActor(tx, ty, isGhost = false, ghostState = '') {
+      if (ty < 0 || ty >= PAC_ROWS) return false;
+      if (tx < 0 || tx >= PAC_COLS) return false;
+      const val = pacState.grid[ty][tx];
+      if (val === 2) return true;
+      if (val === 4) {
+        if (isGhost && (ghostState === 'leaveHouse' || ghostState === 'eyes')) return false;
+        return true;
+      }
+      return false;
     }
 
     function canMoveInDir(pixelX, pixelY, dirX, dirY, isGhost = false, ghostState = '') {
       if (dirX === 0 && dirY === 0) return true;
-      const step = 6;
-      const nextX = pixelX + dirX * step;
-      const nextY = pixelY + dirY * step;
+      const testDist = 2.5;
+      const nextX = pixelX + dirX * testDist;
+      const nextY = pixelY + dirY * testDist;
 
-      // Tunnel am linken/rechten Rand
       if (nextX < 0 || nextX > (PAC_COLS - 1) * PAC_TILE) return true;
 
-      // Ecken prüfen
-      const r = PAC_TILE * 0.42;
-      const points = [
-        { x: nextX - r, y: nextY - r },
-        { x: nextX + r, y: nextY - r },
-        { x: nextX - r, y: nextY + r },
-        { x: nextX + r, y: nextY + r }
-      ];
+      const pad = 5;
+      const left   = nextX - PAC_TILE / 2 + pad;
+      const right  = nextX + PAC_TILE / 2 - pad;
+      const top    = nextY - PAC_TILE / 2 + pad;
+      const bottom = nextY + PAC_TILE / 2 - pad;
 
-      for (const p of points) {
-        const tx = Math.floor(p.x / PAC_TILE);
-        const ty = Math.floor(p.y / PAC_TILE);
-        if (ty >= 0 && ty < PAC_ROWS && tx >= 0 && tx < PAC_COLS) {
-          const val = pacState.grid[ty][tx];
-          if (val === 2) return false;
-          if (val === 4 && (!isGhost || (ghostState !== 'eyes' && ghostState !== 'leaveHouse'))) {
-            // Geisterhaus-Tor nur für Geister passierbar
-            if (!isGhost) return false;
-          }
+      const tLeft   = Math.floor(left / PAC_TILE);
+      const tRight  = Math.floor(right / PAC_TILE);
+      const tTop    = Math.floor(top / PAC_TILE);
+      const tBottom = Math.floor(bottom / PAC_TILE);
+
+      for (let r = tTop; r <= tBottom; r++) {
+        for (let c = tLeft; c <= tRight; c++) {
+          if (isTileBlockedForActor(c, r, isGhost, ghostState)) return false;
         }
       }
       return true;
@@ -11168,10 +11172,15 @@
       if (pacState.mouthAngle > 0.38) { pacState.mouthAngle = 0.38; pacState.mouthDir = -1; }
       else if (pacState.mouthAngle < 0.04) { pacState.mouthAngle = 0.04; pacState.mouthDir = 1; }
 
-      // 1. Mut-Man Bewegung & Richtungswechsel
+      // 1. Mut-Man Bewegung & Richtungswechsel mit sanftem Achsen-Snap
       const p = pacState.player;
       if (p.nextDirX !== 0 || p.nextDirY !== 0) {
-        if (canMoveInDir(p.x, p.y, p.nextDirX, p.nextDirY)) {
+        if (canMoveInDir(p.x, p.y, p.nextDirX, p.nextDirY, false)) {
+          if (p.nextDirX !== 0 && p.dirY !== 0) {
+            p.y = (Math.floor(p.y / PAC_TILE) + 0.5) * PAC_TILE;
+          } else if (p.nextDirY !== 0 && p.dirX !== 0) {
+            p.x = (Math.floor(p.x / PAC_TILE) + 0.5) * PAC_TILE;
+          }
           p.dirX = p.nextDirX;
           p.dirY = p.nextDirY;
           p.nextDirX = 0;
@@ -11179,7 +11188,7 @@
         }
       }
 
-      if (canMoveInDir(p.x, p.y, p.dirX, p.dirY)) {
+      if (canMoveInDir(p.x, p.y, p.dirX, p.dirY, false)) {
         p.x += p.dirX * p.speed;
         p.y += p.dirY * p.speed;
 
@@ -11204,22 +11213,22 @@
           pacState.grid[curTY][curTX] = 0;
           pacState.score += 50;
           pacState.pelletsLeft--;
-          pacState.frightTimer = 340; // ~6 Sekunden
+          pacState.frightTimer = 340;
           pacState.ghostsEatenInFright = 0;
           playSound('pacPower');
-          showToast('🚪 POWER-TOR GEÖFFNET! Geister sind gefroren – verputze die Zweifel! 🔥');
+          showToast('🚪 POWER-TOR GEÖFFNET! Geister sind blau – verputze die Zweifel! 🔥');
           pacState.ghosts.forEach(g => {
-            if (g.state !== 'eyes') g.state = 'fright';
+            if (g.state !== 'eyes' && g.state !== 'leaveHouse') g.state = 'fright';
           });
           triggerParticleEffect('gold');
           updatePacmanUI();
         }
       }
 
-      // 3. Mut-Bonus (BiSecur Fernbedienung / Werkzeugkoffer)
+      // 3. Mut-Bonus (BiSecur Fernbedienung)
       pacState.fruitTimer++;
       if (pacState.fruitTimer === 420 && !pacState.fruit) {
-        pacState.fruit = { x: 13.5 * PAC_TILE, y: 16.5 * PAC_TILE, type: 'bisecur', points: 300, life: 360 };
+        pacState.fruit = { x: 13.5 * PAC_TILE, y: 17.5 * PAC_TILE, type: 'bisecur', points: 300, life: 360 };
       }
       if (pacState.fruit) {
         pacState.fruit.life--;
@@ -11250,11 +11259,9 @@
       pacState.ghosts.forEach(g => {
         updateGhostAI(g);
 
-        // Kollision mit Mut-Man prüfen
         const dist = Math.hypot(p.x - g.x, p.y - g.y);
-        if (dist < PAC_TILE * 0.75) {
+        if (dist < PAC_TILE * 0.72) {
           if (g.state === 'fright') {
-            // Geist verputzt!
             pacState.ghostsEatenInFright++;
             const pts = 200 * Math.pow(2, pacState.ghostsEatenInFright - 1);
             pacState.score += pts;
@@ -11263,8 +11270,7 @@
             showToast(`👻 ${g.name} verputzt! +${pts} Mut-Punkte! 💥`);
             triggerParticleEffect('spark');
             updatePacmanUI();
-          } else if (g.state !== 'eyes') {
-            // Mut-Man wurde von einem Zweifel erwischt!
+          } else if (g.state !== 'eyes' && g.state !== 'leaveHouse') {
             pacState.lives--;
             playSound('pacDie');
             updatePacmanUI();
@@ -11286,15 +11292,39 @@
     }
 
     function updateGhostAI(g) {
+      if (g.houseTimer > 0) {
+        g.houseTimer--;
+        return;
+      }
+
+      if (g.state === 'leaveHouse') {
+        const exitX = 13.5 * PAC_TILE;
+        const exitY = 11.5 * PAC_TILE;
+        const dx = exitX - g.x;
+        const dy = exitY - g.y;
+        if (Math.abs(dx) > 1.5) {
+          g.x += Math.sign(dx) * 1.5;
+        } else if (Math.abs(dy) > 1.5) {
+          g.y += Math.sign(dy) * 1.5;
+        } else {
+          g.x = exitX;
+          g.y = exitY;
+          g.state = 'chase';
+          g.dirX = -1;
+          g.dirY = 0;
+        }
+        return;
+      }
+
       if (g.state === 'eyes') {
-        // Zurück ins Geisterhaus fliegen
         const dx = g.homeX - g.x;
         const dy = g.homeY - g.y;
         const dist = Math.hypot(dx, dy);
         if (dist < 6) {
           g.x = g.homeX;
           g.y = g.homeY;
-          g.state = 'chase';
+          g.state = 'leaveHouse';
+          g.houseTimer = 30;
         } else {
           g.x += (dx / dist) * (g.speed * 1.6);
           g.y += (dy / dist) * (g.speed * 1.6);
@@ -11302,7 +11332,6 @@
         return;
       }
 
-      // Ziel-Koordinate je nach Geist-Zustand & Persönlichkeit
       let targetX = pacState.player.x;
       let targetY = pacState.player.y;
 
@@ -11310,25 +11339,19 @@
         targetX = g.targetCorner.x;
         targetY = g.targetCorner.y;
       } else if (g.state === 'fright') {
-        // Läuft zufällig / vom Spieler weg
         targetX = (PAC_COLS * PAC_TILE) - pacState.player.x;
         targetY = (PAC_ROWS * PAC_TILE) - pacState.player.y;
       } else {
-        // Chase: Unterschiedliche Hörmann-Taktiken
         if (g.id === 'blinky') {
-          // Direkt auf den Spieler (Aggressiver Vorwärtsdrang)
           targetX = pacState.player.x;
           targetY = pacState.player.y;
         } else if (g.id === 'pinky') {
-          // Schneidet den Weg 4 Felder voraus ab
           targetX = pacState.player.x + pacState.player.dirX * (PAC_TILE * 4);
           targetY = pacState.player.y + pacState.player.dirY * (PAC_TILE * 4);
         } else if (g.id === 'inky') {
-          // Zangengriff über Geisterhaus-Achse
           targetX = pacState.player.x * 2 - g.homeX;
           targetY = pacState.player.y * 2 - g.homeY;
         } else if (g.id === 'clyde') {
-          // Zögerlich: greift an, wenn fern, dreht um, wenn nah
           const distToPlayer = Math.hypot(g.x - pacState.player.x, g.y - pacState.player.y);
           if (distToPlayer < PAC_TILE * 6) {
             targetX = g.targetCorner.x;
@@ -11337,7 +11360,6 @@
         }
       }
 
-      // Nur an Kreuzungen / Kachelmitten neue Richtung wählen
       const curSpeed = (g.state === 'fright') ? (g.speed * 0.6) : g.speed;
       const directions = [
         { dx: 0, dy: -1 },
@@ -11346,14 +11368,12 @@
         { dx: 1, dy: 0 }
       ];
 
-      // Verhindere sofortiges 180-Grad-Umdrehen (außer blockiert)
       const validDirs = directions.filter(d => {
         if (d.dx === -g.dirX && d.dy === -g.dirY) return false;
         return canMoveInDir(g.x, g.y, d.dx, d.dy, true, g.state);
       });
 
       if (validDirs.length > 0) {
-        // Wähle die Richtung mit der kürzesten Distanz zum Ziel
         validDirs.sort((a, b) => {
           const distA = Math.hypot((g.x + a.dx * PAC_TILE) - targetX, (g.y + a.dy * PAC_TILE) - targetY);
           const distB = Math.hypot((g.x + b.dx * PAC_TILE) - targetX, (g.y + b.dy * PAC_TILE) - targetY);
@@ -11362,7 +11382,6 @@
         g.dirX = validDirs[0].dx;
         g.dirY = validDirs[0].dy;
       } else if (!canMoveInDir(g.x, g.y, g.dirX, g.dirY, true, g.state)) {
-        // Sackgasse -> umdrehen
         g.dirX = -g.dirX;
         g.dirY = -g.dirY;
       }
@@ -11370,7 +11389,6 @@
       g.x += g.dirX * curSpeed;
       g.y += g.dirY * curSpeed;
 
-      // Tunnel-Wrapping
       if (g.x < -PAC_TILE / 2) g.x = (PAC_COLS - 0.5) * PAC_TILE;
       else if (g.x > (PAC_COLS - 0.5) * PAC_TILE) g.x = -PAC_TILE / 2;
     }

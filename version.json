@@ -1,4 +1,4 @@
 {
-  "version": "3.1.0",
-  "notes": "NEUES SPIEL: Hörmann Mut-Man (Pac-Man Klassiker im Hörmann Mut-Gewand mit Zweifel-Geistern, Sektionaltor-Power-Pellets & Online-Bestenliste)!"
+  "version": "3.1.1",
+  "notes": "Bugfix: Hörmann Mut-Man Labyrinth & Kollisions-Engine komplett überarbeitet – Mut-Man und die Zweifel-Geister gleiten jetzt flüssig und präzise durch die Gänge!"
 }
