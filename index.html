@@ -1297,9 +1297,17 @@
 
     <!-- GLOBAL LEADERBOARD CARD WITH TABS (For ALL 5 Games) -->
     <div class="highscore-card" id="highscore-card" style="margin: 0 auto 1.5rem auto; max-width: 780px;">
-      <div class="highscore-header">
-        <div class="highscore-title" id="global-lb-title">🏆 Hörmann Mut-Bestenliste</div>
-        <button class="utility-link" id="close-leaderboard-btn" style="text-decoration:none; font-size:0.95rem; font-weight:700;">✕ Schließen</button>
+      <div class="highscore-header" style="flex-wrap: wrap; gap: 8px;">
+        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+          <div class="highscore-title" id="global-lb-title">🏆 Hörmann Mut-Bestenliste</div>
+          <span id="cloud-sync-badge" style="font-size:0.72rem; background:#dcfce7; color:#15803d; padding:3px 9px; border-radius:99px; font-weight:800; border:1px solid #86efac;">
+            🌐 ONLINE LIVE-SYNC AKTIV
+          </span>
+        </div>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <button class="utility-link" id="refresh-leaderboard-btn" style="text-decoration:none; font-size:0.85rem; font-weight:700;">🔄 Online-Abgleich</button>
+          <button class="utility-link" id="close-leaderboard-btn" style="text-decoration:none; font-size:0.95rem; font-weight:700;">✕ Schließen</button>
+        </div>
       </div>
 
       <!-- Tabs to switch between 5 games -->
@@ -2136,6 +2144,238 @@
     // Direkt beim Start ausführen, damit echte Highscores immer geschützt sind
     migrateAndPreserveAllUserScores();
 
+    /* ==========================================================
+       7b. GLOBAL ONLINE CLOUD LEADERBOARD SYNC (Alle Geräte sehen dieselbe Liste!)
+       ========================================================== */
+    const CLOUD_PRIMARY_URL = 'https://api.restful-api.dev/objects/ff808181a09d98f701a167784b4f66c4';
+    const CLOUD_MIRROR_URL  = 'https://api.restful-api.dev/objects/ff808181a09d98f701a167796f6166c7';
+    const NTFY_TOPIC_URL    = 'https://ntfy.sh/hoermann_mut_dephosa_online_lb_v2';
+    const cloudSyncBadge    = document.getElementById('cloud-sync-badge');
+
+    function setCloudBadgeState(status, text) {
+      if (!cloudSyncBadge) return;
+      if (status === 'syncing') {
+        cloudSyncBadge.style.background = '#fef3c7';
+        cloudSyncBadge.style.color = '#b45309';
+        cloudSyncBadge.style.borderColor = '#fcd34d';
+        cloudSyncBadge.textContent = text || '🔄 Synchronisiere Online-Highscores...';
+      } else if (status === 'online') {
+        cloudSyncBadge.style.background = '#dcfce7';
+        cloudSyncBadge.style.color = '#15803d';
+        cloudSyncBadge.style.borderColor = '#86efac';
+        cloudSyncBadge.textContent = text || '🟢 ONLINE LIVE-BESTENLISTE (ALLE SPIELER)';
+      } else {
+        cloudSyncBadge.style.background = '#f1f5f9';
+        cloudSyncBadge.style.color = '#475569';
+        cloudSyncBadge.style.borderColor = '#cbd5e1';
+        cloudSyncBadge.textContent = text || '💾 Lokal gespeichert (Online-Sync folgt)';
+      }
+    }
+
+    // Hilfsfunktion: Führt zwei Master-Objekte konfliktfrei und ohne Duplikate zusammen
+    function mergeScoreMaps(targetMap, incomingMap) {
+      const categories = ['forklift', 'mario', 'buster', 'nerve', 'parcours'];
+      let addedNew = false;
+
+      categories.forEach(cat => {
+        if (!Array.isArray(targetMap[cat])) targetMap[cat] = [];
+        const incomingList = (incomingMap && Array.isArray(incomingMap[cat])) ? incomingMap[cat] : [];
+
+        incomingList.forEach(item => {
+          if (!item || !item.name || isLegacyNpcEntry(item)) return;
+          const cleanScore = Number(item.score) || 0;
+          if (cleanScore <= 0) return;
+          const cleanName = String(item.name).trim().slice(0, 24);
+          const cleanDate = item.date || 'Heute';
+
+          const exists = targetMap[cat].some(
+            existing => existing.name === cleanName && Number(existing.score) === cleanScore
+          );
+          if (!exists) {
+            targetMap[cat].push({
+              name: cleanName,
+              score: cleanScore,
+              date: cleanDate,
+              isUser: true
+            });
+            addedNew = true;
+          }
+        });
+
+        // Sortiere absteigend und behalte Top 25 echte Spieler pro Kategorie
+        targetMap[cat].sort((a, b) => b.score - a.score);
+        if (targetMap[cat].length > 25) targetMap[cat] = targetMap[cat].slice(0, 25);
+      });
+
+      return addedNew;
+    }
+
+    // Lädt alle Online-Highscores von Cloud-DB + Live-Stream und gleicht sie mit lokalen Highscores ab
+    async function syncOnlineLeaderboards(pushIfLocalHasMore = true) {
+      setCloudBadgeState('syncing');
+      const localMaster = loadMasterUserScores();
+      const beforeJson = JSON.stringify(localMaster);
+      let cloudDataLoaded = false;
+      let cloudBeforeJson = '';
+
+      // 1. Primäre Cloud-DB abrufen
+      try {
+        const res = await fetch(CLOUD_PRIMARY_URL, { cache: 'no-store' });
+        if (res.ok) {
+          const json = await res.json();
+          if (json && json.data) {
+            cloudBeforeJson = JSON.stringify(json.data);
+            mergeScoreMaps(localMaster, json.data);
+            cloudDataLoaded = true;
+          }
+        }
+      } catch (e) {}
+
+      // 2. Falls Primär-DB nicht erreichbar war, Mirror-Cloud-DB abrufen
+      if (!cloudDataLoaded) {
+        try {
+          const resM = await fetch(CLOUD_MIRROR_URL, { cache: 'no-store' });
+          if (resM.ok) {
+            const jsonM = await resM.json();
+            if (jsonM && jsonM.data) {
+              cloudBeforeJson = JSON.stringify(jsonM.data);
+              mergeScoreMaps(localMaster, jsonM.data);
+              cloudDataLoaded = true;
+            }
+          }
+        } catch (e) {}
+      }
+
+      // 3. Zusätzlich Echtzeit-Stream-Cache (ntfy) abrufen
+      try {
+        const resN = await fetch(`${NTFY_TOPIC_URL}/json?poll=1&since=48h`, { cache: 'no-store' });
+        if (resN.ok) {
+          const text = await resN.text();
+          const lines = text.split('\n').filter(Boolean);
+          lines.forEach(line => {
+            try {
+              const evt = JSON.parse(line);
+              if (evt && evt.event === 'message' && evt.message) {
+                const payload = JSON.parse(evt.message);
+                if (payload && payload.cat && payload.name && payload.score) {
+                  mergeScoreMaps(localMaster, { [payload.cat]: [payload] });
+                  cloudDataLoaded = true;
+                }
+              }
+            } catch (err) {}
+          });
+        }
+      } catch (e) {}
+
+      // Lokal speichern
+      saveMasterUserScores(localMaster);
+      ['forklift', 'mario', 'buster', 'nerve', 'parcours'].forEach(cat => {
+        const combined = [...(localMaster[cat] || []), ...(defaultLeaderboards[cat] || [])];
+        combined.sort((a, b) => b.score - a.score);
+        try {
+          localStorage.setItem(`hoermann_lb_${cat}`, JSON.stringify(combined));
+        } catch (e) {}
+      });
+
+      // Falls dieser Browser lokale Highscores hatte, die noch nicht in der Cloud standen -> automatisch hochladen!
+      const afterJson = JSON.stringify(localMaster);
+      const hasAnyUserScores = Object.values(localMaster).some(arr => arr.length > 0);
+      if (pushIfLocalHasMore && hasAnyUserScores && afterJson !== cloudBeforeJson) {
+        await writeMasterToCloud(localMaster);
+      }
+
+      if (highscoreCard.classList.contains('show')) {
+        switchLeaderboardTab(activeGameCategory);
+      }
+      if (typeof updateParcoursHighscoreDisplay === 'function') {
+        updateParcoursHighscoreDisplay();
+      }
+
+      setCloudBadgeState(cloudDataLoaded ? 'online' : 'offline');
+    }
+
+    async function writeMasterToCloud(masterObj) {
+      const payload = JSON.stringify({
+        name: 'hoermann_mut_global_leaderboard_v1',
+        data: masterObj
+      });
+
+      try {
+        await fetch(CLOUD_PRIMARY_URL, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: payload
+        });
+        setCloudBadgeState('online');
+      } catch (e) {}
+
+      try {
+        await fetch(CLOUD_MIRROR_URL, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: payload
+        });
+      } catch (e) {}
+    }
+
+    async function broadcastSingleScoreLive(category, entryObj) {
+      // 1. Sofort per Echtzeit-Push an alle offenen Browser senden
+      try {
+        fetch(NTFY_TOPIC_URL, {
+          method: 'POST',
+          body: JSON.stringify({
+            cat: category,
+            name: entryObj.name,
+            score: entryObj.score,
+            date: entryObj.date
+          })
+        }).catch(() => {});
+      } catch (e) {}
+
+      // 2. Cloud-DB abrufen, zusammenführen und zurückschreiben (verhindert Überschreiben bei gleichzeitigem Spielen)
+      await syncOnlineLeaderboards(true);
+    }
+
+    // Echtzeit-Empfänger (SSE): Wenn ein anderer Spieler einen Highscore einträgt, erscheint er sofort live!
+    function startLiveScoreStream() {
+      if (typeof EventSource === 'undefined') return;
+      try {
+        const es = new EventSource(`${NTFY_TOPIC_URL}/sse`);
+        es.onmessage = (evt) => {
+          try {
+            const data = JSON.parse(evt.data);
+            if (data && data.message) {
+              const item = JSON.parse(data.message);
+              if (item && item.cat && item.name && item.score) {
+                const master = loadMasterUserScores();
+                const wasNew = mergeScoreMaps(master, { [item.cat]: [{ name: item.name, score: item.score, date: item.date, isUser: true }] });
+                if (wasNew) {
+                  saveMasterUserScores(master);
+                  if (highscoreCard.classList.contains('show')) {
+                    switchLeaderboardTab(activeGameCategory, item.name);
+                  }
+                  showToast(`🌐 Live-Rekord: ${item.name} hat ${item.score} Pkt erreicht! 🏆`);
+                }
+              }
+            }
+          } catch (e) {}
+        };
+      } catch (e) {}
+    }
+
+    // Automatischer Online-Sync beim Seitenstart & alle 30 Sekunden im Hintergrund
+    syncOnlineLeaderboards(true);
+    startLiveScoreStream();
+    setInterval(() => { syncOnlineLeaderboards(false); }, 30000);
+
+    const refreshLbBtn = document.getElementById('refresh-leaderboard-btn');
+    if (refreshLbBtn) {
+      refreshLbBtn.addEventListener('click', () => {
+        syncOnlineLeaderboards(true);
+        showToast('Online-Bestenliste wird aktualisiert... 🌐');
+      });
+    }
+
     function getGameLeaderboard(category) {
       const master = loadMasterUserScores();
       const userEntries = master[category] || [];
@@ -2148,19 +2388,26 @@
     function saveGameLeaderboard(category, newEntry) {
       const master = loadMasterUserScores();
       if (!master[category]) master[category] = [];
+      let cleanEntry = null;
       if (newEntry && !Array.isArray(newEntry)) {
-        master[category].push({
+        cleanEntry = {
           name: newEntry.name,
           score: Number(newEntry.score) || 0,
           date: newEntry.date || 'Heute',
           isUser: true
-        });
+        };
+        mergeScoreMaps(master, { [category]: [cleanEntry] });
       }
       saveMasterUserScores(master);
       const combined = getGameLeaderboard(category);
       try {
         localStorage.setItem(`hoermann_lb_${category}`, JSON.stringify(combined));
       } catch (e) {}
+
+      // Sofort online an Cloud-DB & Live-Stream senden!
+      if (cleanEntry) {
+        broadcastSingleScoreLive(category, cleanEntry);
+      }
     }
 
     function switchLeaderboardTab(category, highlightName = "") {
@@ -2233,6 +2480,7 @@
     function openGlobalLeaderboard(category = 'forklift', highlightName = "") {
       switchLeaderboardTab(category, highlightName);
       highscoreCard.classList.add('show');
+      syncOnlineLeaderboards(false);
     }
 
     closeLeaderboardBtn.addEventListener('click', () => {
