@@ -1,17 +1,33 @@
-# 🦁 Hörmann Mut-Portal & Mut-Spiele (Dennis Ressemann Edition)
+# 🦁 Hörmann Mut-Portal & Mut-Spiele (Lagermeister Nico & Dennis Ressemann Edition)
 
-Ein interaktives, motivierendes Web-Portal im originalen Hörmann-Design mit 100% eigens erstellten Mut-Sprüchen, visuellen Muteffekten und **4 abwechslungsreichen Mut-Spielen** inklusive **Super Dennis (dem neuen Mario-Jump'n'Run mit Dennis Ressemann)** und Highscore-Bestenlisten!
+Ein interaktives, motivierendes Web-Portal im originalen Hörmann-Design mit 100% eigens erstellten Mut-Sprüchen, visuellen Muteffekten und **5 abwechslungsreichen Mut-Spielen** inklusive **Lagermeister Nico malocht: Mit Mut am Mast! (Iso-Pixelart Staplerspiel für die Lagerjungs)**, **Super Dennis (Mario-Jump'n'Run)** und Highscore-Bestenlisten!
 
 🌐 **Live-Webseite auf GitHub Pages**: [https://dephosa.github.io/hoermann-mut/](https://dephosa.github.io/hoermann-mut/)  
 📦 **GitHub Repository**: [https://github.com/DePhoSa/hoermann-mut](https://github.com/DePhoSa/hoermann-mut)
 
 ---
 
-## 🎮 Die 4 Mut-Spiele in der Übersicht
+## 🎮 Die 5 Mut-Spiele in der Übersicht
 
-Wenn du auf **„Das Mut-Spiel 🎮“** klickst, hast du die freie Wahl aus 4 Mut-Herausforderungen:
+Wenn du auf **„Das Mut-Spiel 🎮“** klickst, hast du die freie Wahl aus 5 Mut-Herausforderungen:
 
-### 1. 🍄 Super Dennis: Die Hörmann-Welt (NEU! 🌟 Mario-Jump'n'Run)
+### 1. 🚜 Lagermeister Nico malocht: Mit Mut am Mast! (NEU! 🌟 Iso-Pixelart Staplerspiel)
+- **Für echte Lagerjungs**: Steuere **Lagermeister Nico** in seinem blauen Hörmann-Gabelstapler durch die isometrische 2.5D-Pixelart-Lagerhalle!
+- **LKW-Entladung & Schichtwechsel**: Entlade die angedockten blauen Hörmann-LKWs an der Rampe. Ist ein LKW leer, schließt er das Tor, hupt und der nächste LKW setzt rückwärts an die Rampe!
+- **5 echte Hörmann-Transportgüter**:
+  1. **Stehende Schwingtore im 6er-Pack** (hoher Schwerpunkt, vorsichtig in Kurven!)
+  2. **Sektionaltore in Großpalette** (überbreit & schwer)
+  3. **Europalette mit Antrieben** (kompakt, stoßempfindlich)
+  4. **Paletten mit langen Führungsschienen** (Langgut mit roten Warnfähnchen)
+  5. **Hohe Stahltüren (Hochkant)** (kippanfällig bei schnellen Kurven oder angehobener Gabel)
+- **Breite Regalfächer, Füllstand & Hochstapeln (`Ebene 1` & `Ebene 2`)**:
+  - Prüfe den Füllstand der Fächer (`0/2 FREI`, `1/2 ⬆ HOCHSTAPELN`, `2/2 VOLL`).
+  - Ist ein Fach unten belegt (`1/2`), fahre den Hubmast mit **`E` / `Shift`** auf **Ebene 2** hoch und staple sauber oben drauf!
+- **Digitaler km/h-Tacho, Kurvenphysik & die fast unmöglichen 100% (10.000 Pkt)**:
+  - Wer mit Last zu schnell in die Kurve fährt oder mit ausgefahrenem Mast rast, beschädigt die Ware!
+  - Mit **`H` (Meister-Hupe)** rufst du Azubi Kevin herbei, um Ölflecken auf dem Hof wegzuwischen (+120 Mut-Bonus).
+
+### 2. 🍄 Super Dennis: Die Hörmann-Welt (Mario-Jump'n'Run)
 - **Hauptcharakter**: **Dennis Ressemann** (im grünen Original-Hoodie aus *Feierabend Survivors*).
 - **Gameplay**:
   - Klassischer 2D Side-Scrolling Plattformer im Super-Mario-Stil.

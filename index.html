@@ -508,7 +508,7 @@
     /* ==========================================================
        GAMES COMMON VIEWS
        ========================================================== */
-    #mario-view, #buster-view, #nerve-view, #parcours-view {
+    #forklift-view, #mario-view, #buster-view, #nerve-view, #parcours-view {
       display: none;
       width: 100%;
       flex-direction: column;
@@ -516,13 +516,19 @@
       padding: 1.25rem 1.25rem 1.8rem 1.25rem;
     }
 
-    #marioCanvas, #busterCanvas, #parcoursCanvas {
+    #forkliftCanvas, #marioCanvas, #busterCanvas, #parcoursCanvas {
       background: #001830;
       border: 3px solid var(--hoermann-blue);
       border-radius: 6px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
       max-width: 100%;
       touch-action: none;
+    }
+
+    #forkliftCanvas {
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      background: #1e293b;
     }
 
     #busterCanvas {
@@ -1038,15 +1044,28 @@
       <p class="menu-subtitle">Welche Mutprobe soll es heute sein?</p>
 
       <div class="games-grid">
+        <!-- Game NEW: Lagermeister Nico malocht (Isometric Forklift Game) -->
+        <div class="game-choice-card" id="choose-forklift-btn" style="grid-column: 1 / -1; border-color: #f59c00; background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%); flex-direction: row; align-items: center; text-align: left; gap: 1.25rem; flex-wrap: wrap;">
+          <div class="card-badge-rec" style="background: #f59c00;">🚜 NEU &bull; FÜR DIE LAGERJUNGS (ISO-PIXELART)</div>
+          <div style="font-size: 3.1rem; line-height: 1; padding: 0.2rem 0.5rem;">🚜📦</div>
+          <div style="flex: 1; min-width: 240px;">
+            <div class="game-card-title" style="font-size: 1.3rem;">Lagermeister Nico malocht: Mit Mut am Mast!</div>
+            <div class="game-card-desc" style="margin-bottom: 0;">
+              Entlade mit dem blauen <strong>Hörmann-Stapler</strong> echte LKWs in der Iso-Lagerhalle! Transportiere <strong>6er-Packs Schwingtore, Sektionaltore, Europaletten-Antriebe, lange Führungsschienen &amp; hohe Stahltüren</strong>. Achte auf den <strong>km/h-Tacho</strong> in Kurven, prüfe freie Regalfächer, staple hoch auf Ebene 2 und jage die legendären (fast unmöglichen) 100% Perfektion!
+            </div>
+          </div>
+          <button class="btn-card-start" style="background:var(--hoermann-orange); padding: 0.85rem 1.4rem; font-size: 1rem; white-space: nowrap;">Schicht 1 starten 🚜</button>
+        </div>
+
         <!-- Game 0: Super Dennis (Mario-Plattformer) -->
-        <div class="game-choice-card" id="choose-mario-btn" style="border-color: #f59c00;">
-          <div class="card-badge-rec">⭐ NEU &bull; Jump 'n' Run</div>
+        <div class="game-choice-card" id="choose-mario-btn">
+          <div class="card-badge-rec" style="background:#002d62;">⭐ Jump 'n' Run</div>
           <div class="game-icon-large">🍄👷‍♂️</div>
           <div class="game-card-title">Super Dennis</div>
           <div class="game-card-desc">
             Steuere <strong>Dennis Ressemann</strong> im Mario-Stil durch die Hörmann-Welt! Hüpfe auf Zweifel, knacke [?] Blöcke und stürme das Werkstor!
           </div>
-          <button class="btn-card-start" style="background:var(--hoermann-orange);">Level 1-1 starten 🚀</button>
+          <button class="btn-card-start">Level 1-1 starten 🚀</button>
         </div>
 
         <!-- Game 1: Zweifel-Buster -->
@@ -1093,7 +1112,50 @@
       </div>
     </section>
 
-    <!-- 3. SPIEL 0: SUPER DENNIS (MARIO PLATTFORMER) -->
+    <!-- 3. SPIEL NEU: LAGERMEISTER NICO MALOCHT (ISOMETRIC FORKLIFT) -->
+    <section class="card-content" id="forklift-view">
+      <div class="game-ui-header" style="max-width: 780px;">
+        <div class="game-stat">LKW: <span id="fl-truck-stat">1 / 2</span></div>
+        <div class="game-stat">Paletten: <span id="fl-pallet-stat">0 / 6</span></div>
+        <div class="game-stat">Qualität: <span id="fl-quality-stat">100.0%</span></div>
+        <div class="game-stat">Punkte: <span id="fl-score-stat">0</span></div>
+        <div class="game-actions-bar">
+          <button class="utility-link" id="fl-finish-shift-btn" style="text-decoration:none; font-weight:800; color:#10b981;" title="Aktuelle Punkte sofort in die Bestenliste eintragen">🏁 Schicht abrechnen</button>
+          <button class="utility-link" id="forklift-leaderboard-btn" style="text-decoration:none; font-weight:700;">🏆 Bestenliste</button>
+          <button class="utility-link" id="exit-forklift-btn" style="text-decoration:none; font-weight:800;">✕ Menü</button>
+        </div>
+      </div>
+
+      <canvas id="forkliftCanvas" width="780" height="470"></canvas>
+
+      <!-- Quick Action & Touch Controls Bar -->
+      <div style="display:flex; flex-wrap:wrap; gap:8px; width:100%; max-width:780px; justify-content:space-between; align-items:center; margin-top:0.65rem;">
+        <div style="display:flex; gap:6px; align-items:center;">
+          <button class="touch-btn" id="fl-btn-left" style="width:44px; height:40px; font-size:1.1rem;" title="Links lenken (A / ◀)">◀</button>
+          <button class="touch-btn" id="fl-btn-up" style="width:44px; height:40px; font-size:1.1rem;" title="Gas geben (W / ▲)">▲</button>
+          <button class="touch-btn" id="fl-btn-down" style="width:44px; height:40px; font-size:1.1rem;" title="Bremsen / Rückwärts (S / ▼)">▼</button>
+          <button class="touch-btn" id="fl-btn-right" style="width:44px; height:40px; font-size:1.1rem;" title="Rechts lenken (D / ▶)">▶</button>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn-card-start" id="fl-btn-action" style="background:var(--hoermann-orange); padding:0.5rem 0.95rem; font-size:0.85rem;">
+            📦 Gabel Aufnehmen / Absetzen (Leertaste)
+          </button>
+          <button class="btn-card-start" id="fl-btn-mast" style="background:var(--hoermann-blue); padding:0.5rem 0.95rem; font-size:0.85rem;">
+            ⬆️ Mast: Ebene 1 / Ebene 2 (E)
+          </button>
+          <button class="btn-card-start" id="fl-btn-horn" style="background:#475569; padding:0.5rem 0.85rem; font-size:0.85rem;">
+            📯 Hupe (H)
+          </button>
+          <button class="utility-link" id="restart-forklift-btn" style="margin-left:4px;">Neustart ↺</button>
+        </div>
+      </div>
+
+      <div class="game-instructions" style="max-width:780px; margin-top:0.55rem; font-size:0.8rem;">
+        <span><span class="key-badge">W A S D</span> / <span class="key-badge">▲ ◀ ▼ ▶</span> Stapler fahren &bull; <span class="key-badge">Leertaste</span> Palette am LKW aufnehmen / im Ziel-Regal absetzen &bull; <span class="key-badge">E</span> oder <span class="key-badge">Shift</span> Hubmast hoch/runter (für <strong>1/2 belegte Fächer = Ebene 2 Hochstapeln!</strong>) &bull; <span class="key-badge">H</span> Meister-Hupe</span>
+      </div>
+    </section>
+
+    <!-- 4. SPIEL 0: SUPER DENNIS (MARIO PLATTFORMER) -->
     <section class="card-content" id="mario-view">
       <div class="game-ui-header">
         <div class="game-stat">Leben: <span id="mario-lives">❤️❤️❤️</span></div>
@@ -1233,16 +1295,17 @@
       </div>
     </div>
 
-    <!-- GLOBAL LEADERBOARD CARD WITH TABS (For ALL 4 Games) -->
-    <div class="highscore-card" id="highscore-card" style="margin: 0 auto 1.5rem auto;">
+    <!-- GLOBAL LEADERBOARD CARD WITH TABS (For ALL 5 Games) -->
+    <div class="highscore-card" id="highscore-card" style="margin: 0 auto 1.5rem auto; max-width: 780px;">
       <div class="highscore-header">
         <div class="highscore-title" id="global-lb-title">🏆 Hörmann Mut-Bestenliste</div>
         <button class="utility-link" id="close-leaderboard-btn" style="text-decoration:none; font-size:0.95rem; font-weight:700;">✕ Schließen</button>
       </div>
 
-      <!-- Tabs to switch between 4 games -->
+      <!-- Tabs to switch between 5 games -->
       <div class="leaderboard-tabs">
-        <button class="lb-tab-btn active" id="tab-mario-btn">🍄 Super Dennis</button>
+        <button class="lb-tab-btn active" id="tab-forklift-btn">🚜 Lagermeister Nico</button>
+        <button class="lb-tab-btn" id="tab-mario-btn">🍄 Super Dennis</button>
         <button class="lb-tab-btn" id="tab-buster-btn">🔨 Zweifel-Buster</button>
         <button class="lb-tab-btn" id="tab-nerve-btn">🎲 Die Mut-Probe</button>
         <button class="lb-tab-btn" id="tab-parcours-btn">🕹️ Tor-Parcours</button>
@@ -1264,7 +1327,7 @@
   </div>
 
   <footer>
-    Hörmann Mut-Portal &bull; Sektionaltore &bull; Schwingtore &bull; Türen &bull; Stahlzargen &bull; Dennis Ressemann Edition
+    Hörmann Mut-Portal &bull; Sektionaltore &bull; Schwingtore &bull; Türen &bull; Stahlzargen &bull; Lagermeister Nico &amp; Dennis Ressemann Edition
   </footer>
 
   <div id="toast">Gedanken gespeichert!</div>
@@ -1418,6 +1481,55 @@
           gain.connect(ctx.destination);
           osc.start(nowTime);
           osc.stop(nowTime + 0.26);
+        } else if (type === 'horn') {
+          [293.66, 369.99].forEach(freq => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(freq, nowTime);
+            gain.gain.setValueAtTime(0.14, nowTime);
+            gain.gain.setValueAtTime(0.14, nowTime + 0.18);
+            gain.gain.exponentialRampToValueAtTime(0.001, nowTime + 0.28);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(nowTime);
+            osc.stop(nowTime + 0.29);
+          });
+        } else if (type === 'hydraulic') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(160, nowTime);
+          osc.frequency.linearRampToValueAtTime(290, nowTime + 0.22);
+          gain.gain.setValueAtTime(0.12, nowTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, nowTime + 0.25);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(nowTime);
+          osc.stop(nowTime + 0.26);
+        } else if (type === 'beep') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(1020, nowTime);
+          gain.gain.setValueAtTime(0.08, nowTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, nowTime + 0.12);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(nowTime);
+          osc.stop(nowTime + 0.13);
+        } else if (type === 'crunch') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(95, nowTime);
+          osc.frequency.linearRampToValueAtTime(45, nowTime + 0.18);
+          gain.gain.setValueAtTime(0.28, nowTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, nowTime + 0.22);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(nowTime);
+          osc.stop(nowTime + 0.23);
         }
       } catch (e) {
         console.warn('Audio error:', e);
@@ -1457,7 +1569,11 @@
       { quote: "Fehler sind keine Bauschäden, sondern wertvolle Montage-Erfahrungen für dein nächstes Meisterstück.", author: "Dennis Ressemann" },
       { quote: "Ein Tag voller Mut beginnt mit dem einfachen Gedanken: ‚Ich packe das heute an. Punkt.‘", author: "Dennis Ressemann" },
       { quote: "Mut ist wie ein Qualitäts-Kugellager: Gut geschmiert läuft es reibungslos durch jede Lebenslage.", author: "Werkstatt-Mut" },
-      { quote: "Halte den Kurs, auch wenn es mal ruckelt. Die besten Tore gleiten auch nach tausenden Zyklen noch butterweich.", author: "Dennis Ressemann" }
+      { quote: "Halte den Kurs, auch wenn es mal ruckelt. Die besten Tore gleiten auch nach tausenden Zyklen noch butterweich.", author: "Dennis Ressemann" },
+      { quote: "Ein guter Staplerfahrer weiß: Auch ein 6er-Pack Schwingtore hebt sich leicht, wenn das Gegengewicht aus purem Mut besteht!", author: "Lagermeister Nico" },
+      { quote: "Vor der Kurve kurz vom Gas, vor dem Hochregal sauber ansetzen – wahrer Mut in der Logistik zeigt sich in Ruhe und Präzision.", author: "Lagermeister Nico" },
+      { quote: "Wenn der nächste LKW schon an der Rampe piept: Brust raus, Gabel senken und Palette für Palette sauber wegarbeiten!", author: "Lagermeister Nico & die Lagerjungs" },
+      { quote: "Ob lange Führungsschiene oder hohe Stahltür: Für unsere Lagerjungs ist keine Last zu sperrig und kein Regal zu hoch.", author: "Lagermeister Nico" }
     ];
 
     /* ==========================================================
@@ -1761,6 +1877,7 @@
        ========================================================== */
     const portalView = document.getElementById('portal-view');
     const gamesMenuView = document.getElementById('games-menu-view');
+    const forkliftView = document.getElementById('forklift-view');
     const marioView = document.getElementById('mario-view');
     const busterView = document.getElementById('buster-view');
     const nerveView = document.getElementById('nerve-view');
@@ -1769,12 +1886,14 @@
     function hideAllViews() {
       portalView.style.display = 'none';
       gamesMenuView.style.display = 'none';
+      forkliftView.style.display = 'none';
       marioView.style.display = 'none';
       busterView.style.display = 'none';
       nerveView.style.display = 'none';
       parcoursView.style.display = 'none';
       scoreSubmitDialog.classList.remove('show');
       highscoreCard.classList.remove('show');
+      if (typeof stopForkliftGame === 'function') stopForkliftGame();
       stopMarioGame();
       stopBusterGame();
       stopParcoursGame();
@@ -1798,6 +1917,12 @@
 
     document.getElementById('menu-btn').addEventListener('click', showGamesMenu);
     document.getElementById('back-to-portal-btn').addEventListener('click', showPortalView);
+
+    document.getElementById('choose-forklift-btn').addEventListener('click', () => {
+      hideAllViews();
+      forkliftView.style.display = 'flex';
+      startForkliftGame();
+    });
 
     document.getElementById('choose-mario-btn').addEventListener('click', () => {
       hideAllViews();
@@ -1823,13 +1948,14 @@
       startParcoursGame();
     });
 
+    document.getElementById('exit-forklift-btn').addEventListener('click', showGamesMenu);
     document.getElementById('exit-mario-btn').addEventListener('click', showGamesMenu);
     document.getElementById('exit-buster-btn').addEventListener('click', showGamesMenu);
     document.getElementById('exit-nerve-btn').addEventListener('click', showGamesMenu);
     document.getElementById('exit-parcours-btn').addEventListener('click', showGamesMenu);
 
     /* ==========================================================
-       7. UNIFIED HIGHSCORE & LEADERBOARD SYSTEM (All 4 Games)
+       7. UNIFIED HIGHSCORE & LEADERBOARD SYSTEM (All 5 Games)
        ========================================================== */
     const scoreSubmitDialog = document.getElementById('score-submit-dialog');
     const submitDialogTitle = document.getElementById('submit-dialog-title');
@@ -1843,16 +1969,24 @@
     const globalLbTitle = document.getElementById('global-lb-title');
     const lbScoreColHeader = document.getElementById('lb-score-col-header');
 
+    const tabForkliftBtn = document.getElementById('tab-forklift-btn');
     const tabMarioBtn = document.getElementById('tab-mario-btn');
     const tabBusterBtn = document.getElementById('tab-buster-btn');
     const tabNerveBtn = document.getElementById('tab-nerve-btn');
     const tabParcoursBtn = document.getElementById('tab-parcours-btn');
 
-    let activeGameCategory = 'mario';
-    let pendingSubmitGame = 'mario';
+    let activeGameCategory = 'forklift';
+    let pendingSubmitGame = 'forklift';
     let pendingScoreToSave = 0;
 
     const defaultLeaderboards = {
+      forklift: [
+        { name: "Lagermeister Nico", score: 9840, date: "Gestern" },
+        { name: "Dennis Ressemann", score: 9120, date: "22.10." },
+        { name: "Stapler-König Kai", score: 8450, date: "21.10." },
+        { name: "Schichtführer Uwe", score: 7600, date: "20.10." },
+        { name: "Azubi Kevin", score: 5200, date: "19.10." }
+      ],
       mario: [
         { name: "Dennis Ressemann", score: 2850, date: "Gestern" },
         { name: "Meister Torsten", score: 2100, date: "21.10." },
@@ -1897,12 +2031,14 @@
 
     function switchLeaderboardTab(category, highlightName = "") {
       activeGameCategory = category;
+      tabForkliftBtn.classList.toggle('active', category === 'forklift');
       tabMarioBtn.classList.toggle('active', category === 'mario');
       tabBusterBtn.classList.toggle('active', category === 'buster');
       tabNerveBtn.classList.toggle('active', category === 'nerve');
       tabParcoursBtn.classList.toggle('active', category === 'parcours');
 
       const titles = {
+        forklift: "🏆 Bestenliste: 🚜 Lagermeister Nico malocht (Max: 10.000 Pkt = 100%)",
         mario: "🏆 Bestenliste: 🍄 Super Dennis (Mut-Welt)",
         buster: "🏆 Bestenliste: 🔨 Zweifel-Buster",
         nerve: "🏆 Bestenliste: 🎲 Die Mut-Probe",
@@ -1926,11 +2062,15 @@
         if (idx === 1) rankBadge = '🥈 2.';
         if (idx === 2) rankBadge = '🥉 3.';
 
+        const scoreLabel = (category === 'forklift')
+          ? `${entry.score} <small style="color:#64748b; font-weight:600; font-size:0.75rem;">(${(entry.score / 100).toFixed(1)}%)</small>`
+          : entry.score;
+
         tr.innerHTML = `
           <td>${rankBadge}</td>
           <td><strong>${escapeHtml(entry.name)}</strong></td>
           <td style="text-align:right; color:var(--hoermann-orange); font-weight:800; font-size:1.05rem;">
-            ${entry.score}
+            ${scoreLabel}
           </td>
           <td style="text-align:right; color:var(--text-muted); font-size:0.8rem;">
             ${entry.date || 'Heute'}
@@ -1946,12 +2086,13 @@
       return div.innerHTML;
     }
 
+    tabForkliftBtn.addEventListener('click', () => switchLeaderboardTab('forklift'));
     tabMarioBtn.addEventListener('click', () => switchLeaderboardTab('mario'));
     tabBusterBtn.addEventListener('click', () => switchLeaderboardTab('buster'));
     tabNerveBtn.addEventListener('click', () => switchLeaderboardTab('nerve'));
     tabParcoursBtn.addEventListener('click', () => switchLeaderboardTab('parcours'));
 
-    function openGlobalLeaderboard(category = 'mario', highlightName = "") {
+    function openGlobalLeaderboard(category = 'forklift', highlightName = "") {
       switchLeaderboardTab(category, highlightName);
       highscoreCard.classList.add('show');
     }
@@ -1960,7 +2101,8 @@
       highscoreCard.classList.remove('show');
     });
 
-    document.getElementById('menu-view-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('mario'));
+    document.getElementById('menu-view-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('forklift'));
+    document.getElementById('forklift-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('forklift'));
     document.getElementById('mario-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('mario'));
     document.getElementById('buster-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('buster'));
     document.getElementById('nerve-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('nerve'));
@@ -3255,6 +3397,1372 @@
       if (parcoursScore > 0) {
         promptScoreSubmit(parcoursScore, 'parcours', 'Tor-Parcours');
       }
+    }
+
+    /* ==========================================================
+       12. GAME NEU: LAGERMEISTER NICO MALOCHT (2.5D ISO PIXEL-ART)
+       ========================================================== */
+    const flCanvas = document.getElementById('forkliftCanvas');
+    const flCtx = flCanvas.getContext('2d');
+    const flTruckStat = document.getElementById('fl-truck-stat');
+    const flPalletStat = document.getElementById('fl-pallet-stat');
+    const flQualityStat = document.getElementById('fl-quality-stat');
+    const flScoreStat = document.getElementById('fl-score-stat');
+
+    let flActive = false;
+    let flLoopId = null;
+
+    // 5 Authentic Hörmann Pallet Cargo Definitions
+    const CARGO_TYPES = {
+      schwingtore: {
+        id: 'schwingtore',
+        name: 'Schwingtore (6er-Pack)',
+        shortName: '6er Schwingtore',
+        zone: 'A',
+        zoneName: 'ZONE A (Tore-Lager)',
+        safeKmh: 12.0,
+        heightFactor: 1.35, // High center of gravity
+        widthSpan: 34,
+        depthSpan: 30,
+        color: '#2563eb'
+      },
+      sektionaltore: {
+        id: 'sektionaltore',
+        name: 'Sektionaltore (Großpalette)',
+        shortName: 'Sektionaltor-Pack',
+        zone: 'A',
+        zoneName: 'ZONE A (Tore-Lager)',
+        safeKmh: 14.0,
+        heightFactor: 1.05,
+        widthSpan: 42, // Wide pallet
+        depthSpan: 28,
+        color: '#0d448a'
+      },
+      antriebe: {
+        id: 'antriebe',
+        name: 'Europalette mit Antrieben',
+        shortName: 'EPAL Antriebe',
+        zone: 'B',
+        zoneName: 'ZONE B (Antriebe/Schienen)',
+        safeKmh: 16.0,
+        heightFactor: 0.9,
+        widthSpan: 28,
+        depthSpan: 24,
+        color: '#f59c00'
+      },
+      schienen: {
+        id: 'schienen',
+        name: 'Führungsschienen (Langgut)',
+        shortName: 'Langgut Schienen',
+        zone: 'B',
+        zoneName: 'ZONE B (Antriebe/Schienen)',
+        safeKmh: 13.0,
+        heightFactor: 1.1,
+        widthSpan: 54, // Extra long!
+        depthSpan: 20,
+        color: '#10b981'
+      },
+      stahltueren: {
+        id: 'stahltueren',
+        name: 'Stahltüren (Hochkant)',
+        shortName: 'Stahltüren Hoch',
+        zone: 'C',
+        zoneName: 'ZONE C (Stahltüren)',
+        safeKmh: 11.0,
+        heightFactor: 1.5, // Very tall, sensitive in curves!
+        widthSpan: 32,
+        depthSpan: 26,
+        color: '#ef4444'
+      }
+    };
+
+    // Game State
+    let flState = {
+      score: 0,
+      palletsDelivered: 0,
+      totalPalletsInShift: 6,
+      qualityHistory: [],
+      truckNumber: 1,
+      maxTrucks: 2,
+      truckPhase: 'DOCKED', // 'DOCKED', 'LEAVING', 'ARRIVING'
+      truckSlideX: 0,
+      truckTimer: 0,
+      shiftComplete: false,
+      screenShake: 0,
+      warningBanner: '',
+      warningTimer: 0
+    };
+
+    // Nico's Blue Hörmann Forklift
+    let nico = {
+      x: 290,
+      y: 245,
+      angle: Math.PI, // Facing left toward the LKW initially
+      speed: 0,       // Internal velocity (-2.2 to +3.75 => mapped to 0..24 km/h)
+      maxFwdSpeed: 3.75,
+      maxRevSpeed: -2.1,
+      kmh: 0,
+      mastLevel: 1,   // 1 = Boden (Ebene 1), 2 = Hochstapel (Ebene 2)
+      forkZ: 2,       // Animated visual height (2 = down, 24 = high stack)
+      cargo: null,    // Currently carried pallet object
+      wobbleAngle: 0, // Centrifugal curve tilt
+      wobbleWarning: false,
+      collisionCooldown: 0,
+      hornCooldown: 0
+    };
+
+    let flKeys = { up: false, down: false, left: false, right: false };
+    let lkwPallets = [];
+    let storageBays = [];
+    let skidMarks = [];
+    let flFloatingTexts = [];
+    let flParticles = [];
+    let oilSpill = null;
+
+    function initForkliftLevel() {
+      flState = {
+        score: 0,
+        palletsDelivered: 0,
+        totalPalletsInShift: 6,
+        qualityHistory: [],
+        truckNumber: 1,
+        maxTrucks: 2,
+        truckPhase: 'DOCKED',
+        truckSlideX: 0,
+        truckTimer: 0,
+        shiftComplete: false,
+        screenShake: 0,
+        warningBanner: '',
+        warningTimer: 0
+      };
+
+      nico = {
+        x: 295,
+        y: 245,
+        angle: Math.PI,
+        speed: 0,
+        maxFwdSpeed: 3.75,
+        maxRevSpeed: -2.1,
+        kmh: 0,
+        mastLevel: 1,
+        forkZ: 2,
+        cargo: null,
+        wobbleAngle: 0,
+        wobbleWarning: false,
+        collisionCooldown: 0,
+        hornCooldown: 0
+      };
+
+      skidMarks = [];
+      flFloatingTexts = [];
+      flParticles = [];
+
+      // Create an interactive warehouse floor obstacle (can be honked away with H!)
+      oilSpill = {
+        x: 430,
+        y: 280,
+        r: 22,
+        active: true,
+        label: 'Ölfleck (Hupe [H] für Azubi!)'
+      };
+
+      // Initialize the 6 wide storage bays across 3 Zones (Level 1: Wide, generous spacing)
+      // Notice: Some bays start at 1/2 so Nico gets to use high-stacking (Ebene 2) right away!
+      storageBays = [
+        {
+          id: 'A1', zone: 'A', label: 'TOR-FACH A1',
+          x: 230, y: 44, w: 112, h: 66,
+          targetAngle: -Math.PI / 2, // Facing up into rack
+          items: [{ type: 'schwingtore', condition: 100 }], // 1/2 occupied -> next must be stacked on Level 2!
+          maxItems: 2
+        },
+        {
+          id: 'A2', zone: 'A', label: 'TOR-FACH A2',
+          x: 358, y: 44, w: 112, h: 66,
+          targetAngle: -Math.PI / 2,
+          items: [], // 0/2 empty -> Level 1 floor
+          maxItems: 2
+        },
+        {
+          id: 'B1', zone: 'B', label: 'ANTRIEBE B1',
+          x: 612, y: 62, w: 120, h: 68,
+          targetAngle: 0, // Facing right into rack
+          items: [], // 0/2 empty -> Level 1 floor
+          maxItems: 2
+        },
+        {
+          id: 'B2', zone: 'B', label: 'LANGGUT B2',
+          x: 612, y: 142, w: 120, h: 68,
+          targetAngle: 0,
+          items: [{ type: 'antriebe', condition: 100 }], // 1/2 occupied -> Level 2 high-stack!
+          maxItems: 2
+        },
+        {
+          id: 'C1', zone: 'C', label: 'TÜREN C1',
+          x: 612, y: 240, w: 120, h: 66,
+          targetAngle: 0,
+          items: [{ type: 'stahltueren', condition: 100 }], // 1/2 occupied -> Level 2 high-stack!
+          maxItems: 2
+        },
+        {
+          id: 'C2', zone: 'C', label: 'TÜREN C2',
+          x: 612, y: 318, w: 120, h: 66,
+          targetAngle: 0,
+          items: [], // 0/2 empty -> Level 1 floor
+          maxItems: 2
+        }
+      ];
+
+      spawnTruckPallets(1);
+      updateForkliftHUD();
+    }
+
+    function spawnTruckPallets(truckNum) {
+      // Truck 1 brings: Schwingtore (6er-Pack), Europalette Antriebe, Stahltüren (Hochkant)
+      // Truck 2 brings: Sektionaltore (Großpalette), Führungsschienen (Langgut), Stahltüren / Antriebe
+      const manifest = (truckNum === 1)
+        ? ['schwingtore', 'antriebe', 'stahltueren']
+        : ['sektionaltore', 'schienen', 'stahltueren'];
+
+      const slotYs = [186, 244, 302];
+      lkwPallets = manifest.map((typeKey, idx) => ({
+        slotIndex: idx,
+        x: 136,
+        y: slotYs[idx],
+        type: typeKey,
+        condition: 100.0,
+        pickupTime: 0
+      }));
+    }
+
+    function updateForkliftHUD() {
+      flTruckStat.textContent = `${flState.truckNumber} / ${flState.maxTrucks}`;
+      flPalletStat.textContent = `${flState.palletsDelivered} / ${flState.totalPalletsInShift}`;
+
+      let avgQ = 100.0;
+      if (flState.qualityHistory.length > 0) {
+        const sum = flState.qualityHistory.reduce((a, b) => a + b, 0);
+        avgQ = sum / flState.qualityHistory.length;
+      } else if (nico.cargo) {
+        avgQ = nico.cargo.condition;
+      }
+      flQualityStat.textContent = `${avgQ.toFixed(1)}%`;
+      flScoreStat.textContent = flState.score;
+    }
+
+    function startForkliftGame() {
+      initForkliftLevel();
+      scoreSubmitDialog.classList.remove('show');
+      highscoreCard.classList.remove('show');
+      flActive = true;
+      if (flLoopId) cancelAnimationFrame(flLoopId);
+      flLoop();
+      playSound('horn');
+    }
+
+    function stopForkliftGame() {
+      flActive = false;
+      if (flLoopId) cancelAnimationFrame(flLoopId);
+    }
+
+    document.getElementById('restart-forklift-btn').addEventListener('click', startForkliftGame);
+    document.getElementById('fl-finish-shift-btn').addEventListener('click', () => {
+      if (flState.score <= 0) {
+        showToast('Staple erst mindestens eine Palette ins Lager, bevor du abrechnest! 🚜');
+        return;
+      }
+      finishForkliftShift(false);
+    });
+
+    // Keyboard Controls for Forklift
+    window.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT') return;
+      if (forkliftView.style.display === 'none') return;
+
+      if (e.code === 'KeyW' || e.code === 'ArrowUp') { flKeys.up = true; e.preventDefault(); }
+      if (e.code === 'KeyS' || e.code === 'ArrowDown') { flKeys.down = true; e.preventDefault(); }
+      if (e.code === 'KeyA' || e.code === 'ArrowLeft') { flKeys.left = true; e.preventDefault(); }
+      if (e.code === 'KeyD' || e.code === 'ArrowRight') { flKeys.right = true; e.preventDefault(); }
+
+      if (e.code === 'Space') {
+        e.preventDefault();
+        handleForkliftAction();
+      }
+      if (e.code === 'KeyE' || e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
+        e.preventDefault();
+        toggleForkliftMast();
+      }
+      if (e.code === 'KeyH') {
+        e.preventDefault();
+        triggerForkliftHorn();
+      }
+    });
+
+    window.addEventListener('keyup', (e) => {
+      if (e.code === 'KeyW' || e.code === 'ArrowUp') flKeys.up = false;
+      if (e.code === 'KeyS' || e.code === 'ArrowDown') flKeys.down = false;
+      if (e.code === 'KeyA' || e.code === 'ArrowLeft') flKeys.left = false;
+      if (e.code === 'KeyD' || e.code === 'ArrowRight') flKeys.right = false;
+    });
+
+    // Touch / Button bindings for Forklift
+    bindTouch(document.getElementById('fl-btn-left'), () => { flKeys.left = true; }, () => { flKeys.left = false; });
+    bindTouch(document.getElementById('fl-btn-right'), () => { flKeys.right = true; }, () => { flKeys.right = false; });
+    bindTouch(document.getElementById('fl-btn-up'), () => { flKeys.up = true; }, () => { flKeys.up = false; });
+    bindTouch(document.getElementById('fl-btn-down'), () => { flKeys.down = true; }, () => { flKeys.down = false; });
+
+    document.getElementById('fl-btn-action').addEventListener('click', handleForkliftAction);
+    document.getElementById('fl-btn-mast').addEventListener('click', toggleForkliftMast);
+    document.getElementById('fl-btn-horn').addEventListener('click', triggerForkliftHorn);
+
+    function toggleForkliftMast() {
+      if (flState.shiftComplete) return;
+      nico.mastLevel = (nico.mastLevel === 1) ? 2 : 1;
+      playSound('hydraulic');
+      const label = nico.mastLevel === 2 ? '⬆️ GABEL AUF EBENE 2 (HOCHSTAPEL)' : '⬇️ GABEL AUF EBENE 1 (BODEN)';
+      flFloatingTexts.push({
+        x: nico.x,
+        y: nico.y - 34,
+        text: label,
+        color: nico.mastLevel === 2 ? '#38bdf8' : '#10b981',
+        alpha: 1.2
+      });
+    }
+
+    function triggerForkliftHorn() {
+      if (flState.shiftComplete || nico.hornCooldown > 0) return;
+      nico.hornCooldown = 25;
+      playSound('horn');
+      flFloatingTexts.push({
+        x: nico.x,
+        y: nico.y - 38,
+        text: '📯 MÖÖÖP! FREIE BAHN FÜR NICO!',
+        color: '#f59c00',
+        alpha: 1.2
+      });
+
+      // If near oil spill, Azubi Kevin cleans it up for a Mut-Bonus!
+      if (oilSpill && oilSpill.active && Math.hypot(nico.x - oilSpill.x, nico.y - oilSpill.y) < 150) {
+        oilSpill.active = false;
+        flState.score += 120;
+        playSound('coin');
+        flFloatingTexts.push({
+          x: oilSpill.x,
+          y: oilSpill.y - 15,
+          text: '🧹 AZUBI KEVIN HAT GEWISCHT! +120 MUT-PKT',
+          color: '#10b981',
+          alpha: 1.5
+        });
+        updateForkliftHUD();
+      }
+    }
+
+    function handleForkliftAction() {
+      if (flState.shiftComplete) return;
+
+      const forkReach = 28;
+      const forkX = nico.x + Math.cos(nico.angle) * forkReach;
+      const forkY = nico.y + Math.sin(nico.angle) * forkReach;
+
+      // CASE 1: NOT CARRYING CARGO -> TRY TO PICK UP FROM LKW
+      if (!nico.cargo) {
+        if (flState.truckPhase !== 'DOCKED') {
+          showForkliftWarning('⏳ Warte kurz, bis der nächste Hörmann-LKW angedockt hat!');
+          return;
+        }
+
+        if (nico.kmh > 6.5) {
+          showForkliftWarning('⚠️ Zu schnell zum Aufnehmen! Bremse vor der Palette ab!');
+          playSound('bump');
+          return;
+        }
+
+        // Find closest pallet on LKW
+        let bestIdx = -1;
+        let bestDist = 46;
+        for (let i = 0; i < lkwPallets.length; i++) {
+          const p = lkwPallets[i];
+          const d = Math.hypot(forkX - p.x, forkY - p.y);
+          if (d < bestDist) {
+            bestDist = d;
+            bestIdx = i;
+          }
+        }
+
+        if (bestIdx !== -1) {
+          const picked = lkwPallets.splice(bestIdx, 1)[0];
+          const cInfo = CARGO_TYPES[picked.type];
+          nico.cargo = {
+            type: picked.type,
+            condition: picked.condition,
+            pickupTime: performance.now()
+          };
+          playSound('hydraulic');
+          flFloatingTexts.push({
+            x: nico.x,
+            y: nico.y - 36,
+            text: `📦 ${cInfo.shortName} AUFGENOMMEN! ➔ ${cInfo.zoneName}`,
+            color: '#f59c00',
+            alpha: 1.5
+          });
+          updateForkliftHUD();
+        } else {
+          showForkliftWarning('💡 Fahre mit der Gabel nah an eine Palette auf dem LKW heran!');
+          playSound('bump');
+        }
+        return;
+      }
+
+      // CASE 2: CARRYING CARGO -> TRY TO PLACE IN STORAGE BAY
+      if (nico.kmh > 5.0) {
+        showForkliftWarning('⚠️ Zum Absetzen fast stillstehen (< 5 km/h)!');
+        playSound('bump');
+        return;
+      }
+
+      const cInfo = CARGO_TYPES[nico.cargo.type];
+
+      // Find bay under fork tip
+      let targetBay = null;
+      for (let b of storageBays) {
+        if (forkX >= b.x - 12 && forkX <= b.x + b.w + 12 &&
+            forkY >= b.y - 12 && forkY <= b.y + b.h + 12) {
+          targetBay = b;
+          break;
+        }
+      }
+
+      if (!targetBay) {
+        showForkliftWarning(`📍 Fahre die Ladung in ${cInfo.zoneName} zum Absetzen!`);
+        playSound('bump');
+        return;
+      }
+
+      // Check correct Zone
+      if (targetBay.zone !== cInfo.zone) {
+        showForkliftWarning(`❌ Falsches Lagerregal! ${cInfo.shortName} gehört in ${cInfo.zoneName}!`);
+        playSound('alarm');
+        return;
+      }
+
+      // Check capacity (Max 2 per bay)
+      if (targetBay.items.length >= targetBay.maxItems) {
+        showForkliftWarning(`🚫 ${targetBay.label} ist bereits VOLL (2/2)! Nutze das Nachbarfach!`);
+        playSound('alarm');
+        return;
+      }
+
+      // Check required mast height (Ebene 1 if 0 items, Ebene 2 if 1 item already in bay!)
+      const requiredMast = targetBay.items.length + 1; // 1 or 2
+      if (nico.mastLevel !== requiredMast) {
+        if (requiredMast === 2) {
+          showForkliftWarning('⬆️ Unten steht schon Ware (1/2)! Drücke [E] zum HOCHSTAPELN auf Ebene 2!');
+        } else {
+          showForkliftWarning('⬇️ Fach ist leer (0/2)! Senke den Mast mit [E] auf Ebene 1 (Boden)!');
+        }
+        // Tiny hesitation penalty on condition so 100% requires knowing the mast level beforehand
+        nico.cargo.condition = Math.max(10, nico.cargo.condition - 0.8);
+        playSound('bump');
+        return;
+      }
+
+      // SUCCESSFUL PLACEMENT! Calculate Precision, Time & Condition Score
+      const bayCenterX = targetBay.x + targetBay.w / 2;
+      const bayCenterY = targetBay.y + targetBay.h / 2;
+      const distOffset = Math.hypot(forkX - bayCenterX, forkY - bayCenterY);
+
+      // Angle alignment difference
+      let angleDiff = Math.abs(Math.atan2(Math.sin(nico.angle - targetBay.targetAngle), Math.cos(nico.angle - targetBay.targetAngle)));
+      // Precision percentage (100% requires < 2px offset and < 1 degree angle diff -> nearly impossible to get 100.0%!)
+      const posPrecision = Math.max(55, 100 - distOffset * 0.72);
+      const angPrecision = Math.max(55, 100 - (angleDiff * 180 / Math.PI) * 0.65);
+      const placementPrecision = (posPrecision * 0.6 + angPrecision * 0.4);
+
+      // Delivery duration factor (Optimal under 11.5 seconds)
+      const elapsedSec = (performance.now() - nico.cargo.pickupTime) / 1000;
+      const timeEfficiency = elapsedSec <= 10.5 ? 100 : Math.max(70, 100 - (elapsedSec - 10.5) * 1.4);
+
+      const condPct = nico.cargo.condition;
+      // Weighted total quality for this pallet (Max = 100.0%)
+      const totalQualityPct = (condPct * 0.52) + (placementPrecision * 0.33) + (timeEfficiency * 0.15);
+      const highStackBonus = (requiredMast === 2) ? 100 : 0;
+      const palletScore = Math.round(1500 * (totalQualityPct / 100)) + highStackBonus;
+
+      targetBay.items.push({
+        type: nico.cargo.type,
+        condition: condPct
+      });
+
+      flState.score += palletScore;
+      flState.palletsDelivered++;
+      flState.qualityHistory.push(totalQualityPct);
+      nico.cargo = null;
+
+      playSound('powerup');
+      flFloatingTexts.push({
+        x: bayCenterX,
+        y: bayCenterY - 20,
+        text: `✅ +${palletScore} PKT (${totalQualityPct.toFixed(1)}% QUALITÄT${requiredMast === 2 ? ' +STAPELBONUS' : ''})`,
+        color: '#10b981',
+        alpha: 1.8
+      });
+
+      updateForkliftHUD();
+
+      // Check if LKW is now completely unloaded AND Nico has no cargo
+      if (lkwPallets.length === 0) {
+        if (flState.palletsDelivered >= flState.totalPalletsInShift) {
+          // Shift complete!
+          setTimeout(() => finishForkliftShift(true), 700);
+        } else {
+          // Trigger LKW departure & arrival of next LKW!
+          flState.truckPhase = 'LEAVING';
+          flState.truckTimer = 0;
+          flState.score += 300; // LKW Unload Bonus
+          updateForkliftHUD();
+          playSound('horn');
+          showForkliftWarning('🚛 LKW 1 leer! Er fährt ab & der nächste Hörmann-LKW rückt an! (+300 Pkt)');
+        }
+      }
+    }
+
+    function showForkliftWarning(msg) {
+      flState.warningBanner = msg;
+      flState.warningTimer = 170;
+    }
+
+    function finishForkliftShift(completedAll) {
+      if (flState.shiftComplete) return;
+      flState.shiftComplete = true;
+      playSound('victory');
+      triggerParticleEffect('confetti');
+
+      const avgQ = flState.qualityHistory.length > 0
+        ? (flState.qualityHistory.reduce((a, b) => a + b, 0) / flState.qualityHistory.length).toFixed(1)
+        : '0.0';
+
+      setTimeout(() => {
+        promptScoreSubmit(
+          flState.score,
+          'forklift',
+          `Lagermeister Nico (${avgQ}% Präzision)`
+        );
+      }, 1100);
+    }
+
+    function flLoop() {
+      if (!flActive) return;
+      updateForkliftPhysics();
+      drawForkliftScene();
+      flLoopId = requestAnimationFrame(flLoop);
+    }
+
+    function updateForkliftPhysics() {
+      if (flState.shiftComplete) return;
+
+      // Smoothly animate fork height
+      const targetZ = (nico.mastLevel === 2) ? 24 : 2;
+      nico.forkZ += (targetZ - nico.forkZ) * 0.16;
+
+      if (nico.collisionCooldown > 0) nico.collisionCooldown--;
+      if (nico.hornCooldown > 0) nico.hornCooldown--;
+      if (flState.warningTimer > 0) flState.warningTimer--;
+      if (flState.screenShake > 0) flState.screenShake *= 0.82;
+
+      // LKW Departure & Arrival Animation State Machine
+      if (flState.truckPhase === 'LEAVING') {
+        flState.truckTimer++;
+        flState.truckSlideX -= 2.4;
+        if (flState.truckTimer % 12 === 0) {
+          flParticles.push({
+            x: 110 + flState.truckSlideX,
+            y: 162,
+            vx: -1.5,
+            vy: -0.8,
+            size: 9,
+            color: '#94a3b8',
+            alpha: 0.85
+          });
+        }
+        if (flState.truckSlideX < -165) {
+          flState.truckNumber++;
+          spawnTruckPallets(flState.truckNumber);
+          flState.truckPhase = 'ARRIVING';
+          flState.truckTimer = 0;
+          updateForkliftHUD();
+        }
+      } else if (flState.truckPhase === 'ARRIVING') {
+        flState.truckTimer++;
+        if (flState.truckTimer % 28 === 0) playSound('beep');
+        flState.truckSlideX += 2.1;
+        if (flState.truckSlideX >= 0) {
+          flState.truckSlideX = 0;
+          flState.truckPhase = 'DOCKED';
+          playSound('hydraulic');
+          showForkliftWarning('🚛 Neuer Hörmann-LKW angedockt! Tore auf & ausladen!');
+        }
+      }
+
+      // Acceleration & Braking
+      const prevSpeed = nico.speed;
+      if (flKeys.up) {
+        nico.speed += 0.085;
+        if (nico.speed > nico.maxFwdSpeed) nico.speed = nico.maxFwdSpeed;
+      } else if (flKeys.down) {
+        // Hard braking check when carrying cargo at high speed
+        if (nico.speed > 2.3 && nico.cargo) {
+          nico.cargo.condition = Math.max(0, nico.cargo.condition - 0.14);
+          nico.wobbleAngle = (Math.random() - 0.5) * 0.35;
+          showForkliftWarning('⚠️ VOLLBREMSUNG! Ladung verrutscht auf der Gabel!');
+          updateForkliftHUD();
+        }
+        nico.speed -= 0.11;
+        if (nico.speed < nico.maxRevSpeed) nico.speed = nico.maxRevSpeed;
+      } else {
+        nico.speed *= 0.94;
+        if (Math.abs(nico.speed) < 0.03) nico.speed = 0;
+      }
+
+      // Convert internal speed to realistic Forklift km/h (0.0 to 24.0 km/h)
+      nico.kmh = Math.abs(nico.speed) * 6.4;
+
+      // Steering (Rear-wheel forklift agility)
+      let turnInput = 0;
+      if (flKeys.left) turnInput = -1;
+      if (flKeys.right) turnInput = 1;
+
+      // Oil spill slip check
+      if (oilSpill && oilSpill.active && Math.hypot(nico.x - oilSpill.x, nico.y - oilSpill.y) < oilSpill.r + 14) {
+        if (nico.kmh > 7) {
+          turnInput += Math.sin(performance.now() * 0.02) * 1.4;
+          showForkliftWarning('🛢️ ÖLFLECK-RUTSCHER! Drücke [H] Hupe, damit Azubi Kevin wischt!');
+        }
+      }
+
+      const speedFactor = Math.min(1, Math.abs(nico.speed) / 0.6);
+      const reverseDir = nico.speed >= -0.05 ? 1 : -1;
+      const angularVel = turnInput * 0.046 * (0.35 + 0.65 * speedFactor) * reverseDir;
+      nico.angle += angularVel;
+
+      // CURVE SPEED & MAST HEIGHT STABILITY PHYSICS
+      nico.wobbleWarning = false;
+      if (nico.cargo) {
+        const cInfo = CARGO_TYPES[nico.cargo.type];
+        // If mast is raised to Level 2 during driving, safe curve speed drops by 35%!
+        const effectiveSafeKmh = (nico.mastLevel === 2) ? cInfo.safeKmh * 0.65 : cInfo.safeKmh;
+
+        if (Math.abs(turnInput) > 0 && nico.kmh > effectiveSafeKmh) {
+          const overspeed = nico.kmh - effectiveSafeKmh;
+          const damageRate = overspeed * 0.032 * cInfo.heightFactor * (nico.mastLevel === 2 ? 1.5 : 1.0);
+          nico.cargo.condition = Math.max(0, nico.cargo.condition - damageRate);
+          nico.wobbleAngle = Math.sin(performance.now() * 0.035) * Math.min(0.45, overspeed * 0.045);
+          nico.wobbleWarning = true;
+
+          if (nico.mastLevel === 2) {
+            showForkliftWarning('🚨 GABEL OBEN IN DER KURVE! Kippgefahr! Mast senken mit [E]!');
+          } else {
+            showForkliftWarning(`🚨 ZU SCHNELL FÜR KURVE (${nico.kmh.toFixed(0)} km/h > Max ${cInfo.safeKmh} km/h)! Ware nimmt Schaden!`);
+          }
+          updateForkliftHUD();
+
+          // Leave tire skid marks in fast corners
+          if (Math.random() < 0.45) {
+            skidMarks.push({ x: nico.x, y: nico.y, alpha: 0.45 });
+            if (skidMarks.length > 90) skidMarks.shift();
+          }
+        } else {
+          nico.wobbleAngle *= 0.82;
+        }
+      } else {
+        nico.wobbleAngle *= 0.8;
+      }
+
+      // Move Forklift X & Y
+      const nextX = nico.x + Math.cos(nico.angle) * nico.speed;
+      const nextY = nico.y + Math.sin(nico.angle) * nico.speed;
+
+      // Check Collisions with Warehouse Walls, LKW Cab/Body, and Rack Uprights
+      let collided = false;
+      let hitLabel = '';
+
+      // 1. Outer Warehouse Walls
+      if (nextX < 42 || nextX > 746 || nextY < 42 || nextY > 374) {
+        collided = true;
+        hitLabel = 'HALLENSÄULE TOUCHIERT!';
+      }
+
+      // 2. LKW Solid Body (x: 16..118, y: 155..345) - Note: 118..158 is the accessible loading tail!
+      if (flState.truckPhase === 'DOCKED' && nextX < 120 && nextY > 152 && nextY < 348) {
+        collided = true;
+        hitLabel = 'GEGEN LKW GEPRALLT!';
+      }
+
+      // 3. Floor-level pallet collision inside bays if Nico drives in with Mast Level 1 while bay already has 1 item!
+      const forkTipX = nextX + Math.cos(nico.angle) * 26;
+      const forkTipY = nextY + Math.sin(nico.angle) * 26;
+      for (let b of storageBays) {
+        if (b.items.length >= 1 && nico.mastLevel === 1 && nico.cargo) {
+          if (forkTipX > b.x + 12 && forkTipX < b.x + b.w - 12 &&
+              forkTipY > b.y + 12 && forkTipY < b.y + b.h - 12) {
+            collided = true;
+            hitLabel = 'BODENFACH BELEGT! [E] FÜR EBENE 2!';
+          }
+        }
+      }
+
+      if (collided) {
+        const impactKmh = nico.kmh;
+        nico.speed = -nico.speed * 0.45; // Bounce back
+
+        if (nico.collisionCooldown === 0 && impactKmh > 2.5) {
+          nico.collisionCooldown = 28;
+          flState.screenShake = Math.min(10, impactKmh * 0.55);
+          playSound('crunch');
+
+          // Spawn impact sparks
+          for (let s = 0; s < 10; s++) {
+            flParticles.push({
+              x: forkTipX,
+              y: forkTipY,
+              vx: (Math.random() - 0.5) * 5,
+              vy: (Math.random() - 0.5) * 5,
+              size: 4,
+              color: '#f59c00',
+              alpha: 1
+            });
+          }
+
+          if (nico.cargo) {
+            const dmg = Math.max(2.5, impactKmh * 0.85);
+            nico.cargo.condition = Math.max(0, nico.cargo.condition - dmg);
+            flFloatingTexts.push({
+              x: nico.x,
+              y: nico.y - 35,
+              text: `💥 ${hitLabel} -${dmg.toFixed(1)}% ZUSTAND`,
+              color: '#ef4444',
+              alpha: 1.5
+            });
+            updateForkliftHUD();
+          } else {
+            flFloatingTexts.push({
+              x: nico.x,
+              y: nico.y - 35,
+              text: `💥 ${hitLabel}`,
+              color: '#f59c00',
+              alpha: 1.2
+            });
+          }
+        }
+      } else {
+        nico.x = nextX;
+        nico.y = nextY;
+      }
+
+      // Check if cargo reached 0% condition (destroyed)
+      if (nico.cargo && nico.cargo.condition <= 0) {
+        playSound('alarm');
+        flFloatingTexts.push({
+          x: nico.x,
+          y: nico.y - 40,
+          text: '💔 WARE TOTALSCHADEN! ERSATZPALETTE BEREIT!',
+          color: '#ef4444',
+          alpha: 1.8
+        });
+        // Respawn replacement on LKW with penalty
+        lkwPallets.push({
+          slotIndex: 0,
+          x: 136,
+          y: 244,
+          type: nico.cargo.type,
+          condition: 85.0,
+          pickupTime: 0
+        });
+        nico.cargo = null;
+        flState.score = Math.max(0, flState.score - 250);
+        updateForkliftHUD();
+      }
+    }
+
+    // 2.5D Isometric Box Helper (Clean Pixel-Art Extrusion)
+    function drawIsoBox(ctx, x, y, w, h, zBase, zHeight, topColor, frontColor, sideColor) {
+      const isoX = Math.round(x);
+      const isoY = Math.round(y - zBase);
+      const hZ = Math.round(zHeight);
+
+      // Drop shadow if elevated
+      if (zBase > 1) {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.24)';
+        ctx.fillRect(Math.round(x + 3), Math.round(y + 3), Math.round(w), Math.round(h));
+      }
+
+      // Front face (south)
+      ctx.fillStyle = frontColor;
+      ctx.fillRect(isoX, isoY + h - hZ, w, hZ);
+
+      // Top face
+      ctx.fillStyle = topColor;
+      ctx.fillRect(isoX, isoY - hZ, w, h);
+
+      // Crisp pixel highlight & outline
+      ctx.strokeStyle = 'rgba(0, 0, 0, 0.45)';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(isoX, isoY - hZ, w, h);
+    }
+
+    // Detailed Pixel-Art Renderer for all 5 Hörmann Pallet Types
+    function drawHoermannPallet(ctx, typeKey, cx, cy, zOffset, angleRad, wobbleRad, conditionPct) {
+      ctx.save();
+      ctx.translate(Math.round(cx), Math.round(cy - zOffset));
+      ctx.rotate(angleRad + wobbleRad);
+
+      // 1. Wooden / Steel Euro-Pallet Base
+      ctx.fillStyle = '#92400e';
+      ctx.fillRect(-16, -14, 32, 28);
+      ctx.fillStyle = '#d97706';
+      for (let slat = -12; slat <= 8; slat += 6) {
+        ctx.fillRect(-15, slat, 30, 4);
+      }
+
+      if (typeKey === 'schwingtore') {
+        // 6er-Pack Stehende Schwingtore in blauem Stahl-Transportgestell
+        ctx.fillStyle = '#1e3a8a';
+        ctx.fillRect(-17, -15, 34, 4);
+        ctx.fillRect(-17, 11, 34, 4);
+        // 6 upright white/silver Berry Schwingtore with grooves
+        for (let i = 0; i < 6; i++) {
+          const py = -10 + i * 3.5;
+          ctx.fillStyle = (i % 2 === 0) ? '#f8fafc' : '#cbd5e1';
+          ctx.fillRect(-15, py, 30, 2.8);
+          ctx.fillStyle = '#64748b';
+          ctx.fillRect(-12, py + 0.8, 24, 1);
+        }
+        // Orange Hörmann securing strap across top
+        ctx.fillStyle = '#f59c00';
+        ctx.fillRect(-3, -15, 6, 30);
+      } else if (typeKey === 'sektionaltore') {
+        // Größere Palette Sektionaltore (Breit, Anthrazit-Silber Lamellen-Paket)
+        ctx.fillStyle = '#78350f';
+        ctx.fillRect(-18, -21, 36, 42);
+        ctx.fillStyle = '#334155';
+        ctx.fillRect(-16, -19, 32, 38);
+        ctx.fillStyle = '#475569';
+        ctx.fillRect(-14, -17, 28, 34);
+        // Yellow packing straps
+        ctx.fillStyle = '#f59c00';
+        ctx.fillRect(-16, -9, 32, 3);
+        ctx.fillRect(-16, 6, 32, 3);
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 7px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText('SEKTIONAL', 0, 1);
+      } else if (typeKey === 'antriebe') {
+        // Europalette mit Antrieben (SupraMatic / ProMatic Kartons)
+        const boxes = [
+          [-13, -11, 12, 10], [1, -11, 12, 10],
+          [-13, 1, 12, 10], [1, 1, 12, 10]
+        ];
+        boxes.forEach(([bx, by, bw, bh]) => {
+          ctx.fillStyle = '#e2e8f0';
+          ctx.fillRect(bx, by, bw, bh);
+          ctx.fillStyle = '#002d62';
+          ctx.fillRect(bx + 1, by + 1, bw - 2, 3);
+          ctx.fillStyle = '#f59c00';
+          ctx.fillRect(bx + 2, by + 5, bw - 4, 3);
+        });
+      } else if (typeKey === 'schienen') {
+        // Lange Führungsschienen von Antrieben (ragen weit heraus + rote Warnfähnchen!)
+        ctx.fillStyle = '#94a3b8';
+        for (let r = -9; r <= 6; r += 5) {
+          ctx.fillRect(-14, -27, 4, 54);
+          ctx.fillRect(-6, -27, 4, 54);
+          ctx.fillRect(2, -27, 4, 54);
+          ctx.fillRect(10, -27, 4, 54);
+        }
+        // Galvanized rail shine & orange straps
+        ctx.fillStyle = '#f59c00';
+        ctx.fillRect(-15, -10, 30, 3);
+        ctx.fillRect(-15, 8, 30, 3);
+        // Red long-load safety flags at both ends
+        ctx.fillStyle = '#ef4444';
+        ctx.fillRect(-14, -29, 28, 4);
+        ctx.fillRect(-14, 25, 28, 4);
+      } else if (typeKey === 'stahltueren') {
+        // Hohe Stahltüren (ZK / Feuerschutz) mit orangen Kantenschützern & Sichtfenster
+        ctx.fillStyle = '#cbd5e1';
+        ctx.fillRect(-15, -14, 30, 28);
+        ctx.fillStyle = '#f1f5f9';
+        ctx.fillRect(-13, -12, 26, 24);
+        // Glazing window in door
+        ctx.fillStyle = '#38bdf8';
+        ctx.fillRect(-5, -6, 10, 12);
+        ctx.strokeStyle = '#002d62';
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(-5, -6, 10, 12);
+        // Orange corner protectors
+        ctx.fillStyle = '#f59c00';
+        ctx.fillRect(-16, -15, 7, 7);
+        ctx.fillRect(9, -15, 7, 7);
+        ctx.fillRect(-16, 8, 7, 7);
+        ctx.fillRect(9, 8, 7, 7);
+      }
+
+      // Condition bar floating if damaged
+      if (conditionPct < 99.9) {
+        ctx.rotate(-(angleRad + wobbleRad));
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.75)';
+        ctx.fillRect(-18, -26, 36, 6);
+        ctx.fillStyle = conditionPct > 80 ? '#10b981' : (conditionPct > 50 ? '#f59c00' : '#ef4444');
+        ctx.fillRect(-17, -25, Math.max(0, 34 * (conditionPct / 100)), 4);
+      }
+
+      ctx.restore();
+    }
+
+    function drawForkliftScene() {
+      flCtx.save();
+
+      // Screen shake on collision
+      if (flState.screenShake > 0.4) {
+        flCtx.translate(
+          (Math.random() - 0.5) * flState.screenShake,
+          (Math.random() - 0.5) * flState.screenShake
+        );
+      }
+
+      // 1. WAREHOUSE CONCRETE FLOOR (Pixel-Art Industrial Tile Grid)
+      flCtx.fillStyle = '#334155';
+      flCtx.fillRect(0, 0, flCanvas.width, 392);
+
+      // Concrete tile seams
+      flCtx.strokeStyle = 'rgba(15, 23, 42, 0.35)';
+      flCtx.lineWidth = 1;
+      for (let gx = 0; gx < flCanvas.width; gx += 40) {
+        flCtx.beginPath();
+        flCtx.moveTo(gx, 32);
+        flCtx.lineTo(gx, 392);
+        flCtx.stroke();
+      }
+      for (let gy = 32; gy < 392; gy += 40) {
+        flCtx.beginPath();
+        flCtx.moveTo(0, gy);
+        flCtx.lineTo(flCanvas.width, gy);
+        flCtx.stroke();
+      }
+
+      // Yellow safety lane markings on floor
+      flCtx.strokeStyle = 'rgba(245, 156, 0, 0.45)';
+      flCtx.lineWidth = 2;
+      flCtx.setLineDash([10, 8]);
+      flCtx.strokeRect(175, 122, 415, 250);
+      flCtx.setLineDash([]);
+
+      // Tire skid marks
+      skidMarks.forEach(sm => {
+        flCtx.fillStyle = `rgba(15, 23, 42, ${sm.alpha})`;
+        flCtx.fillRect(Math.round(sm.x - 4), Math.round(sm.y - 4), 8, 8);
+      });
+
+      // Oil spill obstacle (if active)
+      if (oilSpill && oilSpill.active) {
+        flCtx.fillStyle = '#0f172a';
+        flCtx.beginPath();
+        flCtx.ellipse(oilSpill.x, oilSpill.y, oilSpill.r, oilSpill.r * 0.68, 0.2, 0, Math.PI * 2);
+        flCtx.fill();
+        flCtx.fillStyle = '#38bdf8';
+        flCtx.globalAlpha = 0.25;
+        flCtx.beginPath();
+        flCtx.ellipse(oilSpill.x - 4, oilSpill.y - 2, oilSpill.r * 0.5, oilSpill.r * 0.3, 0.2, 0, Math.PI * 2);
+        flCtx.fill();
+        flCtx.globalAlpha = 1;
+
+        flCtx.fillStyle = '#cbd5e1';
+        flCtx.font = 'bold 9px Inter, sans-serif';
+        flCtx.textAlign = 'center';
+        flCtx.fillText('🛢️ Ölfleck ([H] Hupen!)', oilSpill.x, oilSpill.y + 24);
+      }
+
+      // 2. WAREHOUSE PERIMETER WALLS & HEADER BANNER
+      drawIsoBox(flCtx, 0, 0, flCanvas.width, 32, 0, 14, '#002d62', '#001f3b', '#001830');
+      flCtx.fillStyle = '#f59c00';
+      flCtx.font = '900 11px Inter, sans-serif';
+      flCtx.textAlign = 'center';
+      flCtx.fillText('HÖRMANN LOGISTIK-HALLE 1 // LAGERMEISTER NICO MALOCHT: MIT MUT AM MAST', flCanvas.width / 2, 16);
+
+      // 3. STORAGE BAYS (ZONES A, B, C) WITH 2 STACK LEVELS (BODEN & HOCHREGAL)
+      const activeTargetZone = nico.cargo ? CARGO_TYPES[nico.cargo.type].zone : null;
+
+      storageBays.forEach(b => {
+        const isTargetZone = (activeTargetZone === b.zone);
+        const isFull = b.items.length >= b.maxItems;
+        const pulse = Math.sin(performance.now() * 0.008) * 0.5 + 0.5;
+
+        // Floor Bay Stencil
+        flCtx.fillStyle = isFull
+          ? 'rgba(239, 68, 68, 0.16)'
+          : (isTargetZone ? `rgba(16, 185, 129, ${0.18 + pulse * 0.18})` : 'rgba(15, 23, 42, 0.35)');
+        flCtx.fillRect(b.x, b.y, b.w, b.h);
+
+        // Bay border (Orange/Blue heavy-duty rack uprights)
+        flCtx.strokeStyle = isFull
+          ? '#ef4444'
+          : (isTargetZone ? '#10b981' : '#f59c00');
+        flCtx.lineWidth = (isTargetZone && !isFull) ? 3 : 2;
+        flCtx.strokeRect(b.x, b.y, b.w, b.h);
+
+        // 2.5D Heavy-Duty Rack Uprights & Orange Traverse Beams
+        drawIsoBox(flCtx, b.x - 4, b.y - 2, 8, 8, 0, 32, '#2563eb', '#1e3a8a', '#172554');
+        drawIsoBox(flCtx, b.x + b.w - 4, b.y - 2, 8, 8, 0, 32, '#2563eb', '#1e3a8a', '#172554');
+
+        // Draw stored pallets inside this bay (Level 1 Floor at z=2, Level 2 High-Stack at z=22)
+        const cx = b.x + b.w / 2;
+        const cy = b.y + b.h / 2 + 4;
+
+        if (b.items[0]) {
+          drawHoermannPallet(flCtx, b.items[0].type, cx, cy, 2, b.targetAngle, 0, 100);
+        }
+
+        // Upper rack orange traverse bar (Ebene 2 shelf frame)
+        flCtx.fillStyle = 'rgba(245, 156, 0, 0.85)';
+        flCtx.fillRect(b.x, b.y - 18, b.w, 4);
+
+        if (b.items[1]) {
+          drawHoermannPallet(flCtx, b.items[1].type, cx, cy, 22, b.targetAngle, 0, 100);
+        }
+
+        // Bay Label & Fill Status Badge (0/2, 1/2 -> STAPELN, 2/2 VOLL)
+        let statusText = `${b.items.length}/2 FREI (Ebene 1)`;
+        let badgeBg = '#0f172a';
+        let badgeColor = '#38bdf8';
+
+        if (b.items.length === 1) {
+          statusText = '1/2 ⬆ HOCHSTAPELN [E]';
+          badgeColor = '#f59c00';
+        } else if (b.items.length >= 2) {
+          statusText = '2/2 FACH VOLL!';
+          badgeColor = '#ef4444';
+        }
+
+        flCtx.fillStyle = badgeBg;
+        flCtx.fillRect(b.x + 4, b.y + b.h - 17, b.w - 8, 15);
+        flCtx.fillStyle = badgeColor;
+        flCtx.font = '800 9px Inter, sans-serif';
+        flCtx.textAlign = 'center';
+        flCtx.fillText(`${b.id}: ${statusText}`, b.x + b.w / 2, b.y + b.h - 6);
+      });
+
+      // Zone Header Signs
+      flCtx.fillStyle = '#ffffff';
+      flCtx.font = '900 10px Inter, sans-serif';
+      flCtx.textAlign = 'center';
+      flCtx.fillText('ZONE A: SCHWING- & SEKTIONALTORE', 352, 36);
+      flCtx.fillText('ZONE B: ANTRIEBE & SCHIENEN', 672, 54);
+      flCtx.fillText('ZONE C: STAHLTÜREN (HOCH)', 672, 232);
+
+      // 4. BLUE HÖRMANN LKW AT THE LOADING DOCK (Left Side)
+      const tx = Math.round(flState.truckSlideX);
+      flCtx.save();
+      flCtx.translate(tx, 0);
+
+      // Dock yellow-black bumpers
+      flCtx.fillStyle = '#f59c00';
+      flCtx.fillRect(156, 150, 6, 196);
+      flCtx.fillStyle = '#0f172a';
+      for (let by = 154; by < 344; by += 16) {
+        flCtx.fillRect(156, by, 6, 8);
+      }
+
+      // LKW Cab (Driver cabin on the left)
+      drawIsoBox(flCtx, 10, 178, 34, 140, 0, 26, '#0d448a', '#002d62', '#001a35');
+      // Windshield
+      flCtx.fillStyle = '#38bdf8';
+      flCtx.fillRect(14, 162, 10, 128);
+
+      // LKW Trailer Box & Open Loading Bed
+      drawIsoBox(flCtx, 42, 155, 114, 190, 0, 22, '#002d62', '#001f3b', '#001224');
+
+      // Open loading bed floor where pallets sit
+      flCtx.fillStyle = '#475569';
+      flCtx.fillRect(108, 162, 48, 176);
+
+      // Hörmann Branding on LKW Roof/Side
+      flCtx.fillStyle = '#f59c00';
+      flCtx.font = '900 13px Inter, sans-serif';
+      flCtx.textAlign = 'center';
+      flCtx.save();
+      flCtx.translate(76, 250);
+      flCtx.rotate(-Math.PI / 2);
+      flCtx.fillText(`HÖRMANN LKW #${flState.truckNumber}`, 0, 0);
+      flCtx.restore();
+
+      // Draw Remaining Pallets on the LKW
+      lkwPallets.forEach(p => {
+        drawHoermannPallet(flCtx, p.type, p.x, p.y, 4, 0, 0, p.condition);
+        // Small label under pallet on truck
+        const info = CARGO_TYPES[p.type];
+        flCtx.fillStyle = 'rgba(0, 20, 45, 0.85)';
+        flCtx.fillRect(p.x - 36, p.y + 15, 72, 12);
+        flCtx.fillStyle = '#ffaa1d';
+        flCtx.font = 'bold 8px Inter, sans-serif';
+        flCtx.textAlign = 'center';
+        flCtx.fillText(info.shortName, p.x, p.y + 24);
+      });
+
+      flCtx.restore();
+
+      // 5. NICO'S BLUE HÖRMANN FORKLIFT (2.5D Rotated Pixel-Art Vehicle)
+      flCtx.save();
+      flCtx.translate(Math.round(nico.x), Math.round(nico.y));
+      flCtx.rotate(nico.angle);
+
+      // Headlight beams
+      flCtx.fillStyle = 'rgba(254, 240, 138, 0.14)';
+      flCtx.beginPath();
+      flCtx.moveTo(14, -10);
+      flCtx.lineTo(75, -32);
+      flCtx.lineTo(75, 32);
+      flCtx.lineTo(14, 10);
+      flCtx.closePath();
+      flCtx.fill();
+
+      // 4 Rubber Tires
+      flCtx.fillStyle = '#0f172a';
+      flCtx.fillRect(-18, -16, 10, 5);
+      flCtx.fillRect(-18, 11, 10, 5);
+      flCtx.fillRect(4, -16, 10, 5);
+      flCtx.fillRect(4, 11, 10, 5);
+
+      // Steel Forks (extending forward at height nico.forkZ)
+      const fShift = Math.round(nico.forkZ * 0.45);
+      flCtx.fillStyle = '#94a3b8';
+      flCtx.fillRect(14, -10 - fShift * 0.1, 24, 4);
+      flCtx.fillRect(14, 6 - fShift * 0.1, 24, 4);
+      // Orange fork tips for visibility
+      flCtx.fillStyle = '#f59c00';
+      flCtx.fillRect(33, -10 - fShift * 0.1, 5, 4);
+      flCtx.fillRect(33, 6 - fShift * 0.1, 5, 4);
+
+      // Forklift Chassis (Hörmann Royal Blue + Orange Counterweight)
+      flCtx.fillStyle = '#002d62';
+      flCtx.fillRect(-18, -13, 32, 26);
+      flCtx.fillStyle = '#2563eb';
+      flCtx.fillRect(-14, -11, 24, 22);
+      // Heavy rear counterweight in Hörmann Orange
+      flCtx.fillStyle = '#f59c00';
+      flCtx.fillRect(-20, -12, 6, 24);
+
+      // Hydraulic Mast Rails at front of cab
+      flCtx.fillStyle = '#1e293b';
+      flCtx.fillRect(11, -13, 4, 26);
+
+      // Overhead Guard Cage & Lagermeister Nico inside
+      flCtx.strokeStyle = '#0f172a';
+      flCtx.lineWidth = 2;
+      flCtx.strokeRect(-11, -10, 20, 20);
+
+      // Lagermeister Nico (Yellow/Orange Safety Vest & Blue Cap)
+      flCtx.fillStyle = '#f59c00'; // Safety vest
+      flCtx.fillRect(-6, -6, 10, 12);
+      flCtx.fillStyle = '#fed7aa'; // Head
+      flCtx.beginPath();
+      flCtx.arc(-1, 0, 5, 0, Math.PI * 2);
+      flCtx.fill();
+      flCtx.fillStyle = '#002d62'; // Nico's Cap
+      flCtx.fillRect(-4, -4, 8, 8);
+
+      // Rotating Amber Warning Beacon on Roof
+      const beaconPulse = Math.sin(performance.now() * 0.015) > 0;
+      flCtx.fillStyle = beaconPulse ? '#facc15' : '#ca8a04';
+      flCtx.beginPath();
+      flCtx.arc(-9, -7, 3.5, 0, Math.PI * 2);
+      flCtx.fill();
+
+      flCtx.restore();
+
+      // Draw Carried Cargo on Nico's Forks (Rendered on top when raised!)
+      if (nico.cargo) {
+        const cargoX = nico.x + Math.cos(nico.angle) * 27;
+        const cargoY = nico.y + Math.sin(nico.angle) * 27;
+        drawHoermannPallet(
+          flCtx,
+          nico.cargo.type,
+          cargoX,
+          cargoY,
+          nico.forkZ + 3,
+          nico.angle,
+          nico.wobbleAngle,
+          nico.cargo.condition
+        );
+      }
+
+      // Nameplate above Nico
+      flCtx.fillStyle = 'rgba(0, 31, 59, 0.82)';
+      flCtx.fillRect(nico.x - 44, nico.y - 34 - nico.forkZ * 0.4, 88, 13);
+      flCtx.fillStyle = nico.mastLevel === 2 ? '#38bdf8' : '#ffffff';
+      flCtx.font = '800 8.5px Inter, sans-serif';
+      flCtx.textAlign = 'center';
+      flCtx.fillText(
+        `NICO • EBENE ${nico.mastLevel} ${nico.mastLevel === 2 ? '⬆️' : '⬇️'}`,
+        nico.x,
+        nico.y - 25 - nico.forkZ * 0.4
+      );
+
+      // 6. PARTICLES & FLOATING TEXTS
+      for (let i = flParticles.length - 1; i >= 0; i--) {
+        const pt = flParticles[i];
+        pt.x += pt.vx;
+        pt.y += pt.vy;
+        pt.alpha -= 0.03;
+        flCtx.fillStyle = pt.color;
+        flCtx.globalAlpha = Math.max(0, pt.alpha);
+        flCtx.fillRect(pt.x, pt.y, pt.size, pt.size);
+        flCtx.globalAlpha = 1;
+        if (pt.alpha <= 0) flParticles.splice(i, 1);
+      }
+
+      for (let i = flFloatingTexts.length - 1; i >= 0; i--) {
+        const ft = flFloatingTexts[i];
+        ft.y -= 0.75;
+        ft.alpha -= 0.018;
+        flCtx.save();
+        flCtx.fillStyle = ft.color;
+        flCtx.globalAlpha = Math.max(0, Math.min(1, ft.alpha));
+        flCtx.font = '900 11.5px Inter, sans-serif';
+        flCtx.textAlign = 'center';
+        flCtx.fillText(ft.text, ft.x, ft.y);
+        flCtx.restore();
+        if (ft.alpha <= 0) flFloatingTexts.splice(i, 1);
+      }
+
+      // Live Warning Banner (Overspeed Curve / Mast Warning)
+      if (flState.warningTimer > 0 && flState.warningBanner) {
+        flCtx.fillStyle = 'rgba(15, 23, 42, 0.92)';
+        flCtx.fillRect(160, 356, 460, 28);
+        flCtx.strokeStyle = '#f59c00';
+        flCtx.lineWidth = 2;
+        flCtx.strokeRect(160, 356, 460, 28);
+        flCtx.fillStyle = '#ffaa1d';
+        flCtx.font = '800 11.5px Inter, sans-serif';
+        flCtx.textAlign = 'center';
+        flCtx.fillText(flState.warningBanner, 390, 374);
+      }
+
+      // 7. BOTTOM COCKPIT DASHBOARD (km/h TACHO, MAST INDICATOR & CARGO MONITOR)
+      flCtx.fillStyle = '#0f172a';
+      flCtx.fillRect(0, 392, flCanvas.width, 78);
+      flCtx.fillStyle = '#f59c00';
+      flCtx.fillRect(0, 392, flCanvas.width, 3);
+
+      // Left Panel: KM/H SPEEDOMETER (TACHO)
+      flCtx.fillStyle = '#1e293b';
+      flCtx.fillRect(14, 401, 240, 60);
+      flCtx.strokeStyle = nico.wobbleWarning ? '#ef4444' : '#334155';
+      flCtx.lineWidth = 2;
+      flCtx.strokeRect(14, 401, 240, 60);
+
+      const currentSafeLimit = nico.cargo
+        ? (nico.mastLevel === 2 ? CARGO_TYPES[nico.cargo.type].safeKmh * 0.65 : CARGO_TYPES[nico.cargo.type].safeKmh)
+        : 18.0;
+      const isTooFastForCurve = nico.kmh > currentSafeLimit;
+
+      flCtx.fillStyle = isTooFastForCurve ? '#ef4444' : '#38bdf8';
+      flCtx.font = '900 22px monospace';
+      flCtx.textAlign = 'left';
+      flCtx.fillText(`${nico.kmh.toFixed(1)} km/h`, 24, 427);
+
+      flCtx.fillStyle = isTooFastForCurve ? '#fca5a5' : '#94a3b8';
+      flCtx.font = '700 9.5px Inter, sans-serif';
+      flCtx.fillText(
+        isTooFastForCurve ? '⚠️ ZU SCHNELL FÜR KURVEN!' : `Max. Kurve: ${currentSafeLimit.toFixed(0)} km/h`,
+        142,
+        423
+      );
+
+      // Speedometer Bar (0 to 24 km/h)
+      flCtx.fillStyle = '#0f172a';
+      flCtx.fillRect(24, 437, 218, 14);
+      const barWidth = Math.min(218, (nico.kmh / 24) * 218);
+      flCtx.fillStyle = isTooFastForCurve ? '#ef4444' : (nico.kmh > 11 ? '#f59c00' : '#10b981');
+      flCtx.fillRect(24, 437, barWidth, 14);
+
+      // Safe curve speed marker line on the tacho bar
+      const limitX = 24 + Math.min(218, (currentSafeLimit / 24) * 218);
+      flCtx.fillStyle = '#ffffff';
+      flCtx.fillRect(limitX, 435, 3, 18);
+
+      // Middle Panel: CURRENT PALLET & CONDITION (%)
+      flCtx.fillStyle = '#1e293b';
+      flCtx.fillRect(266, 401, 290, 60);
+      flCtx.strokeStyle = '#334155';
+      flCtx.strokeRect(266, 401, 290, 60);
+
+      if (nico.cargo) {
+        const cInfo = CARGO_TYPES[nico.cargo.type];
+        flCtx.fillStyle = '#f59c00';
+        flCtx.font = '800 11.5px Inter, sans-serif';
+        flCtx.fillText(`LADUNG: ${cInfo.name}`, 278, 420);
+
+        flCtx.fillStyle = '#ffffff';
+        flCtx.font = '700 10.5px Inter, sans-serif';
+        flCtx.fillText(`Ziel: ${cInfo.zoneName}  |  Zustand: ${nico.cargo.condition.toFixed(1)}%`, 278, 437);
+
+        // Cargo Integrity Bar
+        flCtx.fillStyle = '#0f172a';
+        flCtx.fillRect(278, 444, 264, 9);
+        flCtx.fillStyle = nico.cargo.condition > 85 ? '#10b981' : (nico.cargo.condition > 55 ? '#f59c00' : '#ef4444');
+        flCtx.fillRect(278, 444, 264 * (nico.cargo.condition / 100), 9);
+      } else {
+        flCtx.fillStyle = '#94a3b8';
+        flCtx.font = '800 12px Inter, sans-serif';
+        flCtx.fillText('GABEL LEER — BEREIT ZUM AUFLADEN', 278, 424);
+        flCtx.fillStyle = '#38bdf8';
+        flCtx.font = '700 10.5px Inter, sans-serif';
+        flCtx.fillText('➔ Fahre links an den blauen Hörmann-LKW & drücke [Leertaste]', 278, 444);
+      }
+
+      // Right Panel: MAST HEIGHT & PERFECTION METER
+      flCtx.fillStyle = '#1e293b';
+      flCtx.fillRect(568, 401, 198, 60);
+      flCtx.strokeStyle = nico.mastLevel === 2 ? '#38bdf8' : '#334155';
+      flCtx.strokeRect(568, 401, 198, 60);
+
+      flCtx.fillStyle = nico.mastLevel === 2 ? '#38bdf8' : '#10b981';
+      flCtx.font = '900 12px Inter, sans-serif';
+      flCtx.fillText(
+        nico.mastLevel === 2 ? '⬆️ MAST: EBENE 2 (HOCH)' : '⬇️ MAST: EBENE 1 (BODEN)',
+        580,
+        422
+      );
+      flCtx.fillStyle = '#cbd5e1';
+      flCtx.font = '700 9.5px Inter, sans-serif';
+      flCtx.fillText('Taste [E]: Heben / Senken', 580, 438);
+      flCtx.fillStyle = '#f59c00';
+      flCtx.fillText('100% = 10.000 Pkt (Millimeterarbeit!)', 580, 453);
+
+      // 8. SHIFT COMPLETE OVERLAY
+      if (flState.shiftComplete) {
+        flCtx.fillStyle = 'rgba(0, 24, 48, 0.9)';
+        flCtx.fillRect(0, 0, flCanvas.width, flCanvas.height);
+
+        const avgQ = flState.qualityHistory.length > 0
+          ? (flState.qualityHistory.reduce((a, b) => a + b, 0) / flState.qualityHistory.length).toFixed(2)
+          : '0.00';
+
+        flCtx.fillStyle = '#f59c00';
+        flCtx.font = '900 28px Inter, sans-serif';
+        flCtx.textAlign = 'center';
+        flCtx.fillText('🚜 SCHICHT ERFOLGREICH ABGERECHNET!', flCanvas.width / 2, 145);
+
+        flCtx.fillStyle = '#ffffff';
+        flCtx.font = '700 18px Inter, sans-serif';
+        flCtx.fillText(`Lagermeister Nico hat ${flState.palletsDelivered} Paletten eingelagert!`, flCanvas.width / 2, 190);
+        flCtx.fillText(`Durchschnittliche Präzision & Warenqualität: ${avgQ}%`, flCanvas.width / 2, 225);
+
+        flCtx.fillStyle = '#10b981';
+        flCtx.font = '900 24px Inter, sans-serif';
+        flCtx.fillText(`Gesamtpunkte: ${flState.score} / 10.000 Pkt`, flCanvas.width / 2, 270);
+      }
+
+      flCtx.restore();
     }
 
   </script>
