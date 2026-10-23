@@ -1215,6 +1215,167 @@
       gap: 4px;
     }
 
+    /* Moderne Chat-Erweiterungen: Emoji-Picker, GIF-Suchmenü & GIF-Vorschau */
+    .chat-media-img {
+      display: block;
+      max-width: 100%;
+      max-height: 175px;
+      border-radius: 6px;
+      margin-top: 5px;
+      border: 1px solid #cbd5e1;
+      object-fit: contain;
+      background: #0f172a;
+    }
+
+    .chat-toolbar-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+    }
+
+    .chat-tool-btn {
+      background: #f1f5f9;
+      color: #1e293b;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      padding: 3px 8px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s;
+    }
+
+    .chat-tool-btn:hover,
+    .chat-tool-btn.active {
+      background: var(--hoermann-blue);
+      color: #ffffff;
+      border-color: var(--hoermann-blue);
+    }
+
+    .chat-popover-tray {
+      background: #ffffff;
+      border: 2px solid var(--hoermann-blue);
+      border-radius: 6px;
+      padding: 0.5rem;
+      margin-bottom: 0.35rem;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      display: none;
+      flex-direction: column;
+      gap: 0.45rem;
+      max-height: 245px;
+      overflow-y: auto;
+    }
+
+    .chat-popover-tray.show {
+      display: flex;
+    }
+
+    .emoji-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 3px;
+    }
+
+    .emoji-item-btn {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      font-size: 1.15rem;
+      padding: 4px 0;
+      cursor: pointer;
+      text-align: center;
+      transition: transform 0.1s, background 0.1s;
+    }
+
+    .emoji-item-btn:hover {
+      background: #fef3c7;
+      transform: scale(1.15);
+    }
+
+    .gif-results-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 5px;
+      max-height: 155px;
+      overflow-y: auto;
+    }
+
+    .gif-thumb-btn {
+      background: #0f172a;
+      border: 2px solid transparent;
+      border-radius: 5px;
+      padding: 0;
+      cursor: pointer;
+      overflow: hidden;
+      height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .gif-thumb-btn:hover {
+      border-color: var(--hoermann-orange);
+    }
+
+    .gif-thumb-btn img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .gif-quick-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .gif-tag-chip {
+      background: #eff6ff;
+      color: #1e40af;
+      border: 1px solid #bfdbfe;
+      border-radius: 99px;
+      padding: 2px 7px;
+      font-size: 0.69rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .gif-tag-chip:hover {
+      background: var(--hoermann-orange);
+      color: #ffffff;
+      border-color: var(--hoermann-orange);
+    }
+
+    .chat-pending-gif-bar {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: #eff6ff;
+      border: 1px solid #93c5fd;
+      border-radius: 5px;
+      padding: 4px 8px;
+      font-size: 0.74rem;
+      color: #1e3a8a;
+      font-weight: 700;
+    }
+
+    .chat-pending-gif-bar.show {
+      display: flex;
+    }
+
+    .chat-pending-gif-bar img {
+      height: 36px;
+      border-radius: 4px;
+      border: 1px solid #cbd5e1;
+    }
+
     @media (max-width: 640px) {
       body {
         padding: 0.75rem;
@@ -1626,9 +1787,28 @@
 
       <div class="submit-form" style="flex-direction:column; align-items:center; gap:0.65rem;">
         <!-- Ansicht, wenn der Spieler auf diesem Gerät bereits seinen festen Namen hat (GESPERRT gegen Namens-Klau & Doppel-Eintrag!) -->
-        <div id="locked-player-badge" style="display:none; align-items:center; justify-content:center; gap:0.55rem; background:#f8fafc; border:2px solid var(--hoermann-blue); border-radius:6px; padding:0.6rem 1.1rem; font-size:0.95rem; color:var(--hoermann-blue); font-weight:800; width:100%; max-width:460px;">
+        <div id="locked-player-badge" style="display:none; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.55rem; background:#f8fafc; border:2px solid var(--hoermann-blue); border-radius:6px; padding:0.6rem 1rem; font-size:0.92rem; color:var(--hoermann-blue); font-weight:800; width:100%; max-width:520px;">
           <span>🔒 Dein fester Spielername: <strong id="locked-player-name-text" style="color:var(--hoermann-orange); font-size:1.05rem;"></strong></span>
+          <button type="button" id="open-rename-request-btn" class="chat-tool-btn" style="font-size:0.72rem; padding:3px 8px;" title="Einmaligen Korrektur-Antrag an den Admin senden, falls du dich beim Namen vertippt hast">
+            ✏️ Vertippt? Namensantrag
+          </button>
         </div>
+
+        <!-- Einmaliges Formular für einen Namensänderungs-Antrag an den Admin -->
+        <div id="rename-request-box" style="display:none; flex-direction:column; gap:6px; width:100%; max-width:520px; background:#eff6ff; border:2px solid #60a5fa; border-radius:6px; padding:0.75rem 0.9rem; text-align:left;">
+          <div style="font-size:0.82rem; font-weight:800; color:#1e3a8a;">
+            📝 Einmaligen Namens-Korrekturantrag an den Admin stellen:
+          </div>
+          <p style="font-size:0.76rem; color:#1e40af; margin:0; line-height:1.35;">
+            Falls du deinen Namen beim ersten Mal falsch geschrieben hast, kannst du hier deinen Wunschnamen beantragen. Sobald der Admin zustimmt, werden dein Name und deine Highscores automatisch umgestellt!
+          </p>
+          <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:2px;">
+            <input type="text" id="rename-request-input" class="chat-input-field" maxlength="20" placeholder="Dein gewünschter richtiger Name..." style="flex:1; min-width:160px;">
+            <button type="button" id="send-rename-request-btn" class="chat-send-btn" style="padding:0.45rem 0.85rem; font-size:0.78rem;">Antrag absenden 📨</button>
+            <button type="button" id="cancel-rename-request-btn" class="chat-tool-btn" style="padding:0.45rem 0.65rem; font-size:0.75rem;">Abbrechen</button>
+          </div>
+        </div>
+
         <!-- Eingabefeld erscheint NUR beim allerersten Mal, wenn auf diesem Gerät noch kein Name festgelegt wurde -->
         <div id="first-time-name-row" style="display:flex; flex-direction:column; gap:4px; width:100%; max-width:460px;">
           <input type="text" id="player-name-input" class="submit-input" maxlength="20" placeholder="Einmalig deinen festen Spielernamen wählen..." style="width:100%;">
@@ -1711,10 +1891,11 @@
       </div>
     </div>
 
-    <!-- Admin-Umschalter zwischen Live-Chat & Spieler-Ideen-Postfach -->
+    <!-- Admin-Umschalter zwischen Live-Chat, Ideen-Postfach & Namensanträgen -->
     <div class="chat-admin-tabs" id="chat-admin-tabs">
-      <button class="chat-admin-tab-btn active" id="admin-tab-chat-btn">💬 Live-Chat</button>
-      <button class="chat-admin-tab-btn" id="admin-tab-ideas-btn">💡 Ideen-Postfach (<span id="admin-ideas-count">0</span>)</button>
+      <button class="chat-admin-tab-btn active" id="admin-tab-chat-btn" style="font-size:0.72rem; padding:0.35rem 0.3rem;">💬 Chat</button>
+      <button class="chat-admin-tab-btn" id="admin-tab-ideas-btn" style="font-size:0.72rem; padding:0.35rem 0.3rem;">💡 Ideen (<span id="admin-ideas-count">0</span>)</button>
+      <button class="chat-admin-tab-btn" id="admin-tab-renames-btn" style="font-size:0.72rem; padding:0.35rem 0.3rem;">✏️ Namen (<span id="admin-renames-count">0</span>)</button>
     </div>
 
     <!-- Nachrichtenliste (Ungefilterter Echtzeit-Chat für alle Spieler) -->
@@ -1731,11 +1912,74 @@
       </div>
     </div>
 
-    <!-- Chat-Eingabe -->
+    <!-- Geschütztes Admin-Postfach für einmalige Namensänderungs-Anträge -->
+    <div class="admin-ideas-list" id="admin-renames-list" style="display:none;">
+      <div style="text-align:center; color:#64748b; font-size:0.8rem; padding:1rem 0.5rem;">
+        Keine offenen Namensanträge. ✏️
+      </div>
+    </div>
+
+    <!-- Chat-Eingabe mit modernen Smileys, GIF-Suche & GIF-Link/Paste-Unterstützung -->
     <div class="chat-input-area" id="chat-input-area">
-      <input type="text" id="chat-sender-input" class="chat-input-field" maxlength="20" placeholder="Dein Name im Chat...">
+      <!-- Smiley-Auswahl-Menü -->
+      <div class="chat-popover-tray" id="chat-emoji-tray">
+        <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.73rem; font-weight:800; color:var(--hoermann-blue);">
+          <span>😀 Smileys &amp; Reaktionen</span>
+          <button type="button" id="close-emoji-tray-btn" class="chat-tool-btn" style="padding:1px 6px; font-size:0.68rem;">✕</button>
+        </div>
+        <div class="emoji-grid" id="chat-emoji-grid"></div>
+      </div>
+
+      <!-- Öffentliche GIF-Suche & Direkt-Link / Bild-Einfügen Menü -->
+      <div class="chat-popover-tray" id="chat-gif-tray">
+        <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.73rem; font-weight:800; color:var(--hoermann-blue);">
+          <span>🎬 GIF suchen oder Link/Grafik einfügen</span>
+          <button type="button" id="close-gif-tray-btn" class="chat-tool-btn" style="padding:1px 6px; font-size:0.68rem;">✕</button>
+        </div>
+        <div style="display:flex; gap:4px;">
+          <input type="text" id="chat-gif-search-input" class="chat-input-field" placeholder="z.B. lachender typ, stapler, party..." style="padding:4px 7px; font-size:0.77rem;">
+          <button type="button" id="chat-gif-search-btn" class="chat-send-btn" style="padding:4px 9px; font-size:0.75rem;">🔍 Suchen</button>
+        </div>
+        <div class="gif-quick-tags" id="gif-quick-tags">
+          <button type="button" class="gif-tag-chip" data-q="lachender typ">😂 Lachender Typ</button>
+          <button type="button" class="gif-tag-chip" data-q="forklift fail">🚜 Stapler</button>
+          <button type="button" class="gif-tag-chip" data-q="celebration">🎉 Sieg</button>
+          <button type="button" class="gif-tag-chip" data-q="mind blown">🤯 Krass</button>
+          <button type="button" class="gif-tag-chip" data-q="facepalm">🤦‍♂️ Fail</button>
+        </div>
+        <div class="gif-results-grid" id="chat-gif-results"></div>
+        <div style="border-top:1px solid #e2e8f0; padding-top:4px; display:flex; gap:4px; align-items:center;">
+          <input type="text" id="chat-gif-url-input" class="chat-input-field" placeholder="Oder GIF-Link (https://...) / Strg+V Grafik..." style="padding:3px 6px; font-size:0.73rem;">
+          <button type="button" id="chat-gif-url-btn" class="chat-tool-btn" style="padding:3px 7px; font-size:0.72rem; white-space:nowrap;">➕ Einfügen</button>
+        </div>
+      </div>
+
+      <!-- Vorschau eines ausgewählten GIFs vor dem Senden -->
+      <div class="chat-pending-gif-bar" id="chat-pending-gif-bar">
+        <div style="display:flex; align-items:center; gap:6px; overflow:hidden;">
+          <img id="chat-pending-gif-img" src="" alt="GIF">
+          <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">🎬 GIF angehängt</span>
+        </div>
+        <button type="button" id="chat-remove-gif-btn" class="chat-delete-btn" title="GIF wieder entfernen">✕</button>
+      </div>
+
+      <div style="display:flex; gap:4px; align-items:center;">
+        <input type="text" id="chat-sender-input" class="chat-input-field" maxlength="20" placeholder="Dein fester Name..." style="flex:1; padding:0.36rem 0.55rem; font-size:0.78rem;">
+        <button type="button" id="chat-rename-req-btn" class="chat-tool-btn" style="display:none; padding:4px 7px; font-size:0.7rem;" title="Falls du deinen Namen falsch gespeichert hast, hier einmalig Änderung beim Admin beantragen">
+          ✏️ Name falsch?
+        </button>
+      </div>
+
+      <div class="chat-toolbar-row">
+        <div style="display:flex; gap:4px;">
+          <button type="button" class="chat-tool-btn" id="toggle-emoji-tray-btn" title="Smileys &amp; Emojis einfügen">😀 Smileys</button>
+          <button type="button" class="chat-tool-btn" id="toggle-gif-tray-btn" title="GIF suchen oder von außen per Link / Strg+V einfügen">🎬 GIFs</button>
+        </div>
+        <span style="font-size:0.67rem; color:#64748b;">Strg+V für GIF/Bild</span>
+      </div>
+
       <div class="chat-input-row">
-        <input type="text" id="chat-text-input" class="chat-input-field" maxlength="300" placeholder="Nachricht schreiben (Enter)...">
+        <input type="text" id="chat-text-input" class="chat-input-field" maxlength="300" placeholder="Nachricht, Emoji oder GIF-Link (Enter)...">
         <button class="chat-send-btn" id="chat-send-btn">Senden ➤</button>
       </div>
     </div>
@@ -1745,25 +1989,25 @@
   <footer>
     Hörmann Mut-Portal &bull; Sektionaltore &bull; Schwingtore &bull; Türen &bull; Stahlzargen &bull; Lagermeister Nico &amp; Dennis Ressemann Edition
     <div style="margin-top:4px; font-size:0.74rem; color:rgba(255,255,255,0.5);">
-      <span id="app-version-badge">🟢 Version 2.6.0 (Fester Spieler-Namensschutz, 0,0s Sofort-Speichern, Ideen-Box &amp; Live-Chat)</span>
+      <span id="app-version-badge">🟢 Version 2.7.0 (Live-Chat mit Smileys &amp; GIF-Suche, Namensantrag &amp; Smart-Update)</span>
     </div>
   </footer>
 
-  <!-- ZWANGSUPDATE OVERLAY (Erscheint automatisch, sobald ein neues Update auf dem Server liegt) -->
+  <!-- ZWANGSUPDATE OVERLAY (Erscheint automatisch, sobald ein neues Update tatsächlich live abrufbar ist) -->
   <div id="force-update-overlay" style="display:none; position:fixed; inset:0; background:rgba(0, 20, 45, 0.92); z-index:9999; align-items:center; justify-content:center; padding:1.5rem; backdrop-filter:blur(4px);">
     <div style="background:#ffffff; border:4px solid var(--hoermann-orange); border-radius:10px; max-width:520px; width:100%; padding:2rem 1.8rem; text-align:center; box-shadow:0 25px 50px rgba(0,0,0,0.5);">
       <div style="font-size:3rem; margin-bottom:0.5rem;">🚀🔄</div>
       <h2 style="color:var(--hoermann-blue); font-size:1.5rem; font-weight:900; margin-bottom:0.6rem;">
-        Neues Portal-Update verfügbar!
+        Neues Portal-Update bereit!
       </h2>
       <p id="force-update-text" style="color:var(--text-muted); font-size:0.98rem; line-height:1.5; margin-bottom:1.2rem;">
-        Damit alle Kollegen mit derselben aktuellen Version und der synchronen Online-Bestenliste spielen, wird deine Seite jetzt automatisch aktualisiert.
+        Die neue Version wurde bereits im Hintergrund geladen. Deine Seite schaltet gleich automatisch und ohne Datenverlust auf das neue Update um!
       </p>
       <div id="force-update-notes" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:0.7rem 1rem; font-size:0.85rem; color:#1e293b; font-weight:600; margin-bottom:1.3rem;">
-        Update wird geladen...
+        Update wird aktiviert...
       </div>
       <button id="force-update-now-btn" class="btn-primary" style="width:100%; justify-content:center; padding:0.9rem; font-size:1.05rem;">
-        ⚡ Jetzt sofort aktualisieren (<span id="force-update-countdown">3</span>s)
+        ⚡ Jetzt sofort umschalten (<span id="force-update-countdown">8</span>s)
       </button>
     </div>
   </div>
@@ -2667,7 +2911,7 @@
     /* ==========================================================
        7b. GLOBAL ONLINE CLOUD HUB (HIGHSCORES, IDEEN-BOX, LIVE-CHAT & ZWANGSUPDATE)
        ========================================================== */
-    const APP_VERSION           = '2.6.0';
+    const APP_VERSION           = '2.7.0';
     const NTFY_HUB_URL          = 'https://ntfy.sh/hoermann_mut_dephosa_hub_v3';
     const NTFY_LEGACY_URL       = 'https://ntfy.sh/hoermann_mut_dephosa_online_lb_v2';
     const BYTEBIN_POST_URL      = 'https://bytebin.lucko.me/post';
@@ -2682,9 +2926,16 @@
     const lockedPlayerBadge     = document.getElementById('locked-player-badge');
     const lockedPlayerNameText  = document.getElementById('locked-player-name-text');
     const firstTimeNameRow      = document.getElementById('first-time-name-row');
+    const openRenameReqBtn      = document.getElementById('open-rename-request-btn');
+    const chatRenameReqBtn      = document.getElementById('chat-rename-req-btn');
+    const renameRequestBox      = document.getElementById('rename-request-box');
+    const renameRequestInput    = document.getElementById('rename-request-input');
+    const sendRenameReqBtn      = document.getElementById('send-rename-request-btn');
+    const cancelRenameReqBtn    = document.getElementById('cancel-rename-request-btn');
 
     let pendingGameDisplayName  = '';
     let updateForcedAlready     = false;
+    let prefetchedNewHtml       = '';
     let currentSnapshotKey      = localStorage.getItem('hoermann_cloud_snapshot_key_v3') || INITIAL_SNAPSHOT_KEY;
     let currentIdeaEligibility  = { eligible: false, reason: '', badge: '', oldRank: null, newRank: null, rule: 'NONE' };
 
@@ -2692,6 +2943,8 @@
     const DEVICE_TOKEN_KEY      = 'hoermann_device_token_v1';
     const LOCKED_NAME_KEY       = 'hoermann_locked_player_name_v1';
     const NAME_OWNERS_KEY       = 'hoermann_name_owners_map_v1';
+    const RENAME_REQ_USED_KEY   = 'hoermann_rename_request_used_v1';
+    const RENAME_STATE_KEY      = 'hoermann_rename_requests_state_v1';
 
     function getOrCreateDeviceToken() {
       let token = '';
@@ -2807,6 +3060,7 @@
 
     function refreshLockedNameUi() {
       const locked = getLockedPlayerName();
+      const renameAlreadyUsed = localStorage.getItem(RENAME_REQ_USED_KEY) === '1';
       if (locked) {
         if (playerNameInput) {
           playerNameInput.value = locked;
@@ -2815,6 +3069,12 @@
         if (lockedPlayerBadge && lockedPlayerNameText) {
           lockedPlayerNameText.textContent = locked;
           lockedPlayerBadge.style.display = 'flex';
+        }
+        if (openRenameReqBtn) {
+          openRenameReqBtn.style.display = renameAlreadyUsed ? 'none' : 'inline-flex';
+        }
+        if (chatRenameReqBtn) {
+          chatRenameReqBtn.style.display = renameAlreadyUsed ? 'none' : 'inline-flex';
         }
         if (firstTimeNameRow) {
           firstTimeNameRow.style.display = 'none';
@@ -2835,10 +3095,117 @@
         if (lockedPlayerBadge) {
           lockedPlayerBadge.style.display = 'none';
         }
+        if (openRenameReqBtn) openRenameReqBtn.style.display = 'none';
+        if (chatRenameReqBtn) chatRenameReqBtn.style.display = 'none';
         if (firstTimeNameRow) {
           firstTimeNameRow.style.display = 'flex';
         }
       }
+    }
+
+    function loadRenameState() {
+      try {
+        const raw = localStorage.getItem(RENAME_STATE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          return {
+            requests: Array.isArray(parsed.requests) ? parsed.requests : [],
+            approvedRenames: Array.isArray(parsed.approvedRenames) ? parsed.approvedRenames : [],
+            rejectedIds: Array.isArray(parsed.rejectedIds) ? parsed.rejectedIds : []
+          };
+        }
+      } catch (e) {}
+      return { requests: [], approvedRenames: [], rejectedIds: [] };
+    }
+
+    function saveRenameState(state) {
+      try {
+        localStorage.setItem(RENAME_STATE_KEY, JSON.stringify(state));
+      } catch (e) {}
+    }
+
+    // Führt eine vom Admin genehmigte Namensänderung für Highscores, Chat, Meilensteine & dieses Gerät aus
+    function applySingleApprovedRename(renObj, localMaster, chatState, ideasState, milestones) {
+      if (!renObj || !renObj.oldName || !renObj.newName) return false;
+      const oldClean = String(renObj.oldName).trim();
+      const newClean = String(renObj.newName).trim().slice(0, 20);
+      if (!oldClean || !newClean) return false;
+      const oldKey = oldClean.toLowerCase();
+      const newKey = newClean.toLowerCase();
+      let changed = false;
+
+      // 1. In allen 5 Bestenlisten alten Namen auf neuen Namen umschreiben
+      ['forklift', 'mario', 'buster', 'nerve', 'parcours'].forEach(cat => {
+        if (!Array.isArray(localMaster[cat])) return;
+        let catTouched = false;
+        localMaster[cat].forEach(entry => {
+          if (entry && entry.name && entry.name.trim().toLowerCase() === oldKey) {
+            entry.name = newClean;
+            catTouched = true;
+            changed = true;
+          }
+        });
+        if (catTouched) {
+          localMaster[cat] = deduplicateKeepBestPerName(localMaster[cat]);
+        }
+      });
+
+      // 2. Im Chatverlauf alten Absendernamen aktualisieren
+      if (chatState && Array.isArray(chatState.messages)) {
+        chatState.messages.forEach(m => {
+          if (m && m.sender && m.sender.trim().toLowerCase() === oldKey) {
+            m.sender = newClean;
+            changed = true;
+          }
+        });
+      }
+
+      // 3. In Ideen-Einträgen aktualisieren
+      if (ideasState && Array.isArray(ideasState.ideas)) {
+        ideasState.ideas.forEach(idItem => {
+          if (idItem && idItem.player && idItem.player.trim().toLowerCase() === oldKey) {
+            idItem.player = newClean;
+            changed = true;
+          }
+        });
+      }
+
+      // 4. Eigentümer-Zuordnung (nameOwners) übertragen
+      const owners = loadNameOwnersMap();
+      const ownerToken = renObj.deviceToken || owners[oldKey] || '';
+      if (ownerToken) {
+        delete owners[oldKey];
+        owners[newKey] = ownerToken;
+        saveNameOwnersMap(owners);
+      }
+
+      // 5. Meilensteine übertragen
+      if (milestones && typeof milestones === 'object') {
+        ['forklift', 'mario', 'buster', 'nerve', 'parcours'].forEach(cat => {
+          const oldMKey = `${cat}:${oldKey}`;
+          const newMKey = `${cat}:${newKey}`;
+          if (milestones[oldMKey]) {
+            milestones[newMKey] = { ...milestones[oldMKey] };
+            changed = true;
+          }
+        });
+      }
+
+      // 6. Wenn DIESES Gerät der Antragsteller ist -> lokalen gesperrten Namen automatisch auf den neuen Namen ändern!
+      const myLocked = getLockedPlayerName();
+      if ((renObj.deviceToken && renObj.deviceToken === MY_DEVICE_TOKEN) || (myLocked && myLocked.toLowerCase() === oldKey)) {
+        if (myLocked !== newClean) {
+          try {
+            localStorage.setItem(LOCKED_NAME_KEY, newClean);
+            localStorage.setItem('hoermann_player_name', newClean);
+          } catch (e) {}
+          refreshLockedNameUi();
+          showToast(`✅ Dein Namensantrag wurde genehmigt! Dein neuer fester Name ist jetzt „${newClean}“.`);
+          changed = true;
+        }
+      }
+
+      return changed;
     }
 
     // Lokaler & Cloud-synchronisierter Status für Chat, gelöschte Nachrichten, Spieler-Ideen & Spieler-Meilensteine
@@ -2922,18 +3289,85 @@
       } catch (e) {}
     }
 
-    // Erzwingt einen harten Reload am Browser-Cache vorbei, sobald eine neue Version erkannt wird
-    function performHardCacheBustReload(targetVersion) {
+    // Vergleicht zwei Versions-Strings (z.B. "2.7.0" > "2.6.0"), damit niemals ältere SSE-Nachrichten ein Update auslösen!
+    function isNewerSemver(remoteVer, localVer) {
+      if (!remoteVer || !localVer) return false;
+      const rParts = String(remoteVer).replace(/^v/i, '').split('.').map(n => parseInt(n, 10) || 0);
+      const lParts = String(localVer).replace(/^v/i, '').split('.').map(n => parseInt(n, 10) || 0);
+      for (let i = 0; i < Math.max(rParts.length, lParts.length); i++) {
+        const r = rParts[i] || 0;
+        const l = lParts[i] || 0;
+        if (r > l) return true;
+        if (r < l) return false;
+      }
+      return false;
+    }
+
+    // Prüft vor dem Anzeigen des Update-Modals, ob die neue HTML-Datei auf dem Server wirklich schon fertig ausgerollt ist (verhindert Endlos-Schleife!)
+    async function verifyAndPrefetchNewHtml(targetVersion) {
       try {
-        if ('caches' in window) {
-          caches.keys().then(names => names.forEach(name => caches.delete(name)));
+        const cleanPath = window.location.origin + window.location.pathname;
+        const res = await fetch(`${cleanPath}?_verify=${encodeURIComponent(targetVersion)}_${Date.now()}`, {
+          cache: 'no-store',
+          headers: { 'Pragma': 'no-cache', 'Cache-Control': 'no-cache' }
+        });
+        if (!res.ok) return false;
+        const htmlText = await res.text();
+        if (htmlText && htmlText.includes(`APP_VERSION           = '${targetVersion}'`) || htmlText.includes(`Version ${targetVersion}`)) {
+          prefetchedNewHtml = htmlText;
+          return true;
         }
       } catch (e) {}
+      return false;
+    }
+
+    // Schaltet sofort & garantiert ohne Cache-Hänger auf die neue Version um
+    async function performHardCacheBustReload(targetVersion) {
+      try {
+        sessionStorage.setItem('hoermann_updated_to_version', String(targetVersion || ''));
+      } catch (e) {}
+
+      try {
+        if ('caches' in window) {
+          const names = await caches.keys();
+          await Promise.all(names.map(name => caches.delete(name)));
+        }
+      } catch (e) {}
+
+      // Falls wir den neuen HTML-Code bereits verifiziert im Speicher haben, direkt ins Dokument schreiben -> 100% sofortiges Update ohneCDN-Verzögerung!
+      if (prefetchedNewHtml && prefetchedNewHtml.includes('<html')) {
+        try {
+          const cleanUrl = `${window.location.origin}${window.location.pathname}?v=${encodeURIComponent(targetVersion || Date.now())}`;
+          window.history.replaceState(null, '', cleanUrl);
+          document.open();
+          document.write(prefetchedNewHtml);
+          document.close();
+          return;
+        } catch (e) {}
+      }
+
       const cleanPath = window.location.origin + window.location.pathname;
       window.location.replace(`${cleanPath}?v=${encodeURIComponent(targetVersion || Date.now())}&t=${Date.now()}`);
     }
 
-    function triggerForcedUpdateModal(remoteVersion, releaseNotes) {
+    async function triggerForcedUpdateModal(remoteVersion, releaseNotes) {
+      if (updateForcedAlready) return;
+      if (!isNewerSemver(remoteVersion, APP_VERSION)) return;
+
+      // Schutz gegen Endlosschleife, falls soeben schon auf diese Version aktualisiert wurde
+      try {
+        if (sessionStorage.getItem('hoermann_updated_to_version') === String(remoteVersion)) {
+          return;
+        }
+      } catch (e) {}
+
+      // Erst prüfen, ob das CDN (GitHub Pages) die neue index.html wirklich schon ausliefert!
+      const isHtmlReadyOnCdn = await verifyAndPrefetchNewHtml(remoteVersion);
+      if (!isHtmlReadyOnCdn) {
+        // Noch nicht auf allen CDN-Knoten angekommen -> beim nächsten Intervall nochmal lautlos prüfen, Spieler noch nicht stören!
+        return;
+      }
+
       if (updateForcedAlready) return;
       updateForcedAlready = true;
 
@@ -2945,21 +3379,27 @@
       if (notesEl) {
         notesEl.textContent = releaseNotes
           ? `Neu in v${remoteVersion}: ${releaseNotes}`
-          : `Neue Version v${remoteVersion} wird geladen (Aktuell: v${APP_VERSION})`;
+          : `Neue Version v${remoteVersion} ist bereit (Aktuell: v${APP_VERSION})`;
       }
       if (overlay) {
         overlay.style.display = 'flex';
       }
       playSound('powerup');
 
-      let secondsLeft = 3;
+      let secondsLeft = 8;
       if (countEl) countEl.textContent = secondsLeft;
 
+      let timer = null;
       if (nowBtn) {
-        nowBtn.onclick = () => performHardCacheBustReload(remoteVersion);
+        nowBtn.onclick = () => {
+          if (timer) clearInterval(timer);
+          nowBtn.disabled = true;
+          nowBtn.textContent = '🚀 Schalte auf neue Version um...';
+          performHardCacheBustReload(remoteVersion);
+        };
       }
 
-      const timer = setInterval(() => {
+      timer = setInterval(() => {
         secondsLeft--;
         if (countEl) countEl.textContent = Math.max(0, secondsLeft);
         if (secondsLeft <= 0) {
@@ -2976,8 +3416,8 @@
         const res = await fetch(`./version.json?nocache=${Date.now()}`, { cache: 'no-store' });
         if (res.ok) {
           const vData = await res.json();
-          if (vData && vData.version && vData.version !== APP_VERSION) {
-            triggerForcedUpdateModal(vData.version, vData.notes);
+          if (vData && vData.version && isNewerSemver(vData.version, APP_VERSION)) {
+            await triggerForcedUpdateModal(vData.version, vData.notes);
           }
         }
       } catch (e) {}
@@ -3045,14 +3485,15 @@
       if (Array.isArray(data.chat)) {
         const existingIds = new Set(chatState.messages.map(m => m.id));
         data.chat.forEach(msg => {
-          if (!msg || !msg.id || !msg.text) return;
+          if (!msg || !msg.id || (!msg.text && !msg.gifUrl)) return;
           if (chatState.deletedIds.includes(msg.id)) return;
           if (msg.ts && msg.ts < chatState.clearedBefore) return;
           if (!existingIds.has(msg.id)) {
             chatState.messages.push({
               id: String(msg.id),
               sender: String(msg.sender || 'Spieler').slice(0, 24),
-              text: String(msg.text).slice(0, 300),
+              text: String(msg.text || '').slice(0, 300),
+              gifUrl: msg.gifUrl ? String(msg.gifUrl).slice(0, 120000) : '',
               time: String(msg.time || 'Heute'),
               ts: Number(msg.ts) || Date.now()
             });
@@ -3134,6 +3575,66 @@
         saveNameOwnersMap(owners);
       }
 
+      // Namensänderungs-Anträge & bereits vom Admin genehmigte Namensänderungen abgleichen
+      const renameState = loadRenameState();
+      let renameStateChanged = false;
+
+      if (Array.isArray(data.rejectedRenameIds)) {
+        data.rejectedRenameIds.forEach(id => {
+          if (id && !renameState.rejectedIds.includes(id)) {
+            renameState.rejectedIds.push(id);
+            renameStateChanged = true;
+            changed = true;
+          }
+        });
+      }
+
+      if (Array.isArray(data.approvedRenames)) {
+        const existingApprovedIds = new Set(renameState.approvedRenames.map(a => a.id));
+        data.approvedRenames.forEach(ren => {
+          if (!ren || !ren.oldName || !ren.newName) return;
+          const renId = ren.id || `${ren.oldName}->${ren.newName}`;
+          if (!existingApprovedIds.has(renId)) {
+            renameState.approvedRenames.push({ ...ren, id: renId });
+            existingApprovedIds.add(renId);
+            renameStateChanged = true;
+          }
+          if (applySingleApprovedRename(ren, localMaster, chatState, ideasState, milestones)) {
+            changed = true;
+          }
+        });
+      }
+
+      if (Array.isArray(data.renameRequests)) {
+        const existingReqIds = new Set(renameState.requests.map(r => r.id));
+        const approvedSet = new Set(renameState.approvedRenames.map(a => a.id));
+        data.renameRequests.forEach(req => {
+          if (!req || !req.id || !req.oldName || !req.newName) return;
+          if (renameState.rejectedIds.includes(req.id) || approvedSet.has(req.id)) return;
+          if (!existingReqIds.has(req.id)) {
+            renameState.requests.push({
+              id: String(req.id),
+              oldName: String(req.oldName).slice(0, 20),
+              newName: String(req.newName).slice(0, 20),
+              deviceToken: String(req.deviceToken || ''),
+              date: String(req.date || 'Heute'),
+              ts: Number(req.ts) || Date.now()
+            });
+            existingReqIds.add(req.id);
+            renameStateChanged = true;
+            changed = true;
+          }
+        });
+      }
+
+      const approvedIdsNow = new Set(renameState.approvedRenames.map(a => a.id));
+      renameState.requests = renameState.requests.filter(
+        r => !renameState.rejectedIds.includes(r.id) && !approvedIdsNow.has(r.id)
+      );
+      if (renameStateChanged) {
+        saveRenameState(renameState);
+      }
+
       if (data.customAdminHash && typeof data.customAdminHash === 'string' && data.customAdminHash.length === 64) {
         localStorage.setItem(CUSTOM_ADMIN_HASH_KEY, data.customAdminHash);
       }
@@ -3148,6 +3649,7 @@
       const ideasState  = loadIdeasState();
       const milestones  = loadPlayerMilestones();
       const nameOwners  = loadNameOwnersMap();
+      const renameState = loadRenameState();
       const customHash  = localStorage.getItem(CUSTOM_ADMIN_HASH_KEY) || '';
 
       const snapshotObj = {
@@ -3166,6 +3668,9 @@
         deletedIdeaIds: ideasState.deletedIdeaIds.slice(-150),
         milestones: milestones,
         nameOwners: nameOwners,
+        renameRequests: renameState.requests.slice(0, 50),
+        approvedRenames: renameState.approvedRenames.slice(-100),
+        rejectedRenameIds: renameState.rejectedIds.slice(-100),
         customAdminHash: customHash
       };
 
@@ -3224,7 +3729,7 @@
                 if (payload.snapshotKey) {
                   latestDiscoveredKey = payload.snapshotKey;
                 }
-                if (payload.type === 'FORCE_UPDATE' && payload.version && payload.version !== APP_VERSION) {
+                if (payload.type === 'FORCE_UPDATE' && payload.version && isNewerSemver(payload.version, APP_VERSION)) {
                   triggerForcedUpdateModal(payload.version, payload.notes);
                 } else if (payload.type === 'SCORE' && payload.cat && payload.name && payload.score) {
                   mergeScoreMaps(localMaster, { [payload.cat]: [payload] });
@@ -3246,6 +3751,15 @@
                   cloudDataLoaded = true;
                 } else if (payload.type === 'IDEA_DELETE' && payload.ideaId) {
                   applyIncomingCloudData({ deletedIdeaIds: [payload.ideaId] }, localMaster, chatState, ideasState, milestones);
+                  cloudDataLoaded = true;
+                } else if (payload.type === 'RENAME_REQ' && payload.req) {
+                  applyIncomingCloudData({ renameRequests: [payload.req] }, localMaster, chatState, ideasState, milestones);
+                  cloudDataLoaded = true;
+                } else if (payload.type === 'RENAME_APPROVE' && payload.ren) {
+                  applyIncomingCloudData({ approvedRenames: [payload.ren] }, localMaster, chatState, ideasState, milestones);
+                  cloudDataLoaded = true;
+                } else if (payload.type === 'RENAME_REJECT' && payload.reqId) {
+                  applyIncomingCloudData({ rejectedRenameIds: [payload.reqId] }, localMaster, chatState, ideasState, milestones);
                   cloudDataLoaded = true;
                 } else if (payload.type === 'ADMIN_HASH' && payload.customAdminHash) {
                   applyIncomingCloudData({ customAdminHash: payload.customAdminHash }, localMaster, chatState, ideasState, milestones);
@@ -3309,6 +3823,7 @@
 
       if (typeof renderChatMessages === 'function') renderChatMessages();
       if (typeof renderAdminIdeasList === 'function') renderAdminIdeasList();
+      if (typeof renderAdminRenamesList === 'function') renderAdminRenamesList();
 
       if (highscoreCard.classList.contains('show')) {
         switchLeaderboardTab(activeGameCategory, playerNameInput.value.trim());
@@ -3357,7 +3872,7 @@
               localStorage.setItem('hoermann_cloud_snapshot_key_v3', item.snapshotKey);
             }
 
-            if (item.type === 'FORCE_UPDATE' && item.version && item.version !== APP_VERSION) {
+            if (item.type === 'FORCE_UPDATE' && item.version && isNewerSemver(item.version, APP_VERSION)) {
               triggerForcedUpdateModal(item.version, item.notes);
               return;
             }
@@ -3404,6 +3919,29 @@
               if (applyIncomingCloudData({ deletedIdeaIds: [item.ideaId] }, localMaster, chatState, ideasState, milestones)) {
                 saveIdeasState(ideasState);
                 if (typeof renderAdminIdeasList === 'function') renderAdminIdeasList();
+              }
+            } else if (item.type === 'RENAME_REQ' && item.req) {
+              if (applyIncomingCloudData({ renameRequests: [item.req] }, localMaster, chatState, ideasState, milestones)) {
+                if (typeof renderAdminRenamesList === 'function') renderAdminRenamesList();
+                if (isAdminUnlocked) {
+                  showToast(`✏️ Neuer Namensantrag: „${item.req.oldName}“ ➔ „${item.req.newName}“`);
+                }
+              }
+            } else if (item.type === 'RENAME_APPROVE' && item.ren) {
+              if (applyIncomingCloudData({ approvedRenames: [item.ren] }, localMaster, chatState, ideasState, milestones)) {
+                saveMasterUserScores(localMaster);
+                saveChatState(chatState);
+                saveIdeasState(ideasState);
+                savePlayerMilestones(milestones);
+                if (typeof renderChatMessages === 'function') renderChatMessages();
+                if (typeof renderAdminRenamesList === 'function') renderAdminRenamesList();
+                if (highscoreCard.classList.contains('show')) {
+                  switchLeaderboardTab(activeGameCategory, getLockedPlayerName());
+                }
+              }
+            } else if (item.type === 'RENAME_REJECT' && item.reqId) {
+              if (applyIncomingCloudData({ rejectedRenameIds: [item.reqId] }, localMaster, chatState, ideasState, milestones)) {
+                if (typeof renderAdminRenamesList === 'function') renderAdminRenamesList();
               }
             } else if (item.type === 'SNAPSHOT' && item.snapshotKey) {
               syncOnlineLeaderboards(false);
@@ -3877,36 +4415,628 @@
     }
 
     /* ==========================================================
-       7c. PERMANENTES ONLINE LIVE-CHAT-SYSTEM & SHA-256 ADMIN-MODERATION
+       7c. PERMANENTES ONLINE LIVE-CHAT-SYSTEM, SMILEYS, GIF-SUCHE, NAMENSANTRAG & SHA-256 ADMIN
        ========================================================== */
-    const chatMessagesList    = document.getElementById('chat-messages-list');
-    const adminIdeasList      = document.getElementById('admin-ideas-list');
-    const adminIdeasCountSpan = document.getElementById('admin-ideas-count');
-    const chatSenderInput     = document.getElementById('chat-sender-input');
-    const chatTextInput       = document.getElementById('chat-text-input');
-    const chatSendBtn         = document.getElementById('chat-send-btn');
+    const chatMessagesList      = document.getElementById('chat-messages-list');
+    const adminIdeasList        = document.getElementById('admin-ideas-list');
+    const adminRenamesList      = document.getElementById('admin-renames-list');
+    const adminIdeasCountSpan   = document.getElementById('admin-ideas-count');
+    const adminRenamesCountSpan = document.getElementById('admin-renames-count');
+    const chatSenderInput       = document.getElementById('chat-sender-input');
+    const chatTextInput         = document.getElementById('chat-text-input');
+    const chatSendBtn           = document.getElementById('chat-send-btn');
 
-    const chatAdminToggleBtn  = document.getElementById('chat-admin-toggle-btn');
-    const chatAdminPanel      = document.getElementById('chat-admin-panel');
-    const chatAdminLoginRow   = document.getElementById('chat-admin-login-row');
-    const chatAdminActionsRow = document.getElementById('chat-admin-actions-row');
-    const chatAdminPassInput  = document.getElementById('chat-admin-pass-input');
-    const chatAdminLoginBtn   = document.getElementById('chat-admin-login-btn');
-    const chatAdminLogoutBtn  = document.getElementById('chat-admin-logout-btn');
-    const chatAdminClearBtn   = document.getElementById('chat-admin-clear-chat-btn');
-    const chatAdminChangePwBtn = document.getElementById('chat-admin-change-pw-btn');
-    const chatAdminNewPwBox   = document.getElementById('chat-admin-new-pw-box');
-    const chatAdminNewPwInput = document.getElementById('chat-admin-new-pw-input');
-    const chatAdminSavePwBtn  = document.getElementById('chat-admin-save-pw-btn');
+    const chatAdminToggleBtn    = document.getElementById('chat-admin-toggle-btn');
+    const chatAdminPanel        = document.getElementById('chat-admin-panel');
+    const chatAdminLoginRow     = document.getElementById('chat-admin-login-row');
+    const chatAdminActionsRow   = document.getElementById('chat-admin-actions-row');
+    const chatAdminPassInput    = document.getElementById('chat-admin-pass-input');
+    const chatAdminLoginBtn     = document.getElementById('chat-admin-login-btn');
+    const chatAdminLogoutBtn    = document.getElementById('chat-admin-logout-btn');
+    const chatAdminClearBtn     = document.getElementById('chat-admin-clear-chat-btn');
+    const chatAdminChangePwBtn  = document.getElementById('chat-admin-change-pw-btn');
+    const chatAdminNewPwBox     = document.getElementById('chat-admin-new-pw-box');
+    const chatAdminNewPwInput   = document.getElementById('chat-admin-new-pw-input');
+    const chatAdminSavePwBtn    = document.getElementById('chat-admin-save-pw-btn');
 
-    const chatAdminTabs       = document.getElementById('chat-admin-tabs');
-    const adminTabChatBtn     = document.getElementById('admin-tab-chat-btn');
-    const adminTabIdeasBtn    = document.getElementById('admin-tab-ideas-btn');
+    const chatAdminTabs         = document.getElementById('chat-admin-tabs');
+    const adminTabChatBtn       = document.getElementById('admin-tab-chat-btn');
+    const adminTabIdeasBtn      = document.getElementById('admin-tab-ideas-btn');
+    const adminTabRenamesBtn    = document.getElementById('admin-tab-renames-btn');
+
+    // Moderne Chat-Erweiterungen: Smileys & öffentliche GIF-Suche + Direkt-Link / Strg+V
+    const toggleEmojiTrayBtn    = document.getElementById('toggle-emoji-tray-btn');
+    const toggleGifTrayBtn      = document.getElementById('toggle-gif-tray-btn');
+    const closeEmojiTrayBtn     = document.getElementById('close-emoji-tray-btn');
+    const closeGifTrayBtn       = document.getElementById('close-gif-tray-btn');
+    const chatEmojiTray         = document.getElementById('chat-emoji-tray');
+    const chatGifTray           = document.getElementById('chat-gif-tray');
+    const chatEmojiGrid         = document.getElementById('chat-emoji-grid');
+    const chatGifSearchInput    = document.getElementById('chat-gif-search-input');
+    const chatGifSearchBtn      = document.getElementById('chat-gif-search-btn');
+    const chatGifResults        = document.getElementById('chat-gif-results');
+    const chatGifUrlInput       = document.getElementById('chat-gif-url-input');
+    const chatGifUrlBtn         = document.getElementById('chat-gif-url-btn');
+    const chatPendingGifBar     = document.getElementById('chat-pending-gif-bar');
+    const chatPendingGifImg     = document.getElementById('chat-pending-gif-img');
+    const chatRemoveGifBtn      = document.getElementById('chat-remove-gif-btn');
+
+    let pendingChatGifUrl = '';
 
     // Vorbelegen des Chat-Namens aus dem gespeicherten Spielernamen
     if (chatSenderInput) {
-      const savedPlayer = localStorage.getItem('hoermann_player_name') || '';
+      const savedPlayer = getLockedPlayerName() || localStorage.getItem('hoermann_player_name') || '';
       if (savedPlayer) chatSenderInput.value = savedPlayer;
+    }
+
+    // ==========================================================
+    // SMILEYS & EMOJI-AUSWAHLMENÜ
+    // ==========================================================
+    const POPULAR_CHAT_EMOJIS = [
+      '😀', '😂', '🤣', '😎', '🥳', '🤩', '😅', '😉',
+      '🙌', '👏', '👍', '💪', '🔥', '⚡', '🏆', '🥇',
+      '🚜', '📦', '🏗️', '🚪', '🛠️', '🚨', '🚀', '🎯',
+      '🎉', '🍻', '☕', '🍕', '❤️', '💯', '🤯', '😱',
+      '🤔', '🫡', '🤝', '👀', '🙈', '🤦‍♂️', '🤷‍♂️', '👑'
+    ];
+
+    if (chatEmojiGrid) {
+      chatEmojiGrid.innerHTML = '';
+      POPULAR_CHAT_EMOJIS.forEach(emo => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'emoji-item-btn';
+        btn.textContent = emo;
+        btn.addEventListener('click', () => {
+          if (!chatTextInput) return;
+          const start = chatTextInput.selectionStart || chatTextInput.value.length;
+          const end = chatTextInput.selectionEnd || chatTextInput.value.length;
+          const before = chatTextInput.value.slice(0, start);
+          const after = chatTextInput.value.slice(end);
+          chatTextInput.value = (before + emo + after).slice(0, 300);
+          chatTextInput.focus();
+          const newPos = Math.min(chatTextInput.value.length, start + emo.length);
+          chatTextInput.setSelectionRange(newPos, newPos);
+        });
+        chatEmojiGrid.appendChild(btn);
+      });
+    }
+
+    if (toggleEmojiTrayBtn && chatEmojiTray) {
+      toggleEmojiTrayBtn.addEventListener('click', () => {
+        const willOpen = !chatEmojiTray.classList.contains('show');
+        chatEmojiTray.classList.toggle('show', willOpen);
+        toggleEmojiTrayBtn.classList.toggle('active', willOpen);
+        if (willOpen && chatGifTray) {
+          chatGifTray.classList.remove('show');
+          if (toggleGifTrayBtn) toggleGifTrayBtn.classList.remove('active');
+        }
+      });
+    }
+    if (closeEmojiTrayBtn && chatEmojiTray) {
+      closeEmojiTrayBtn.addEventListener('click', () => {
+        chatEmojiTray.classList.remove('show');
+        if (toggleEmojiTrayBtn) toggleEmojiTrayBtn.classList.remove('active');
+      });
+    }
+
+    // ==========================================================
+    // ÖFFENTLICHE GIF-SUCHE (INKL. DEUTSCHE SUCHBEGRIFFE WIE "LACHENDER TYP") & EXTERNE GIFS
+    // ==========================================================
+    const PUBLIC_GIPHY_KEY = 'GlVGYHkr3WSBnllca54iNt0yFbjz7L65';
+
+    const CURATED_FALLBACK_GIFS = [
+      { title: 'Lachender Typ', url: 'https://media.giphy.com/media/10JhviFuU2gWD6/giphy.gif' },
+      { title: 'Lachflash',     url: 'https://media.giphy.com/media/ZqlvCTNHpqrio/giphy.gif' },
+      { title: 'Stapler Profi', url: 'https://media.giphy.com/media/3o7abKhOpu0NwenH3O/giphy.gif' },
+      { title: 'Sieg & Party',  url: 'https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif' },
+      { title: 'Daumen hoch',   url: 'https://media.giphy.com/media/111ebonMs90YLu/giphy.gif' },
+      { title: 'Mind Blown',    url: 'https://media.giphy.com/media/xT0xeJpnrWC4XWblEk/giphy.gif' }
+    ];
+
+    // Übersetzt häufige deutsche Mehrwort-Suchbegriffe (wie "lachender typ"), damit öffentliche GIF-Datenbanken sofort perfekte Treffer liefern
+    function enhanceGermanGifSearchQuery(rawQuery) {
+      const q = String(rawQuery || '').trim().toLowerCase();
+      if (!q) return 'funny reaction';
+      const phraseMap = {
+        'lachender typ': 'laughing guy',
+        'lachender mann': 'laughing man',
+        'lachende frau': 'laughing woman',
+        'lachen': 'laughing',
+        'lachflash': 'laughing hard',
+        'stapler': 'forklift',
+        'gabelstapler': 'forklift',
+        'lager': 'warehouse forklift',
+        'sieg': 'winner celebration',
+        'gewonnen': 'winner celebration',
+        'feierabend': 'friday party dance',
+        'party': 'party celebration',
+        'daumen hoch': 'thumbs up',
+        'krass': 'mind blown',
+        'wütend': 'angry',
+        'sauer': 'angry',
+        'weinen': 'crying funny',
+        'traurig': 'sad',
+        'kaffee': 'coffee morning',
+        'müde': 'tired sleepy',
+        'applaus': 'applause clapping',
+        'tanzen': 'dancing happy',
+        'fail': 'epic fail'
+      };
+      if (phraseMap[q]) return phraseMap[q];
+      return q
+        .replace(/\blachender\b/g, 'laughing')
+        .replace(/\blachende\b/g, 'laughing')
+        .replace(/\blachen\b/g, 'laughing')
+        .replace(/\btyp\b/g, 'guy')
+        .replace(/\bmann\b/g, 'man')
+        .replace(/\bstapler\b/g, 'forklift')
+        .replace(/\bsieg\b/g, 'winner')
+        .replace(/\bgewonnen\b/g, 'winner')
+        .replace(/\bfeierabend\b/g, 'party')
+        .replace(/\bwütend\b/g, 'angry')
+        .replace(/\btanzen\b/g, 'dancing');
+    }
+
+    function selectPendingGifForChat(gifUrl) {
+      const clean = String(gifUrl || '').trim();
+      if (!clean) return;
+      pendingChatGifUrl = clean;
+      if (chatPendingGifImg) chatPendingGifImg.src = clean;
+      if (chatPendingGifBar) chatPendingGifBar.classList.add('show');
+      if (chatGifTray) chatGifTray.classList.remove('show');
+      if (toggleGifTrayBtn) toggleGifTrayBtn.classList.remove('active');
+      if (chatTextInput) chatTextInput.focus();
+    }
+
+    function clearPendingGifForChat() {
+      pendingChatGifUrl = '';
+      if (chatPendingGifImg) chatPendingGifImg.src = '';
+      if (chatPendingGifBar) chatPendingGifBar.classList.remove('show');
+    }
+
+    if (chatRemoveGifBtn) {
+      chatRemoveGifBtn.addEventListener('click', clearPendingGifForChat);
+    }
+
+    function renderGifThumbnails(gifItems) {
+      if (!chatGifResults) return;
+      chatGifResults.innerHTML = '';
+      if (!gifItems || !gifItems.length) {
+        chatGifResults.innerHTML = `<div style="grid-column:1/-1; text-align:center; color:#64748b; font-size:0.75rem; padding:0.8rem;">Keine GIFs gefunden.</div>`;
+        return;
+      }
+      gifItems.forEach(item => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'gif-thumb-btn';
+        btn.title = (item.title || 'GIF auswählen') + ' (Klicken zum Einfügen)';
+        const img = document.createElement('img');
+        img.src = item.preview || item.url;
+        img.alt = item.title || 'GIF';
+        img.loading = 'lazy';
+        btn.appendChild(img);
+        btn.addEventListener('click', () => selectPendingGifForChat(item.url));
+        chatGifResults.appendChild(btn);
+      });
+    }
+
+    async function searchPublicGifs(rawQuery) {
+      if (!chatGifResults) return;
+      const queryText = String(rawQuery || '').trim();
+      chatGifResults.innerHTML = `<div style="grid-column:1/-1; text-align:center; color:#64748b; font-size:0.75rem; padding:0.8rem;">🔎 Suche passende GIFs...</div>`;
+
+      const apiQuery = enhanceGermanGifSearchQuery(queryText || 'lachender typ');
+      try {
+        const endpoint = `https://api.giphy.com/v1/gifs/search?api_key=${PUBLIC_GIPHY_KEY}&q=${encodeURIComponent(apiQuery)}&limit=12&rating=pg-13&lang=de`;
+        const res = await fetch(endpoint);
+        if (res.ok) {
+          const data = await res.json();
+          let items = Array.isArray(data.data) ? data.data : [];
+
+          // Falls ein sehr spezieller mehrteiliger Begriff 0 Treffer ergab, automatisch mit dem Hauptbegriff erneut suchen
+          if (items.length === 0 && queryText.includes(' ')) {
+            const fallbackWord = enhanceGermanGifSearchQuery(queryText.split(/\s+/)[0]);
+            const res2 = await fetch(`https://api.giphy.com/v1/gifs/search?api_key=${PUBLIC_GIPHY_KEY}&q=${encodeURIComponent(fallbackWord)}&limit=12&rating=pg-13`);
+            if (res2.ok) {
+              const data2 = await res2.json();
+              items = Array.isArray(data2.data) ? data2.data : [];
+            }
+          }
+
+          const mapped = items.map(g => {
+            const imgs = g.images || {};
+            const sendUrl = (imgs.fixed_height && imgs.fixed_height.url) ||
+                            (imgs.downsized && imgs.downsized.url) ||
+                            (imgs.original && imgs.original.url) || '';
+            const prevUrl = (imgs.fixed_width_small && imgs.fixed_width_small.url) ||
+                            (imgs.fixed_height_small && imgs.fixed_height_small.url) ||
+                            sendUrl;
+            return {
+              title: g.title || queryText || 'GIF',
+              url: sendUrl,
+              preview: prevUrl
+            };
+          }).filter(x => Boolean(x.url));
+
+          if (mapped.length > 0) {
+            renderGifThumbnails(mapped);
+            return;
+          }
+        }
+      } catch (e) {}
+
+      // Garantierter Fallback, falls das Firmennetzwerk externe APIs blockiert
+      renderGifThumbnails(CURATED_FALLBACK_GIFS);
+    }
+
+    if (toggleGifTrayBtn && chatGifTray) {
+      toggleGifTrayBtn.addEventListener('click', () => {
+        const willOpen = !chatGifTray.classList.contains('show');
+        chatGifTray.classList.toggle('show', willOpen);
+        toggleGifTrayBtn.classList.toggle('active', willOpen);
+        if (willOpen) {
+          if (chatEmojiTray) chatEmojiTray.classList.remove('show');
+          if (toggleEmojiTrayBtn) toggleEmojiTrayBtn.classList.remove('active');
+          if (chatGifSearchInput) chatGifSearchInput.focus();
+          if (chatGifResults && !chatGifResults.children.length) {
+            searchPublicGifs(chatGifSearchInput ? chatGifSearchInput.value : 'lachender typ');
+          }
+        }
+      });
+    }
+    if (closeGifTrayBtn && chatGifTray) {
+      closeGifTrayBtn.addEventListener('click', () => {
+        chatGifTray.classList.remove('show');
+        if (toggleGifTrayBtn) toggleGifTrayBtn.classList.remove('active');
+      });
+    }
+
+    if (chatGifSearchBtn && chatGifSearchInput) {
+      chatGifSearchBtn.addEventListener('click', () => searchPublicGifs(chatGifSearchInput.value));
+      chatGifSearchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          searchPublicGifs(chatGifSearchInput.value);
+        }
+      });
+    }
+
+    document.querySelectorAll('.gif-tag-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        const q = chip.getAttribute('data-q') || 'lachender typ';
+        if (chatGifSearchInput) chatGifSearchInput.value = q;
+        searchPublicGifs(q);
+      });
+    });
+
+    // Externe GIFs über Direkt-Link (https://...) oder kopierte Grafik (Strg+V / Drag & Drop) einfügen
+    function isLikelyImageUrl(str) {
+      const s = String(str || '').trim();
+      if (/^data:image\/(gif|png|jpeg|jpg|webp);base64,/i.test(s)) return true;
+      if (!/^https?:\/\/\S+$/i.test(s)) return false;
+      if (/\.(gif|webp|png|jpe?g)(\?.*)?$/i.test(s)) return true;
+      if (/giphy\.com\/media\/|media\d*\.giphy\.com|tenor\.com\/view|media\.tenor\.com|imgur\.com/i.test(s)) return true;
+      return false;
+    }
+
+    function handleExternalGifUrlInput() {
+      if (!chatGifUrlInput) return;
+      const raw = chatGifUrlInput.value.trim();
+      if (!raw) {
+        showToast('Bitte füge einen Bild-/GIF-Link (https://...) ein oder nutze Strg+V! 🔗');
+        return;
+      }
+      if (!/^https?:\/\//i.test(raw) && !/^data:image\//i.test(raw)) {
+        showToast('Bitte eine gültige Grafik-URL (beginnend mit https://) eingeben! 🔗');
+        return;
+      }
+      chatGifUrlInput.value = '';
+      selectPendingGifForChat(raw);
+      showToast('🎬 Externe Grafik / GIF angehängt!');
+    }
+
+    if (chatGifUrlBtn) chatGifUrlBtn.addEventListener('click', handleExternalGifUrlInput);
+    if (chatGifUrlInput) {
+      chatGifUrlInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          handleExternalGifUrlInput();
+        }
+      });
+    }
+
+    // Zwischenablage-Paste (Strg+V) für kopierte GIF-Dateien/Bilder ODER direkte Bild-Links im Chat
+    function handleChatPasteEvent(e) {
+      if (!e.clipboardData) return;
+      const items = e.clipboardData.items || [];
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        if (item.type && item.type.startsWith('image/')) {
+          const file = item.getAsFile();
+          if (!file) continue;
+          e.preventDefault();
+
+          // Falls es ein kompaktes GIF ist (< 220 KB), original animiertes Data-URL behalten, sonst kompakt skalieren
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            const dataUrl = String(ev.target.result || '');
+            if (file.type === 'image/gif' && dataUrl.length <= 280000) {
+              selectPendingGifForChat(dataUrl);
+              showToast('🎬 Kopiertes GIF direkt aus der Zwischenablage eingefügt!');
+            } else {
+              const img = new Image();
+              img.onload = () => {
+                const maxW = 280;
+                const scale = Math.min(1, maxW / (img.width || maxW));
+                const cv = document.createElement('canvas');
+                cv.width = Math.max(1, Math.round(img.width * scale));
+                cv.height = Math.max(1, Math.round(img.height * scale));
+                const ctx = cv.getContext('2d');
+                ctx.drawImage(img, 0, 0, cv.width, cv.height);
+                const compressed = cv.toDataURL('image/webp', 0.82);
+                selectPendingGifForChat(compressed);
+                showToast('🖼️ Grafik aus der Zwischenablage eingefügt!');
+              };
+              img.src = dataUrl;
+            }
+          };
+          reader.readAsDataURL(file);
+          return;
+        }
+      }
+
+      // Prüfen, ob ein direkter GIF/Bild-Link per Strg+V eingefügt wurde
+      const pastedText = (e.clipboardData.getData('text/plain') || '').trim();
+      if (isLikelyImageUrl(pastedText)) {
+        e.preventDefault();
+        selectPendingGifForChat(pastedText);
+        showToast('🎬 GIF-Link erkannt & als Grafik angehängt!');
+      }
+    }
+
+    if (chatTextInput) chatTextInput.addEventListener('paste', handleChatPasteEvent);
+    if (chatGifUrlInput) chatGifUrlInput.addEventListener('paste', handleChatPasteEvent);
+
+    // ==========================================================
+    // EINMALIGER NAMENSKORREKTUR-ANTRAG (FALLS NAME FALSCH GESPEICHERT WURDE)
+    // ==========================================================
+    function openRenameRequestDialog() {
+      const currentLocked = getLockedPlayerName();
+      if (!currentLocked) {
+        showToast('Du hast noch keinen festen Namen gespeichert – du kannst ihn direkt eingeben!');
+        return;
+      }
+      if (localStorage.getItem(RENAME_REQ_USED_KEY) === '1') {
+        showToast('ℹ️ Du hast deinen einmaligen Namens-Korrekturantrag bereits gestellt.');
+        return;
+      }
+      // Falls der Nutzer auf "✏️ Name falsch?" im Chat klickt und das Highscore-Fenster nicht offen ist -> kompaktes Prompt oder Formular öffnen
+      if (scoreSubmitDialog && scoreSubmitDialog.classList.contains('show') && renameRequestBox) {
+        renameRequestBox.style.display = 'flex';
+        if (renameRequestInput) {
+          renameRequestInput.value = currentLocked;
+          renameRequestInput.focus();
+          renameRequestInput.select();
+        }
+      } else {
+        const wished = window.prompt(
+          `📝 Einmaliger Namens-Korrekturantrag an den Admin:\n\nDein aktuell gespeicherter Name lautet: „${currentLocked}“\nWie soll dein richtiger Spielername lauten (max. 20 Zeichen)?`,
+          currentLocked
+        );
+        if (wished !== null) {
+          submitPlayerRenameRequest(wished);
+        }
+      }
+    }
+
+    function submitPlayerRenameRequest(rawNewName) {
+      const oldName = getLockedPlayerName();
+      const newName = String(rawNewName || '').trim().slice(0, 20);
+      if (!oldName) return;
+      if (localStorage.getItem(RENAME_REQ_USED_KEY) === '1') {
+        showToast('ℹ️ Ein Namensantrag ist nur einmalig pro Spieler möglich.');
+        return;
+      }
+      if (!newName || newName.length < 2) {
+        showToast('Bitte gib einen gültigen neuen Namen (mind. 2 Zeichen) ein! ✍️');
+        return;
+      }
+      if (newName.toLowerCase() === oldName.toLowerCase() && newName === oldName) {
+        showToast('Der eingegebene Name ist identisch mit deinem aktuellen Namen.');
+        return;
+      }
+
+      // Prüfen, ob der gewünschte neue Name nicht schon einem anderen Spieler gehört
+      if (newName.toLowerCase() !== oldName.toLowerCase()) {
+        const check = isNameTakenByAnotherPlayer(newName);
+        if (check.taken) {
+          playSound('alarm');
+          showToast('🚫 ' + check.reason);
+          return;
+        }
+      }
+
+      const now = new Date();
+      const reqObj = {
+        id: 'ren_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
+        oldName: oldName,
+        newName: newName,
+        deviceToken: MY_DEVICE_TOKEN,
+        date: now.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' }) + ' ' +
+              now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }),
+        ts: Date.now()
+      };
+
+      const renameState = loadRenameState();
+      renameState.requests.unshift(reqObj);
+      saveRenameState(renameState);
+
+      try {
+        localStorage.setItem(RENAME_REQ_USED_KEY, '1');
+      } catch (e) {}
+
+      if (renameRequestBox) renameRequestBox.style.display = 'none';
+      refreshLockedNameUi();
+      renderAdminRenamesList();
+      playSound('coin');
+      showToast(`📨 Namensantrag („${oldName}“ ➔ „${newName}“) an den Admin gesendet!`);
+
+      publishCloudSnapshot({
+        type: 'RENAME_REQ',
+        renameReq: reqObj,
+        ts: Date.now()
+      }).catch(() => {});
+    }
+
+    if (openRenameReqBtn) openRenameReqBtn.addEventListener('click', openRenameRequestDialog);
+    if (chatRenameReqBtn) chatRenameReqBtn.addEventListener('click', openRenameRequestDialog);
+    if (cancelRenameReqBtn && renameRequestBox) {
+      cancelRenameReqBtn.addEventListener('click', () => {
+        renameRequestBox.style.display = 'none';
+      });
+    }
+    if (sendRenameReqBtn && renameRequestInput) {
+      sendRenameReqBtn.addEventListener('click', () => submitPlayerRenameRequest(renameRequestInput.value));
+      renameRequestInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          submitPlayerRenameRequest(renameRequestInput.value);
+        }
+      });
+    }
+
+    async function approveRenameRequest(req) {
+      if (!isAdminUnlocked || !req || !req.id) return;
+      const renameState = loadRenameState();
+      const approvedObj = {
+        id: req.id,
+        oldName: req.oldName,
+        newName: req.newName,
+        deviceToken: req.deviceToken || '',
+        approvedAt: Date.now()
+      };
+      if (!renameState.approvedRenames.some(a => a.id === req.id)) {
+        renameState.approvedRenames.push(approvedObj);
+      }
+      renameState.requests = renameState.requests.filter(r => r.id !== req.id);
+      saveRenameState(renameState);
+
+      const localMaster = loadMasterUserScores();
+      const chatState = loadChatState();
+      const ideasState = loadIdeasState();
+      const milestones = loadPlayerMilestones();
+
+      applySingleApprovedRename(approvedObj, localMaster, chatState, ideasState, milestones);
+
+      saveMasterUserScores(localMaster);
+      saveChatState(chatState);
+      saveIdeasState(ideasState);
+      savePlayerMilestones(milestones);
+
+      ['forklift', 'mario', 'buster', 'nerve', 'parcours'].forEach(cat => {
+        try {
+          localStorage.setItem(`hoermann_lb_${cat}`, JSON.stringify(getGameLeaderboard(cat)));
+        } catch (e) {}
+      });
+
+      renderChatMessages();
+      renderAdminIdeasList();
+      renderAdminRenamesList();
+      if (highscoreCard && highscoreCard.classList.contains('show')) {
+        switchLeaderboardTab(activeGameCategory);
+      }
+
+      await publishCloudSnapshot({
+        type: 'RENAME_APPROVE',
+        approvedRename: approvedObj,
+        ts: Date.now()
+      });
+      showToast(`✅ Namensänderung „${req.oldName}“ ➔ „${req.newName}“ genehmigt & überall aktualisiert!`);
+    }
+
+    async function rejectRenameRequest(reqId) {
+      if (!isAdminUnlocked || !reqId) return;
+      const renameState = loadRenameState();
+      if (!renameState.rejectedIds.includes(reqId)) {
+        renameState.rejectedIds.push(reqId);
+      }
+      renameState.requests = renameState.requests.filter(r => r.id !== reqId);
+      saveRenameState(renameState);
+      renderAdminRenamesList();
+
+      await publishCloudSnapshot({
+        type: 'RENAME_REJECT',
+        reqId: reqId,
+        ts: Date.now()
+      });
+      showToast('✕ Namensantrag abgelehnt & entfernt.');
+    }
+
+    function renderAdminRenamesList() {
+      const renameState = loadRenameState();
+      if (adminRenamesCountSpan) {
+        adminRenamesCountSpan.textContent = renameState.requests.length;
+      }
+      if (!adminRenamesList) return;
+      adminRenamesList.innerHTML = '';
+
+      if (!renameState.requests.length) {
+        adminRenamesList.innerHTML = `
+          <div style="text-align:center; color:#64748b; font-size:0.8rem; padding:1.4rem 0.5rem;">
+            Keine offenen Namensanträge. Wenn sich ein Spieler beim ersten Speichern vertippt hat, erscheint sein Antrag hier zur Freigabe! ✏️
+          </div>
+        `;
+        return;
+      }
+
+      renameState.requests.forEach(req => {
+        const card = document.createElement('div');
+        card.className = 'admin-idea-card';
+        card.style.background = '#eff6ff';
+        card.style.borderColor = '#93c5fd';
+
+        const titleRow = document.createElement('div');
+        titleRow.style.fontWeight = '800';
+        titleRow.style.color = '#1e3a8a';
+        titleRow.style.fontSize = '0.82rem';
+        titleRow.textContent = `✏️ „${req.oldName}“ ➔ „${req.newName}“`;
+
+        const metaRow = document.createElement('div');
+        metaRow.style.fontSize = '0.7rem';
+        metaRow.style.color = '#475569';
+        metaRow.textContent = `Eingereicht am ${req.date || 'Heute'} (Einmaliger Antrag)`;
+
+        const btnRow = document.createElement('div');
+        btnRow.style.display = 'flex';
+        btnRow.style.gap = '6px';
+        btnRow.style.marginTop = '4px';
+
+        const approveBtn = document.createElement('button');
+        approveBtn.type = 'button';
+        approveBtn.className = 'chat-send-btn';
+        approveBtn.style.padding = '3px 8px';
+        approveBtn.style.fontSize = '0.73rem';
+        approveBtn.style.background = '#16a34a';
+        approveBtn.textContent = '✅ Genehmigen & umbenennen';
+        approveBtn.addEventListener('click', () => approveRenameRequest(req));
+
+        const rejectBtn = document.createElement('button');
+        rejectBtn.type = 'button';
+        rejectBtn.className = 'chat-delete-btn';
+        rejectBtn.style.padding = '3px 8px';
+        rejectBtn.style.fontSize = '0.73rem';
+        rejectBtn.textContent = '✕ Ablehnen';
+        rejectBtn.addEventListener('click', () => rejectRenameRequest(req.id));
+
+        btnRow.appendChild(approveBtn);
+        btnRow.appendChild(rejectBtn);
+
+        card.appendChild(titleRow);
+        card.appendChild(metaRow);
+        card.appendChild(btnRow);
+        adminRenamesList.appendChild(card);
+      });
     }
 
     // Kryptografischer SHA-256 Hash (damit niemals ein Klartext-Passwort im Code steht)
@@ -3939,26 +5069,28 @@
       }
       renderChatMessages();
       renderAdminIdeasList();
+      renderAdminRenamesList();
     }
 
     function switchAdminViewTab(tab) {
       activeAdminTab = tab;
       if (!chatMessagesList || !adminIdeasList) return;
-      if (tab === 'ideas' && isAdminUnlocked) {
-        chatMessagesList.style.display = 'none';
-        adminIdeasList.style.display = 'flex';
-        adminTabChatBtn.classList.remove('active');
-        adminTabIdeasBtn.classList.add('active');
-      } else {
-        chatMessagesList.style.display = 'flex';
-        adminIdeasList.style.display = 'none';
-        adminTabChatBtn.classList.add('active');
-        adminTabIdeasBtn.classList.remove('active');
-      }
+      const showIdeas = (tab === 'ideas' && isAdminUnlocked);
+      const showRenames = (tab === 'renames' && isAdminUnlocked);
+      const showChat = !showIdeas && !showRenames;
+
+      chatMessagesList.style.display = showChat ? 'flex' : 'none';
+      adminIdeasList.style.display = showIdeas ? 'flex' : 'none';
+      if (adminRenamesList) adminRenamesList.style.display = showRenames ? 'flex' : 'none';
+
+      if (adminTabChatBtn) adminTabChatBtn.classList.toggle('active', showChat);
+      if (adminTabIdeasBtn) adminTabIdeasBtn.classList.toggle('active', showIdeas);
+      if (adminTabRenamesBtn) adminTabRenamesBtn.classList.toggle('active', showRenames);
     }
 
     if (adminTabChatBtn) adminTabChatBtn.addEventListener('click', () => switchAdminViewTab('chat'));
     if (adminTabIdeasBtn) adminTabIdeasBtn.addEventListener('click', () => switchAdminViewTab('ideas'));
+    if (adminTabRenamesBtn) adminTabRenamesBtn.addEventListener('click', () => switchAdminViewTab('renames'));
 
     if (chatAdminToggleBtn) {
       chatAdminToggleBtn.addEventListener('click', () => {
@@ -3980,7 +5112,7 @@
         chatAdminPassInput.value = '';
         updateAdminUiState();
         playSound('powerup');
-        showToast('🛡️ Admin-Rechte freigeschaltet! Du kannst jetzt Nachrichten löschen & Spieler-Ideen lesen.');
+        showToast('🛡️ Admin-Rechte aktiv: Chat moderieren, Ideen lesen & Namensanträge prüfen.');
       } else {
         playSound('alarm');
         showToast('❌ Falsches Admin-Passwort!');
@@ -4091,13 +5223,13 @@
     function renderChatMessages() {
       if (!chatMessagesList) return;
       const chatState = loadChatState();
-      const myName = (chatSenderInput ? chatSenderInput.value.trim().toLowerCase() : '') || (localStorage.getItem('hoermann_player_name') || '').trim().toLowerCase();
+      const myName = (getLockedPlayerName() || (chatSenderInput ? chatSenderInput.value.trim() : '') || (localStorage.getItem('hoermann_player_name') || '')).trim().toLowerCase();
 
       chatMessagesList.innerHTML = '';
       if (!chatState.messages.length) {
         chatMessagesList.innerHTML = `
           <div style="text-align:center; color:#64748b; font-size:0.8rem; padding:1.4rem 0.5rem;">
-            Noch keine Nachrichten im Chat. Schreib den ersten Gruß! 💬
+            Noch keine Nachrichten im Chat. Schreib den ersten Gruß oder schick ein GIF! 💬🎬
           </div>
         `;
         return;
@@ -4135,13 +5267,35 @@
 
         meta.appendChild(authorSpan);
         meta.appendChild(rightMeta);
-
-        const body = document.createElement('div');
-        body.className = 'chat-msg-text';
-        body.textContent = msg.text || '';
-
         div.appendChild(meta);
-        div.appendChild(body);
+
+        // Falls der Text selbst nur eine Bild-/GIF-URL ist, automatisch als Grafik rendern
+        let displayText = String(msg.text || '').trim();
+        let displayGifUrl = String(msg.gifUrl || '').trim();
+        if (!displayGifUrl && isLikelyImageUrl(displayText)) {
+          displayGifUrl = displayText;
+          displayText = '';
+        }
+
+        if (displayText) {
+          const body = document.createElement('div');
+          body.className = 'chat-msg-text';
+          body.textContent = displayText;
+          div.appendChild(body);
+        }
+
+        if (displayGifUrl) {
+          const mediaImg = document.createElement('img');
+          mediaImg.className = 'chat-media-img';
+          mediaImg.src = displayGifUrl;
+          mediaImg.alt = 'Chat GIF';
+          mediaImg.loading = 'lazy';
+          mediaImg.addEventListener('load', () => {
+            chatMessagesList.scrollTop = chatMessagesList.scrollHeight;
+          });
+          div.appendChild(mediaImg);
+        }
+
         chatMessagesList.appendChild(div);
       });
 
@@ -4212,14 +5366,22 @@
       if (!chatTextInput || !chatSenderInput) return;
       const locked = getLockedPlayerName();
       const sender = (locked || chatSenderInput.value.trim()).slice(0, 20);
-      const text = chatTextInput.value.trim();
+      let text = chatTextInput.value.trim();
+      let gifUrlToSend = pendingChatGifUrl;
 
       if (!sender) {
         showToast('Bitte gib oben im Chat einmalig deinen festen Spielernamen ein! ✍️');
         chatSenderInput.focus();
         return;
       }
-      if (!text) return;
+
+      // Falls ein direkter Bild-/GIF-Link ins Textfeld eingegeben wurde
+      if (!gifUrlToSend && isLikelyImageUrl(text)) {
+        gifUrlToSend = text;
+        text = '';
+      }
+
+      if (!text && !gifUrlToSend) return;
 
       if (!locked) {
         const ownership = isNameTakenByAnotherPlayer(sender);
@@ -4240,11 +5402,18 @@
         id: 'msg_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
         sender: sender.slice(0, 20),
         text: text.slice(0, 300),
+        gifUrl: gifUrlToSend || '',
         time: timeLabel,
         ts: Date.now()
       };
 
       chatTextInput.value = '';
+      clearPendingGifForChat();
+      if (chatEmojiTray) chatEmojiTray.classList.remove('show');
+      if (chatGifTray) chatGifTray.classList.remove('show');
+      if (toggleEmojiTrayBtn) toggleEmojiTrayBtn.classList.remove('active');
+      if (toggleGifTrayBtn) toggleGifTrayBtn.classList.remove('active');
+
       const chatState = loadChatState();
       chatState.messages.push(newMsg);
       if (chatState.messages.length > 80) chatState.messages = chatState.messages.slice(-80);

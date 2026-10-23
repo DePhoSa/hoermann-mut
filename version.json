@@ -1,5 +1,5 @@
 {
-  "version": "2.6.0",
-  "releasedAt": "2026-10-23T10:01:00Z",
-  "notes": "Neu: Fester Spielername pro Gerät (kein Eintragen unter fremden Namen mehr!) + 0,0 Sek. Sofort-Speichern!"
+  "version": "2.7.0",
+  "releasedAt": "2026-10-23T10:18:00Z",
+  "notes": "Neu: Live-Chat mit Smileys, GIF-Suche & GIF-Einfügen (Link/Strg+V) + Einmaliger Namens-Korrekturantrag + Zuverlässiges 8s Update-System ohne Schleife!"
 }
