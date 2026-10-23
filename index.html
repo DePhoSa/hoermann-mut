@@ -511,7 +511,7 @@
     /* ==========================================================
        GAMES COMMON VIEWS
        ========================================================== */
-    #forklift-view, #mario-view, #buster-view, #nerve-view, #parcours-view {
+    #forklift-view, #slots-view, #mario-view, #buster-view, #nerve-view, #parcours-view {
       display: none;
       width: 100%;
       flex-direction: column;
@@ -519,7 +519,7 @@
       padding: 1.25rem 1.25rem 1.8rem 1.25rem;
     }
 
-    #forkliftCanvas, #marioCanvas, #busterCanvas, #parcoursCanvas {
+    #forkliftCanvas, #slotsCanvas, #marioCanvas, #busterCanvas, #parcoursCanvas {
       background: #001830;
       border: 3px solid var(--hoermann-blue);
       border-radius: 6px;
@@ -528,10 +528,16 @@
       touch-action: none;
     }
 
-    #forkliftCanvas {
+    #forkliftCanvas, #slotsCanvas {
       image-rendering: pixelated;
       image-rendering: crisp-edges;
       background: #1e293b;
+    }
+
+    #slotsCanvas {
+      border: 3px solid var(--hoermann-orange);
+      box-shadow: 0 12px 35px rgba(245, 156, 0, 0.28), 0 0 0 2px #002d62;
+      cursor: pointer;
     }
 
     #busterCanvas {
@@ -1526,6 +1532,19 @@
       <p class="menu-subtitle">Welche Mutprobe soll es heute sein?</p>
 
       <div class="games-grid">
+        <!-- Game NEW 2: Hörmann Mut-Automat (Arcade Slot Machine) -->
+        <div class="game-choice-card" id="choose-slots-btn" style="grid-column: 1 / -1; border-color: #f59c00; background: linear-gradient(135deg, #001f44 0%, #002d62 55%, #1e3a8a 100%); color: #ffffff; flex-direction: row; align-items: center; text-align: left; gap: 1.25rem; flex-wrap: wrap; box-shadow: 0 10px 25px rgba(0, 45, 98, 0.25);">
+          <div class="card-badge-rec" style="background: linear-gradient(90deg, #f59c00, #fbbf24); color: #001830;">🎰 NEU &bull; ARCADE SLOT-MASCHINE (SUCHTFAKTOR 100%)</div>
+          <div style="font-size: 3.1rem; line-height: 1; padding: 0.2rem 0.5rem;">🎰💎</div>
+          <div style="flex: 1; min-width: 240px;">
+            <div class="game-card-title" style="font-size: 1.3rem; color: #fbbf24;">Der Hörmann Mut-Automat: Walzen, Risiko &amp; Mega-Jackpot!</div>
+            <div class="game-card-desc" style="margin-bottom: 0; color: #e2e8f0;">
+              Zieh am goldenen <strong>BiSecur-Hebel</strong> (12 Spins + Freispiele)! Erdrehe <strong>goldene Sektionaltore, Nicos blauen Stapler, Dennis' Meisterhelm, Promatic-Antriebe &amp; das Hörmann-Wappen (WILD)</strong>. Mit taktischem <strong>Walzen-HOLD (🔒)</strong>, dem berüchtigten <strong>Mut-Schubs (Nudge)</strong>, der <strong>5-stufigen Mut-Risikoleiter (Alles oder Nichts!)</strong> und dem <strong>Tor-Fieber Jackpot</strong>!
+            </div>
+          </div>
+          <button class="btn-card-start" style="background:var(--hoermann-orange); color:#ffffff; padding: 0.85rem 1.4rem; font-size: 1rem; white-space: nowrap; box-shadow: 0 4px 14px rgba(245,156,0,0.45);">Hebel ziehen 🎰</button>
+        </div>
+
         <!-- Game NEW: Lagermeister Nico malocht (Isometric Forklift Game) -->
         <div class="game-choice-card" id="choose-forklift-btn" style="grid-column: 1 / -1; border-color: #f59c00; background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%); flex-direction: row; align-items: center; text-align: left; gap: 1.25rem; flex-wrap: wrap;">
           <div class="card-badge-rec" style="background: #f59c00;">🚜 NEU &bull; FÜR DIE LAGERJUNGS (ISO-PIXELART)</div>
@@ -1634,6 +1653,52 @@
 
       <div class="game-instructions" style="max-width:780px; margin-top:0.55rem; font-size:0.8rem;">
         <span><span class="key-badge">W A S D</span> / <span class="key-badge">▲ ◀ ▼ ▶</span> Stapler fahren &bull; <span class="key-badge">Leertaste</span> Palette am LKW aufnehmen / im Ziel-Regal absetzen &bull; <span class="key-badge">E</span> oder <span class="key-badge">Shift</span> Hubmast hoch/runter (für <strong>1/2 belegte Fächer = Ebene 2 Hochstapeln!</strong>) &bull; <span class="key-badge">H</span> Meister-Hupe</span>
+      </div>
+    </section>
+
+    <!-- 3b. SPIEL NEU: HÖRMANN MUT-AUTOMAT (ARCADE SLOT MACHINE) -->
+    <section class="card-content" id="slots-view">
+      <div class="game-ui-header" style="max-width: 780px;">
+        <div class="game-stat">Mut-Spins: <span id="slot-spins-stat">12</span></div>
+        <div class="game-stat">Einsatz-Boost: <span id="slot-bet-stat">1x NORMAL</span></div>
+        <div class="game-stat">Letzter Gewinn: <span id="slot-lastwin-stat">0</span></div>
+        <div class="game-stat">Mut-Konto: <span id="slot-score-stat">0</span></div>
+        <div class="game-actions-bar">
+          <button class="utility-link" id="slot-cashout-btn" style="text-decoration:none; font-weight:800; color:#10b981;" title="Aktuellen Kontostand sofort in die Online-Bestenliste eintragen">💰 Konto in Bestenliste sichern</button>
+          <button class="utility-link" id="slots-leaderboard-btn" style="text-decoration:none; font-weight:700;">🏆 Bestenliste</button>
+          <button class="utility-link" id="exit-slots-btn" style="text-decoration:none; font-weight:800;">✕ Menü</button>
+        </div>
+      </div>
+
+      <canvas id="slotsCanvas" width="780" height="470"></canvas>
+
+      <!-- Quick Action & Arcade Controls Bar -->
+      <div style="display:flex; flex-wrap:wrap; gap:8px; width:100%; max-width:780px; justify-content:space-between; align-items:center; margin-top:0.65rem;">
+        <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+          <button class="btn-card-start" id="slot-hold-0-btn" style="background:#1e293b; border:2px solid #475569; padding:0.45rem 0.75rem; font-size:0.8rem;" title="Walze 1 für den nächsten Dreh festhalten (Taste 1)">🔒 Walze 1 halten (1)</button>
+          <button class="btn-card-start" id="slot-hold-1-btn" style="background:#1e293b; border:2px solid #475569; padding:0.45rem 0.75rem; font-size:0.8rem;" title="Walze 2 für den nächsten Dreh festhalten (Taste 2)">🔒 Walze 2 halten (2)</button>
+          <button class="btn-card-start" id="slot-hold-2-btn" style="background:#1e293b; border:2px solid #475569; padding:0.45rem 0.75rem; font-size:0.8rem;" title="Walze 3 für den nächsten Dreh festhalten (Taste 3)">🔒 Walze 3 halten (3)</button>
+          <button class="btn-card-start" id="slot-bet-toggle-btn" style="background:var(--hoermann-blue); padding:0.45rem 0.85rem; font-size:0.8rem;" title="Einsatz-Modus wechseln: 1x (1 Spin), 2x Mut-Turbo (1 Spin + höheres Risiko) oder 3x Vollgas (kostet 2 Spins für 3x Gewinne!)">⚡ Einsatz: 1x (E)</button>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+          <button class="btn-card-start" id="slot-nudge-btn" style="display:none; background:#7c3aed; padding:0.5rem 0.9rem; font-size:0.84rem; font-weight:900;">
+            👋 Mut-Schubs! (N)
+          </button>
+          <button class="btn-card-start" id="slot-gamble-btn" style="display:none; background:#dc2626; padding:0.5rem 0.95rem; font-size:0.85rem; font-weight:900;">
+            🔥 Risiko-Leiter: DOPPELT (R)
+          </button>
+          <button class="btn-card-start" id="slot-collect-btn" style="display:none; background:#16a34a; padding:0.5rem 0.95rem; font-size:0.85rem; font-weight:900;">
+            💰 Gewinn einsacken (Enter)
+          </button>
+          <button class="btn-card-start" id="slot-spin-btn" style="background:var(--hoermann-orange); padding:0.55rem 1.25rem; font-size:0.95rem; font-weight:900; box-shadow:0 4px 12px rgba(245,156,0,0.4);">
+            🎰 HEBEL ZIEHEN (Leertaste)
+          </button>
+          <button class="utility-link" id="restart-slots-btn" style="margin-left:4px;">Neue Serie ↺</button>
+        </div>
+      </div>
+
+      <div class="game-instructions" style="max-width:780px; margin-top:0.55rem; font-size:0.8rem;">
+        <span><span class="key-badge">Leertaste</span> Hebel ziehen / Walzen einzeln stoppen &bull; <span class="key-badge">1</span> <span class="key-badge">2</span> <span class="key-badge">3</span> Walzen halten (HOLD) &bull; <span class="key-badge">R</span> Mut-Risikoleiter (Gewinn verdoppeln!) &bull; <span class="key-badge">Enter</span> Punkte aufs Konto buchen &bull; <strong>5 Gewinnlinien</strong> (3 waagerecht + 2 diagonal) &bull; 🛡️ <strong>Hörmann-Wappen = WILD-Joker!</strong></span>
       </div>
     </section>
 
@@ -1833,9 +1898,10 @@
         </div>
       </div>
 
-      <!-- Tabs to switch between 5 games -->
+      <!-- Tabs to switch between 6 games -->
       <div class="leaderboard-tabs">
         <button class="lb-tab-btn active" id="tab-forklift-btn">🚜 Lagermeister Nico</button>
+        <button class="lb-tab-btn" id="tab-slots-btn">🎰 Mut-Automat</button>
         <button class="lb-tab-btn" id="tab-mario-btn">🍄 Super Dennis</button>
         <button class="lb-tab-btn" id="tab-buster-btn">🔨 Zweifel-Buster</button>
         <button class="lb-tab-btn" id="tab-nerve-btn">🎲 Die Mut-Probe</button>
@@ -1989,7 +2055,7 @@
   <footer>
     Hörmann Mut-Portal &bull; Sektionaltore &bull; Schwingtore &bull; Türen &bull; Stahlzargen &bull; Lagermeister Nico &amp; Dennis Ressemann Edition
     <div style="margin-top:4px; font-size:0.74rem; color:rgba(255,255,255,0.5);">
-      <span id="app-version-badge">🟢 Version 2.7.0 (Live-Chat mit Smileys &amp; GIF-Suche, Namensantrag &amp; Smart-Update)</span>
+      <span id="app-version-badge">🟢 Version 2.8.0 (NEU: Hörmann Mut-Automat 🎰 + Stabiler Echtzeit-Chat)</span>
     </div>
   </footer>
 
@@ -2212,6 +2278,69 @@
           gain.connect(ctx.destination);
           osc.start(nowTime);
           osc.stop(nowTime + 0.23);
+        } else if (type === 'slotTick') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(740, nowTime);
+          osc.frequency.exponentialRampToValueAtTime(320, nowTime + 0.028);
+          gain.gain.setValueAtTime(0.055, nowTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, nowTime + 0.03);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(nowTime);
+          osc.stop(nowTime + 0.032);
+        } else if (type === 'reelStop') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(190, nowTime);
+          osc.frequency.exponentialRampToValueAtTime(85, nowTime + 0.09);
+          gain.gain.setValueAtTime(0.18, nowTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, nowTime + 0.1);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(nowTime);
+          osc.stop(nowTime + 0.11);
+        } else if (type === 'leverPull') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(320, nowTime);
+          osc.frequency.linearRampToValueAtTime(140, nowTime + 0.12);
+          osc.frequency.linearRampToValueAtTime(480, nowTime + 0.22);
+          gain.gain.setValueAtTime(0.14, nowTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, nowTime + 0.25);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(nowTime);
+          osc.stop(nowTime + 0.26);
+        } else if (type === 'jackpot') {
+          const fanfare = [523.25, 659.25, 783.99, 1046.5, 783.99, 1046.5, 1318.5, 1567.98];
+          fanfare.forEach((f, idx) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = idx % 2 === 0 ? 'square' : 'triangle';
+            osc.frequency.setValueAtTime(f, nowTime + idx * 0.09);
+            gain.gain.setValueAtTime(0.16, nowTime + idx * 0.09);
+            gain.gain.exponentialRampToValueAtTime(0.001, nowTime + idx * 0.09 + 0.22);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(nowTime + idx * 0.09);
+            osc.stop(nowTime + idx * 0.09 + 0.24);
+          });
+        } else if (type === 'ladderStep') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(587.33, nowTime);
+          osc.frequency.setValueAtTime(880, nowTime + 0.07);
+          gain.gain.setValueAtTime(0.15, nowTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, nowTime + 0.18);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(nowTime);
+          osc.stop(nowTime + 0.19);
         }
       } catch (e) {
         console.warn('Audio error:', e);
@@ -2560,6 +2689,7 @@
     const portalView = document.getElementById('portal-view');
     const gamesMenuView = document.getElementById('games-menu-view');
     const forkliftView = document.getElementById('forklift-view');
+    const slotsView = document.getElementById('slots-view');
     const marioView = document.getElementById('mario-view');
     const busterView = document.getElementById('buster-view');
     const nerveView = document.getElementById('nerve-view');
@@ -2569,6 +2699,7 @@
       portalView.style.display = 'none';
       gamesMenuView.style.display = 'none';
       forkliftView.style.display = 'none';
+      if (slotsView) slotsView.style.display = 'none';
       marioView.style.display = 'none';
       busterView.style.display = 'none';
       nerveView.style.display = 'none';
@@ -2576,6 +2707,7 @@
       scoreSubmitDialog.classList.remove('show');
       highscoreCard.classList.remove('show');
       if (typeof stopForkliftGame === 'function') stopForkliftGame();
+      if (typeof stopSlotsGame === 'function') stopSlotsGame();
       stopMarioGame();
       stopBusterGame();
       stopParcoursGame();
@@ -2606,6 +2738,15 @@
       startForkliftGame();
     });
 
+    const chooseSlotsBtn = document.getElementById('choose-slots-btn');
+    if (chooseSlotsBtn) {
+      chooseSlotsBtn.addEventListener('click', () => {
+        hideAllViews();
+        slotsView.style.display = 'flex';
+        startSlotsGame();
+      });
+    }
+
     document.getElementById('choose-mario-btn').addEventListener('click', () => {
       hideAllViews();
       marioView.style.display = 'flex';
@@ -2631,13 +2772,15 @@
     });
 
     document.getElementById('exit-forklift-btn').addEventListener('click', showGamesMenu);
+    const exitSlotsBtn = document.getElementById('exit-slots-btn');
+    if (exitSlotsBtn) exitSlotsBtn.addEventListener('click', showGamesMenu);
     document.getElementById('exit-mario-btn').addEventListener('click', showGamesMenu);
     document.getElementById('exit-buster-btn').addEventListener('click', showGamesMenu);
     document.getElementById('exit-nerve-btn').addEventListener('click', showGamesMenu);
     document.getElementById('exit-parcours-btn').addEventListener('click', showGamesMenu);
 
     /* ==========================================================
-       7. UNIFIED HIGHSCORE & LEADERBOARD SYSTEM (All 5 Games)
+       7. UNIFIED HIGHSCORE & LEADERBOARD SYSTEM (All 6 Games)
        ========================================================== */
     const scoreSubmitDialog = document.getElementById('score-submit-dialog');
     const submitDialogTitle = document.getElementById('submit-dialog-title');
@@ -2652,6 +2795,7 @@
     const lbScoreColHeader = document.getElementById('lb-score-col-header');
 
     const tabForkliftBtn = document.getElementById('tab-forklift-btn');
+    const tabSlotsBtn = document.getElementById('tab-slots-btn');
     const tabMarioBtn = document.getElementById('tab-mario-btn');
     const tabBusterBtn = document.getElementById('tab-buster-btn');
     const tabNerveBtn = document.getElementById('tab-nerve-btn');
@@ -2669,6 +2813,13 @@
         { name: "Stapler-König Kai", score: 1150, date: "Startwert", isNpc: true },
         { name: "Dennis Ressemann", score: 880, date: "Startwert", isNpc: true },
         { name: "Azubi Kevin", score: 450, date: "Startwert", isNpc: true }
+      ],
+      slots: [
+        { name: "Jackpot-Jürgen", score: 1250, date: "Startwert", isNpc: true },
+        { name: "Lagermeister Nico", score: 950, date: "Startwert", isNpc: true },
+        { name: "Dennis Ressemann", score: 720, date: "Startwert", isNpc: true },
+        { name: "Risiko-Rudi", score: 540, date: "Startwert", isNpc: true },
+        { name: "Azubi Kevin", score: 300, date: "Startwert", isNpc: true }
       ],
       mario: [
         { name: "Dennis Ressemann", score: 850, date: "Startwert", isNpc: true },
@@ -2748,7 +2899,7 @@
     const USER_SCORES_MASTER_KEY = 'hoermann_mut_user_scores_v1';
 
     function loadMasterUserScores() {
-      let master = { forklift: [], mario: [], buster: [], nerve: [], parcours: [] };
+      let master = { forklift: [], slots: [], mario: [], buster: [], nerve: [], parcours: [] };
       try {
         const raw = localStorage.getItem(USER_SCORES_MASTER_KEY);
         if (raw) {
@@ -2789,7 +2940,7 @@
 
     // Hilfsfunktion: Führt zwei Master-Objekte konfliktfrei zusammen – pro Name zählt NUR der höchste Wert!
     function mergeScoreMaps(targetMap, incomingMap) {
-      const categories = ['forklift', 'mario', 'buster', 'nerve', 'parcours'];
+      const categories = ['forklift', 'slots', 'mario', 'buster', 'nerve', 'parcours'];
       let changed = false;
 
       categories.forEach(cat => {
@@ -2838,11 +2989,12 @@
     // Einmalige & laufende Migration: Rettet ALLE jemals eingetragenen echten Spielernamen und behält pro Name nur den Bestwert!
     function migrateAndPreserveAllUserScores() {
       const master = loadMasterUserScores();
-      const categories = ['forklift', 'mario', 'buster', 'nerve', 'parcours'];
+      const categories = ['forklift', 'slots', 'mario', 'buster', 'nerve', 'parcours'];
 
       // Bisher erspielte echte Online-Highscores dauerhaft als Basis sichern, damit sie niemals verloren gehen
       const permanentRealPlayerBaseline = {
         forklift: [],
+        slots: [],
         mario: [
           { name: "Sibbelinho", score: 5360, date: "23.10.", isUser: true },
           { name: "Mary", score: 3100, date: "23.10.", isUser: true },
@@ -2911,7 +3063,7 @@
     /* ==========================================================
        7b. GLOBAL ONLINE CLOUD HUB (HIGHSCORES, IDEEN-BOX, LIVE-CHAT & ZWANGSUPDATE)
        ========================================================== */
-    const APP_VERSION           = '2.7.0';
+    const APP_VERSION           = '2.8.0';
     const NTFY_HUB_URL          = 'https://ntfy.sh/hoermann_mut_dephosa_hub_v3';
     const NTFY_LEGACY_URL       = 'https://ntfy.sh/hoermann_mut_dephosa_online_lb_v2';
     const BYTEBIN_POST_URL      = 'https://bytebin.lucko.me/post';
@@ -3021,7 +3173,7 @@
       }
 
       // 1. Prüfen, ob es ein reservierter NPC-Name ist
-      const categories = ['forklift', 'mario', 'buster', 'nerve', 'parcours'];
+      const categories = ['forklift', 'slots', 'mario', 'buster', 'nerve', 'parcours'];
       for (const cat of categories) {
         const npcs = defaultLeaderboards[cat] || [];
         if (npcs.some(n => n.name.trim().toLowerCase() === key)) {
@@ -3134,8 +3286,8 @@
       const newKey = newClean.toLowerCase();
       let changed = false;
 
-      // 1. In allen 5 Bestenlisten alten Namen auf neuen Namen umschreiben
-      ['forklift', 'mario', 'buster', 'nerve', 'parcours'].forEach(cat => {
+      // 1. In allen 6 Bestenlisten alten Namen auf neuen Namen umschreiben
+      ['forklift', 'slots', 'mario', 'buster', 'nerve', 'parcours'].forEach(cat => {
         if (!Array.isArray(localMaster[cat])) return;
         let catTouched = false;
         localMaster[cat].forEach(entry => {
@@ -3181,7 +3333,7 @@
 
       // 5. Meilensteine übertragen
       if (milestones && typeof milestones === 'object') {
-        ['forklift', 'mario', 'buster', 'nerve', 'parcours'].forEach(cat => {
+        ['forklift', 'slots', 'mario', 'buster', 'nerve', 'parcours'].forEach(cat => {
           const oldMKey = `${cat}:${oldKey}`;
           const newMKey = `${cat}:${newKey}`;
           if (milestones[oldMKey]) {
@@ -3222,37 +3374,98 @@
     let isAdminUnlocked = sessionStorage.getItem('hoermann_admin_unlocked') === '1';
     let activeAdminTab  = 'chat';
 
+    // In-Memory-Sicherung für den Live-Chat (Garantiert, dass neu geschriebene Nachrichten NIEMALS verschwinden, selbst wenn localStorage durch ein großes GIF voll sein sollte!)
+    let inMemoryChatCache = null;
+
+    function deduplicateAndSortChatMessages(messages, deletedIds, clearedBefore) {
+      const delSet = new Set(Array.isArray(deletedIds) ? deletedIds : []);
+      const clearTs = Number(clearedBefore) || 0;
+      const byId = new Map();
+      (Array.isArray(messages) ? messages : []).forEach(m => {
+        if (!m || !m.id || (!m.text && !m.gifUrl)) return;
+        if (delSet.has(m.id)) return;
+        const msgTs = Number(m.ts) || 0;
+        if (clearTs > 0 && msgTs > 0 && msgTs < clearTs) return;
+        const prev = byId.get(m.id);
+        byId.set(m.id, {
+          id: String(m.id),
+          sender: String(m.sender || (prev && prev.sender) || 'Spieler').slice(0, 24),
+          text: String(m.text !== undefined ? m.text : (prev ? prev.text : '')).slice(0, 300),
+          gifUrl: m.gifUrl ? String(m.gifUrl).slice(0, 120000) : (prev && prev.gifUrl ? prev.gifUrl : ''),
+          time: String(m.time || (prev && prev.time) || 'Heute'),
+          ts: msgTs || (prev && prev.ts) || 1729660000000
+        });
+      });
+      return Array.from(byId.values())
+        .sort((a, b) => (a.ts || 0) - (b.ts || 0))
+        .slice(-80);
+    }
+
     function loadChatState() {
+      let stored = null;
       try {
         const raw = localStorage.getItem(CHAT_STORAGE_KEY);
         if (raw) {
-          const parsed = JSON.parse(raw);
-          return {
-            messages: Array.isArray(parsed.messages) ? parsed.messages : [],
-            deletedIds: Array.isArray(parsed.deletedIds) ? parsed.deletedIds : [],
-            clearedBefore: Number(parsed.clearedBefore) || 0
-          };
+          stored = JSON.parse(raw);
         }
       } catch (e) {}
-      return {
-        messages: [
-          {
-            id: 'welcome_msg_1',
-            sender: 'Lagermeister Nico',
-            text: 'Willkommen im Hörmann Live-Chat! Hier könnt ihr euch ungefiltert austauschen & eure Rekorde feiern. 🚜🔥',
-            time: 'Live',
-            ts: 1729660000000
-          }
-        ],
-        deletedIds: [],
-        clearedBefore: 0
+
+      const baseMessages = [
+        {
+          id: 'welcome_msg_1',
+          sender: 'Lagermeister Nico',
+          text: 'Willkommen im Hörmann Live-Chat! Hier könnt ihr euch ungefiltert austauschen & eure Rekorde feiern. 🚜🔥',
+          time: 'Live',
+          ts: 1729660000000
+        }
+      ];
+
+      const mergedDeleted = Array.from(new Set([
+        ...(stored && Array.isArray(stored.deletedIds) ? stored.deletedIds : []),
+        ...(inMemoryChatCache && Array.isArray(inMemoryChatCache.deletedIds) ? inMemoryChatCache.deletedIds : [])
+      ]));
+      const mergedClearedBefore = Math.max(
+        Number(stored && stored.clearedBefore) || 0,
+        Number(inMemoryChatCache && inMemoryChatCache.clearedBefore) || 0
+      );
+
+      const rawList = [
+        ...(stored && Array.isArray(stored.messages) ? stored.messages : baseMessages),
+        ...(inMemoryChatCache && Array.isArray(inMemoryChatCache.messages) ? inMemoryChatCache.messages : [])
+      ];
+
+      const finalState = {
+        messages: deduplicateAndSortChatMessages(rawList, mergedDeleted, mergedClearedBefore),
+        deletedIds: mergedDeleted,
+        clearedBefore: mergedClearedBefore
       };
+      inMemoryChatCache = finalState;
+      return finalState;
     }
 
     function saveChatState(state) {
+      if (!state || typeof state !== 'object') return;
+      const cleanState = {
+        messages: deduplicateAndSortChatMessages(state.messages, state.deletedIds, state.clearedBefore),
+        deletedIds: Array.isArray(state.deletedIds) ? state.deletedIds.slice(-150) : [],
+        clearedBefore: Number(state.clearedBefore) || 0
+      };
+      inMemoryChatCache = cleanState;
       try {
-        localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(state));
-      } catch (e) {}
+        localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(cleanState));
+      } catch (e) {
+        // Falls localStorage wegen eines großen Base64-Bildes voll ist, ältere Base64-Bilder für localStorage kürzen, damit Textnachrichten immer Platz haben
+        try {
+          const compact = {
+            ...cleanState,
+            messages: cleanState.messages.slice(-40).map((m, idx, arr) => ({
+              ...m,
+              gifUrl: (m.gifUrl && m.gifUrl.startsWith('data:') && idx < arr.length - 5) ? '' : m.gifUrl
+            }))
+          };
+          localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(compact));
+        } catch (e2) {}
+      }
     }
 
     function loadIdeasState() {
@@ -3464,7 +3677,7 @@
 
       if (data.scores) {
         if (mergeScoreMaps(localMaster, data.scores)) changed = true;
-      } else if (data.forklift || data.mario || data.buster || data.nerve || data.parcours) {
+      } else if (data.forklift || data.slots || data.mario || data.buster || data.nerve || data.parcours) {
         if (mergeScoreMaps(localMaster, data)) changed = true;
       }
 
@@ -3483,30 +3696,16 @@
       }
 
       if (Array.isArray(data.chat)) {
-        const existingIds = new Set(chatState.messages.map(m => m.id));
-        data.chat.forEach(msg => {
-          if (!msg || !msg.id || (!msg.text && !msg.gifUrl)) return;
-          if (chatState.deletedIds.includes(msg.id)) return;
-          if (msg.ts && msg.ts < chatState.clearedBefore) return;
-          if (!existingIds.has(msg.id)) {
-            chatState.messages.push({
-              id: String(msg.id),
-              sender: String(msg.sender || 'Spieler').slice(0, 24),
-              text: String(msg.text || '').slice(0, 300),
-              gifUrl: msg.gifUrl ? String(msg.gifUrl).slice(0, 120000) : '',
-              time: String(msg.time || 'Heute'),
-              ts: Number(msg.ts) || Date.now()
-            });
-            existingIds.add(msg.id);
-            changed = true;
-          }
-        });
+        const beforeSignature = chatState.messages.map(m => `${m.id}:${m.text || ''}:${m.gifUrl || ''}`).join('|');
+        const combinedChat = [...chatState.messages, ...data.chat];
+        chatState.messages = deduplicateAndSortChatMessages(combinedChat, chatState.deletedIds, chatState.clearedBefore);
+        const afterSignature = chatState.messages.map(m => `${m.id}:${m.text || ''}:${m.gifUrl || ''}`).join('|');
+        if (beforeSignature !== afterSignature) {
+          changed = true;
+        }
+      } else {
+        chatState.messages = deduplicateAndSortChatMessages(chatState.messages, chatState.deletedIds, chatState.clearedBefore);
       }
-
-      chatState.messages = chatState.messages
-        .filter(m => !chatState.deletedIds.includes(m.id) && (!m.ts || m.ts >= chatState.clearedBefore))
-        .sort((a, b) => (a.ts || 0) - (b.ts || 0))
-        .slice(-80);
 
       if (Array.isArray(data.deletedIdeaIds)) {
         data.deletedIdeaIds.forEach(id => {
@@ -3656,6 +3855,7 @@
         version: APP_VERSION,
         scores: {
           forklift: deduplicateKeepBestPerName(localMaster.forklift || []),
+          slots: deduplicateKeepBestPerName(localMaster.slots || []),
           mario: deduplicateKeepBestPerName(localMaster.mario || []),
           buster: deduplicateKeepBestPerName(localMaster.buster || []),
           nerve: deduplicateKeepBestPerName(localMaster.nerve || []),
@@ -3704,138 +3904,168 @@
       } catch (e) {}
     }
 
+    // Verhindert überlappende Cloud-Sync-Läufe, damit niemals ein alter Sync-Stand eine gerade geschriebene Chat-Nachricht überschreibt!
+    let isSyncOnlineInProgress = false;
+
     // Lädt alle Online-Highscores, Chat-Nachrichten & Ideen vom Cloud-Hub
     async function syncOnlineLeaderboards(pushIfLocalHasMore = false) {
+      if (isSyncOnlineInProgress) return;
+      isSyncOnlineInProgress = true;
       setCloudBadgeState('syncing');
-      const localMaster = loadMasterUserScores();
-      const chatState   = loadChatState();
-      const ideasState  = loadIdeasState();
-      const milestones  = loadPlayerMilestones();
-      let cloudDataLoaded = false;
-      let latestDiscoveredKey = currentSnapshotKey;
 
-      // 1. Echtzeit-Event-Historie aus ntfy Hub abrufen
       try {
-        const resN = await fetch(`${NTFY_HUB_URL}/json?poll=1&since=48h`, { cache: 'no-store' });
-        if (resN.ok) {
-          const text = await resN.text();
-          const lines = text.split('\n').filter(Boolean);
-          lines.forEach(line => {
-            try {
-              const evt = JSON.parse(line);
-              if (evt && evt.event === 'message' && evt.message) {
-                const payload = JSON.parse(evt.message);
-                if (!payload) return;
-                if (payload.snapshotKey) {
-                  latestDiscoveredKey = payload.snapshotKey;
-                }
-                if (payload.type === 'FORCE_UPDATE' && payload.version && isNewerSemver(payload.version, APP_VERSION)) {
-                  triggerForcedUpdateModal(payload.version, payload.notes);
-                } else if (payload.type === 'SCORE' && payload.cat && payload.name && payload.score) {
-                  mergeScoreMaps(localMaster, { [payload.cat]: [payload] });
-                  if (payload.deviceToken && payload.name) {
-                    applyIncomingCloudData({ nameOwners: { [String(payload.name).trim().toLowerCase()]: payload.deviceToken } }, localMaster, chatState, ideasState, milestones);
-                  }
-                  cloudDataLoaded = true;
-                } else if (payload.type === 'CHAT_MSG' && payload.msg) {
-                  applyIncomingCloudData({ chat: [payload.msg] }, localMaster, chatState, ideasState, milestones);
-                  cloudDataLoaded = true;
-                } else if (payload.type === 'CHAT_DELETE' && payload.msgId) {
-                  applyIncomingCloudData({ deletedChatIds: [payload.msgId] }, localMaster, chatState, ideasState, milestones);
-                  cloudDataLoaded = true;
-                } else if (payload.type === 'CHAT_CLEAR' && payload.clearedBefore) {
-                  applyIncomingCloudData({ clearedBefore: payload.clearedBefore }, localMaster, chatState, ideasState, milestones);
-                  cloudDataLoaded = true;
-                } else if (payload.type === 'IDEA_ADD' && payload.idea) {
-                  applyIncomingCloudData({ ideas: [payload.idea] }, localMaster, chatState, ideasState, milestones);
-                  cloudDataLoaded = true;
-                } else if (payload.type === 'IDEA_DELETE' && payload.ideaId) {
-                  applyIncomingCloudData({ deletedIdeaIds: [payload.ideaId] }, localMaster, chatState, ideasState, milestones);
-                  cloudDataLoaded = true;
-                } else if (payload.type === 'RENAME_REQ' && payload.req) {
-                  applyIncomingCloudData({ renameRequests: [payload.req] }, localMaster, chatState, ideasState, milestones);
-                  cloudDataLoaded = true;
-                } else if (payload.type === 'RENAME_APPROVE' && payload.ren) {
-                  applyIncomingCloudData({ approvedRenames: [payload.ren] }, localMaster, chatState, ideasState, milestones);
-                  cloudDataLoaded = true;
-                } else if (payload.type === 'RENAME_REJECT' && payload.reqId) {
-                  applyIncomingCloudData({ rejectedRenameIds: [payload.reqId] }, localMaster, chatState, ideasState, milestones);
-                  cloudDataLoaded = true;
-                } else if (payload.type === 'ADMIN_HASH' && payload.customAdminHash) {
-                  applyIncomingCloudData({ customAdminHash: payload.customAdminHash }, localMaster, chatState, ideasState, milestones);
-                }
-              }
-            } catch (err) {}
-          });
-        }
-      } catch (e) {}
+        // Lokale Arbeitskopien für den Netzwerk-Abruf (wird am Ende nochmals mit den brandaktuellen lokalen Nachrichten zusammengeführt!)
+        const localMaster = loadMasterUserScores();
+        const chatState   = loadChatState();
+        const ideasState  = loadIdeasState();
+        const milestones  = loadPlayerMilestones();
+        let cloudDataLoaded = false;
+        let latestDiscoveredKey = currentSnapshotKey;
 
-      // 2. Auch Legacy ntfy Stream abfragen
-      try {
-        const resLeg = await fetch(`${NTFY_LEGACY_URL}/json?poll=1&since=48h`, { cache: 'no-store' });
-        if (resLeg.ok) {
-          const textL = await resLeg.text();
-          textL.split('\n').filter(Boolean).forEach(line => {
-            try {
-              const evt = JSON.parse(line);
-              if (evt && evt.event === 'message' && evt.message) {
-                const p = JSON.parse(evt.message);
-                if (p && p.cat && p.name && p.score) {
-                  mergeScoreMaps(localMaster, { [p.cat]: [p] });
-                  cloudDataLoaded = true;
-                }
-              }
-            } catch (err) {}
-          });
-        }
-      } catch (e) {}
-
-      // 3. Aktuellen Komplett-Snapshot von Bytebin laden
-      if (latestDiscoveredKey) {
+        // 1. Echtzeit-Event-Historie aus ntfy Hub abrufen
         try {
-          const resSnap = await fetch(`${BYTEBIN_BASE_URL}${latestDiscoveredKey}`, { cache: 'no-store' });
-          if (resSnap.ok) {
-            const snapData = await resSnap.json();
-            applyIncomingCloudData(snapData, localMaster, chatState, ideasState, milestones);
-            currentSnapshotKey = latestDiscoveredKey;
-            localStorage.setItem('hoermann_cloud_snapshot_key_v3', latestDiscoveredKey);
-            cloudDataLoaded = true;
+          const resN = await fetch(`${NTFY_HUB_URL}/json?poll=1&since=48h`, { cache: 'no-store' });
+          if (resN.ok) {
+            const text = await resN.text();
+            const lines = text.split('\n').filter(Boolean);
+            lines.forEach(line => {
+              try {
+                const evt = JSON.parse(line);
+                if (evt && evt.event === 'message' && evt.message) {
+                  const payload = JSON.parse(evt.message);
+                  if (!payload) return;
+                  if (payload.snapshotKey) {
+                    latestDiscoveredKey = payload.snapshotKey;
+                  }
+                  if (payload.type === 'FORCE_UPDATE' && payload.version && isNewerSemver(payload.version, APP_VERSION)) {
+                    triggerForcedUpdateModal(payload.version, payload.notes);
+                  } else if (payload.type === 'SCORE' && payload.cat && payload.name && payload.score) {
+                    mergeScoreMaps(localMaster, { [payload.cat]: [payload] });
+                    if (payload.deviceToken && payload.name) {
+                      applyIncomingCloudData({ nameOwners: { [String(payload.name).trim().toLowerCase()]: payload.deviceToken } }, localMaster, chatState, ideasState, milestones);
+                    }
+                    cloudDataLoaded = true;
+                  } else if (payload.type === 'CHAT_MSG' && payload.msg) {
+                    applyIncomingCloudData({ chat: [payload.msg] }, localMaster, chatState, ideasState, milestones);
+                    cloudDataLoaded = true;
+                  } else if (payload.type === 'CHAT_DELETE' && payload.msgId) {
+                    applyIncomingCloudData({ deletedChatIds: [payload.msgId] }, localMaster, chatState, ideasState, milestones);
+                    cloudDataLoaded = true;
+                  } else if (payload.type === 'CHAT_CLEAR' && payload.clearedBefore) {
+                    applyIncomingCloudData({ clearedBefore: payload.clearedBefore }, localMaster, chatState, ideasState, milestones);
+                    cloudDataLoaded = true;
+                  } else if (payload.type === 'IDEA_ADD' && payload.idea) {
+                    applyIncomingCloudData({ ideas: [payload.idea] }, localMaster, chatState, ideasState, milestones);
+                    cloudDataLoaded = true;
+                  } else if (payload.type === 'IDEA_DELETE' && payload.ideaId) {
+                    applyIncomingCloudData({ deletedIdeaIds: [payload.ideaId] }, localMaster, chatState, ideasState, milestones);
+                    cloudDataLoaded = true;
+                  } else if (payload.type === 'RENAME_REQ' && (payload.renameReq || payload.req)) {
+                    applyIncomingCloudData({ renameRequests: [payload.renameReq || payload.req] }, localMaster, chatState, ideasState, milestones);
+                    cloudDataLoaded = true;
+                  } else if (payload.type === 'RENAME_APPROVE' && (payload.approvedRename || payload.ren)) {
+                    applyIncomingCloudData({ approvedRenames: [payload.approvedRename || payload.ren] }, localMaster, chatState, ideasState, milestones);
+                    cloudDataLoaded = true;
+                  } else if (payload.type === 'RENAME_REJECT' && payload.reqId) {
+                    applyIncomingCloudData({ rejectedRenameIds: [payload.reqId] }, localMaster, chatState, ideasState, milestones);
+                    cloudDataLoaded = true;
+                  } else if (payload.type === 'ADMIN_HASH' && payload.customAdminHash) {
+                    applyIncomingCloudData({ customAdminHash: payload.customAdminHash }, localMaster, chatState, ideasState, milestones);
+                  }
+                }
+              } catch (err) {}
+            });
           }
         } catch (e) {}
-      }
 
-      // Alles lokal persistieren
-      saveMasterUserScores(localMaster);
-      saveChatState(chatState);
-      saveIdeasState(ideasState);
-      savePlayerMilestones(milestones);
-
-      ['forklift', 'mario', 'buster', 'nerve', 'parcours'].forEach(cat => {
-        const combined = deduplicateKeepBestPerName([...(localMaster[cat] || []), ...(defaultLeaderboards[cat] || [])]);
+        // 2. Auch Legacy ntfy Stream abfragen
         try {
-          localStorage.setItem(`hoermann_lb_${cat}`, JSON.stringify(combined));
+          const resLeg = await fetch(`${NTFY_LEGACY_URL}/json?poll=1&since=48h`, { cache: 'no-store' });
+          if (resLeg.ok) {
+            const textL = await resLeg.text();
+            textL.split('\n').filter(Boolean).forEach(line => {
+              try {
+                const evt = JSON.parse(line);
+                if (evt && evt.event === 'message' && evt.message) {
+                  const p = JSON.parse(evt.message);
+                  if (p && p.cat && p.name && p.score) {
+                    mergeScoreMaps(localMaster, { [p.cat]: [p] });
+                    cloudDataLoaded = true;
+                  }
+                }
+              } catch (err) {}
+            });
+          }
         } catch (e) {}
-      });
 
-      if (pushIfLocalHasMore) {
-        await publishCloudSnapshot();
-      }
+        // 3. Aktuellen Komplett-Snapshot von Bytebin laden
+        if (latestDiscoveredKey) {
+          try {
+            const resSnap = await fetch(`${BYTEBIN_BASE_URL}${latestDiscoveredKey}`, { cache: 'no-store' });
+            if (resSnap.ok) {
+              const snapData = await resSnap.json();
+              applyIncomingCloudData(snapData, localMaster, chatState, ideasState, milestones);
+              currentSnapshotKey = latestDiscoveredKey;
+              localStorage.setItem('hoermann_cloud_snapshot_key_v3', latestDiscoveredKey);
+              cloudDataLoaded = true;
+            }
+          } catch (e) {}
+        }
 
-      if (typeof renderChatMessages === 'function') renderChatMessages();
-      if (typeof renderAdminIdeasList === 'function') renderAdminIdeasList();
-      if (typeof renderAdminRenamesList === 'function') renderAdminRenamesList();
+        // WICHTIG GEGEN RACE-CONDITIONS: Falls der Spieler WÄHREND des Netzwerk-Abrufs eine neue Chat-Nachricht oder einen Highscore abgeschickt hat,
+        // holen wir uns jetzt den allerneuesten lokalen Stand und führen ihn zusammen, damit NIEMALS eine gerade geschriebene Nachricht verschwindet!
+        const freshestMaster = loadMasterUserScores();
+        mergeScoreMaps(localMaster, freshestMaster);
 
-      if (highscoreCard.classList.contains('show')) {
-        switchLeaderboardTab(activeGameCategory, playerNameInput.value.trim());
-      }
-      if (scoreSubmitDialog.classList.contains('show')) {
-        evaluatePersonalHighscoreCheck();
-      }
-      if (typeof updateParcoursHighscoreDisplay === 'function') {
-        updateParcoursHighscoreDisplay();
-      }
+        const freshestChat = loadChatState();
+        const combinedDeletedChat = Array.from(new Set([...chatState.deletedIds, ...freshestChat.deletedIds]));
+        const combinedClearedBefore = Math.max(chatState.clearedBefore || 0, freshestChat.clearedBefore || 0);
+        chatState.deletedIds = combinedDeletedChat;
+        chatState.clearedBefore = combinedClearedBefore;
+        chatState.messages = deduplicateAndSortChatMessages(
+          [...chatState.messages, ...freshestChat.messages],
+          combinedDeletedChat,
+          combinedClearedBefore
+        );
 
-      setCloudBadgeState(cloudDataLoaded ? 'online' : 'offline');
+        const freshestIdeas = loadIdeasState();
+        applyIncomingCloudData({ ideas: freshestIdeas.ideas, deletedIdeaIds: freshestIdeas.deletedIdeaIds }, localMaster, chatState, ideasState, milestones);
+
+        // Alles lokal persistieren
+        saveMasterUserScores(localMaster);
+        saveChatState(chatState);
+        saveIdeasState(ideasState);
+        savePlayerMilestones(milestones);
+
+        ['forklift', 'slots', 'mario', 'buster', 'nerve', 'parcours'].forEach(cat => {
+          const combined = deduplicateKeepBestPerName([...(localMaster[cat] || []), ...(defaultLeaderboards[cat] || [])]);
+          try {
+            localStorage.setItem(`hoermann_lb_${cat}`, JSON.stringify(combined));
+          } catch (e) {}
+        });
+
+        if (pushIfLocalHasMore) {
+          await publishCloudSnapshot();
+        }
+
+        if (typeof renderChatMessages === 'function') renderChatMessages();
+        if (typeof renderAdminIdeasList === 'function') renderAdminIdeasList();
+        if (typeof renderAdminRenamesList === 'function') renderAdminRenamesList();
+
+        if (highscoreCard.classList.contains('show')) {
+          switchLeaderboardTab(activeGameCategory, playerNameInput.value.trim());
+        }
+        if (scoreSubmitDialog.classList.contains('show')) {
+          evaluatePersonalHighscoreCheck();
+        }
+        if (typeof updateParcoursHighscoreDisplay === 'function') {
+          updateParcoursHighscoreDisplay();
+        }
+
+        setCloudBadgeState(cloudDataLoaded ? 'online' : 'offline');
+      } finally {
+        isSyncOnlineInProgress = false;
+      }
     }
 
     async function broadcastSingleScoreLive(category, entryObj) {
@@ -3920,15 +4150,16 @@
                 saveIdeasState(ideasState);
                 if (typeof renderAdminIdeasList === 'function') renderAdminIdeasList();
               }
-            } else if (item.type === 'RENAME_REQ' && item.req) {
-              if (applyIncomingCloudData({ renameRequests: [item.req] }, localMaster, chatState, ideasState, milestones)) {
+            } else if (item.type === 'RENAME_REQ' && (item.renameReq || item.req)) {
+              if (applyIncomingCloudData({ renameRequests: [item.renameReq || item.req] }, localMaster, chatState, ideasState, milestones)) {
                 if (typeof renderAdminRenamesList === 'function') renderAdminRenamesList();
                 if (isAdminUnlocked) {
-                  showToast(`✏️ Neuer Namensantrag: „${item.req.oldName}“ ➔ „${item.req.newName}“`);
+                  const r = item.renameReq || item.req;
+                  showToast(`✏️ Neuer Namensantrag: „${r.oldName}“ ➔ „${r.newName}“`);
                 }
               }
-            } else if (item.type === 'RENAME_APPROVE' && item.ren) {
-              if (applyIncomingCloudData({ approvedRenames: [item.ren] }, localMaster, chatState, ideasState, milestones)) {
+            } else if (item.type === 'RENAME_APPROVE' && (item.approvedRename || item.ren)) {
+              if (applyIncomingCloudData({ approvedRenames: [item.approvedRename || item.ren] }, localMaster, chatState, ideasState, milestones)) {
                 saveMasterUserScores(localMaster);
                 saveChatState(chatState);
                 saveIdeasState(ideasState);
@@ -4093,6 +4324,7 @@
     function switchLeaderboardTab(category, highlightName = "") {
       activeGameCategory = category;
       tabForkliftBtn.classList.toggle('active', category === 'forklift');
+      if (tabSlotsBtn) tabSlotsBtn.classList.toggle('active', category === 'slots');
       tabMarioBtn.classList.toggle('active', category === 'mario');
       tabBusterBtn.classList.toggle('active', category === 'buster');
       tabNerveBtn.classList.toggle('active', category === 'nerve');
@@ -4100,12 +4332,13 @@
 
       const titles = {
         forklift: "🏆 Bestenliste: 🚜 Lagermeister Nico malocht (Max: 10.000 Pkt = 100%)",
+        slots: "🏆 Bestenliste: 🎰 Der Hörmann Mut-Automat (Walzen & Risiko-Jackpot)",
         mario: "🏆 Bestenliste: 🍄 Super Dennis (Mut-Welt)",
         buster: "🏆 Bestenliste: 🔨 Zweifel-Buster",
         nerve: "🏆 Bestenliste: 🎲 Die Mut-Probe",
         parcours: "🏆 Bestenliste: 🕹️ Tor-Parcours"
       };
-      globalLbTitle.textContent = titles[category];
+      globalLbTitle.textContent = titles[category] || titles.forklift;
       lbScoreColHeader.textContent = (category === 'parcours') ? 'Tore' : 'Punkte';
 
       const list = getGameLeaderboard(category);
@@ -4152,6 +4385,7 @@
     }
 
     tabForkliftBtn.addEventListener('click', () => switchLeaderboardTab('forklift'));
+    if (tabSlotsBtn) tabSlotsBtn.addEventListener('click', () => switchLeaderboardTab('slots'));
     tabMarioBtn.addEventListener('click', () => switchLeaderboardTab('mario'));
     tabBusterBtn.addEventListener('click', () => switchLeaderboardTab('buster'));
     tabNerveBtn.addEventListener('click', () => switchLeaderboardTab('nerve'));
@@ -4172,6 +4406,8 @@
       openGlobalLeaderboard(lastPlayedCat);
     });
     document.getElementById('forklift-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('forklift'));
+    const slotsLbBtn = document.getElementById('slots-leaderboard-btn');
+    if (slotsLbBtn) slotsLbBtn.addEventListener('click', () => openGlobalLeaderboard('slots'));
     document.getElementById('mario-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('mario'));
     document.getElementById('buster-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('buster'));
     document.getElementById('nerve-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('nerve'));
@@ -4934,7 +5170,7 @@
       saveIdeasState(ideasState);
       savePlayerMilestones(milestones);
 
-      ['forklift', 'mario', 'buster', 'nerve', 'parcours'].forEach(cat => {
+      ['forklift', 'slots', 'mario', 'buster', 'nerve', 'parcours'].forEach(cat => {
         try {
           localStorage.setItem(`hoermann_lb_${cat}`, JSON.stringify(getGameLeaderboard(cat)));
         } catch (e) {}
@@ -8065,6 +8301,1294 @@
       }
 
       flCtx.restore();
+    }
+
+    /* ==========================================================
+       13. SPIEL NEU: DER HÖRMANN MUT-AUTOMAT (ARCADE SLOT MACHINE)
+       ========================================================== */
+    const slotsCanvas = document.getElementById('slotsCanvas');
+    const sCtx = slotsCanvas ? slotsCanvas.getContext('2d') : null;
+    const slotSpinsStat = document.getElementById('slot-spins-stat');
+    const slotBetStat = document.getElementById('slot-bet-stat');
+    const slotLastWinStat = document.getElementById('slot-lastwin-stat');
+    const slotScoreStat = document.getElementById('slot-score-stat');
+
+    const slotSpinBtn = document.getElementById('slot-spin-btn');
+    const slotCollectBtn = document.getElementById('slot-collect-btn');
+    const slotGambleBtn = document.getElementById('slot-gamble-btn');
+    const slotNudgeBtn = document.getElementById('slot-nudge-btn');
+    const slotBetToggleBtn = document.getElementById('slot-bet-toggle-btn');
+    const slotCashoutBtn = document.getElementById('slot-cashout-btn');
+    const restartSlotsBtn = document.getElementById('restart-slots-btn');
+    const slotHoldBtns = [
+      document.getElementById('slot-hold-0-btn'),
+      document.getElementById('slot-hold-1-btn'),
+      document.getElementById('slot-hold-2-btn')
+    ];
+
+    // 7 detailverliebte Hörmann-Symbole mit eigenem Pixel-/Arcade-Renderer & Gewichtungen
+    const SLOT_SYMBOLS = [
+      {
+        id: 'WILD',
+        name: 'Hörmann Gold-Wappen (WILD)',
+        short: 'WILD-JOKER',
+        pay3: 1500,
+        pay2: 180,
+        weight: 2,
+        color: '#fbbf24',
+        bg: '#451a03',
+        isWild: true
+      },
+      {
+        id: 'GATE',
+        name: 'Goldenes Sektionaltor',
+        short: 'SEKTIONALTOR',
+        pay3: 800,
+        pay2: 95,
+        weight: 3,
+        color: '#f59c00',
+        bg: '#1e3a8a'
+      },
+      {
+        id: 'FORKLIFT',
+        name: 'Lagermeister Nicos Stapler',
+        short: 'BLAUER STAPLER',
+        pay3: 500,
+        pay2: 65,
+        weight: 4,
+        color: '#38bdf8',
+        bg: '#0f172a'
+      },
+      {
+        id: 'DENNIS',
+        name: 'Super Dennis Meister-Helm',
+        short: 'SUPER DENNIS',
+        pay3: 350,
+        pay2: 45,
+        weight: 5,
+        color: '#34d399',
+        bg: '#064e3b'
+      },
+      {
+        id: 'MOTOR',
+        name: 'SupraMatic Torantrieb',
+        short: 'TORANTRIEB',
+        pay3: 240,
+        pay2: 30,
+        weight: 6,
+        color: '#a78bfa',
+        bg: '#2e1065'
+      },
+      {
+        id: 'DOOR',
+        name: 'Feuerschutz-Stahltür',
+        short: 'STAHLTÜR',
+        pay3: 160,
+        pay2: 20,
+        weight: 7,
+        color: '#fb7185',
+        bg: '#4c0519'
+      },
+      {
+        id: 'COFFEE',
+        name: 'Lager-Kaffee & Mut-Funk',
+        short: 'MUT-KAFFEE',
+        pay3: 100,
+        pay2: 15,
+        weight: 8,
+        color: '#fcd34d',
+        bg: '#1e293b'
+      }
+    ];
+
+    // 5 Gewinnlinien über das 3x3 Walzenfenster (Oben, Mitte, Unten + 2 Diagonalen)
+    const SLOT_PAYLINES = [
+      { id: 0, name: 'MITTE-LINIE', rows: [1, 1, 1], color: '#f59c00' },
+      { id: 1, name: 'OBERE LINIE', rows: [0, 0, 0], color: '#38bdf8' },
+      { id: 2, name: 'UNTERE LINIE', rows: [2, 2, 2], color: '#10b981' },
+      { id: 3, name: 'DIAGONALE ↘', rows: [0, 1, 2], color: '#ec4899' },
+      { id: 4, name: 'DIAGONALE ↗', rows: [2, 1, 0], color: '#a855f7' }
+    ];
+
+    // Gewichteter Walzenstreifen (35 Felder pro Walze für flüssiges Rollen)
+    const SLOT_REEL_STRIP = [];
+    SLOT_SYMBOLS.forEach((sym, symIdx) => {
+      for (let w = 0; w < sym.weight; w++) {
+        SLOT_REEL_STRIP.push(symIdx);
+      }
+    });
+
+    let slotAnimId = null;
+    let slotState = {
+      active: false,
+      spinsLeft: 12,
+      totalSpinsPlayed: 0,
+      bankScore: 0,
+      pendingWin: 0,
+      lastWin: 0,
+      betMultiplier: 1, // 1x (1 Spin), 2x Mut-Turbo (1 Spin + höherer Bonus), 3x Vollgas (2 Spins Einsatz = 3x Gewinn!)
+      feverCharge: 0,   // 0..5 -> Bei 5 startet der TOR-FIEBER OVERDRIVE (3 Gratis-Spins mit 2x Gewinn & extra Wilds!)
+      feverSpinsLeft: 0,
+      holds: [false, false, false],
+      holdAllowedThisTurn: false,
+      nudgeAvailable: false,
+      nudgeTargetReel: -1,
+      nudgeDirection: 1,
+      gambleStep: 0,
+      ladderCursor: 0,
+      ladderTimer: 0,
+      leverPullProgress: 0,
+      bulbPhase: 0,
+      shakeTimer: 0,
+      bannerText: 'ZIEH AM BISECUR-HEBEL FÜR DEINEN MUT-DREH!',
+      bannerColor: '#fbbf24',
+      winningLines: [],
+      floatingCoins: [],
+      reels: [
+        { pos: 0, speed: 0, spinning: false, stopDelay: 0, bounce: 0, symbols: [1, 0, 2] },
+        { pos: 4, speed: 0, spinning: false, stopDelay: 0, bounce: 0, symbols: [2, 1, 3] },
+        { pos: 8, speed: 0, spinning: false, stopDelay: 0, bounce: 0, symbols: [3, 2, 4] }
+      ],
+      roundFinished: false
+    };
+
+    function pickRandomSymbolIndex(isFeverMode = false) {
+      // Im Tor-Fieber Overdrive erscheinen doppelt so viele goldene WILD-Wappen & Sektionaltore!
+      if (isFeverMode && Math.random() < 0.24) {
+        return Math.random() < 0.5 ? 0 : 1;
+      }
+      return SLOT_REEL_STRIP[Math.floor(Math.random() * SLOT_REEL_STRIP.length)];
+    }
+
+    function initSlotsGame() {
+      slotState.active = true;
+      slotState.spinsLeft = 12;
+      slotState.totalSpinsPlayed = 0;
+      slotState.bankScore = 0;
+      slotState.pendingWin = 0;
+      slotState.lastWin = 0;
+      slotState.betMultiplier = 1;
+      slotState.feverCharge = 0;
+      slotState.feverSpinsLeft = 0;
+      slotState.holds = [false, false, false];
+      slotState.holdAllowedThisTurn = true;
+      slotState.nudgeAvailable = false;
+      slotState.nudgeTargetReel = -1;
+      slotState.gambleStep = 0;
+      slotState.leverPullProgress = 0;
+      slotState.winningLines = [];
+      slotState.floatingCoins = [];
+      slotState.roundFinished = false;
+      slotState.bannerText = '🎰 12 MUT-SPINS STARTKLAR! HALT WALZEN FEST ODER ZIEH DEN HEBEL!';
+      slotState.bannerColor = '#fbbf24';
+
+      slotState.reels = [0, 1, 2].map((rIdx) => ({
+        pos: rIdx * 3,
+        speed: 0,
+        spinning: false,
+        stopDelay: 0,
+        bounce: 0,
+        symbols: [
+          pickRandomSymbolIndex(false),
+          rIdx === 1 ? 0 : pickRandomSymbolIndex(false),
+          pickRandomSymbolIndex(false)
+        ]
+      }));
+
+      updateSlotsUiControls();
+    }
+
+    function startSlotsGame() {
+      stopSlotsGame();
+      initSlotsGame();
+      slotLoop();
+    }
+
+    function stopSlotsGame() {
+      slotState.active = false;
+      if (slotAnimId) {
+        cancelAnimationFrame(slotAnimId);
+        slotAnimId = null;
+      }
+    }
+
+    function updateSlotsUiControls() {
+      if (!slotSpinsStat) return;
+      const isAnySpinning = slotState.reels.some(r => r.spinning);
+
+      slotSpinsStat.textContent = slotState.feverSpinsLeft > 0
+        ? `${slotState.spinsLeft} (+${slotState.feverSpinsLeft} 🔥)`
+        : `${slotState.spinsLeft}`;
+
+      const betLabels = {
+        1: '1x NORMAL (1 Spin)',
+        2: '2x MUT-BOOST (1 Spin)',
+        3: '3x VOLLGAS (2 Spins)'
+      };
+      slotBetStat.textContent = betLabels[slotState.betMultiplier] || '1x NORMAL';
+      slotLastWinStat.textContent = slotState.pendingWin > 0 ? `${slotState.pendingWin} (Offen)` : `${slotState.lastWin}`;
+      slotScoreStat.textContent = `${slotState.bankScore}`;
+
+      if (slotBetToggleBtn) {
+        slotBetToggleBtn.textContent = `⚡ Einsatz: ${slotState.betMultiplier}x (E)`;
+        slotBetToggleBtn.style.background = slotState.betMultiplier === 3
+          ? '#dc2626'
+          : (slotState.betMultiplier === 2 ? '#d97706' : 'var(--hoermann-blue)');
+      }
+
+      slotHoldBtns.forEach((btn, idx) => {
+        if (!btn) return;
+        const held = slotState.holds[idx];
+        btn.textContent = held ? `🔒 Walze ${idx + 1} GEHALTEN` : `🔓 Walze ${idx + 1} halten (${idx + 1})`;
+        btn.style.background = held ? '#f59c00' : '#1e293b';
+        btn.style.borderColor = held ? '#fde047' : '#475569';
+        btn.style.color = held ? '#001830' : '#ffffff';
+        btn.disabled = isAnySpinning || !slotState.holdAllowedThisTurn || slotState.pendingWin > 0;
+        btn.style.opacity = btn.disabled ? '0.5' : '1';
+      });
+
+      if (slotNudgeBtn) {
+        slotNudgeBtn.style.display = (!isAnySpinning && slotState.nudgeAvailable) ? 'inline-flex' : 'none';
+      }
+
+      if (slotGambleBtn && slotCollectBtn) {
+        const showGamble = !isAnySpinning && slotState.pendingWin > 0 && slotState.gambleStep < 5;
+        slotGambleBtn.style.display = showGamble ? 'inline-flex' : 'none';
+        if (showGamble) {
+          slotGambleBtn.textContent = `🔥 Risiko: ${slotState.pendingWin} ➔ ${slotState.pendingWin * 2} Pkt (R)`;
+        }
+        slotCollectBtn.style.display = (!isAnySpinning && slotState.pendingWin > 0) ? 'inline-flex' : 'none';
+        if (slotState.pendingWin > 0) {
+          slotCollectBtn.textContent = `💰 ${slotState.pendingWin} Pkt sichern (Enter)`;
+        }
+      }
+
+      if (slotSpinBtn) {
+        if (isAnySpinning) {
+          slotSpinBtn.textContent = '🛑 STOPP! (Leertaste)';
+          slotSpinBtn.style.background = '#ef4444';
+        } else if (slotState.roundFinished) {
+          slotSpinBtn.textContent = '🏆 HIGHSCORE EINTRAGEN';
+          slotSpinBtn.style.background = '#10b981';
+        } else if (slotState.feverSpinsLeft > 0) {
+          slotSpinBtn.textContent = `🔥 GRATIS FIEBER-SPIN (${slotState.feverSpinsLeft})!`;
+          slotSpinBtn.style.background = '#ec4899';
+        } else {
+          slotSpinBtn.textContent = '🎰 HEBEL ZIEHEN (Leertaste)';
+          slotSpinBtn.style.background = 'var(--hoermann-orange)';
+        }
+      }
+    }
+
+    function toggleSlotHold(reelIdx) {
+      if (!slotState.active) return;
+      if (slotState.reels.some(r => r.spinning)) return;
+      if (slotState.pendingWin > 0) {
+        showToast('Sichere erst deinen aktuellen Gewinn oder geh auf die Risikoleiter! 💰');
+        return;
+      }
+      if (!slotState.holdAllowedThisTurn) {
+        showToast('Nach einem gehaltenen Dreh müssen beim nächsten Spin wieder alle 3 Walzen frei rollen! 🔄');
+        return;
+      }
+
+      const currentlyHeldCount = slotState.holds.filter(Boolean).length;
+      if (!slotState.holds[reelIdx] && currentlyHeldCount >= 2) {
+        showToast('Du kannst maximal 2 Walzen gleichzeitig festhalten! 🔒');
+        return;
+      }
+
+      slotState.holds[reelIdx] = !slotState.holds[reelIdx];
+      playSound('hydraulic');
+      updateSlotsUiControls();
+    }
+
+    function toggleSlotBetMode() {
+      if (slotState.reels.some(r => r.spinning) || slotState.pendingWin > 0) return;
+      slotState.betMultiplier = slotState.betMultiplier === 1 ? 2 : (slotState.betMultiplier === 2 ? 3 : 1);
+      playSound('coin');
+      const msgMap = {
+        1: '⚡ Einsatz 1x Normal: Solide Gewinne bei 1 Spin pro Zug.',
+        2: '🔥 Einsatz 2x Mut-Boost: 1.5x höhere Liniengewinne + schnellere Fieber-Aufladung (1 Spin)!',
+        3: '🚀 Einsatz 3x VOLLGAS: Dreifache Gewinne! Kostet 2 Spins pro Dreh.'
+      };
+      showToast(msgMap[slotState.betMultiplier]);
+      updateSlotsUiControls();
+    }
+
+    function spawnSlotCoins(count, xOrigin, yOrigin) {
+      for (let i = 0; i < count; i++) {
+        slotState.floatingCoins.push({
+          x: xOrigin + (Math.random() - 0.5) * 140,
+          y: yOrigin + (Math.random() - 0.5) * 40,
+          vx: (Math.random() - 0.5) * 9,
+          vy: -Math.random() * 9 - 3,
+          size: 8 + Math.random() * 6,
+          life: 1
+        });
+      }
+    }
+
+    // Bucht einen offenen Gewinn fest aufs Mut-Konto
+    function collectSlotPendingWin() {
+      if (slotState.pendingWin <= 0) return;
+      const won = slotState.pendingWin;
+      slotState.bankScore += won;
+      slotState.lastWin = won;
+      slotState.pendingWin = 0;
+      slotState.gambleStep = 0;
+      slotState.nudgeAvailable = false;
+      playSound('coin');
+      spawnSlotCoins(18, 340, 220);
+      slotState.bannerText = `💰 +${won} PUNKTE AUF DEIN MUT-KONTO GEBUCHT!`;
+      slotState.bannerColor = '#34d399';
+      checkIfSlotSeriesFinished();
+      updateSlotsUiControls();
+    }
+
+    // 5-Stufige Mut-Risikoleiter (Alles oder Nichts / Trost-Sicherung)
+    function gambleSlotPendingWin() {
+      if (slotState.pendingWin <= 0 || slotState.reels.some(r => r.spinning)) return;
+      if (slotState.gambleStep >= 5) {
+        collectSlotPendingWin();
+        return;
+      }
+
+      // Gewinnchance auf der Mut-Leiter: Bei passendem Timing auf dem leuchtenden Balken höher!
+      const timingBonus = slotState.ladderCursor === 1 ? 0.14 : 0;
+      const winChance = Math.min(0.72, 0.54 + timingBonus - slotState.gambleStep * 0.04);
+
+      if (Math.random() < winChance) {
+        slotState.pendingWin *= 2;
+        slotState.gambleStep++;
+        slotState.shakeTimer = 10;
+        playSound('ladderStep');
+        spawnSlotCoins(22, 650, 200);
+        if (slotState.gambleStep >= 5) {
+          slotState.bannerText = `👑 RISIKO-MAXIMUM ERREICHT! ${slotState.pendingWin} PUNKTE SOFORT VERBUCHT!`;
+          slotState.bannerColor = '#fbbf24';
+          triggerParticleEffect('firework');
+          playSound('jackpot');
+          collectSlotPendingWin();
+          return;
+        } else {
+          slotState.bannerText = `🔥 MUT BEWIESEN! GEWINN VERDOPPELT AUF ${slotState.pendingWin} PKT (STUFE ${slotState.gambleStep}/5)!`;
+          slotState.bannerColor = '#fbbf24';
+        }
+      } else {
+        // Verzockt! Aber Hörmann-Stahlzargen-Trostpflaster gibt +15 Mut-Punkte für den Mut zum Risiko!
+        const consolation = 15 * slotState.betMultiplier;
+        slotState.bankScore += consolation;
+        slotState.lastWin = consolation;
+        slotState.pendingWin = 0;
+        slotState.gambleStep = 0;
+        playSound('crunch');
+        slotState.bannerText = `💥 STROMSTOSS AUF DER LEITER! ABER +${consolation} PKT MUT-TROSTPFLASTER!`;
+        slotState.bannerColor = '#f87171';
+        checkIfSlotSeriesFinished();
+      }
+      updateSlotsUiControls();
+    }
+
+    // Mut-Schubs (Nudge): Schiebt eine knapp verpasste Walze um 1 Feld ins Glück!
+    function triggerSlotNudge() {
+      if (!slotState.nudgeAvailable || slotState.nudgeTargetReel < 0) return;
+      const rIdx = slotState.nudgeTargetReel;
+      const reel = slotState.reels[rIdx];
+      slotState.nudgeAvailable = false;
+
+      if (slotState.nudgeDirection === 1) {
+        // Oberes Symbol rutscht in die Mitte
+        reel.symbols = [pickRandomSymbolIndex(slotState.feverSpinsLeft > 0), reel.symbols[0], reel.symbols[1]];
+      } else {
+        // Unteres Symbol rutscht in die Mitte
+        reel.symbols = [reel.symbols[1], reel.symbols[2], pickRandomSymbolIndex(slotState.feverSpinsLeft > 0)];
+      }
+      reel.bounce = 14;
+      playSound('hydraulic');
+      slotState.bannerText = `👋 MUT-SCHUBS AUF WALZE ${rIdx + 1} AUSGEFÜHRT!`;
+      slotState.bannerColor = '#a78bfa';
+      evaluateSlotSpinResult(true);
+    }
+
+    function pullSlotLeverOrStop() {
+      if (!slotState.active) return;
+
+      // Falls Serie beendet -> Highscore-Dialog öffnen
+      if (slotState.roundFinished) {
+        finishSlotsAndSubmitScore();
+        return;
+      }
+
+      // Falls noch ein offener Gewinn wartet -> erst automatisch aufs Konto sichern, bevor der nächste Spin startet!
+      if (slotState.pendingWin > 0 && !slotState.reels.some(r => r.spinning)) {
+        collectSlotPendingWin();
+        if (slotState.roundFinished) return;
+      }
+
+      // 1. Wenn Walzen gerade drehen -> Nächste drehende Walze sofort manuell per Skill-Stopp anhalten!
+      const spinningReel = slotState.reels.find(r => r.spinning);
+      if (spinningReel) {
+        spinningReel.stopDelay = 0;
+        stopSingleReel(slotState.reels.indexOf(spinningReel));
+        return;
+      }
+
+      // 2. Neuen Spin starten!
+      const isFeverSpin = slotState.feverSpinsLeft > 0;
+      const spinCost = isFeverSpin ? 0 : (slotState.betMultiplier === 3 ? 2 : 1);
+
+      if (!isFeverSpin && slotState.spinsLeft <= 0) {
+        checkIfSlotSeriesFinished();
+        return;
+      }
+
+      if (!isFeverSpin && slotState.spinsLeft < spinCost) {
+        slotState.betMultiplier = 1;
+      }
+
+      if (isFeverSpin) {
+        slotState.feverSpinsLeft--;
+      } else {
+        slotState.spinsLeft -= (slotState.betMultiplier === 3 ? 2 : 1);
+      }
+
+      slotState.totalSpinsPlayed++;
+      slotState.winningLines = [];
+      slotState.nudgeAvailable = false;
+      slotState.nudgeTargetReel = -1;
+      slotState.leverPullProgress = 1.0;
+      playSound('leverPull');
+
+      const usedAnyHold = slotState.holds.some(Boolean);
+
+      slotState.reels.forEach((reel, idx) => {
+        if (slotState.holds[idx]) {
+          reel.spinning = false;
+          reel.speed = 0;
+          reel.bounce = 6;
+        } else {
+          reel.spinning = true;
+          reel.speed = 26 + idx * 3;
+          reel.stopDelay = 28 + idx * 22;
+        }
+      });
+
+      // Wenn in diesem Zug Walzen gehalten wurden, werden die Holds nach dem Spin gelöst & für 1 Zug gesperrt
+      slotState.holdAllowedThisTurn = !usedAnyHold;
+      slotState.holds = [false, false, false];
+
+      slotState.bannerText = isFeverSpin
+        ? '🔥 TOR-FIEBER OVERDRIVE LÄUFT! DOPPELTE GEWINNE & EXTRA WILDS!'
+        : '🎰 WALZEN ROLLEN... DRÜCKE [LEERTASTE] ZUM MANUELLEN SKILL-STOPP!';
+      slotState.bannerColor = isFeverSpin ? '#f43f5e' : '#38bdf8';
+
+      updateSlotsUiControls();
+
+      // Falls alle 3 Walzen gehalten wurden (theoretisch max 2, aber sicherheitshalber)
+      if (!slotState.reels.some(r => r.spinning)) {
+        evaluateSlotSpinResult(false);
+      }
+    }
+
+    function stopSingleReel(reelIdx) {
+      const reel = slotState.reels[reelIdx];
+      if (!reel || !reel.spinning) return;
+      reel.spinning = false;
+      reel.speed = 0;
+      reel.bounce = 15;
+
+      const isFever = slotState.feverSpinsLeft > 0;
+      reel.symbols = [
+        pickRandomSymbolIndex(isFever),
+        pickRandomSymbolIndex(isFever),
+        pickRandomSymbolIndex(isFever)
+      ];
+
+      // Garantierter Schutz gegen doppelte Symbole direkt untereinander auf derselben Walze (sieht hochwertiger aus)
+      if (reel.symbols[1] === reel.symbols[0]) {
+        reel.symbols[1] = (reel.symbols[0] + 1) % SLOT_SYMBOLS.length;
+      }
+      if (reel.symbols[2] === reel.symbols[1]) {
+        reel.symbols[2] = (reel.symbols[1] + 2) % SLOT_SYMBOLS.length;
+      }
+
+      playSound('reelStop');
+
+      // Prüfen, ob jetzt alle 3 Walzen stehen
+      if (!slotState.reels.some(r => r.spinning)) {
+        evaluateSlotSpinResult(false);
+      } else {
+        updateSlotsUiControls();
+      }
+    }
+
+    // Wertet alle 5 Gewinnlinien, Tor-Fieber-Bonus, Freispiele & den Mut-Schubs (Nudge) aus
+    function evaluateSlotSpinResult(wasNudged) {
+      const grid = [
+        slotState.reels[0].symbols, // [oben, mitte, unten]
+        slotState.reels[1].symbols,
+        slotState.reels[2].symbols
+      ];
+
+      let totalWin = 0;
+      const hitLines = [];
+      let wildCountInGrid = 0;
+
+      for (let c = 0; c < 3; c++) {
+        for (let r = 0; r < 3; r++) {
+          if (grid[c][r] === 0) wildCountInGrid++;
+        }
+      }
+
+      const activeMultiplier = (slotState.betMultiplier === 3 ? 3 : (slotState.betMultiplier === 2 ? 1.5 : 1)) *
+                               (slotState.feverSpinsLeft > 0 ? 2 : 1);
+
+      SLOT_PAYLINES.forEach(line => {
+        const s0 = grid[0][line.rows[0]];
+        const s1 = grid[1][line.rows[1]];
+        const s2 = grid[2][line.rows[2]];
+        const syms = [s0, s1, s2];
+
+        // 1. Prüfen auf 3 Gleiche (mit Hörmann-Wappen index 0 als WILD-Joker!)
+        const nonWilds = syms.filter(s => s !== 0);
+        let isThreeOfAKind = false;
+        let targetSymIdx = 0;
+
+        if (nonWilds.length === 0) {
+          isThreeOfAKind = true;
+          targetSymIdx = 0; // 3x WILD MEGA-JACKPOT!
+        } else {
+          const firstNonWild = nonWilds[0];
+          if (nonWilds.every(s => s === firstNonWild)) {
+            isThreeOfAKind = true;
+            targetSymIdx = firstNonWild;
+          }
+        }
+
+        if (isThreeOfAKind) {
+          const symObj = SLOT_SYMBOLS[targetSymIdx];
+          const lineWin = Math.round(symObj.pay3 * activeMultiplier);
+          totalWin += lineWin;
+          hitLines.push({
+            line: line,
+            sym: symObj,
+            count: 3,
+            win: lineWin
+          });
+          return;
+        }
+
+        // 2.Auf der MITTE-LINIE (oder bei 2 gleichen links/rechts auf einer Linie) gibt es auch für 2 Gleiche + Nachbarschafts-Treffer Punkte!
+        if (line.id === 0 || slotState.betMultiplier >= 2) {
+          let pairSymIdx = -1;
+          if (s0 === s1 || s0 === 0 || s1 === 0) {
+            pairSymIdx = s0 !== 0 ? s0 : s1;
+          } else if (s1 === s2 || s2 === 0) {
+            pairSymIdx = s1 !== 0 ? s1 : s2;
+          }
+          if (pairSymIdx >= 0) {
+            const symObj = SLOT_SYMBOLS[pairSymIdx];
+            const pairWin = Math.round(symObj.pay2 * activeMultiplier);
+            totalWin += pairWin;
+            hitLines.push({
+              line: line,
+              sym: symObj,
+              count: 2,
+              win: pairWin
+            });
+          }
+        }
+      });
+
+      slotState.winningLines = hitLines;
+
+      // Tor-Fieber Leiste aufladen (Jeder Gewinn oder jedes WILD-Symbol lädt die 5er-Leiste auf)
+      if (hitLines.length > 0 || wildCountInGrid > 0) {
+        const addFever = hitLines.some(h => h.count === 3) ? 2 : 1;
+        slotState.feverCharge = Math.min(5, slotState.feverCharge + addFever);
+        if (slotState.feverCharge >= 5 && slotState.feverSpinsLeft === 0) {
+          slotState.feverCharge = 0;
+          slotState.feverSpinsLeft = 3;
+          playSound('powerup');
+          triggerParticleEffect('door');
+          showToast('🚨 TOR-FIEBER OVERDRIVE AKTIVIERT! +3 Gratis-Spins mit 2x Gewinn & Extra-Wilds!');
+        }
+      }
+
+      // Falls 3x Super-Dennis oder 3x Stapler -> +2 Bonus-Freispiele!
+      if (hitLines.some(h => h.count === 3 && (h.sym.id === 'FORKLIFT' || h.sym.id === 'DENNIS'))) {
+        slotState.spinsLeft += 2;
+        showToast('🎁 BONUS: +2 Extra Mut-Spins für deinen 3er-Treffer!');
+      }
+
+      // Prüfen, ob ein "Mut-Schubs" (Nudge) möglich ist, falls noch kein 3er-Treffer vorliegt
+      if (!wasNudged && !hitLines.some(h => h.count === 3)) {
+        // Prüfen, ob 2 Walzen in der Mitte übereinstimmen und auf der 3. Walze oben oder unten das passende Symbol liegt!
+        const m0 = grid[0][1], m1 = grid[1][1], m2 = grid[2][1];
+        const checkNudgeForReel = (rIdx, targetSym) => {
+          if (grid[rIdx][0] === targetSym || grid[rIdx][0] === 0) {
+            slotState.nudgeAvailable = true;
+            slotState.nudgeTargetReel = rIdx;
+            slotState.nudgeDirection = 1;
+            return true;
+          }
+          if (grid[rIdx][2] === targetSym || grid[rIdx][2] === 0) {
+            slotState.nudgeAvailable = true;
+            slotState.nudgeTargetReel = rIdx;
+            slotState.nudgeDirection = -1;
+            return true;
+          }
+          return false;
+        };
+
+        if (m0 === m1 || m0 === 0 || m1 === 0) {
+          const needed = m0 !== 0 ? m0 : m1;
+          checkNudgeForReel(2, needed);
+        } else if (m1 === m2 || m2 === 0) {
+          const needed = m1 !== 0 ? m1 : m2;
+          checkNudgeForReel(0, needed);
+        } else if (m0 === m2) {
+          checkNudgeForReel(1, m0);
+        }
+      }
+
+      if (totalWin > 0) {
+        slotState.pendingWin = totalWin;
+        slotState.gambleStep = 0;
+        const has3OfAKind = hitLines.some(h => h.count === 3);
+
+        if (has3OfAKind) {
+          slotState.shakeTimer = 18;
+          playSound('jackpot');
+          triggerParticleEffect('gold');
+          spawnSlotCoins(35, 340, 220);
+          const bestHit = hitLines.find(h => h.count === 3) || hitLines[0];
+          slotState.bannerText = `🏆 JACKPOT-LINIE: 3x ${bestHit.sym.short}! +${totalWin} PKT! RISIKO ODER SICHERN?`;
+          slotState.bannerColor = '#fbbf24';
+        } else {
+          playSound('score');
+          spawnSlotCoins(12, 340, 220);
+          slotState.bannerText = `✨ GEWINN: +${totalWin} PKT (${hitLines.length} LINIE${hitLines.length > 1 ? 'N' : ''})! VERDOPPELN (R) ODER SICHERN?`;
+          slotState.bannerColor = '#34d399';
+        }
+      } else {
+        // Trost-Mut-Impuls bei einer Niete, wenn man Mut-Schubs hat
+        if (slotState.nudgeAvailable) {
+          playSound('beep');
+          slotState.bannerText = `👀 KNAPP DANEBEN! DRÜCKE [👋 MUT-SCHUBS (N)], UM WALZE ${slotState.nudgeTargetReel + 1} REINZUSCHUBSEN!`;
+          slotState.bannerColor = '#c084fc';
+        } else {
+          slotState.bannerText = '⚡ KEIN TREFFER – HALT GUTE SYMBOLE MIT [1] [2] [3] FEST & ZIEH NOCHMAL!';
+          slotState.bannerColor = '#94a3b8';
+          checkIfSlotSeriesFinished();
+        }
+      }
+
+      updateSlotsUiControls();
+    }
+
+    function checkIfSlotSeriesFinished() {
+      if (slotState.spinsLeft <= 0 && slotState.feverSpinsLeft <= 0 && slotState.pendingWin <= 0 && !slotState.nudgeAvailable) {
+        slotState.roundFinished = true;
+        // Kleiner Abschluss-Bonus für gesammelte Fieber-Sterne
+        const finishBonus = slotState.feverCharge * 25;
+        if (finishBonus > 0) {
+          slotState.bankScore += finishBonus;
+        }
+        playSound('victory');
+        triggerParticleEffect('confetti');
+        slotState.bannerText = `🏁 SERIE BEENDET! GESAMT-MUT-KONTO: ${slotState.bankScore} PUNKTE!`;
+        slotState.bannerColor = '#10b981';
+        updateSlotsUiControls();
+        setTimeout(() => {
+          if (slotState.active && slotState.roundFinished && slotState.bankScore > 0) {
+            promptScoreSubmit(slotState.bankScore, 'slots', 'Der Hörmann Mut-Automat');
+          }
+        }, 650);
+      }
+    }
+
+    function finishSlotsAndSubmitScore() {
+      if (slotState.pendingWin > 0) {
+        collectSlotPendingWin();
+      }
+      if (slotState.bankScore <= 0) {
+        showToast('Erspiele erst ein paar Mut-Punkte am Automaten, bevor du abrechnest! 🎰');
+        return;
+      }
+      slotState.roundFinished = true;
+      updateSlotsUiControls();
+      promptScoreSubmit(slotState.bankScore, 'slots', 'Der Hörmann Mut-Automat');
+    }
+
+    // Event-Listener für Buttons, Maus-Klick auf den Canvas (Hebel & Walzen-Holds) & Tastatur
+    if (slotSpinBtn) slotSpinBtn.addEventListener('click', pullSlotLeverOrStop);
+    if (slotCollectBtn) slotCollectBtn.addEventListener('click', collectSlotPendingWin);
+    if (slotGambleBtn) slotGambleBtn.addEventListener('click', gambleSlotPendingWin);
+    if (slotNudgeBtn) slotNudgeBtn.addEventListener('click', triggerSlotNudge);
+    if (slotBetToggleBtn) slotBetToggleBtn.addEventListener('click', toggleSlotBetMode);
+    if (slotCashoutBtn) slotCashoutBtn.addEventListener('click', finishSlotsAndSubmitScore);
+    if (restartSlotsBtn) restartSlotsBtn.addEventListener('click', startSlotsGame);
+    slotHoldBtns.forEach((btn, idx) => {
+      if (btn) btn.addEventListener('click', () => toggleSlotHold(idx));
+    });
+
+    if (slotsCanvas) {
+      slotsCanvas.addEventListener('pointerdown', (e) => {
+        if (!slotState.active) return;
+        const rect = slotsCanvas.getBoundingClientRect();
+        const scaleX = slotsCanvas.width / rect.width;
+        const scaleY = slotsCanvas.height / rect.height;
+        const mx = (e.clientX - rect.left) * scaleX;
+        const my = (e.clientY - rect.top) * scaleY;
+
+        // Klick auf eine der 3 Walzen (oder deren HOLD-Leiste unten) hält die Walze direkt fest!
+        for (let r = 0; r < 3; r++) {
+          const rx = 168 + r * 124;
+          if (mx >= rx && mx <= rx + 114 && my >= 95 && my <= 375) {
+            if (slotState.reels.some(re => re.spinning)) {
+              stopSingleReel(r);
+            } else {
+              toggleSlotHold(r);
+            }
+            return;
+          }
+        }
+
+        // Klick rechts auf die Mut-Risikoleiter (wenn Gewinn offen)
+        if (mx >= 595 && mx <= 765 && my >= 85 && my <= 365 && slotState.pendingWin > 0) {
+          gambleSlotPendingWin();
+          return;
+        }
+
+        // Klick auf den BiSecur-Hebel (links/rechts) oder Hauptbereich startet den Spin
+        pullSlotLeverOrStop();
+      });
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (!slotState.active) return;
+      if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) return;
+
+      if (e.code === 'Space') {
+        e.preventDefault();
+        pullSlotLeverOrStop();
+      } else if (e.key === '1') {
+        e.preventDefault();
+        toggleSlotHold(0);
+      } else if (e.key === '2') {
+        e.preventDefault();
+        toggleSlotHold(1);
+      } else if (e.key === '3') {
+        e.preventDefault();
+        toggleSlotHold(2);
+      } else if (e.key === 'r' || e.key === 'R') {
+        e.preventDefault();
+        gambleSlotPendingWin();
+      } else if (e.key === 'n' || e.key === 'N') {
+        e.preventDefault();
+        triggerSlotNudge();
+      } else if (e.key === 'e' || e.key === 'E') {
+        e.preventDefault();
+        toggleSlotBetMode();
+      } else if (e.key === 'Enter' && slotState.pendingWin > 0) {
+        e.preventDefault();
+        collectSlotPendingWin();
+      }
+    });
+
+    // Zeichnet jedes der 7 Hörmann-Symbole als detaillierte Arcade-Vektor/Pixel-Grafik
+    function drawSlotSymbolIcon(ctx, symIdx, cx, cy, isHighlighted) {
+      const sym = SLOT_SYMBOLS[symIdx] || SLOT_SYMBOLS[0];
+      ctx.save();
+
+      // Karten-Hintergrund
+      ctx.fillStyle = isHighlighted ? '#fef3c7' : sym.bg;
+      ctx.fillRect(cx - 48, cy - 34, 96, 68);
+      ctx.strokeStyle = isHighlighted ? '#f59c00' : sym.color;
+      ctx.lineWidth = isHighlighted ? 3 : 2;
+      ctx.strokeRect(cx - 48, cy - 34, 96, 68);
+
+      // Symbol-Grafik im Zentrum
+      if (sym.id === 'WILD') {
+        // Goldenes Hörmann-Wappen + Krone (WILD)
+        ctx.fillStyle = '#f59c00';
+        ctx.fillRect(cx - 34, cy - 24, 68, 30);
+        ctx.strokeStyle = '#fde047';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(cx - 34, cy - 24, 68, 30);
+        ctx.fillStyle = '#002d62';
+        ctx.font = '900 13px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('HÖRMANN', cx, cy - 10);
+        ctx.fillStyle = '#fde047';
+        ctx.font = '900 10px Inter, sans-serif';
+        ctx.fillText('★ WILD JOKER ★', cx, cy + 3);
+      } else if (sym.id === 'GATE') {
+        // Goldenes Hörmann Sektionaltor mit Lamellen & Lichtband
+        ctx.fillStyle = '#002d62';
+        ctx.fillRect(cx - 30, cy - 26, 60, 36);
+        for (let l = 0; l < 4; l++) {
+          ctx.fillStyle = l === 1 ? '#38bdf8' : '#f59c00';
+          ctx.fillRect(cx - 26, cy - 23 + l * 8, 52, 6);
+        }
+      } else if (sym.id === 'FORKLIFT') {
+        // Lagermeister Nicos blauer Hörmann-Stapler mit Palette
+        ctx.fillStyle = '#0284c7';
+        ctx.fillRect(cx - 24, cy - 14, 28, 18);
+        ctx.fillStyle = '#1e293b';
+        ctx.fillRect(cx - 18, cy - 25, 18, 12);
+        ctx.fillStyle = '#f59c00';
+        ctx.fillRect(cx + 6, cy - 26, 4, 32); // Hubmast
+        ctx.fillRect(cx + 10, cy - 8, 16, 4); // Gabel
+        ctx.fillStyle = '#eab308';
+        ctx.fillRect(cx + 11, cy - 18, 14, 10); // Palette
+        ctx.fillStyle = '#0f172a';
+        ctx.beginPath();
+        ctx.arc(cx - 17, cy + 5, 5, 0, Math.PI * 2);
+        ctx.arc(cx - 2, cy + 5, 5, 0, Math.PI * 2);
+        ctx.fill();
+      } else if (sym.id === 'DENNIS') {
+        // Super Dennis mit gelbem Schutzhelm & Mut-Stern
+        ctx.fillStyle = '#fbbf24';
+        ctx.beginPath();
+        ctx.arc(cx, cy - 12, 16, Math.PI, 0);
+        ctx.fill();
+        ctx.fillRect(cx - 19, cy - 13, 38, 5);
+        ctx.fillStyle = '#fde68a';
+        ctx.fillRect(cx - 11, cy - 8, 22, 14);
+        ctx.fillStyle = '#002d62';
+        ctx.fillRect(cx - 7, cy - 4, 4, 4);
+        ctx.fillRect(cx + 3, cy - 4, 4, 4);
+        ctx.fillStyle = '#f59c00';
+        ctx.font = '900 10px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('DENNIS', cx, cy - 15);
+      } else if (sym.id === 'MOTOR') {
+        // SupraMatic Torantrieb mit Funk-Blitzen
+        ctx.fillStyle = '#cbd5e1';
+        ctx.fillRect(cx - 22, cy - 22, 44, 24);
+        ctx.fillStyle = '#002d62';
+        ctx.fillRect(cx - 17, cy - 18, 34, 10);
+        ctx.fillStyle = '#38bdf8';
+        ctx.fillRect(cx - 12, cy - 15, 24, 4);
+        ctx.fillStyle = '#f59c00';
+        ctx.fillRect(cx - 6, cy - 4, 12, 5);
+      } else if (sym.id === 'DOOR') {
+        // Feuerschutz-Stahltür mit Zarge & Flammschutz-Schild
+        ctx.fillStyle = '#94a3b8';
+        ctx.fillRect(cx - 18, cy - 26, 36, 36);
+        ctx.fillStyle = '#e11d48';
+        ctx.fillRect(cx - 14, cy - 22, 28, 30);
+        ctx.fillStyle = '#fde047';
+        ctx.fillRect(cx + 6, cy - 8, 5, 3);
+      } else {
+        // Dampfender Lager-Kaffee-Becher
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(cx - 14, cy - 18, 26, 26);
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 3;
+        ctx.strokeRect(cx + 12, cy - 13, 7, 13);
+        ctx.fillStyle = '#002d62';
+        ctx.fillRect(cx - 14, cy - 10, 26, 10);
+        ctx.fillStyle = '#f59c00';
+        ctx.font = '900 8px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('MUT', cx - 1, cy - 2);
+      }
+
+      // Symbol-Beschriftung + Wert unten auf der Walzenkarte
+      ctx.fillStyle = isHighlighted ? '#002d62' : '#ffffff';
+      ctx.font = '800 9.5px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(sym.short, cx, cy + 20);
+
+      ctx.fillStyle = isHighlighted ? '#d97706' : sym.color;
+      ctx.font = '900 9px monospace';
+      ctx.fillText(`3x=${sym.pay3}`, cx, cy + 30);
+
+      ctx.restore();
+    }
+
+    function slotLoop() {
+      if (!slotState.active || !sCtx) return;
+
+      slotState.bulbPhase += 0.12;
+      slotState.ladderTimer++;
+      if (slotState.ladderTimer % 16 === 0) {
+        slotState.ladderCursor = 1 - slotState.ladderCursor;
+      }
+
+      if (slotState.leverPullProgress > 0) {
+        slotState.leverPullProgress = Math.max(0, slotState.leverPullProgress - 0.06);
+      }
+
+      // Drehende Walzen animieren & nacheinander abstoppen
+      slotState.reels.forEach((reel, idx) => {
+        if (reel.spinning) {
+          const prevTick = Math.floor(reel.pos / 24);
+          reel.pos += reel.speed;
+          const newTick = Math.floor(reel.pos / 24);
+          if (newTick !== prevTick && idx === 0) {
+            playSound('slotTick');
+          }
+          if (reel.stopDelay > 0) {
+            reel.stopDelay--;
+            if (reel.stopDelay <= 0) {
+              stopSingleReel(idx);
+            }
+          }
+        } else if (reel.bounce > 0) {
+          reel.bounce = Math.max(0, reel.bounce - 1.5);
+        }
+      });
+
+      // Fliegende Münz-Partikel aktualisieren
+      for (let i = slotState.floatingCoins.length - 1; i >= 0; i--) {
+        const c = slotState.floatingCoins[i];
+        c.x += c.vx;
+        c.y += c.vy;
+        c.vy += 0.42;
+        c.life -= 0.022;
+        if (c.life <= 0) slotState.floatingCoins.splice(i, 1);
+      }
+
+      drawSlotsScene();
+      slotAnimId = requestAnimationFrame(slotLoop);
+    }
+
+    function drawSlotsScene() {
+      if (!sCtx) return;
+      sCtx.save();
+
+      if (slotState.shakeTimer > 0) {
+        slotState.shakeTimer--;
+        const sx = (Math.random() - 0.5) * 7;
+        const sy = (Math.random() - 0.5) * 7;
+        sCtx.translate(sx, sy);
+      }
+
+      // 1. Arcade-Hallen-Hintergrund (Dunkelblaues Hörmann-Werk mit goldenem Lichtschein)
+      const bgGrad = sCtx.createLinearGradient(0, 0, 0, slotsCanvas.height);
+      bgGrad.addColorStop(0, '#020617');
+      bgGrad.addColorStop(0.5, '#0f172a');
+      bgGrad.addColorStop(1, '#020617');
+      sCtx.fillStyle = bgGrad;
+      sCtx.fillRect(0, 0, slotsCanvas.width, slotsCanvas.height);
+
+      // 2. TOP MARQUEE (Leuchtendes Automaten-Dach mit Lauflicht-Glühbirnen)
+      sCtx.fillStyle = '#002d62';
+      sCtx.fillRect(14, 10, 752, 62);
+      sCtx.strokeStyle = '#f59c00';
+      sCtx.lineWidth = 3;
+      sCtx.strokeRect(14, 10, 752, 62);
+
+      // Lauflicht-Perlen rund um das Automaten-Dach
+      for (let b = 0; b < 26; b++) {
+        const bx = 24 + b * 29;
+        const isLit = Math.floor(slotState.bulbPhase + b) % 2 === 0;
+        sCtx.fillStyle = isLit ? '#fde047' : '#78350f';
+        sCtx.beginPath();
+        sCtx.arc(bx, 15, 3.5, 0, Math.PI * 2);
+        sCtx.arc(bx, 67, 3.5, 0, Math.PI * 2);
+        sCtx.fill();
+      }
+
+      sCtx.fillStyle = '#fde047';
+      sCtx.font = '900 18px Inter, sans-serif';
+      sCtx.textAlign = 'center';
+      sCtx.fillText('🎰 HÖRMANN MUT-AUTOMAT • BISECUR SUPER-JACKPOT 🎰', 390, 36);
+
+      // Dynamisches Info-Banner im Marquee
+      sCtx.fillStyle = slotState.bannerColor || '#ffffff';
+      sCtx.font = '800 12.5px Inter, sans-serif';
+      sCtx.fillText(slotState.bannerText, 390, 56);
+
+      // 3. LINKES PANEL: GEWINNTABELLE (PAYTABLE) & TOR-FIEBER-METER
+      sCtx.fillStyle = '#0f172a';
+      sCtx.fillRect(14, 82, 138, 300);
+      sCtx.strokeStyle = '#334155';
+      sCtx.lineWidth = 2;
+      sCtx.strokeRect(14, 82, 138, 300);
+
+      sCtx.fillStyle = '#f59c00';
+      sCtx.font = '900 11px Inter, sans-serif';
+      sCtx.textAlign = 'center';
+      sCtx.fillText('🏆 GEWINN-TABELLE', 83, 100);
+
+      const mult = (slotState.betMultiplier === 3 ? 3 : (slotState.betMultiplier === 2 ? 1.5 : 1)) *
+                   (slotState.feverSpinsLeft > 0 ? 2 : 1);
+
+      SLOT_SYMBOLS.forEach((sym, i) => {
+        const py = 118 + i * 26;
+        sCtx.fillStyle = i % 2 === 0 ? '#1e293b' : '#0f172a';
+        sCtx.fillRect(18, py - 11, 130, 23);
+        sCtx.fillStyle = sym.color;
+        sCtx.font = '800 9.5px Inter, sans-serif';
+        sCtx.textAlign = 'left';
+        sCtx.fillText(sym.short, 23, py + 4);
+        sCtx.fillStyle = '#fde047';
+        sCtx.font = '900 10px monospace';
+        sCtx.textAlign = 'right';
+        sCtx.fillText(`${Math.round(sym.pay3 * mult)}`, 144, py + 4);
+      });
+
+      // TOR-FIEBER OVERDRIVE ANZEIGE (links unten)
+      sCtx.fillStyle = '#1e293b';
+      sCtx.fillRect(18, 304, 130, 72);
+      sCtx.strokeStyle = slotState.feverSpinsLeft > 0 ? '#ec4899' : '#f59c00';
+      sCtx.strokeRect(18, 304, 130, 72);
+
+      sCtx.fillStyle = slotState.feverSpinsLeft > 0 ? '#f43f5e' : '#fbbf24';
+      sCtx.font = '900 10px Inter, sans-serif';
+      sCtx.textAlign = 'center';
+      sCtx.fillText(
+        slotState.feverSpinsLeft > 0 ? `🔥 OVERDRIVE (${slotState.feverSpinsLeft})` : '⚡ TOR-FIEBER METER',
+        83,
+        320
+      );
+
+      for (let f = 0; f < 5; f++) {
+        const fx = 26 + f * 24;
+        const active = slotState.feverSpinsLeft > 0 || f < slotState.feverCharge;
+        sCtx.fillStyle = active ? '#f59c00' : '#0f172a';
+        sCtx.fillRect(fx, 329, 19, 18);
+        sCtx.strokeStyle = '#fde047';
+        sCtx.strokeRect(fx, 329, 19, 18);
+      }
+      sCtx.fillStyle = '#cbd5e1';
+      sCtx.font = '700 8.5px Inter, sans-serif';
+      sCtx.fillText('5 Treffer = 3x Gratis-Overdrive!', 83, 364);
+
+      // 4. HAUPT-WALZENFENSTER (3 WALZEN x 3 REIHEN + BISECUR-HEBEL)
+      sCtx.fillStyle = '#020617';
+      sCtx.fillRect(160, 82, 384, 300);
+      sCtx.strokeStyle = slotState.feverSpinsLeft > 0 ? '#ec4899' : '#f59c00';
+      sCtx.lineWidth = 4;
+      sCtx.strokeRect(160, 82, 384, 300);
+
+      // Gewinnlinien-Markierungen links am Rand
+      const rowCentersY = [132, 210, 288];
+      rowCentersY.forEach((ry, rIdx) => {
+        sCtx.fillStyle = rIdx === 1 ? '#f59c00' : '#38bdf8';
+        sCtx.fillRect(160, ry - 8, 6, 16);
+        sCtx.fillRect(538, ry - 8, 6, 16);
+      });
+
+      // Die 3 Walzen zeichnen
+      for (let r = 0; r < 3; r++) {
+        const reel = slotState.reels[r];
+        const rx = 170 + r * 124;
+        const centerX = rx + 58;
+
+        // Walzen-Schacht
+        sCtx.fillStyle = '#0f172a';
+        sCtx.fillRect(rx, 90, 116, 246);
+        sCtx.strokeStyle = slotState.holds[r] ? '#f59c00' : '#334155';
+        sCtx.lineWidth = slotState.holds[r] ? 3 : 1.5;
+        sCtx.strokeRect(rx, 90, 116, 246);
+
+        sCtx.save();
+        sCtx.beginPath();
+        sCtx.rect(rx, 90, 116, 246);
+        sCtx.clip();
+
+        if (reel.spinning) {
+          // Schnell rotierende verschwommene Walzen-Optik
+          const offset = (reel.pos % 78);
+          for (let k = -1; k <= 3; k++) {
+            const symIdx = Math.abs(Math.floor((reel.pos / 78) + k + r * 2)) % SLOT_SYMBOLS.length;
+            const sy = 132 + k * 78 + offset - 39;
+            drawSlotSymbolIcon(sCtx, symIdx, centerX, sy, false);
+          }
+        } else {
+          // Stehende Walze mit Feder-Bounce beim Einrasten
+          const bounceY = Math.sin(reel.bounce * 0.6) * (reel.bounce * 0.8);
+          for (let row = 0; row < 3; row++) {
+            const symIdx = reel.symbols[row];
+            const sy = rowCentersY[row] + bounceY;
+            const isWinCell = slotState.winningLines.some(w => w.line.rows[r] === row);
+            drawSlotSymbolIcon(sCtx, symIdx, centerX, sy, isWinCell);
+          }
+        }
+        sCtx.restore();
+
+        // HOLD-Status-Button direkt unter jeder Walze im Automaten-Gehäuse
+        const isHeld = slotState.holds[r];
+        sCtx.fillStyle = isHeld ? '#f59c00' : '#1e293b';
+        sCtx.fillRect(rx + 6, 343, 104, 28);
+        sCtx.strokeStyle = isHeld ? '#fde047' : '#475569';
+        sCtx.lineWidth = 2;
+        sCtx.strokeRect(rx + 6, 343, 104, 28);
+
+        sCtx.fillStyle = isHeld ? '#001830' : '#cbd5e1';
+        sCtx.font = '900 10.5px Inter, sans-serif';
+        sCtx.textAlign = 'center';
+        sCtx.fillText(isHeld ? `🔒 GEHALTEN [${r + 1}]` : `🔓 HALTEN [${r + 1}]`, centerX, 361);
+      }
+
+      // Leuchtende Gewinnlinien über den Walzen einzeichnen, wenn getroffen!
+      slotState.winningLines.forEach(winItem => {
+        const line = winItem.line;
+        const xCoords = [228, 352, 476];
+        sCtx.save();
+        sCtx.strokeStyle = line.color;
+        sCtx.lineWidth = 5;
+        sCtx.shadowColor = line.color;
+        sCtx.shadowBlur = 12;
+        sCtx.beginPath();
+        sCtx.moveTo(xCoords[0], rowCentersY[line.rows[0]]);
+        sCtx.lineTo(xCoords[1], rowCentersY[line.rows[1]]);
+        sCtx.lineTo(xCoords[2], rowCentersY[line.rows[2]]);
+        sCtx.stroke();
+        sCtx.restore();
+      });
+
+      // Mechanischer BiSecur-Hebel zwischen Walzen und Risikoleiter
+      const leverX = 566;
+      const leverTopY = 120 + slotState.leverPullProgress * 120;
+      sCtx.fillStyle = '#334155';
+      sCtx.fillRect(548, 220, 16, 44);
+      sCtx.strokeStyle = '#94a3b8';
+      sCtx.lineWidth = 6;
+      sCtx.beginPath();
+      sCtx.moveTo(leverX, 242);
+      sCtx.lineTo(leverX, leverTopY);
+      sCtx.stroke();
+
+      // Goldener Hebel-Knauf
+      sCtx.fillStyle = '#f59c00';
+      sCtx.beginPath();
+      sCtx.arc(leverX, leverTopY, 14, 0, Math.PI * 2);
+      sCtx.fill();
+      sCtx.strokeStyle = '#fde047';
+      sCtx.lineWidth = 2.5;
+      sCtx.stroke();
+
+      // 5. RECHTES PANEL: 5-STUFIGE HÖRMANN MUT-RISIKOLEITER (DOPPELT ODER NICHTS!)
+      sCtx.fillStyle = '#0f172a';
+      sCtx.fillRect(592, 82, 174, 300);
+      sCtx.strokeStyle = slotState.pendingWin > 0 ? '#ef4444' : '#334155';
+      sCtx.lineWidth = slotState.pendingWin > 0 ? 3 : 2;
+      sCtx.strokeRect(592, 82, 174, 300);
+
+      sCtx.fillStyle = '#fbbf24';
+      sCtx.font = '900 11.5px Inter, sans-serif';
+      sCtx.textAlign = 'center';
+      sCtx.fillText('🔥 MUT-RISIKOLEITER', 679, 101);
+      sCtx.fillStyle = '#94a3b8';
+      sCtx.font = '700 9px Inter, sans-serif';
+      sCtx.fillText('Taste [R]: Gewinn verdoppeln!', 679, 115);
+
+      const basePreview = slotState.pendingWin > 0 ? slotState.pendingWin : 100;
+      for (let step = 5; step >= 1; step--) {
+        const sy = 126 + (5 - step) * 40;
+        const isCurrentTarget = slotState.pendingWin > 0 && (slotState.gambleStep + 1 === step);
+        const isAlreadyReached = slotState.pendingWin > 0 && slotState.gambleStep >= step;
+        const pulseLit = isCurrentTarget && slotState.ladderCursor === 1;
+
+        sCtx.fillStyle = isAlreadyReached
+          ? '#16a34a'
+          : (pulseLit ? '#f59c00' : (isCurrentTarget ? '#7c2d12' : '#1e293b'));
+        sCtx.fillRect(602, sy, 154, 32);
+
+        sCtx.strokeStyle = isCurrentTarget ? '#fde047' : '#475569';
+        sCtx.lineWidth = isCurrentTarget ? 2.5 : 1;
+        sCtx.strokeRect(602, sy, 154, 32);
+
+        const stepMultiplier = Math.pow(2, step - slotState.gambleStep);
+        const stepValue = slotState.pendingWin > 0
+          ? (step <= slotState.gambleStep ? slotState.pendingWin : slotState.pendingWin * Math.pow(2, step - slotState.gambleStep))
+          : 50 * Math.pow(2, step);
+
+        sCtx.fillStyle = (pulseLit || isAlreadyReached) ? '#001830' : '#ffffff';
+        sCtx.font = '900 11px monospace';
+        sCtx.textAlign = 'left';
+        sCtx.fillText(`STUFE ${step}:`, 610, sy + 20);
+
+        sCtx.textAlign = 'right';
+        sCtx.fillStyle = (pulseLit || isAlreadyReached) ? '#001830' : '#fde047';
+        sCtx.fillText(`${stepValue} PKT`, 748, sy + 20);
+      }
+
+      // Unterer Hinweis in der Risikoleiter
+      sCtx.fillStyle = slotState.pendingWin > 0 ? '#fca5a5' : '#64748b';
+      sCtx.font = '800 9.5px Inter, sans-serif';
+      sCtx.textAlign = 'center';
+      sCtx.fillText(
+        slotState.pendingWin > 0
+          ? `⚡ OFFEN: ${slotState.pendingWin} PKT ([Enter]=Sichern)`
+          : 'Gewinne eine Linie zum Starten!',
+        679,
+        345
+      );
+      sCtx.fillStyle = '#38bdf8';
+      sCtx.font = '700 8.5px Inter, sans-serif';
+      sCtx.fillText('Trostpflaster bei Stromstoß: +15 Pkt', 679, 364);
+
+      // 6. BOTTOM ARCADE DASHBOARD (KONTO, SPINS, OFFENER GEWINN & QUICK-GUIDE)
+      sCtx.fillStyle = '#0f172a';
+      sCtx.fillRect(0, 392, slotsCanvas.width, 78);
+      sCtx.fillStyle = '#f59c00';
+      sCtx.fillRect(0, 392, slotsCanvas.width, 3);
+
+      // Box 1: Verbleibende Spins
+      sCtx.fillStyle = '#1e293b';
+      sCtx.fillRect(14, 402, 175, 58);
+      sCtx.strokeStyle = '#334155';
+      sCtx.strokeRect(14, 402, 175, 58);
+      sCtx.fillStyle = '#94a3b8';
+      sCtx.font = '800 10px Inter, sans-serif';
+      sCtx.textAlign = 'left';
+      sCtx.fillText('VERBLEIBENDE SPINS:', 24, 420);
+      sCtx.fillStyle = slotState.feverSpinsLeft > 0 ? '#f43f5e' : '#38bdf8';
+      sCtx.font = '900 22px monospace';
+      sCtx.fillText(
+        slotState.feverSpinsLeft > 0 ? `${slotState.spinsLeft} + ${slotState.feverSpinsLeft}🔥` : `${slotState.spinsLeft}`,
+        24,
+        448
+      );
+
+      // Box 2: Aktueller Gewinn / Risiko-Pot
+      sCtx.fillStyle = '#1e293b';
+      sCtx.fillRect(200, 402, 260, 58);
+      sCtx.strokeStyle = slotState.pendingWin > 0 ? '#fde047' : '#334155';
+      sCtx.strokeRect(200, 402, 260, 58);
+      sCtx.fillStyle = '#94a3b8';
+      sCtx.font = '800 10px Inter, sans-serif';
+      sCtx.fillText(slotState.pendingWin > 0 ? '🔥 OFFENER RISIKO-GEWINN:' : 'LETZTER GEWINN:', 212, 420);
+      sCtx.fillStyle = slotState.pendingWin > 0 ? '#fde047' : '#10b981';
+      sCtx.font = '900 22px monospace';
+      sCtx.fillText(`${slotState.pendingWin > 0 ? slotState.pendingWin : slotState.lastWin} PKT`, 212, 448);
+
+      // Box 3: Gesichertes Mut-Konto (Highscore)
+      sCtx.fillStyle = '#1e293b';
+      sCtx.fillRect(472, 402, 294, 58);
+      sCtx.strokeStyle = '#f59c00';
+      sCtx.strokeRect(472, 402, 294, 58);
+      sCtx.fillStyle = '#f59c00';
+      sCtx.font = '800 10px Inter, sans-serif';
+      sCtx.fillText('💰 GESICHERTES MUT-KONTO (HIGHSCORE):', 484, 420);
+      sCtx.fillStyle = '#ffffff';
+      sCtx.font = '900 24px monospace';
+      sCtx.fillText(`${slotState.bankScore} PUNKTE`, 484, 449);
+
+      // Fliegende Goldmünzen zeichnen
+      slotState.floatingCoins.forEach(c => {
+        sCtx.save();
+        sCtx.globalAlpha = Math.max(0, c.life);
+        sCtx.fillStyle = '#fde047';
+        sCtx.beginPath();
+        sCtx.arc(c.x, c.y, c.size, 0, Math.PI * 2);
+        sCtx.fill();
+        sCtx.strokeStyle = '#d97706';
+        sCtx.lineWidth = 2;
+        sCtx.stroke();
+        sCtx.restore();
+      });
+
+      sCtx.restore();
     }
 
   </script>

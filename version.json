@@ -1,5 +1,5 @@
 {
-  "version": "2.7.0",
-  "releasedAt": "2026-10-23T10:18:00Z",
-  "notes": "Neu: Live-Chat mit Smileys, GIF-Suche & GIF-Einfügen (Link/Strg+V) + Einmaliger Namens-Korrekturantrag + Zuverlässiges 8s Update-System ohne Schleife!"
+  "version": "2.8.0",
+  "releasedAt": "2026-10-23T10:48:00Z",
+  "notes": "Neu: Der Hörmann Mut-Automat 🎰 (Walzen, Hold, Mut-Schubs, 5-stufige Risikoleiter & Tor-Fieber Jackpot) + Fix gegen verschwindende Chat-Nachrichten!"
 }
