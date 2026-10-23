@@ -511,7 +511,7 @@
     /* ==========================================================
        GAMES COMMON VIEWS
        ========================================================== */
-    #forklift-view, #tower-view, #slots-view, #mario-view, #buster-view, #nerve-view, #parcours-view {
+    #forklift-view, #tower-view, #pacman-view, #slots-view, #mario-view, #buster-view, #nerve-view, #parcours-view {
       display: none;
       width: 100%;
       flex-direction: column;
@@ -519,7 +519,7 @@
       padding: 1.25rem 1.25rem 1.8rem 1.25rem;
     }
 
-    #forkliftCanvas, #towerCanvas, #slotsCanvas, #marioCanvas, #busterCanvas, #parcoursCanvas {
+    #forkliftCanvas, #towerCanvas, #pacmanCanvas, #slotsCanvas, #marioCanvas, #busterCanvas, #parcoursCanvas {
       background: #001830;
       border: 3px solid var(--hoermann-blue);
       border-radius: 6px;
@@ -528,10 +528,16 @@
       touch-action: none;
     }
 
-    #forkliftCanvas, #towerCanvas, #slotsCanvas {
+    #forkliftCanvas, #towerCanvas, #pacmanCanvas, #slotsCanvas {
       image-rendering: pixelated;
       image-rendering: crisp-edges;
       background: #1e293b;
+    }
+
+    #pacmanCanvas {
+      background: #030712;
+      border: 3px solid #38bdf8;
+      box-shadow: 0 12px 35px rgba(56, 189, 248, 0.25), 0 0 0 2px #002d62;
     }
 
     #slotsCanvas {
@@ -1547,6 +1553,19 @@
       <p class="menu-subtitle">Welche Mutprobe soll es heute sein?</p>
 
       <div class="games-grid">
+        <!-- Game NEW 4: Hörmann Mut-Man (Pac-Man Klassiker im Mut-Gewand) -->
+        <div class="game-choice-card" id="choose-pacman-btn" style="grid-column: 1 / -1; border-color: #f59c00; background: linear-gradient(135deg, #020617 0%, #001f44 50%, #0c4a6e 100%); color: #ffffff; flex-direction: row; align-items: center; text-align: left; gap: 1.25rem; flex-wrap: wrap; box-shadow: 0 10px 25px rgba(2, 6, 23, 0.45);">
+          <div class="card-badge-rec" style="background: linear-gradient(90deg, #facc15, #f59c00); color: #022c22;">🟡 BRANDNEU &bull; ARCADE PAC-MAN KLASSIKER IM HÖRMANN MUT-STIL</div>
+          <div style="font-size: 3.1rem; line-height: 1; padding: 0.2rem 0.5rem;">🟡👻</div>
+          <div style="flex: 1; min-width: 240px;">
+            <div class="game-card-title" style="font-size: 1.3rem; color: #fde047;">Hörmann Mut-Man: Das Labyrinth des Mutes!</div>
+            <div class="game-card-desc" style="margin-bottom: 0; color: #e2e8f0;">
+              Der unvergessliche <strong>Pac-Man Klassiker</strong> im echten Hörmann-Look! Steuere <strong>Mut-Man</strong> durch das verzinkte Stahl-Labyrinth, futtere alle <strong>Mut-Punkte &amp; BiSecur-Fernbedienungen</strong>, weiche den 4 Zweifel-Geistern (<strong>Blinky, Pinky, Inky &amp; Clyde</strong>) aus und schnappe dir die <strong>großen goldenen Sektionaltor-Power-Pellets</strong>, um den Spieß umzudrehen und die Zweifel zu verputzen!
+            </div>
+          </div>
+          <button class="btn-card-start" style="background:var(--hoermann-orange); color:#ffffff; padding: 0.85rem 1.4rem; font-size: 1rem; white-space: nowrap; box-shadow: 0 4px 14px rgba(245,156,0,0.45);">Labyrinth betreten 🟡</button>
+        </div>
+
         <!-- Game NEW 3: Tower of Mut (Tower of Destiny Kopie mit Dennis "Resse" Ressemann) -->
         <div class="game-choice-card" id="choose-tower-btn" style="grid-column: 1 / -1; border-color: #f59c00; background: linear-gradient(135deg, #09152b 0%, #002d62 50%, #1e293b 100%); color: #ffffff; flex-direction: row; align-items: center; text-align: left; gap: 1.25rem; flex-wrap: wrap; box-shadow: 0 10px 25px rgba(0, 45, 98, 0.3);">
           <div class="card-badge-rec" style="background: linear-gradient(90deg, #10b981, #34d399); color: #022c22;">🏰 BRANDNEU &bull; TOWER OF DESTINY EDITION (TUTORIAL + 5 LEVEL)</div>
@@ -1764,6 +1783,40 @@
       </div>
     </section>
 
+    <!-- 3d. SPIEL NEU: HÖRMANN MUT-MAN (PAC-MAN IM HÖRMANN MUT-GEWAND) -->
+    <section class="card-content" id="pacman-view">
+      <div class="game-ui-header" style="max-width: 680px;">
+        <div class="game-stat">Leben: <span id="pacman-lives-stat">🟡🟡🟡</span></div>
+        <div class="game-stat">Level: <span id="pacman-level-stat">1</span></div>
+        <div class="game-stat">Pellets: <span id="pacman-pellets-stat">0 / 0</span></div>
+        <div class="game-stat">Punkte: <span id="pacman-score-stat">0</span></div>
+        <div class="game-actions-bar">
+          <button class="utility-link" id="pacman-cashout-btn" style="text-decoration:none; font-weight:800; color:#10b981;" title="Aktuelle Punkte sofort in die Bestenliste eintragen">💰 Punkte sichern</button>
+          <button class="utility-link" id="pacman-leaderboard-btn" style="text-decoration:none; font-weight:700;">🏆 Bestenliste</button>
+          <button class="utility-link" id="exit-pacman-btn" style="text-decoration:none; font-weight:800;">✕ Menü</button>
+        </div>
+      </div>
+
+      <canvas id="pacmanCanvas" width="672" height="696"></canvas>
+
+      <!-- Mobile D-Pad & Controls Bar -->
+      <div style="display:flex; flex-wrap:wrap; gap:8px; width:100%; max-width:672px; justify-content:space-between; align-items:center; margin-top:0.65rem;">
+        <div style="display:flex; gap:6px; align-items:center;">
+          <button class="touch-btn" id="pac-btn-left" style="width:46px; height:42px; font-size:1.15rem;" title="Links (A / ◀)">◀</button>
+          <button class="touch-btn" id="pac-btn-up" style="width:46px; height:42px; font-size:1.15rem;" title="Hoch (W / ▲)">▲</button>
+          <button class="touch-btn" id="pac-btn-down" style="width:46px; height:42px; font-size:1.15rem;" title="Runter (S / ▼)">▼</button>
+          <button class="touch-btn" id="pac-btn-right" style="width:46px; height:42px; font-size:1.15rem;" title="Rechts (D / ▶)">▶</button>
+        </div>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <button class="utility-link" id="restart-pacman-btn" style="font-weight:800;">Neustart ↺</button>
+        </div>
+      </div>
+
+      <div class="game-instructions" style="max-width:672px; margin-top:0.55rem; font-size:0.8rem;">
+        <span><strong>Hörmann Mut-Man:</strong> Steuere mit <span class="key-badge">W A S D</span> oder <span class="key-badge">Pfeiltasten</span> / <span class="key-badge">Touch-D-Pad</span> &bull; Friss alle <strong>Mut-Punkte (10 Pkt)</strong> im Labyrinth &bull; Schnapp dir die 4 <strong>goldenen Sektionaltor-Power-Pellets (50 Pkt)</strong> in den Ecken, um die Zweifel-Geister blau einzufärben und sie für <strong>200 / 400 / 800 / 1600 Pkt</strong> zu verputzen! &bull; Nutze die <strong>Seitentunnel</strong> für schnelle Fluchtmanöver!</span>
+      </div>
+    </section>
+
     <!-- 4. SPIEL 0: SUPER DENNIS (MARIO PLATTFORMER) -->
     <section class="card-content" id="mario-view">
       <div class="game-ui-header">
@@ -1960,10 +2013,11 @@
         </div>
       </div>
 
-      <!-- Tabs to switch between 7 games -->
+      <!-- Tabs to switch between 8 games -->
       <div class="leaderboard-tabs">
         <button class="lb-tab-btn active" id="tab-forklift-btn">🚜 Lagermeister Nico</button>
         <button class="lb-tab-btn" id="tab-tower-btn">🏰 Tower of Mut</button>
+        <button class="lb-tab-btn" id="tab-pacman-btn">🟡 Mut-Man</button>
         <button class="lb-tab-btn" id="tab-slots-btn">🎰 Mut-Automat</button>
         <button class="lb-tab-btn" id="tab-mario-btn">🍄 Super Dennis</button>
         <button class="lb-tab-btn" id="tab-buster-btn">🔨 Zweifel-Buster</button>
@@ -2403,6 +2457,57 @@
             osc.start(nowTime + idx * 0.09);
             osc.stop(nowTime + idx * 0.09 + 0.24);
           });
+        } else if (type === 'pacWaka') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(380, nowTime);
+          osc.frequency.linearRampToValueAtTime(540, nowTime + 0.04);
+          osc.frequency.linearRampToValueAtTime(260, nowTime + 0.08);
+          gain.gain.setValueAtTime(0.09, nowTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, nowTime + 0.09);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(nowTime);
+          osc.stop(nowTime + 0.095);
+        } else if (type === 'pacPower') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(220, nowTime);
+          osc.frequency.linearRampToValueAtTime(880, nowTime + 0.22);
+          gain.gain.setValueAtTime(0.14, nowTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, nowTime + 0.24);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(nowTime);
+          osc.stop(nowTime + 0.25);
+        } else if (type === 'pacGhost') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(880, nowTime);
+          osc.frequency.linearRampToValueAtTime(1320, nowTime + 0.08);
+          gain.gain.setValueAtTime(0.18, nowTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, nowTime + 0.2);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(nowTime);
+          osc.stop(nowTime + 0.21);
+        } else if (type === 'pacDie') {
+          const freqs = [620, 580, 540, 500, 460, 420, 380, 340, 300, 260, 220, 180, 140];
+          freqs.forEach((f, idx) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(f, nowTime + idx * 0.04);
+            gain.gain.setValueAtTime(0.14, nowTime + idx * 0.04);
+            gain.gain.exponentialRampToValueAtTime(0.001, nowTime + idx * 0.04 + 0.07);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(nowTime + idx * 0.04);
+            osc.stop(nowTime + idx * 0.04 + 0.08);
+          });
         } else if (type === 'ladderStep') {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
@@ -2764,6 +2869,7 @@
     const gamesMenuView = document.getElementById('games-menu-view');
     const forkliftView = document.getElementById('forklift-view');
     const towerView = document.getElementById('tower-view');
+    const pacmanView = document.getElementById('pacman-view');
     const slotsView = document.getElementById('slots-view');
     const marioView = document.getElementById('mario-view');
     const busterView = document.getElementById('buster-view');
@@ -2775,6 +2881,7 @@
       gamesMenuView.style.display = 'none';
       forkliftView.style.display = 'none';
       if (towerView) towerView.style.display = 'none';
+      if (pacmanView) pacmanView.style.display = 'none';
       if (slotsView) slotsView.style.display = 'none';
       marioView.style.display = 'none';
       busterView.style.display = 'none';
@@ -2784,6 +2891,7 @@
       highscoreCard.classList.remove('show');
       if (typeof stopForkliftGame === 'function') stopForkliftGame();
       if (typeof stopTowerGame === 'function') stopTowerGame();
+      if (typeof stopPacmanGame === 'function') stopPacmanGame();
       if (typeof stopSlotsGame === 'function') stopSlotsGame();
       stopMarioGame();
       stopBusterGame();
@@ -2830,6 +2938,15 @@
       });
     }
 
+    const choosePacmanBtn = document.getElementById('choose-pacman-btn');
+    if (choosePacmanBtn) {
+      choosePacmanBtn.addEventListener('click', () => {
+        hideAllViews();
+        pacmanView.style.display = 'flex';
+        startPacmanGame();
+      });
+    }
+
     const chooseSlotsBtn = document.getElementById('choose-slots-btn');
     if (chooseSlotsBtn) {
       chooseSlotsBtn.addEventListener('click', () => {
@@ -2866,6 +2983,8 @@
     document.getElementById('exit-forklift-btn').addEventListener('click', showGamesMenu);
     const exitTowerBtn = document.getElementById('exit-tower-btn');
     if (exitTowerBtn) exitTowerBtn.addEventListener('click', showGamesMenu);
+    const exitPacmanBtn = document.getElementById('exit-pacman-btn');
+    if (exitPacmanBtn) exitPacmanBtn.addEventListener('click', showGamesMenu);
     const exitSlotsBtn = document.getElementById('exit-slots-btn');
     if (exitSlotsBtn) exitSlotsBtn.addEventListener('click', showGamesMenu);
     document.getElementById('exit-mario-btn').addEventListener('click', showGamesMenu);
@@ -2890,6 +3009,7 @@
 
     const tabForkliftBtn = document.getElementById('tab-forklift-btn');
     const tabTowerBtn = document.getElementById('tab-tower-btn');
+    const tabPacmanBtn = document.getElementById('tab-pacman-btn');
     const tabSlotsBtn = document.getElementById('tab-slots-btn');
     const tabMarioBtn = document.getElementById('tab-mario-btn');
     const tabBusterBtn = document.getElementById('tab-buster-btn');
@@ -2915,6 +3035,13 @@
         { name: "Meister Torsten", score: 1050, date: "Startwert", isNpc: true },
         { name: "Mut-Pionierin Anna", score: 750, date: "Startwert", isNpc: true },
         { name: "Azubi Kevin", score: 400, date: "Startwert", isNpc: true }
+      ],
+      pacman: [
+        { name: "Mut-Man Dennis", score: 2450, date: "Startwert", isNpc: true },
+        { name: "Lagermeister Nico", score: 1800, date: "Startwert", isNpc: true },
+        { name: "Pellet-Pionierin Anna", score: 1250, date: "Startwert", isNpc: true },
+        { name: "Geister-Jäger Kai", score: 850, date: "Startwert", isNpc: true },
+        { name: "Azubi Kevin", score: 450, date: "Startwert", isNpc: true }
       ],
       slots: [
         { name: "Jackpot-Jürgen", score: 1250, date: "Startwert", isNpc: true },
@@ -3001,7 +3128,7 @@
     const USER_SCORES_MASTER_KEY = 'hoermann_mut_user_scores_v1';
 
     function loadMasterUserScores() {
-      let master = { forklift: [], tower: [], slots: [], mario: [], buster: [], nerve: [], parcours: [] };
+      let master = { forklift: [], tower: [], pacman: [], slots: [], mario: [], buster: [], nerve: [], parcours: [] };
       try {
         const raw = localStorage.getItem(USER_SCORES_MASTER_KEY);
         if (raw) {
@@ -3042,7 +3169,7 @@
 
     // Hilfsfunktion: Führt zwei Master-Objekte konfliktfrei zusammen – pro Name zählt NUR der höchste Wert!
     function mergeScoreMaps(targetMap, incomingMap) {
-      const categories = ['forklift', 'tower', 'slots', 'mario', 'buster', 'nerve', 'parcours'];
+      const categories = ['forklift', 'tower', 'pacman', 'slots', 'mario', 'buster', 'nerve', 'parcours'];
       let changed = false;
 
       categories.forEach(cat => {
@@ -3091,7 +3218,7 @@
     // Einmalige & laufende Migration: Rettet ALLE jemals eingetragenen echten Spielernamen und behält pro Name nur den Bestwert!
     function migrateAndPreserveAllUserScores() {
       const master = loadMasterUserScores();
-      const categories = ['forklift', 'tower', 'slots', 'mario', 'buster', 'nerve', 'parcours'];
+      const categories = ['forklift', 'tower', 'pacman', 'slots', 'mario', 'buster', 'nerve', 'parcours'];
 
       // Bisher erspielte echte Online-Highscores dauerhaft als Basis sichern, damit sie selbst bei Firewall-Blockaden niemals fehlen
       const permanentRealPlayerBaseline = {
@@ -3105,6 +3232,7 @@
         tower: [
           { name: "Jensiboi", score: 2255, date: "23.10.", isUser: true }
         ],
+        pacman: [],
         slots: [
           { name: "Mary", score: 1910, date: "23.10.", isUser: true },
           { name: "d.ressemann.n15@hoer", score: 760, date: "23.10.", isUser: true }
@@ -3198,7 +3326,7 @@
     /* ==========================================================
        7b. GLOBAL ONLINE CLOUD HUB (HIGHSCORES, IDEEN-BOX, LIVE-CHAT & ZWANGSUPDATE)
        ========================================================== */
-    const APP_VERSION           = '3.0.1';
+    const APP_VERSION           = '3.1.0';
     const NTFY_HUB_URL          = 'https://ntfy.sh/hoermann_mut_dephosa_hub_v3';
     const NTFY_LEGACY_URL       = 'https://ntfy.sh/hoermann_mut_dephosa_online_lb_v2';
     const BYTEBIN_POST_URL      = 'https://bytebin.lucko.me/post';
@@ -3315,7 +3443,7 @@
       }
 
       // 1. Prüfen, ob es ein reservierter NPC-Name ist
-      const categories = ['forklift', 'tower', 'slots', 'mario', 'buster', 'nerve', 'parcours'];
+      const categories = ['forklift', 'tower', 'pacman', 'slots', 'mario', 'buster', 'nerve', 'parcours'];
       for (const cat of categories) {
         const npcs = defaultLeaderboards[cat] || [];
         if (npcs.some(n => n.name.trim().toLowerCase() === key)) {
@@ -3428,8 +3556,8 @@
       const newKey = newClean.toLowerCase();
       let changed = false;
 
-      // 1. In allen 7 Bestenlisten alten Namen auf neuen Namen umschreiben
-      ['forklift', 'tower', 'slots', 'mario', 'buster', 'nerve', 'parcours'].forEach(cat => {
+      // 1. In allen 8 Bestenlisten alten Namen auf neuen Namen umschreiben
+      ['forklift', 'tower', 'pacman', 'slots', 'mario', 'buster', 'nerve', 'parcours'].forEach(cat => {
         if (!Array.isArray(localMaster[cat])) return;
         let catTouched = false;
         localMaster[cat].forEach(entry => {
@@ -3475,7 +3603,7 @@
 
       // 5. Meilensteine übertragen
       if (milestones && typeof milestones === 'object') {
-        ['forklift', 'tower', 'slots', 'mario', 'buster', 'nerve', 'parcours'].forEach(cat => {
+        ['forklift', 'tower', 'pacman', 'slots', 'mario', 'buster', 'nerve', 'parcours'].forEach(cat => {
           const oldMKey = `${cat}:${oldKey}`;
           const newMKey = `${cat}:${newKey}`;
           if (milestones[oldMKey]) {
@@ -3717,7 +3845,7 @@
 
     // Prüft, ob der Spieler sich gerade mitten in einem der 6 Spiele befindet (damit ein Live-Update ihn NIEMALS aus einer laufenden Runde wirft!)
     function isPlayerCurrentlyInGame() {
-      const activeGameViews = [forkliftView, towerView, slotsView, marioView, busterView, nerveView, parcoursView];
+      const activeGameViews = [forkliftView, towerView, pacmanView, slotsView, marioView, busterView, nerveView, parcoursView];
       const inAnyGameView = activeGameViews.some(v => v && v.style.display === 'flex');
       const inSubmitDialog = scoreSubmitDialog && scoreSubmitDialog.classList.contains('show');
       return Boolean(inAnyGameView || inSubmitDialog);
@@ -3952,7 +4080,7 @@
 
       if (data.scores) {
         if (mergeScoreMaps(localMaster, data.scores)) changed = true;
-      } else if (data.forklift || data.tower || data.slots || data.mario || data.buster || data.nerve || data.parcours) {
+      } else if (data.forklift || data.tower || data.pacman || data.slots || data.mario || data.buster || data.nerve || data.parcours) {
         if (mergeScoreMaps(localMaster, data)) changed = true;
       }
 
@@ -4151,6 +4279,7 @@
         scores: {
           forklift: deduplicateKeepBestPerName(localMaster.forklift || []),
           tower: deduplicateKeepBestPerName(localMaster.tower || []),
+          pacman: deduplicateKeepBestPerName(localMaster.pacman || []),
           slots: deduplicateKeepBestPerName(localMaster.slots || []),
           mario: deduplicateKeepBestPerName(localMaster.mario || []),
           buster: deduplicateKeepBestPerName(localMaster.buster || []),
@@ -4350,7 +4479,7 @@
         saveIdeasState(ideasState);
         savePlayerMilestones(milestones);
 
-        ['forklift', 'tower', 'slots', 'mario', 'buster', 'nerve', 'parcours'].forEach(cat => {
+        ['forklift', 'tower', 'pacman', 'slots', 'mario', 'buster', 'nerve', 'parcours'].forEach(cat => {
           const combined = deduplicateKeepBestPerName([...(localMaster[cat] || []), ...(defaultLeaderboards[cat] || [])]);
           try {
             localStorage.setItem(`hoermann_lb_${cat}`, JSON.stringify(combined));
@@ -4440,7 +4569,7 @@
           saveIdeasState(ideasState);
           savePlayerMilestones(milestones);
 
-          ['forklift', 'tower', 'slots', 'mario', 'buster', 'nerve', 'parcours'].forEach(cat => {
+          ['forklift', 'tower', 'pacman', 'slots', 'mario', 'buster', 'nerve', 'parcours'].forEach(cat => {
             const combined = deduplicateKeepBestPerName([...(localMaster[cat] || []), ...(defaultLeaderboards[cat] || [])]);
             try {
               localStorage.setItem(`hoermann_lb_${cat}`, JSON.stringify(combined));
@@ -4517,7 +4646,7 @@
               saveIdeasState(ideasState);
               savePlayerMilestones(milestones);
 
-              ['forklift', 'tower', 'slots', 'mario', 'buster', 'nerve', 'parcours'].forEach(cat => {
+              ['forklift', 'tower', 'pacman', 'slots', 'mario', 'buster', 'nerve', 'parcours'].forEach(cat => {
                 const combined = deduplicateKeepBestPerName([...(localMaster[cat] || []), ...(defaultLeaderboards[cat] || [])]);
                 try {
                   localStorage.setItem(`hoermann_lb_${cat}`, JSON.stringify(combined));
@@ -4691,6 +4820,7 @@
       activeGameCategory = category;
       tabForkliftBtn.classList.toggle('active', category === 'forklift');
       if (tabTowerBtn) tabTowerBtn.classList.toggle('active', category === 'tower');
+      if (tabPacmanBtn) tabPacmanBtn.classList.toggle('active', category === 'pacman');
       if (tabSlotsBtn) tabSlotsBtn.classList.toggle('active', category === 'slots');
       tabMarioBtn.classList.toggle('active', category === 'mario');
       tabBusterBtn.classList.toggle('active', category === 'buster');
@@ -4700,6 +4830,7 @@
       const titles = {
         forklift: "🏆 Bestenliste: 🚜 Lagermeister Nico malocht (Max: 10.000 Pkt = 100%)",
         tower: "🏆 Bestenliste: 🏰 Tower of Mut (Resse im Schicksalsturm • Tutorial + 5 Level)",
+        pacman: "🏆 Bestenliste: 🟡 Hörmann Mut-Man (Labyrinth, Zweifel-Geister & Power-Tore)",
         slots: "🏆 Bestenliste: 🎰 Der Hörmann Mut-Automat (Walzen & Risiko-Jackpot)",
         mario: "🏆 Bestenliste: 🍄 Super Dennis (Mut-Welt)",
         buster: "🏆 Bestenliste: 🔨 Zweifel-Buster",
@@ -4754,6 +4885,7 @@
 
     tabForkliftBtn.addEventListener('click', () => switchLeaderboardTab('forklift'));
     if (tabTowerBtn) tabTowerBtn.addEventListener('click', () => switchLeaderboardTab('tower'));
+    if (tabPacmanBtn) tabPacmanBtn.addEventListener('click', () => switchLeaderboardTab('pacman'));
     if (tabSlotsBtn) tabSlotsBtn.addEventListener('click', () => switchLeaderboardTab('slots'));
     tabMarioBtn.addEventListener('click', () => switchLeaderboardTab('mario'));
     tabBusterBtn.addEventListener('click', () => switchLeaderboardTab('buster'));
@@ -4777,6 +4909,8 @@
     document.getElementById('forklift-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('forklift'));
     const towerLbBtn = document.getElementById('tower-leaderboard-btn');
     if (towerLbBtn) towerLbBtn.addEventListener('click', () => openGlobalLeaderboard('tower'));
+    const pacmanLbBtn = document.getElementById('pacman-leaderboard-btn');
+    if (pacmanLbBtn) pacmanLbBtn.addEventListener('click', () => openGlobalLeaderboard('pacman'));
     const slotsLbBtn = document.getElementById('slots-leaderboard-btn');
     if (slotsLbBtn) slotsLbBtn.addEventListener('click', () => openGlobalLeaderboard('slots'));
     document.getElementById('mario-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('mario'));
@@ -5541,7 +5675,7 @@
       saveIdeasState(ideasState);
       savePlayerMilestones(milestones);
 
-      ['forklift', 'tower', 'slots', 'mario', 'buster', 'nerve', 'parcours'].forEach(cat => {
+      ['forklift', 'tower', 'pacman', 'slots', 'mario', 'buster', 'nerve', 'parcours'].forEach(cat => {
         try {
           localStorage.setItem(`hoermann_lb_${cat}`, JSON.stringify(getGameLeaderboard(cat)));
         } catch (e) {}
@@ -10787,12 +10921,736 @@
       });
     });
 
+    /* ==========================================================
+       8e. GAME PAC-MAN: HÖRMANN MUT-MAN (ARCADE-KLASSIKER IM MUT-GEWAND)
+       ========================================================== */
+    const pacmanCanvas = document.getElementById('pacmanCanvas');
+    const pacCtx = pacmanCanvas ? pacmanCanvas.getContext('2d') : null;
+    const pacmanLivesStat = document.getElementById('pacman-lives-stat');
+    const pacmanLevelStat = document.getElementById('pacman-level-stat');
+    const pacmanPelletsStat = document.getElementById('pacman-pellets-stat');
+    const pacmanScoreStat = document.getElementById('pacman-score-stat');
+    const pacmanCashoutBtn = document.getElementById('pacman-cashout-btn');
+    const restartPacmanBtn = document.getElementById('restart-pacman-btn');
+
+    const pacBtnLeft = document.getElementById('pac-btn-left');
+    const pacBtnUp = document.getElementById('pac-btn-up');
+    const pacBtnDown = document.getElementById('pac-btn-down');
+    const pacBtnRight = document.getElementById('pac-btn-right');
+
+    const PAC_TILE = 24;
+    const PAC_COLS = 28;
+    const PAC_ROWS = 29;
+
+    // 0: Leer/Weg (kein Pellet), 1: Mut-Pellet, 2: Wand, 3: Power-Pellet (Goldenes Hörmann-Tor), 4: Geisterhaus-Tür/Bereich
+    const PAC_MAZE_TEMPLATE = [
+      [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
+      [2,3,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,3,2],
+      [2,1,2,2,2,2,1,2,2,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,2,1,2],
+      [2,1,2,2,2,2,1,2,2,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,2,1,2],
+      [2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],
+      [2,1,2,2,2,2,1,2,2,1,2,2,2,2,2,2,2,2,1,2,2,1,2,2,2,2,1,2],
+      [2,1,2,2,2,2,1,2,2,1,2,2,2,2,2,2,2,2,1,2,2,1,2,2,2,2,1,2],
+      [2,1,1,1,1,1,1,2,2,1,1,1,1,2,2,1,1,1,1,2,2,1,1,1,1,1,1,2],
+      [2,2,2,2,2,2,1,2,2,2,2,2,0,2,2,0,2,2,2,2,2,1,2,2,2,2,2,2],
+      [0,0,0,0,0,2,1,2,2,2,2,2,0,2,2,0,2,2,2,2,2,1,2,0,0,0,0,0],
+      [0,0,0,0,0,2,1,2,2,0,0,0,0,0,0,0,0,0,0,2,2,1,2,0,0,0,0,0],
+      [0,0,0,0,0,2,1,2,2,0,2,2,2,4,4,2,2,2,0,2,2,1,2,0,0,0,0,0],
+      [2,2,2,2,2,2,1,2,2,0,2,0,0,0,0,0,0,2,0,2,2,1,2,2,2,2,2,2],
+      [0,0,0,0,0,0,1,0,0,0,2,0,0,0,0,0,0,2,0,0,0,1,0,0,0,0,0,0],
+      [2,2,2,2,2,2,1,2,2,0,2,0,0,0,0,0,0,2,0,2,2,1,2,2,2,2,2,2],
+      [0,0,0,0,0,2,1,2,2,0,2,2,2,2,2,2,2,2,0,2,2,1,2,0,0,0,0,0],
+      [0,0,0,0,0,2,1,2,2,0,0,0,0,0,0,0,0,0,0,2,2,1,2,0,0,0,0,0],
+      [0,0,0,0,0,2,1,2,2,0,2,2,2,2,2,2,2,2,0,2,2,1,2,0,0,0,0,0],
+      [2,2,2,2,2,2,1,2,2,0,2,2,2,2,2,2,2,2,0,2,2,1,2,2,2,2,2,2],
+      [2,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,2],
+      [2,1,2,2,2,2,1,2,2,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,2,1,2],
+      [2,1,2,2,2,2,1,2,2,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,2,1,2],
+      [2,3,1,1,2,2,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,2,2,1,1,3,2],
+      [2,2,2,1,2,2,1,2,2,1,2,2,2,2,2,2,2,2,1,2,2,1,2,2,1,2,2,2],
+      [2,2,2,1,2,2,1,2,2,1,2,2,2,2,2,2,2,2,1,2,2,1,2,2,1,2,2,2],
+      [2,1,1,1,1,1,1,2,2,1,1,1,1,2,2,1,1,1,1,2,2,1,1,1,1,1,1,2],
+      [2,1,2,2,2,2,2,2,2,2,2,2,1,2,2,1,2,2,2,2,2,2,2,2,2,2,1,2],
+      [2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],
+      [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2]
+    ];
+
+    let pacState = {
+      active: false,
+      level: 1,
+      score: 0,
+      lives: 3,
+      pelletsLeft: 0,
+      totalPellets: 0,
+      grid: [],
+      fruit: null,
+      fruitTimer: 0,
+      frightTimer: 0,
+      ghostsEatenInFright: 0,
+      bannerText: '',
+      bannerTimer: 0,
+      mouthAngle: 0.25,
+      mouthDir: 1,
+      player: {
+        x: 13.5 * PAC_TILE,
+        y: 22 * PAC_TILE,
+        dirX: 0,
+        dirY: 0,
+        nextDirX: 0,
+        nextDirY: 0,
+        speed: 2.4
+      },
+      ghosts: []
+    };
+
+    let pacLoopId = null;
+
+    function initPacmanLevel(lvl = 1, resetLives = true) {
+      if (resetLives) {
+        pacState.lives = 3;
+        pacState.score = 0;
+      }
+      pacState.level = lvl;
+      pacState.grid = PAC_MAZE_TEMPLATE.map(row => [...row]);
+      pacState.pelletsLeft = 0;
+      pacState.fruit = null;
+      pacState.fruitTimer = 0;
+      pacState.frightTimer = 0;
+      pacState.ghostsEatenInFright = 0;
+
+      for (let r = 0; r < PAC_ROWS; r++) {
+        for (let c = 0; c < PAC_COLS; c++) {
+          if (pacState.grid[r][c] === 1 || pacState.grid[r][c] === 3) {
+            pacState.pelletsLeft++;
+          }
+        }
+      }
+      pacState.totalPellets = pacState.pelletsLeft;
+
+      resetPacmanActors();
+      pacState.bannerText = `LEVEL ${lvl} — BEREIT? MUTIG VORAN!`;
+      pacState.bannerTimer = 110;
+      updatePacmanUI();
+    }
+
+    function resetPacmanActors() {
+      pacState.player.x = 13.5 * PAC_TILE;
+      pacState.player.y = 22 * PAC_TILE;
+      pacState.player.dirX = 0;
+      pacState.player.dirY = 0;
+      pacState.player.nextDirX = 0;
+      pacState.player.nextDirY = 0;
+      pacState.player.speed = 2.4;
+
+      const baseGhostSpeed = 2.0 + Math.min(0.6, (pacState.level - 1) * 0.15);
+
+      pacState.ghosts = [
+        {
+          id: 'blinky',
+          name: 'Zweifel-Blinky',
+          color: '#ef4444',
+          x: 13.5 * PAC_TILE,
+          y: 10 * PAC_TILE,
+          dirX: -1,
+          dirY: 0,
+          speed: baseGhostSpeed,
+          state: 'chase', // chase, scatter, fright, eyes
+          homeX: 13.5 * PAC_TILE,
+          homeY: 13 * PAC_TILE,
+          targetCorner: { x: (PAC_COLS - 2) * PAC_TILE, y: 1 * PAC_TILE }
+        },
+        {
+          id: 'pinky',
+          name: 'Zauder-Pinky',
+          color: '#f472b6',
+          x: 13.5 * PAC_TILE,
+          y: 13 * PAC_TILE,
+          dirX: 0,
+          dirY: -1,
+          speed: baseGhostSpeed * 0.95,
+          state: 'scatter',
+          homeX: 13.5 * PAC_TILE,
+          homeY: 13 * PAC_TILE,
+          targetCorner: { x: 1 * PAC_TILE, y: 1 * PAC_TILE }
+        },
+        {
+          id: 'inky',
+          name: 'Aufschieber-Inky',
+          color: '#06b6d4',
+          x: 11.5 * PAC_TILE,
+          y: 13 * PAC_TILE,
+          dirX: 0,
+          dirY: -1,
+          speed: baseGhostSpeed * 0.9,
+          state: 'scatter',
+          homeX: 11.5 * PAC_TILE,
+          homeY: 13 * PAC_TILE,
+          targetCorner: { x: (PAC_COLS - 2) * PAC_TILE, y: (PAC_ROWS - 2) * PAC_TILE }
+        },
+        {
+          id: 'clyde',
+          name: 'Angst-Clyde',
+          color: '#f97316',
+          x: 15.5 * PAC_TILE,
+          y: 13 * PAC_TILE,
+          dirX: 0,
+          dirY: -1,
+          speed: baseGhostSpeed * 0.85,
+          state: 'scatter',
+          homeX: 15.5 * PAC_TILE,
+          homeY: 13 * PAC_TILE,
+          targetCorner: { x: 1 * PAC_TILE, y: (PAC_ROWS - 2) * PAC_TILE }
+        }
+      ];
+    }
+
+    function updatePacmanUI() {
+      if (pacmanScoreStat) pacmanScoreStat.textContent = pacState.score;
+      if (pacmanLevelStat) pacmanLevelStat.textContent = pacState.level;
+      if (pacmanPelletsStat) pacmanPelletsStat.textContent = `${pacState.totalPellets - pacState.pelletsLeft} / ${pacState.totalPellets}`;
+      if (pacmanLivesStat) {
+        let h = '';
+        for (let i = 0; i < pacState.lives; i++) h += '🟡';
+        pacmanLivesStat.textContent = h || '☠️';
+      }
+    }
+
+    function isPacWall(tileX, tileY) {
+      if (tileY < 0 || tileY >= PAC_ROWS) return false; // Tunnel
+      if (tileX < 0 || tileX >= PAC_COLS) return false; // Tunnel
+      const v = pacState.grid[tileY][tileX];
+      return v === 2;
+    }
+
+    function canMoveInDir(pixelX, pixelY, dirX, dirY, isGhost = false, ghostState = '') {
+      if (dirX === 0 && dirY === 0) return true;
+      const step = 6;
+      const nextX = pixelX + dirX * step;
+      const nextY = pixelY + dirY * step;
+
+      // Tunnel am linken/rechten Rand
+      if (nextX < 0 || nextX > (PAC_COLS - 1) * PAC_TILE) return true;
+
+      // Ecken prüfen
+      const r = PAC_TILE * 0.42;
+      const points = [
+        { x: nextX - r, y: nextY - r },
+        { x: nextX + r, y: nextY - r },
+        { x: nextX - r, y: nextY + r },
+        { x: nextX + r, y: nextY + r }
+      ];
+
+      for (const p of points) {
+        const tx = Math.floor(p.x / PAC_TILE);
+        const ty = Math.floor(p.y / PAC_TILE);
+        if (ty >= 0 && ty < PAC_ROWS && tx >= 0 && tx < PAC_COLS) {
+          const val = pacState.grid[ty][tx];
+          if (val === 2) return false;
+          if (val === 4 && (!isGhost || (ghostState !== 'eyes' && ghostState !== 'leaveHouse'))) {
+            // Geisterhaus-Tor nur für Geister passierbar
+            if (!isGhost) return false;
+          }
+        }
+      }
+      return true;
+    }
+
+    function updatePacmanPhysics() {
+      if (!pacState.active) return;
+
+      if (pacState.bannerTimer > 0) {
+        pacState.bannerTimer--;
+        return;
+      }
+
+      // Mund-Animation
+      pacState.mouthAngle += 0.04 * pacState.mouthDir;
+      if (pacState.mouthAngle > 0.38) { pacState.mouthAngle = 0.38; pacState.mouthDir = -1; }
+      else if (pacState.mouthAngle < 0.04) { pacState.mouthAngle = 0.04; pacState.mouthDir = 1; }
+
+      // 1. Mut-Man Bewegung & Richtungswechsel
+      const p = pacState.player;
+      if (p.nextDirX !== 0 || p.nextDirY !== 0) {
+        if (canMoveInDir(p.x, p.y, p.nextDirX, p.nextDirY)) {
+          p.dirX = p.nextDirX;
+          p.dirY = p.nextDirY;
+          p.nextDirX = 0;
+          p.nextDirY = 0;
+        }
+      }
+
+      if (canMoveInDir(p.x, p.y, p.dirX, p.dirY)) {
+        p.x += p.dirX * p.speed;
+        p.y += p.dirY * p.speed;
+
+        // Tunnel-Wrapping (links <-> rechts)
+        if (p.x < -PAC_TILE / 2) p.x = (PAC_COLS - 0.5) * PAC_TILE;
+        else if (p.x > (PAC_COLS - 0.5) * PAC_TILE) p.x = -PAC_TILE / 2;
+      }
+
+      // 2. Pellets & Power-Pellets aufsammeln
+      const curTX = Math.floor(p.x / PAC_TILE);
+      const curTY = Math.floor(p.y / PAC_TILE);
+      if (curTY >= 0 && curTY < PAC_ROWS && curTX >= 0 && curTX < PAC_COLS) {
+        const cell = pacState.grid[curTY][curTX];
+        if (cell === 1) {
+          pacState.grid[curTY][curTX] = 0;
+          pacState.score += 10;
+          pacState.pelletsLeft--;
+          playSound('pacWaka');
+          updatePacmanUI();
+        } else if (cell === 3) {
+          // Großes Goldenes Hörmann-Tor (Power-Pellet)
+          pacState.grid[curTY][curTX] = 0;
+          pacState.score += 50;
+          pacState.pelletsLeft--;
+          pacState.frightTimer = 340; // ~6 Sekunden
+          pacState.ghostsEatenInFright = 0;
+          playSound('pacPower');
+          showToast('🚪 POWER-TOR GEÖFFNET! Geister sind gefroren – verputze die Zweifel! 🔥');
+          pacState.ghosts.forEach(g => {
+            if (g.state !== 'eyes') g.state = 'fright';
+          });
+          triggerParticleEffect('gold');
+          updatePacmanUI();
+        }
+      }
+
+      // 3. Mut-Bonus (BiSecur Fernbedienung / Werkzeugkoffer)
+      pacState.fruitTimer++;
+      if (pacState.fruitTimer === 420 && !pacState.fruit) {
+        pacState.fruit = { x: 13.5 * PAC_TILE, y: 16.5 * PAC_TILE, type: 'bisecur', points: 300, life: 360 };
+      }
+      if (pacState.fruit) {
+        pacState.fruit.life--;
+        const distFruit = Math.hypot(p.x - pacState.fruit.x, p.y - pacState.fruit.y);
+        if (distFruit < PAC_TILE * 0.8) {
+          pacState.score += pacState.fruit.points;
+          showToast('📻 BiSecur-Handsender eingesackt! +300 MUT-PUNKTE! 🚀');
+          playSound('bonus');
+          triggerParticleEffect('confetti');
+          pacState.fruit = null;
+          updatePacmanUI();
+        } else if (pacState.fruit.life <= 0) {
+          pacState.fruit = null;
+        }
+      }
+
+      // 4. Fright-Timer ablaufen lassen
+      if (pacState.frightTimer > 0) {
+        pacState.frightTimer--;
+        if (pacState.frightTimer === 0) {
+          pacState.ghosts.forEach(g => {
+            if (g.state === 'fright') g.state = 'chase';
+          });
+        }
+      }
+
+      // 5. Zweifel-Geister KI & Kollision
+      pacState.ghosts.forEach(g => {
+        updateGhostAI(g);
+
+        // Kollision mit Mut-Man prüfen
+        const dist = Math.hypot(p.x - g.x, p.y - g.y);
+        if (dist < PAC_TILE * 0.75) {
+          if (g.state === 'fright') {
+            // Geist verputzt!
+            pacState.ghostsEatenInFright++;
+            const pts = 200 * Math.pow(2, pacState.ghostsEatenInFright - 1);
+            pacState.score += pts;
+            g.state = 'eyes';
+            playSound('pacGhost');
+            showToast(`👻 ${g.name} verputzt! +${pts} Mut-Punkte! 💥`);
+            triggerParticleEffect('spark');
+            updatePacmanUI();
+          } else if (g.state !== 'eyes') {
+            // Mut-Man wurde von einem Zweifel erwischt!
+            pacState.lives--;
+            playSound('pacDie');
+            updatePacmanUI();
+            if (pacState.lives <= 0) {
+              handlePacmanGameOver();
+            } else {
+              pacState.bannerText = `AUTSCH! NOCH ${pacState.lives} MUT-LEBEN!`;
+              pacState.bannerTimer = 80;
+              resetPacmanActors();
+            }
+          }
+        }
+      });
+
+      // 6. Level geschafft?
+      if (pacState.pelletsLeft <= 0) {
+        handlePacmanLevelComplete();
+      }
+    }
+
+    function updateGhostAI(g) {
+      if (g.state === 'eyes') {
+        // Zurück ins Geisterhaus fliegen
+        const dx = g.homeX - g.x;
+        const dy = g.homeY - g.y;
+        const dist = Math.hypot(dx, dy);
+        if (dist < 6) {
+          g.x = g.homeX;
+          g.y = g.homeY;
+          g.state = 'chase';
+        } else {
+          g.x += (dx / dist) * (g.speed * 1.6);
+          g.y += (dy / dist) * (g.speed * 1.6);
+        }
+        return;
+      }
+
+      // Ziel-Koordinate je nach Geist-Zustand & Persönlichkeit
+      let targetX = pacState.player.x;
+      let targetY = pacState.player.y;
+
+      if (g.state === 'scatter') {
+        targetX = g.targetCorner.x;
+        targetY = g.targetCorner.y;
+      } else if (g.state === 'fright') {
+        // Läuft zufällig / vom Spieler weg
+        targetX = (PAC_COLS * PAC_TILE) - pacState.player.x;
+        targetY = (PAC_ROWS * PAC_TILE) - pacState.player.y;
+      } else {
+        // Chase: Unterschiedliche Hörmann-Taktiken
+        if (g.id === 'blinky') {
+          // Direkt auf den Spieler (Aggressiver Vorwärtsdrang)
+          targetX = pacState.player.x;
+          targetY = pacState.player.y;
+        } else if (g.id === 'pinky') {
+          // Schneidet den Weg 4 Felder voraus ab
+          targetX = pacState.player.x + pacState.player.dirX * (PAC_TILE * 4);
+          targetY = pacState.player.y + pacState.player.dirY * (PAC_TILE * 4);
+        } else if (g.id === 'inky') {
+          // Zangengriff über Geisterhaus-Achse
+          targetX = pacState.player.x * 2 - g.homeX;
+          targetY = pacState.player.y * 2 - g.homeY;
+        } else if (g.id === 'clyde') {
+          // Zögerlich: greift an, wenn fern, dreht um, wenn nah
+          const distToPlayer = Math.hypot(g.x - pacState.player.x, g.y - pacState.player.y);
+          if (distToPlayer < PAC_TILE * 6) {
+            targetX = g.targetCorner.x;
+            targetY = g.targetCorner.y;
+          }
+        }
+      }
+
+      // Nur an Kreuzungen / Kachelmitten neue Richtung wählen
+      const curSpeed = (g.state === 'fright') ? (g.speed * 0.6) : g.speed;
+      const directions = [
+        { dx: 0, dy: -1 },
+        { dx: -1, dy: 0 },
+        { dx: 0, dy: 1 },
+        { dx: 1, dy: 0 }
+      ];
+
+      // Verhindere sofortiges 180-Grad-Umdrehen (außer blockiert)
+      const validDirs = directions.filter(d => {
+        if (d.dx === -g.dirX && d.dy === -g.dirY) return false;
+        return canMoveInDir(g.x, g.y, d.dx, d.dy, true, g.state);
+      });
+
+      if (validDirs.length > 0) {
+        // Wähle die Richtung mit der kürzesten Distanz zum Ziel
+        validDirs.sort((a, b) => {
+          const distA = Math.hypot((g.x + a.dx * PAC_TILE) - targetX, (g.y + a.dy * PAC_TILE) - targetY);
+          const distB = Math.hypot((g.x + b.dx * PAC_TILE) - targetX, (g.y + b.dy * PAC_TILE) - targetY);
+          return distA - distB;
+        });
+        g.dirX = validDirs[0].dx;
+        g.dirY = validDirs[0].dy;
+      } else if (!canMoveInDir(g.x, g.y, g.dirX, g.dirY, true, g.state)) {
+        // Sackgasse -> umdrehen
+        g.dirX = -g.dirX;
+        g.dirY = -g.dirY;
+      }
+
+      g.x += g.dirX * curSpeed;
+      g.y += g.dirY * curSpeed;
+
+      // Tunnel-Wrapping
+      if (g.x < -PAC_TILE / 2) g.x = (PAC_COLS - 0.5) * PAC_TILE;
+      else if (g.x > (PAC_COLS - 0.5) * PAC_TILE) g.x = -PAC_TILE / 2;
+    }
+
+    function handlePacmanLevelComplete() {
+      pacState.score += 1000 * pacState.level;
+      playSound('victory');
+      triggerParticleEffect('confetti');
+      showToast(`🏆 LEVEL ${pacState.level} GEMEISTERT! +${1000 * pacState.level} Bonus-Punkte! 🎉`);
+      initPacmanLevel(pacState.level + 1, false);
+    }
+
+    function handlePacmanGameOver() {
+      pacState.active = false;
+      showToast(`💥 Alle Mut-Leben aufgebraucht! Endstand: ${pacState.score} Punkte 🏆`);
+      setTimeout(() => {
+        promptScoreSubmit(pacState.score, 'pacman', 'Hörmann Mut-Man');
+      }, 700);
+    }
+
+    function drawPacmanScene() {
+      if (!pacCtx) return;
+      pacCtx.clearRect(0, 0, pacmanCanvas.width, pacmanCanvas.height);
+
+      // 1. Hintergrund & Labyrinth zeichnen
+      pacCtx.fillStyle = '#030712';
+      pacCtx.fillRect(0, 0, pacmanCanvas.width, pacmanCanvas.height);
+
+      for (let r = 0; r < PAC_ROWS; r++) {
+        for (let c = 0; c < PAC_COLS; c++) {
+          const tile = pacState.grid[r][c];
+          const px = c * PAC_TILE;
+          const py = r * PAC_TILE;
+
+          if (tile === 2) {
+            // Verzinkte Stahlwand im Hörmann-Blau
+            pacCtx.fillStyle = '#002d62';
+            pacCtx.fillRect(px, py, PAC_TILE, PAC_TILE);
+            pacCtx.strokeStyle = '#38bdf8';
+            pacCtx.lineWidth = 1.8;
+            pacCtx.strokeRect(px + 1, py + 1, PAC_TILE - 2, PAC_TILE - 2);
+
+            // Subtile Lamellen-Struktur wie Sektionaltor-Paneele
+            pacCtx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+            pacCtx.lineWidth = 1;
+            pacCtx.beginPath();
+            pacCtx.moveTo(px, py + PAC_TILE / 2);
+            pacCtx.lineTo(px + PAC_TILE, py + PAC_TILE / 2);
+            pacCtx.stroke();
+          } else if (tile === 4) {
+            // Geisterhaus-Schranke (Torantrieb-Riegel)
+            pacCtx.fillStyle = '#f59c00';
+            pacCtx.fillRect(px, py + PAC_TILE * 0.35, PAC_TILE, PAC_TILE * 0.3);
+          } else if (tile === 1) {
+            // Normales Mut-Pellet
+            pacCtx.fillStyle = '#fde047';
+            pacCtx.beginPath();
+            pacCtx.arc(px + PAC_TILE / 2, py + PAC_TILE / 2, 3.2, 0, Math.PI * 2);
+            pacCtx.fill();
+          } else if (tile === 3) {
+            // Goldenes Sektionaltor Power-Pellet (Pulsierend)
+            const pulse = 1 + Math.sin(Date.now() * 0.008) * 0.25;
+            pacCtx.save();
+            pacCtx.translate(px + PAC_TILE / 2, py + PAC_TILE / 2);
+            pacCtx.scale(pulse, pulse);
+
+            pacCtx.fillStyle = '#f59c00';
+            pacCtx.fillRect(-7, -7, 14, 14);
+            pacCtx.strokeStyle = '#ffffff';
+            pacCtx.lineWidth = 1.5;
+            pacCtx.strokeRect(-7, -7, 14, 14);
+
+            pacCtx.fillStyle = '#002d62';
+            pacCtx.fillRect(-5, -5, 10, 10);
+            pacCtx.fillStyle = '#fde047';
+            pacCtx.font = '900 8px Inter, sans-serif';
+            pacCtx.textAlign = 'center';
+            pacCtx.textBaseline = 'middle';
+            pacCtx.fillText('H', 0, 1);
+            pacCtx.restore();
+          }
+        }
+      }
+
+      // 2. Bonus-Item (BiSecur Handsender)
+      if (pacState.fruit) {
+        pacCtx.save();
+        pacCtx.translate(pacState.fruit.x, pacState.fruit.y);
+        pacCtx.fillStyle = '#1e293b';
+        pacCtx.fillRect(-8, -11, 16, 22);
+        pacCtx.strokeStyle = '#38bdf8';
+        pacCtx.lineWidth = 1.5;
+        pacCtx.strokeRect(-8, -11, 16, 22);
+
+        // BiSecur Tasten
+        pacCtx.fillStyle = '#38bdf8';
+        pacCtx.beginPath();
+        pacCtx.arc(0, -4, 3, 0, Math.PI * 2);
+        pacCtx.arc(0, 4, 3, 0, Math.PI * 2);
+        pacCtx.fill();
+
+        // Pulsierender Glanz
+        pacCtx.fillStyle = '#facc15';
+        pacCtx.font = '900 8px Inter, sans-serif';
+        pacCtx.textAlign = 'center';
+        pacCtx.fillText('+300', 0, -14);
+        pacCtx.restore();
+      }
+
+      // 3. Mut-Man zeichnen
+      const p = pacState.player;
+      pacCtx.save();
+      pacCtx.translate(p.x, p.y);
+
+      let rot = 0;
+      if (p.dirX === 1) rot = 0;
+      else if (p.dirX === -1) rot = Math.PI;
+      else if (p.dirY === 1) rot = Math.PI / 2;
+      else if (p.dirY === -1) rot = -Math.PI / 2;
+
+      pacCtx.rotate(rot);
+
+      // Pac-Man Körper
+      pacCtx.fillStyle = '#facc15';
+      pacCtx.beginPath();
+      pacCtx.arc(0, 0, PAC_TILE * 0.44, pacState.mouthAngle * Math.PI, (2 - pacState.mouthAngle) * Math.PI);
+      pacCtx.lineTo(0, 0);
+      pacCtx.closePath();
+      pacCtx.fill();
+
+      // Dennis/Hörmann Monteurs-Helm & Auge
+      pacCtx.fillStyle = '#002d62';
+      pacCtx.beginPath();
+      pacCtx.arc(1, -6, 2.5, 0, Math.PI * 2);
+      pacCtx.fill();
+
+      // Hörmann Helm-Schirm
+      pacCtx.fillStyle = '#002d62';
+      pacCtx.fillRect(-7, -11, 14, 3.5);
+
+      pacCtx.restore();
+
+      // 4. Zweifel-Geister zeichnen
+      pacState.ghosts.forEach(g => {
+        pacCtx.save();
+        pacCtx.translate(g.x, g.y);
+
+        let bodyColor = g.color;
+        if (g.state === 'fright') {
+          // Blau / Weiß blinkend kurz vor Ablauf
+          const isFlashing = pacState.frightTimer < 100 && (Math.floor(Date.now() / 150) % 2 === 0);
+          bodyColor = isFlashing ? '#ffffff' : '#2563eb';
+        }
+
+        if (g.state !== 'eyes') {
+          // Geist-Kuppel
+          pacCtx.fillStyle = bodyColor;
+          pacCtx.beginPath();
+          pacCtx.arc(0, -2, PAC_TILE * 0.42, Math.PI, 0, false);
+          pacCtx.lineTo(PAC_TILE * 0.42, PAC_TILE * 0.38);
+
+          // Geister-Wellen am Saum
+          const w = (PAC_TILE * 0.84) / 3;
+          pacCtx.lineTo(PAC_TILE * 0.42 - w * 0.5, PAC_TILE * 0.22);
+          pacCtx.lineTo(PAC_TILE * 0.42 - w, PAC_TILE * 0.38);
+          pacCtx.lineTo(PAC_TILE * 0.42 - w * 1.5, PAC_TILE * 0.22);
+          pacCtx.lineTo(PAC_TILE * 0.42 - w * 2, PAC_TILE * 0.38);
+          pacCtx.lineTo(PAC_TILE * 0.42 - w * 2.5, PAC_TILE * 0.22);
+          pacCtx.lineTo(-PAC_TILE * 0.42, PAC_TILE * 0.38);
+          pacCtx.closePath();
+          pacCtx.fill();
+        }
+
+        // Augen (Blickrichtung angepasst)
+        pacCtx.fillStyle = '#ffffff';
+        pacCtx.beginPath();
+        pacCtx.arc(-4, -4, 3.5, 0, Math.PI * 2);
+        pacCtx.arc(4, -4, 3.5, 0, Math.PI * 2);
+        pacCtx.fill();
+
+        // Pupillen
+        const lookX = g.dirX * 1.5;
+        const lookY = g.dirY * 1.5;
+        pacCtx.fillStyle = (g.state === 'fright') ? '#f59c00' : '#001830';
+        pacCtx.beginPath();
+        pacCtx.arc(-4 + lookX, -4 + lookY, 1.8, 0, Math.PI * 2);
+        pacCtx.arc(4 + lookX, -4 + lookY, 1.8, 0, Math.PI * 2);
+        pacCtx.fill();
+
+        pacCtx.restore();
+      });
+
+      // 5. Banner-Meldung (Bereit / Levelanzeige)
+      if (pacState.bannerTimer > 0 && pacState.bannerText) {
+        pacCtx.save();
+        pacCtx.fillStyle = 'rgba(0, 45, 98, 0.9)';
+        pacCtx.fillRect(PAC_TILE * 3, PAC_TILE * 13.5, PAC_TILE * 22, PAC_TILE * 2.5);
+        pacCtx.strokeStyle = '#f59c00';
+        pacCtx.lineWidth = 3;
+        pacCtx.strokeRect(PAC_TILE * 3, PAC_TILE * 13.5, PAC_TILE * 22, PAC_TILE * 2.5);
+        pacCtx.fillStyle = '#fde047';
+        pacCtx.font = '900 15px Inter, sans-serif';
+        pacCtx.textAlign = 'center';
+        pacCtx.textBaseline = 'middle';
+        pacCtx.fillText(pacState.bannerText, pacmanCanvas.width / 2, PAC_TILE * 14.75);
+        pacCtx.restore();
+      }
+    }
+
+    function pacmanLoop() {
+      if (!pacState.active) return;
+      updatePacmanPhysics();
+      drawPacmanScene();
+      pacLoopId = requestAnimationFrame(pacmanLoop);
+    }
+
+    function startPacmanGame() {
+      pacState.active = true;
+      initPacmanLevel(1, true);
+      if (pacLoopId) cancelAnimationFrame(pacLoopId);
+      pacLoopId = requestAnimationFrame(pacmanLoop);
+    }
+
+    function stopPacmanGame() {
+      pacState.active = false;
+      if (pacLoopId) {
+        cancelAnimationFrame(pacLoopId);
+        pacLoopId = null;
+      }
+    }
+
+    function setPacmanNextDir(dx, dy) {
+      if (!pacState.active) return;
+      pacState.player.nextDirX = dx;
+      pacState.player.nextDirY = dy;
+      if (pacState.player.dirX === 0 && pacState.player.dirY === 0) {
+        pacState.player.dirX = dx;
+        pacState.player.dirY = dy;
+      }
+    }
+
+    // Touch & Button Event-Listener
+    if (pacBtnLeft) pacBtnLeft.addEventListener('click', () => setPacmanNextDir(-1, 0));
+    if (pacBtnUp) pacBtnUp.addEventListener('click', () => setPacmanNextDir(0, -1));
+    if (pacBtnDown) pacBtnDown.addEventListener('click', () => setPacmanNextDir(0, 1));
+    if (pacBtnRight) pacBtnRight.addEventListener('click', () => setPacmanNextDir(1, 0));
+
+    if (restartPacmanBtn) {
+      restartPacmanBtn.addEventListener('click', () => {
+        startPacmanGame();
+        showToast('Hörmann Mut-Man neu gestartet! 🟡');
+      });
+    }
+
+    if (pacmanCashoutBtn) {
+      pacmanCashoutBtn.addEventListener('click', () => {
+        if (pacState.score <= 0) {
+          showToast('Sammle erst Punkte im Labyrinth, bevor du dich in die Bestenliste einträgst! 🟡');
+          return;
+        }
+        promptScoreSubmit(pacState.score, 'pacman', 'Hörmann Mut-Man');
+      });
+    }
+
+    // Tastatursteuerung für Mut-Man (Pfeile & WASD)
     window.addEventListener('keydown', (e) => {
-      if (!twState.active) return;
+      if (!pacState.active) return;
       if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) return;
-      if (e.code === 'Space' || e.code === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
+      if (e.code === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
         e.preventDefault();
-        triggerTowerJump();
+        setPacmanNextDir(-1, 0);
+      } else if (e.code === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+        e.preventDefault();
+        setPacmanNextDir(1, 0);
+      } else if (e.code === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
+        e.preventDefault();
+        setPacmanNextDir(0, -1);
+      } else if (e.code === 'ArrowDown' || e.key === 's' || e.key === 'S') {
+        e.preventDefault();
+        setPacmanNextDir(0, 1);
       }
     });
 
