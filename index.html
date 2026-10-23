@@ -1534,15 +1534,15 @@
       <div class="games-grid">
         <!-- Game NEW 2: Hörmann Mut-Automat (Arcade Slot Machine) -->
         <div class="game-choice-card" id="choose-slots-btn" style="grid-column: 1 / -1; border-color: #f59c00; background: linear-gradient(135deg, #001f44 0%, #002d62 55%, #1e3a8a 100%); color: #ffffff; flex-direction: row; align-items: center; text-align: left; gap: 1.25rem; flex-wrap: wrap; box-shadow: 0 10px 25px rgba(0, 45, 98, 0.25);">
-          <div class="card-badge-rec" style="background: linear-gradient(90deg, #f59c00, #fbbf24); color: #001830;">🎰 NEU &bull; ARCADE SLOT-MASCHINE (SUCHTFAKTOR 100%)</div>
+          <div class="card-badge-rec" style="background: linear-gradient(90deg, #f59c00, #fbbf24); color: #001830;">🎰 NEU &bull; ARCADE SLOT-MASCHINE (10 SPINS &bull; ~2 MIN.)</div>
           <div style="font-size: 3.1rem; line-height: 1; padding: 0.2rem 0.5rem;">🎰💎</div>
           <div style="flex: 1; min-width: 240px;">
-            <div class="game-card-title" style="font-size: 1.3rem; color: #fbbf24;">Der Hörmann Mut-Automat: Walzen, Risiko &amp; Mega-Jackpot!</div>
+            <div class="game-card-title" style="font-size: 1.3rem; color: #fbbf24;">Der Hörmann Mut-Automat: 10 Spins zum Jackpot!</div>
             <div class="game-card-desc" style="margin-bottom: 0; color: #e2e8f0;">
-              Zieh am goldenen <strong>BiSecur-Hebel</strong> (12 Spins + Freispiele)! Erdrehe <strong>goldene Sektionaltore, Nicos blauen Stapler, Dennis' Meisterhelm, Promatic-Antriebe &amp; das Hörmann-Wappen (WILD)</strong>. Mit taktischem <strong>Walzen-HOLD (🔒)</strong>, dem berüchtigten <strong>Mut-Schubs (Nudge)</strong>, der <strong>5-stufigen Mut-Risikoleiter (Alles oder Nichts!)</strong> und dem <strong>Tor-Fieber Jackpot</strong>!
+              Zieh am goldenen <strong>BiSecur-Hebel</strong> für genau <strong>10 spannende Spins</strong>! Erdrehe <strong>goldene Sektionaltore, Nicos blauen Stapler, Dennis' Meisterhelm, Torantriebe &amp; das Hörmann-Wappen (WILD)</strong>. Halte starke Walzen per <strong>🔒 HOLD</strong> fest und wage nach einem Treffer das <strong>🔥 Mut-Risiko (Doppelt oder Nichts!)</strong>!
             </div>
           </div>
-          <button class="btn-card-start" style="background:var(--hoermann-orange); color:#ffffff; padding: 0.85rem 1.4rem; font-size: 1rem; white-space: nowrap; box-shadow: 0 4px 14px rgba(245,156,0,0.45);">Hebel ziehen 🎰</button>
+          <button class="btn-card-start" style="background:var(--hoermann-orange); color:#ffffff; padding: 0.85rem 1.4rem; font-size: 1rem; white-space: nowrap; box-shadow: 0 4px 14px rgba(245,156,0,0.45);">10 Spins starten 🎰</button>
         </div>
 
         <!-- Game NEW: Lagermeister Nico malocht (Isometric Forklift Game) -->
@@ -1656,49 +1656,44 @@
       </div>
     </section>
 
-    <!-- 3b. SPIEL NEU: HÖRMANN MUT-AUTOMAT (ARCADE SLOT MACHINE) -->
+    <!-- 3b. SPIEL NEU: HÖRMANN MUT-AUTOMAT (ARCADE SLOT MACHINE - 10 SPINS EDITION) -->
     <section class="card-content" id="slots-view">
       <div class="game-ui-header" style="max-width: 780px;">
-        <div class="game-stat">Mut-Spins: <span id="slot-spins-stat">12</span></div>
-        <div class="game-stat">Einsatz-Boost: <span id="slot-bet-stat">1x NORMAL</span></div>
+        <div class="game-stat">Runde: <span id="slot-spins-stat">1 / 10</span></div>
         <div class="game-stat">Letzter Gewinn: <span id="slot-lastwin-stat">0</span></div>
         <div class="game-stat">Mut-Konto: <span id="slot-score-stat">0</span></div>
         <div class="game-actions-bar">
-          <button class="utility-link" id="slot-cashout-btn" style="text-decoration:none; font-weight:800; color:#10b981;" title="Aktuellen Kontostand sofort in die Online-Bestenliste eintragen">💰 Konto in Bestenliste sichern</button>
+          <button class="utility-link" id="slot-cashout-btn" style="text-decoration:none; font-weight:800; color:#10b981;" title="Aktuellen Kontostand sofort in die Online-Bestenliste eintragen">💰 Punkte sichern</button>
           <button class="utility-link" id="slots-leaderboard-btn" style="text-decoration:none; font-weight:700;">🏆 Bestenliste</button>
           <button class="utility-link" id="exit-slots-btn" style="text-decoration:none; font-weight:800;">✕ Menü</button>
         </div>
       </div>
 
-      <canvas id="slotsCanvas" width="780" height="470"></canvas>
+      <canvas id="slotsCanvas" width="780" height="440"></canvas>
 
-      <!-- Quick Action & Arcade Controls Bar -->
+      <!-- Aufgeräumte Arcade-Steuerleiste -->
       <div style="display:flex; flex-wrap:wrap; gap:8px; width:100%; max-width:780px; justify-content:space-between; align-items:center; margin-top:0.65rem;">
         <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
-          <button class="btn-card-start" id="slot-hold-0-btn" style="background:#1e293b; border:2px solid #475569; padding:0.45rem 0.75rem; font-size:0.8rem;" title="Walze 1 für den nächsten Dreh festhalten (Taste 1)">🔒 Walze 1 halten (1)</button>
-          <button class="btn-card-start" id="slot-hold-1-btn" style="background:#1e293b; border:2px solid #475569; padding:0.45rem 0.75rem; font-size:0.8rem;" title="Walze 2 für den nächsten Dreh festhalten (Taste 2)">🔒 Walze 2 halten (2)</button>
-          <button class="btn-card-start" id="slot-hold-2-btn" style="background:#1e293b; border:2px solid #475569; padding:0.45rem 0.75rem; font-size:0.8rem;" title="Walze 3 für den nächsten Dreh festhalten (Taste 3)">🔒 Walze 3 halten (3)</button>
-          <button class="btn-card-start" id="slot-bet-toggle-btn" style="background:var(--hoermann-blue); padding:0.45rem 0.85rem; font-size:0.8rem;" title="Einsatz-Modus wechseln: 1x (1 Spin), 2x Mut-Turbo (1 Spin + höheres Risiko) oder 3x Vollgas (kostet 2 Spins für 3x Gewinne!)">⚡ Einsatz: 1x (E)</button>
+          <button class="btn-card-start" id="slot-hold-0-btn" style="background:#1e293b; border:2px solid #475569; padding:0.45rem 0.8rem; font-size:0.82rem;" title="Walze 1 für den nächsten Dreh festhalten (Taste 1)">🔓 Walze 1 halten (1)</button>
+          <button class="btn-card-start" id="slot-hold-1-btn" style="background:#1e293b; border:2px solid #475569; padding:0.45rem 0.8rem; font-size:0.82rem;" title="Walze 2 für den nächsten Dreh festhalten (Taste 2)">🔓 Walze 2 halten (2)</button>
+          <button class="btn-card-start" id="slot-hold-2-btn" style="background:#1e293b; border:2px solid #475569; padding:0.45rem 0.8rem; font-size:0.82rem;" title="Walze 3 für den nächsten Dreh festhalten (Taste 3)">🔓 Walze 3 halten (3)</button>
         </div>
         <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
-          <button class="btn-card-start" id="slot-nudge-btn" style="display:none; background:#7c3aed; padding:0.5rem 0.9rem; font-size:0.84rem; font-weight:900;">
-            👋 Mut-Schubs! (N)
+          <button class="btn-card-start" id="slot-gamble-btn" style="display:none; background:#dc2626; padding:0.5rem 0.95rem; font-size:0.86rem; font-weight:900;">
+            🔥 Mut-Risiko: Verdoppeln (R)
           </button>
-          <button class="btn-card-start" id="slot-gamble-btn" style="display:none; background:#dc2626; padding:0.5rem 0.95rem; font-size:0.85rem; font-weight:900;">
-            🔥 Risiko-Leiter: DOPPELT (R)
+          <button class="btn-card-start" id="slot-collect-btn" style="display:none; background:#16a34a; padding:0.5rem 0.95rem; font-size:0.86rem; font-weight:900;">
+            💰 Punkte sichern (Enter)
           </button>
-          <button class="btn-card-start" id="slot-collect-btn" style="display:none; background:#16a34a; padding:0.5rem 0.95rem; font-size:0.85rem; font-weight:900;">
-            💰 Gewinn einsacken (Enter)
-          </button>
-          <button class="btn-card-start" id="slot-spin-btn" style="background:var(--hoermann-orange); padding:0.55rem 1.25rem; font-size:0.95rem; font-weight:900; box-shadow:0 4px 12px rgba(245,156,0,0.4);">
+          <button class="btn-card-start" id="slot-spin-btn" style="background:var(--hoermann-orange); padding:0.55rem 1.3rem; font-size:0.95rem; font-weight:900; box-shadow:0 4px 12px rgba(245,156,0,0.4);">
             🎰 HEBEL ZIEHEN (Leertaste)
           </button>
-          <button class="utility-link" id="restart-slots-btn" style="margin-left:4px;">Neue Serie ↺</button>
+          <button class="utility-link" id="restart-slots-btn" style="margin-left:4px;">Neustart ↺</button>
         </div>
       </div>
 
       <div class="game-instructions" style="max-width:780px; margin-top:0.55rem; font-size:0.8rem;">
-        <span><span class="key-badge">Leertaste</span> Hebel ziehen / Walzen einzeln stoppen &bull; <span class="key-badge">1</span> <span class="key-badge">2</span> <span class="key-badge">3</span> Walzen halten (HOLD) &bull; <span class="key-badge">R</span> Mut-Risikoleiter (Gewinn verdoppeln!) &bull; <span class="key-badge">Enter</span> Punkte aufs Konto buchen &bull; <strong>5 Gewinnlinien</strong> (3 waagerecht + 2 diagonal) &bull; 🛡️ <strong>Hörmann-Wappen = WILD-Joker!</strong></span>
+        <span><strong>10 Spins pro Spiel (~2 Min.)</strong> &bull; <span class="key-badge">Leertaste</span> Hebel ziehen / Walze stoppen &bull; <span class="key-badge">1</span> <span class="key-badge">2</span> <span class="key-badge">3</span> Walzen halten (HOLD) &bull; <span class="key-badge">R</span> Mut-Risiko (Gewinn verdoppeln!) &bull; <span class="key-badge">Enter</span> Gewinn sichern &bull; 🛡️ <strong>Hörmann-Wappen = WILD-Joker!</strong></span>
       </div>
     </section>
 
@@ -2055,26 +2050,37 @@
   <footer>
     Hörmann Mut-Portal &bull; Sektionaltore &bull; Schwingtore &bull; Türen &bull; Stahlzargen &bull; Lagermeister Nico &amp; Dennis Ressemann Edition
     <div style="margin-top:4px; font-size:0.74rem; color:rgba(255,255,255,0.5);">
-      <span id="app-version-badge">🟢 Version 2.8.0 (NEU: Hörmann Mut-Automat 🎰 + Stabiler Echtzeit-Chat)</span>
+      <span id="app-version-badge">🟢 Version 2.9.0 (NEU: 10-Spins Mut-Automat 🎰 + Spielschutz-Live-Update 🛡️)</span>
     </div>
   </footer>
 
-  <!-- ZWANGSUPDATE OVERLAY (Erscheint automatisch, sobald ein neues Update tatsächlich live abrufbar ist) -->
+  <!-- DEZENTE HINWEIS-LEISTE FÜR UPDATES WÄHREND EINES AKTIVEN SPIELS (Wirft niemanden aus dem Spiel!) -->
+  <div id="deferred-update-bar" style="display:none; position:fixed; top:10px; left:50%; transform:translateX(-50%); background:linear-gradient(90deg, #002d62, #0d448a); color:#ffffff; border:2px solid #f59c00; border-radius:999px; padding:0.45rem 1rem; font-size:0.82rem; font-weight:800; z-index:9998; box-shadow:0 8px 25px rgba(0,0,0,0.45); align-items:center; gap:10px; white-space:nowrap;">
+    <span>🔄 Neues Update (<span id="deferred-update-ver">v2.9.0</span>) im Hintergrund geladen! Spiel deine Runde in Ruhe zu Ende.</span>
+    <button id="deferred-update-apply-btn" style="background:#f59c00; color:#001830; border:none; border-radius:999px; padding:0.25rem 0.75rem; font-size:0.78rem; font-weight:900; cursor:pointer;">⚡ Jetzt laden</button>
+  </div>
+
+  <!-- UPDATE OVERLAY (Erscheint erst, wenn das Update zu 100% auf dem CDN fertig geladen ist & der Spieler NICHT mitten im Spiel ist!) -->
   <div id="force-update-overlay" style="display:none; position:fixed; inset:0; background:rgba(0, 20, 45, 0.92); z-index:9999; align-items:center; justify-content:center; padding:1.5rem; backdrop-filter:blur(4px);">
     <div style="background:#ffffff; border:4px solid var(--hoermann-orange); border-radius:10px; max-width:520px; width:100%; padding:2rem 1.8rem; text-align:center; box-shadow:0 25px 50px rgba(0,0,0,0.5);">
       <div style="font-size:3rem; margin-bottom:0.5rem;">🚀🔄</div>
       <h2 style="color:var(--hoermann-blue); font-size:1.5rem; font-weight:900; margin-bottom:0.6rem;">
-        Neues Portal-Update bereit!
+        Neues Portal-Update komplett geladen!
       </h2>
-      <p id="force-update-text" style="color:var(--text-muted); font-size:0.98rem; line-height:1.5; margin-bottom:1.2rem;">
-        Die neue Version wurde bereits im Hintergrund geladen. Deine Seite schaltet gleich automatisch und ohne Datenverlust auf das neue Update um!
+      <p id="force-update-text" style="color:var(--text-muted); font-size:0.95rem; line-height:1.5; margin-bottom:1.1rem;">
+        Die neue Version wurde bereits vollständig im Hintergrund heruntergeladen und verifiziert. Du kannst jetzt sofort ohne Wartezeit umschalten!
       </p>
-      <div id="force-update-notes" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:0.7rem 1rem; font-size:0.85rem; color:#1e293b; font-weight:600; margin-bottom:1.3rem;">
-        Update wird aktiviert...
+      <div id="force-update-notes" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:0.7rem 1rem; font-size:0.85rem; color:#1e293b; font-weight:600; margin-bottom:1.2rem;">
+        Update ist startklar...
       </div>
-      <button id="force-update-now-btn" class="btn-primary" style="width:100%; justify-content:center; padding:0.9rem; font-size:1.05rem;">
-        ⚡ Jetzt sofort umschalten (<span id="force-update-countdown">8</span>s)
-      </button>
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <button id="force-update-now-btn" class="btn-primary" style="width:100%; justify-content:center; padding:0.85rem; font-size:1.02rem;">
+          ⚡ Jetzt sofort umschalten (<span id="force-update-countdown">12</span>s)
+        </button>
+        <button id="force-update-postpone-btn" class="utility-link" style="width:100%; justify-content:center; padding:0.55rem; font-size:0.85rem; font-weight:700; color:#475569; text-decoration:none; border:1px solid #cbd5e1; border-radius:6px;">
+          ⏸️ Später umschalten (erst nach meiner nächsten Runde)
+        </button>
+      </div>
     </div>
   </div>
 
@@ -2721,12 +2727,18 @@
       effectBadge.classList.remove('show');
       copyQuoteBtn.style.display = 'none';
       thoughtsBox.classList.remove('open');
+      if (typeof checkAndApplyDeferredUpdateIfOutOfGame === 'function') {
+        setTimeout(checkAndApplyDeferredUpdateIfOutOfGame, 300);
+      }
     }
 
     function showGamesMenu() {
       hideAllViews();
       gamesMenuView.style.display = 'flex';
       playSound('coin');
+      if (typeof checkAndApplyDeferredUpdateIfOutOfGame === 'function') {
+        setTimeout(checkAndApplyDeferredUpdateIfOutOfGame, 300);
+      }
     }
 
     document.getElementById('menu-btn').addEventListener('click', showGamesMenu);
@@ -3063,7 +3075,7 @@
     /* ==========================================================
        7b. GLOBAL ONLINE CLOUD HUB (HIGHSCORES, IDEEN-BOX, LIVE-CHAT & ZWANGSUPDATE)
        ========================================================== */
-    const APP_VERSION           = '2.8.0';
+    const APP_VERSION           = '2.9.0';
     const NTFY_HUB_URL          = 'https://ntfy.sh/hoermann_mut_dephosa_hub_v3';
     const NTFY_LEGACY_URL       = 'https://ntfy.sh/hoermann_mut_dephosa_online_lb_v2';
     const BYTEBIN_POST_URL      = 'https://bytebin.lucko.me/post';
@@ -3516,9 +3528,31 @@
       return false;
     }
 
-    // Prüft vor dem Anzeigen des Update-Modals, ob die neue HTML-Datei auf dem Server wirklich schon fertig ausgerollt ist (verhindert Endlos-Schleife!)
+    // Prüft, ob der Spieler sich gerade mitten in einem der 6 Spiele befindet (damit ein Live-Update ihn NIEMALS aus einer laufenden Runde wirft!)
+    function isPlayerCurrentlyInGame() {
+      const activeGameViews = [forkliftView, slotsView, marioView, busterView, nerveView, parcoursView];
+      const inAnyGameView = activeGameViews.some(v => v && v.style.display === 'flex');
+      const inSubmitDialog = scoreSubmitDialog && scoreSubmitDialog.classList.contains('show');
+      return Boolean(inAnyGameView || inSubmitDialog);
+    }
+
+    let pendingDeferredUpdate = null;
+
+    // Prüft vor dem Anzeigen des Update-Modals, ob SOWOHL version.json ALS AUCH die komplette neue index.html (inkl. </html>) auf dem Server fertig ausgerollt sind!
     async function verifyAndPrefetchNewHtml(targetVersion) {
       try {
+        // 1. Prüfen, ob das CDN bereits die aktuelle version.json ausliefert
+        const vRes = await fetch(`./version.json?_verify=${encodeURIComponent(targetVersion)}_${Date.now()}`, {
+          cache: 'no-store',
+          headers: { 'Pragma': 'no-cache', 'Cache-Control': 'no-cache' }
+        });
+        if (!vRes.ok) return false;
+        const vJson = await vRes.json();
+        if (!vJson || String(vJson.version).trim() !== String(targetVersion).trim()) {
+          return false;
+        }
+
+        // 2. Komplette neue HTML-Datei vorab in den Speicher laden & auf Vollständigkeit prüfen
         const cleanPath = window.location.origin + window.location.pathname;
         const res = await fetch(`${cleanPath}?_verify=${encodeURIComponent(targetVersion)}_${Date.now()}`, {
           cache: 'no-store',
@@ -3526,7 +3560,12 @@
         });
         if (!res.ok) return false;
         const htmlText = await res.text();
-        if (htmlText && htmlText.includes(`APP_VERSION           = '${targetVersion}'`) || htmlText.includes(`Version ${targetVersion}`)) {
+        const hasExactVersion = htmlText && (
+          htmlText.includes(`APP_VERSION           = '${targetVersion}'`) ||
+          htmlText.includes(`Version ${targetVersion}`)
+        );
+        const isCompleteHtml = htmlText && htmlText.includes('</html>') && htmlText.length > 50000;
+        if (hasExactVersion && isCompleteHtml) {
           prefetchedNewHtml = htmlText;
           return true;
         }
@@ -3534,7 +3573,7 @@
       return false;
     }
 
-    // Schaltet sofort & garantiert ohne Cache-Hänger auf die neue Version um
+    // Schaltet sofort & garantiert ohne Cache-Hänger auf die bereits im Hintergrund geladene neue Version um
     async function performHardCacheBustReload(targetVersion) {
       try {
         sessionStorage.setItem('hoermann_updated_to_version', String(targetVersion || ''));
@@ -3547,8 +3586,7 @@
         }
       } catch (e) {}
 
-      // Falls wir den neuen HTML-Code bereits verifiziert im Speicher haben, direkt ins Dokument schreiben -> 100% sofortiges Update ohneCDN-Verzögerung!
-      if (prefetchedNewHtml && prefetchedNewHtml.includes('<html')) {
+      if (prefetchedNewHtml && prefetchedNewHtml.includes('<html') && prefetchedNewHtml.includes('</html>')) {
         try {
           const cleanUrl = `${window.location.origin}${window.location.pathname}?v=${encodeURIComponent(targetVersion || Date.now())}`;
           window.history.replaceState(null, '', cleanUrl);
@@ -3563,6 +3601,32 @@
       window.location.replace(`${cleanPath}?v=${encodeURIComponent(targetVersion || Date.now())}&t=${Date.now()}`);
     }
 
+    function showDeferredUpdateBanner(remoteVersion, releaseNotes) {
+      pendingDeferredUpdate = { version: remoteVersion, notes: releaseNotes };
+      const bar = document.getElementById('deferred-update-bar');
+      const verSpan = document.getElementById('deferred-update-ver');
+      const applyBtn = document.getElementById('deferred-update-apply-btn');
+      if (verSpan) verSpan.textContent = `v${remoteVersion}`;
+      if (bar) bar.style.display = 'flex';
+      if (applyBtn) {
+        applyBtn.onclick = () => {
+          if (bar) bar.style.display = 'none';
+          performHardCacheBustReload(remoteVersion);
+        };
+      }
+    }
+
+    function checkAndApplyDeferredUpdateIfOutOfGame() {
+      if (!pendingDeferredUpdate || updateForcedAlready) return;
+      if (!isPlayerCurrentlyInGame()) {
+        const { version, notes } = pendingDeferredUpdate;
+        pendingDeferredUpdate = null;
+        const bar = document.getElementById('deferred-update-bar');
+        if (bar) bar.style.display = 'none';
+        triggerForcedUpdateModal(version, notes);
+      }
+    }
+
     async function triggerForcedUpdateModal(remoteVersion, releaseNotes) {
       if (updateForcedAlready) return;
       if (!isNewerSemver(remoteVersion, APP_VERSION)) return;
@@ -3574,32 +3638,39 @@
         }
       } catch (e) {}
 
-      // Erst prüfen, ob das CDN (GitHub Pages) die neue index.html wirklich schon ausliefert!
+      // 1. Erst sicherstellen, dass das CDN (GitHub Pages) sowohl version.json als auch die komplette neue index.html (inkl. </html>) zu 100% bereitstellt!
       const isHtmlReadyOnCdn = await verifyAndPrefetchNewHtml(remoteVersion);
       if (!isHtmlReadyOnCdn) {
-        // Noch nicht auf allen CDN-Knoten angekommen -> beim nächsten Intervall nochmal lautlos prüfen, Spieler noch nicht stören!
+        // Noch nicht vollständig auf dem Server bereit -> Spieler noch NICHT benachrichtigen, sondern im nächsten Intervall lautlos erneut prüfen!
+        return;
+      }
+
+      // 2. SPIELSCHUTZ: Falls der Spieler gerade mitten in einem Spiel ist (oder seinen Highscore einträgt), KEIN Popup öffnen und NICHT rauswerfen!
+      if (isPlayerCurrentlyInGame()) {
+        showDeferredUpdateBanner(remoteVersion, releaseNotes);
         return;
       }
 
       if (updateForcedAlready) return;
       updateForcedAlready = true;
 
-      const overlay = document.getElementById('force-update-overlay');
-      const notesEl = document.getElementById('force-update-notes');
-      const countEl = document.getElementById('force-update-countdown');
-      const nowBtn  = document.getElementById('force-update-now-btn');
+      const overlay     = document.getElementById('force-update-overlay');
+      const notesEl     = document.getElementById('force-update-notes');
+      const countEl     = document.getElementById('force-update-countdown');
+      const nowBtn      = document.getElementById('force-update-now-btn');
+      const postponeBtn = document.getElementById('force-update-postpone-btn');
 
       if (notesEl) {
         notesEl.textContent = releaseNotes
           ? `Neu in v${remoteVersion}: ${releaseNotes}`
-          : `Neue Version v${remoteVersion} ist bereit (Aktuell: v${APP_VERSION})`;
+          : `Neue Version v${remoteVersion} ist komplett geladen (Aktuell: v${APP_VERSION})`;
       }
       if (overlay) {
         overlay.style.display = 'flex';
       }
       playSound('powerup');
 
-      let secondsLeft = 8;
+      let secondsLeft = 12;
       if (countEl) countEl.textContent = secondsLeft;
 
       let timer = null;
@@ -3607,12 +3678,29 @@
         nowBtn.onclick = () => {
           if (timer) clearInterval(timer);
           nowBtn.disabled = true;
-          nowBtn.textContent = '🚀 Schalte auf neue Version um...';
+          nowBtn.textContent = '🚀 Schalte sofort auf neue Version um...';
           performHardCacheBustReload(remoteVersion);
         };
       }
 
+      if (postponeBtn) {
+        postponeBtn.onclick = () => {
+          if (timer) clearInterval(timer);
+          if (overlay) overlay.style.display = 'none';
+          updateForcedAlready = false;
+          showDeferredUpdateBanner(remoteVersion, releaseNotes);
+        };
+      }
+
       timer = setInterval(() => {
+        // Falls der Spieler inzwischen ein Spiel gestartet hat, Countdown sofort abbrechen & auf Spielende verschieben!
+        if (isPlayerCurrentlyInGame()) {
+          clearInterval(timer);
+          if (overlay) overlay.style.display = 'none';
+          updateForcedAlready = false;
+          showDeferredUpdateBanner(remoteVersion, releaseNotes);
+          return;
+        }
         secondsLeft--;
         if (countEl) countEl.textContent = Math.max(0, secondsLeft);
         if (secondsLeft <= 0) {
@@ -8306,18 +8394,16 @@
     /* ==========================================================
        13. SPIEL NEU: DER HÖRMANN MUT-AUTOMAT (ARCADE SLOT MACHINE)
        ========================================================== */
+    // 10-Spins Hörmann Mut-Automat (Übersichtlich, spannend, ~1.5 bis 2.5 Min. Spielzeit!)
     const slotsCanvas = document.getElementById('slotsCanvas');
     const sCtx = slotsCanvas ? slotsCanvas.getContext('2d') : null;
     const slotSpinsStat = document.getElementById('slot-spins-stat');
-    const slotBetStat = document.getElementById('slot-bet-stat');
     const slotLastWinStat = document.getElementById('slot-lastwin-stat');
     const slotScoreStat = document.getElementById('slot-score-stat');
 
     const slotSpinBtn = document.getElementById('slot-spin-btn');
     const slotCollectBtn = document.getElementById('slot-collect-btn');
     const slotGambleBtn = document.getElementById('slot-gamble-btn');
-    const slotNudgeBtn = document.getElementById('slot-nudge-btn');
-    const slotBetToggleBtn = document.getElementById('slot-bet-toggle-btn');
     const slotCashoutBtn = document.getElementById('slot-cashout-btn');
     const restartSlotsBtn = document.getElementById('restart-slots-btn');
     const slotHoldBtns = [
@@ -8326,14 +8412,16 @@
       document.getElementById('slot-hold-2-btn')
     ];
 
-    // 7 detailverliebte Hörmann-Symbole mit eigenem Pixel-/Arcade-Renderer & Gewichtungen
+    const MAX_SLOT_SPINS = 10;
+
+    // 6 prägnante, hochwertige Hörmann-Symbole (klar erkennbar & übersichtlich!)
     const SLOT_SYMBOLS = [
       {
         id: 'WILD',
         name: 'Hörmann Gold-Wappen (WILD)',
         short: 'WILD-JOKER',
-        pay3: 1500,
-        pay2: 180,
+        pay3: 1000,
+        pay2: 140,
         weight: 2,
         color: '#fbbf24',
         bg: '#451a03',
@@ -8343,8 +8431,8 @@
         id: 'GATE',
         name: 'Goldenes Sektionaltor',
         short: 'SEKTIONALTOR',
-        pay3: 800,
-        pay2: 95,
+        pay3: 600,
+        pay2: 85,
         weight: 3,
         color: '#f59c00',
         bg: '#1e3a8a'
@@ -8353,8 +8441,8 @@
         id: 'FORKLIFT',
         name: 'Lagermeister Nicos Stapler',
         short: 'BLAUER STAPLER',
-        pay3: 500,
-        pay2: 65,
+        pay3: 400,
+        pay2: 60,
         weight: 4,
         color: '#38bdf8',
         bg: '#0f172a'
@@ -8363,8 +8451,8 @@
         id: 'DENNIS',
         name: 'Super Dennis Meister-Helm',
         short: 'SUPER DENNIS',
-        pay3: 350,
-        pay2: 45,
+        pay3: 250,
+        pay2: 40,
         weight: 5,
         color: '#34d399',
         bg: '#064e3b'
@@ -8373,35 +8461,25 @@
         id: 'MOTOR',
         name: 'SupraMatic Torantrieb',
         short: 'TORANTRIEB',
-        pay3: 240,
-        pay2: 30,
+        pay3: 160,
+        pay2: 25,
         weight: 6,
         color: '#a78bfa',
         bg: '#2e1065'
       },
       {
-        id: 'DOOR',
-        name: 'Feuerschutz-Stahltür',
-        short: 'STAHLTÜR',
-        pay3: 160,
-        pay2: 20,
-        weight: 7,
-        color: '#fb7185',
-        bg: '#4c0519'
-      },
-      {
         id: 'COFFEE',
-        name: 'Lager-Kaffee & Mut-Funk',
+        name: 'Lager-Kaffee & Mut-Becher',
         short: 'MUT-KAFFEE',
         pay3: 100,
         pay2: 15,
-        weight: 8,
+        weight: 7,
         color: '#fcd34d',
         bg: '#1e293b'
       }
     ];
 
-    // 5 Gewinnlinien über das 3x3 Walzenfenster (Oben, Mitte, Unten + 2 Diagonalen)
+    // 5 klassische Gewinnlinien über das 3x3 Walzenfenster (Oben, Mitte, Unten + 2 Diagonalen)
     const SLOT_PAYLINES = [
       { id: 0, name: 'MITTE-LINIE', rows: [1, 1, 1], color: '#f59c00' },
       { id: 1, name: 'OBERE LINIE', rows: [0, 0, 0], color: '#38bdf8' },
@@ -8410,7 +8488,6 @@
       { id: 4, name: 'DIAGONALE ↗', rows: [2, 1, 0], color: '#a855f7' }
     ];
 
-    // Gewichteter Walzenstreifen (35 Felder pro Walze für flüssiges Rollen)
     const SLOT_REEL_STRIP = [];
     SLOT_SYMBOLS.forEach((sym, symIdx) => {
       for (let w = 0; w < sym.weight; w++) {
@@ -8421,26 +8498,18 @@
     let slotAnimId = null;
     let slotState = {
       active: false,
-      spinsLeft: 12,
-      totalSpinsPlayed: 0,
+      spinsLeft: MAX_SLOT_SPINS,
+      spinsUsed: 0,
       bankScore: 0,
       pendingWin: 0,
       lastWin: 0,
-      betMultiplier: 1, // 1x (1 Spin), 2x Mut-Turbo (1 Spin + höherer Bonus), 3x Vollgas (2 Spins Einsatz = 3x Gewinn!)
-      feverCharge: 0,   // 0..5 -> Bei 5 startet der TOR-FIEBER OVERDRIVE (3 Gratis-Spins mit 2x Gewinn & extra Wilds!)
-      feverSpinsLeft: 0,
       holds: [false, false, false],
-      holdAllowedThisTurn: false,
-      nudgeAvailable: false,
-      nudgeTargetReel: -1,
-      nudgeDirection: 1,
-      gambleStep: 0,
-      ladderCursor: 0,
-      ladderTimer: 0,
+      holdAllowedThisTurn: true,
+      gambleStep: 0, // max 3x verdoppeln pro Gewinn
       leverPullProgress: 0,
       bulbPhase: 0,
       shakeTimer: 0,
-      bannerText: 'ZIEH AM BISECUR-HEBEL FÜR DEINEN MUT-DREH!',
+      bannerText: '10 SPINS STARTKLAR! ZIEH AM BISECUR-HEBEL (LEERTASTE)!',
       bannerColor: '#fbbf24',
       winningLines: [],
       floatingCoins: [],
@@ -8452,34 +8521,25 @@
       roundFinished: false
     };
 
-    function pickRandomSymbolIndex(isFeverMode = false) {
-      // Im Tor-Fieber Overdrive erscheinen doppelt so viele goldene WILD-Wappen & Sektionaltore!
-      if (isFeverMode && Math.random() < 0.24) {
-        return Math.random() < 0.5 ? 0 : 1;
-      }
+    function pickRandomSymbolIndex() {
       return SLOT_REEL_STRIP[Math.floor(Math.random() * SLOT_REEL_STRIP.length)];
     }
 
     function initSlotsGame() {
       slotState.active = true;
-      slotState.spinsLeft = 12;
-      slotState.totalSpinsPlayed = 0;
+      slotState.spinsLeft = MAX_SLOT_SPINS;
+      slotState.spinsUsed = 0;
       slotState.bankScore = 0;
       slotState.pendingWin = 0;
       slotState.lastWin = 0;
-      slotState.betMultiplier = 1;
-      slotState.feverCharge = 0;
-      slotState.feverSpinsLeft = 0;
       slotState.holds = [false, false, false];
       slotState.holdAllowedThisTurn = true;
-      slotState.nudgeAvailable = false;
-      slotState.nudgeTargetReel = -1;
       slotState.gambleStep = 0;
       slotState.leverPullProgress = 0;
       slotState.winningLines = [];
       slotState.floatingCoins = [];
       slotState.roundFinished = false;
-      slotState.bannerText = '🎰 12 MUT-SPINS STARTKLAR! HALT WALZEN FEST ODER ZIEH DEN HEBEL!';
+      slotState.bannerText = '🎰 10 MUT-SPINS BEREIT! HALT WALZEN FEST ODER ZIEH DEN HEBEL!';
       slotState.bannerColor = '#fbbf24';
 
       slotState.reels = [0, 1, 2].map((rIdx) => ({
@@ -8489,9 +8549,9 @@
         stopDelay: 0,
         bounce: 0,
         symbols: [
-          pickRandomSymbolIndex(false),
-          rIdx === 1 ? 0 : pickRandomSymbolIndex(false),
-          pickRandomSymbolIndex(false)
+          pickRandomSymbolIndex(),
+          rIdx === 1 ? 0 : pickRandomSymbolIndex(),
+          pickRandomSymbolIndex()
         ]
       }));
 
@@ -8516,25 +8576,9 @@
       if (!slotSpinsStat) return;
       const isAnySpinning = slotState.reels.some(r => r.spinning);
 
-      slotSpinsStat.textContent = slotState.feverSpinsLeft > 0
-        ? `${slotState.spinsLeft} (+${slotState.feverSpinsLeft} 🔥)`
-        : `${slotState.spinsLeft}`;
-
-      const betLabels = {
-        1: '1x NORMAL (1 Spin)',
-        2: '2x MUT-BOOST (1 Spin)',
-        3: '3x VOLLGAS (2 Spins)'
-      };
-      slotBetStat.textContent = betLabels[slotState.betMultiplier] || '1x NORMAL';
+      slotSpinsStat.textContent = `${slotState.spinsUsed} / ${MAX_SLOT_SPINS} (${slotState.spinsLeft} frei)`;
       slotLastWinStat.textContent = slotState.pendingWin > 0 ? `${slotState.pendingWin} (Offen)` : `${slotState.lastWin}`;
       slotScoreStat.textContent = `${slotState.bankScore}`;
-
-      if (slotBetToggleBtn) {
-        slotBetToggleBtn.textContent = `⚡ Einsatz: ${slotState.betMultiplier}x (E)`;
-        slotBetToggleBtn.style.background = slotState.betMultiplier === 3
-          ? '#dc2626'
-          : (slotState.betMultiplier === 2 ? '#d97706' : 'var(--hoermann-blue)');
-      }
 
       slotHoldBtns.forEach((btn, idx) => {
         if (!btn) return;
@@ -8543,19 +8587,15 @@
         btn.style.background = held ? '#f59c00' : '#1e293b';
         btn.style.borderColor = held ? '#fde047' : '#475569';
         btn.style.color = held ? '#001830' : '#ffffff';
-        btn.disabled = isAnySpinning || !slotState.holdAllowedThisTurn || slotState.pendingWin > 0;
+        btn.disabled = isAnySpinning || !slotState.holdAllowedThisTurn || slotState.pendingWin > 0 || slotState.roundFinished;
         btn.style.opacity = btn.disabled ? '0.5' : '1';
       });
 
-      if (slotNudgeBtn) {
-        slotNudgeBtn.style.display = (!isAnySpinning && slotState.nudgeAvailable) ? 'inline-flex' : 'none';
-      }
-
       if (slotGambleBtn && slotCollectBtn) {
-        const showGamble = !isAnySpinning && slotState.pendingWin > 0 && slotState.gambleStep < 5;
+        const showGamble = !isAnySpinning && slotState.pendingWin > 0 && slotState.gambleStep < 3;
         slotGambleBtn.style.display = showGamble ? 'inline-flex' : 'none';
         if (showGamble) {
-          slotGambleBtn.textContent = `🔥 Risiko: ${slotState.pendingWin} ➔ ${slotState.pendingWin * 2} Pkt (R)`;
+          slotGambleBtn.textContent = `🔥 Mut-Risiko: ${slotState.pendingWin} ➔ ${slotState.pendingWin * 2} Pkt (R)`;
         }
         slotCollectBtn.style.display = (!isAnySpinning && slotState.pendingWin > 0) ? 'inline-flex' : 'none';
         if (slotState.pendingWin > 0) {
@@ -8565,26 +8605,23 @@
 
       if (slotSpinBtn) {
         if (isAnySpinning) {
-          slotSpinBtn.textContent = '🛑 STOPP! (Leertaste)';
+          slotSpinBtn.textContent = '🛑 WALZE STOPPEN (Leertaste)';
           slotSpinBtn.style.background = '#ef4444';
         } else if (slotState.roundFinished) {
           slotSpinBtn.textContent = '🏆 HIGHSCORE EINTRAGEN';
           slotSpinBtn.style.background = '#10b981';
-        } else if (slotState.feverSpinsLeft > 0) {
-          slotSpinBtn.textContent = `🔥 GRATIS FIEBER-SPIN (${slotState.feverSpinsLeft})!`;
-          slotSpinBtn.style.background = '#ec4899';
         } else {
-          slotSpinBtn.textContent = '🎰 HEBEL ZIEHEN (Leertaste)';
+          slotSpinBtn.textContent = `🎰 HEBEL ZIEHEN (${slotState.spinsLeft} Spins übrig)`;
           slotSpinBtn.style.background = 'var(--hoermann-orange)';
         }
       }
     }
 
     function toggleSlotHold(reelIdx) {
-      if (!slotState.active) return;
+      if (!slotState.active || slotState.roundFinished) return;
       if (slotState.reels.some(r => r.spinning)) return;
       if (slotState.pendingWin > 0) {
-        showToast('Sichere erst deinen aktuellen Gewinn oder geh auf die Risikoleiter! 💰');
+        showToast('Sichere erst deinen offenen Gewinn (Enter) oder geh ins Mut-Risiko (R)! 💰');
         return;
       }
       if (!slotState.holdAllowedThisTurn) {
@@ -8603,24 +8640,11 @@
       updateSlotsUiControls();
     }
 
-    function toggleSlotBetMode() {
-      if (slotState.reels.some(r => r.spinning) || slotState.pendingWin > 0) return;
-      slotState.betMultiplier = slotState.betMultiplier === 1 ? 2 : (slotState.betMultiplier === 2 ? 3 : 1);
-      playSound('coin');
-      const msgMap = {
-        1: '⚡ Einsatz 1x Normal: Solide Gewinne bei 1 Spin pro Zug.',
-        2: '🔥 Einsatz 2x Mut-Boost: 1.5x höhere Liniengewinne + schnellere Fieber-Aufladung (1 Spin)!',
-        3: '🚀 Einsatz 3x VOLLGAS: Dreifache Gewinne! Kostet 2 Spins pro Dreh.'
-      };
-      showToast(msgMap[slotState.betMultiplier]);
-      updateSlotsUiControls();
-    }
-
     function spawnSlotCoins(count, xOrigin, yOrigin) {
       for (let i = 0; i < count; i++) {
         slotState.floatingCoins.push({
-          x: xOrigin + (Math.random() - 0.5) * 140,
-          y: yOrigin + (Math.random() - 0.5) * 40,
+          x: xOrigin + (Math.random() - 0.5) * 180,
+          y: yOrigin + (Math.random() - 0.5) * 45,
           vx: (Math.random() - 0.5) * 9,
           vy: -Math.random() * 9 - 3,
           size: 8 + Math.random() * 6,
@@ -8629,7 +8653,6 @@
       }
     }
 
-    // Bucht einen offenen Gewinn fest aufs Mut-Konto
     function collectSlotPendingWin() {
       if (slotState.pendingWin <= 0) return;
       const won = slotState.pendingWin;
@@ -8637,84 +8660,57 @@
       slotState.lastWin = won;
       slotState.pendingWin = 0;
       slotState.gambleStep = 0;
-      slotState.nudgeAvailable = false;
       playSound('coin');
-      spawnSlotCoins(18, 340, 220);
+      spawnSlotCoins(20, 390, 220);
       slotState.bannerText = `💰 +${won} PUNKTE AUF DEIN MUT-KONTO GEBUCHT!`;
       slotState.bannerColor = '#34d399';
       checkIfSlotSeriesFinished();
       updateSlotsUiControls();
     }
 
-    // 5-Stufige Mut-Risikoleiter (Alles oder Nichts / Trost-Sicherung)
+    // Klares, direktes Mut-Risiko (Bis zu 3x pro Gewinn verdoppeln - Doppelt oder Trostpflaster!)
     function gambleSlotPendingWin() {
       if (slotState.pendingWin <= 0 || slotState.reels.some(r => r.spinning)) return;
-      if (slotState.gambleStep >= 5) {
+      if (slotState.gambleStep >= 3) {
         collectSlotPendingWin();
         return;
       }
 
-      // Gewinnchance auf der Mut-Leiter: Bei passendem Timing auf dem leuchtenden Balken höher!
-      const timingBonus = slotState.ladderCursor === 1 ? 0.14 : 0;
-      const winChance = Math.min(0.72, 0.54 + timingBonus - slotState.gambleStep * 0.04);
-
+      const winChance = 0.55; // Faire 55% Mut-Chance für den Spieler!
       if (Math.random() < winChance) {
         slotState.pendingWin *= 2;
         slotState.gambleStep++;
         slotState.shakeTimer = 10;
         playSound('ladderStep');
-        spawnSlotCoins(22, 650, 200);
-        if (slotState.gambleStep >= 5) {
-          slotState.bannerText = `👑 RISIKO-MAXIMUM ERREICHT! ${slotState.pendingWin} PUNKTE SOFORT VERBUCHT!`;
+        spawnSlotCoins(24, 390, 220);
+        if (slotState.gambleStep >= 3) {
+          slotState.bannerText = `👑 3x VERDOPPELT! ${slotState.pendingWin} PUNKTE SOFORT GESICHERT!`;
           slotState.bannerColor = '#fbbf24';
           triggerParticleEffect('firework');
           playSound('jackpot');
           collectSlotPendingWin();
           return;
         } else {
-          slotState.bannerText = `🔥 MUT BEWIESEN! GEWINN VERDOPPELT AUF ${slotState.pendingWin} PKT (STUFE ${slotState.gambleStep}/5)!`;
+          slotState.bannerText = `🔥 MUT BELOHNT! VERDOPPELT AUF ${slotState.pendingWin} PKT (${slotState.gambleStep}/3)! NOCHMAL [R] ODER SICHERN [ENTER]?`;
           slotState.bannerColor = '#fbbf24';
         }
       } else {
-        // Verzockt! Aber Hörmann-Stahlzargen-Trostpflaster gibt +15 Mut-Punkte für den Mut zum Risiko!
-        const consolation = 15 * slotState.betMultiplier;
+        const consolation = 20;
         slotState.bankScore += consolation;
         slotState.lastWin = consolation;
         slotState.pendingWin = 0;
         slotState.gambleStep = 0;
         playSound('crunch');
-        slotState.bannerText = `💥 STROMSTOSS AUF DER LEITER! ABER +${consolation} PKT MUT-TROSTPFLASTER!`;
+        slotState.bannerText = `💥 VERZOCKT! ABER +${consolation} PKT HÖRMANN-TROSTPFLASTER FÜRS MUT-KONTO!`;
         slotState.bannerColor = '#f87171';
         checkIfSlotSeriesFinished();
       }
       updateSlotsUiControls();
     }
 
-    // Mut-Schubs (Nudge): Schiebt eine knapp verpasste Walze um 1 Feld ins Glück!
-    function triggerSlotNudge() {
-      if (!slotState.nudgeAvailable || slotState.nudgeTargetReel < 0) return;
-      const rIdx = slotState.nudgeTargetReel;
-      const reel = slotState.reels[rIdx];
-      slotState.nudgeAvailable = false;
-
-      if (slotState.nudgeDirection === 1) {
-        // Oberes Symbol rutscht in die Mitte
-        reel.symbols = [pickRandomSymbolIndex(slotState.feverSpinsLeft > 0), reel.symbols[0], reel.symbols[1]];
-      } else {
-        // Unteres Symbol rutscht in die Mitte
-        reel.symbols = [reel.symbols[1], reel.symbols[2], pickRandomSymbolIndex(slotState.feverSpinsLeft > 0)];
-      }
-      reel.bounce = 14;
-      playSound('hydraulic');
-      slotState.bannerText = `👋 MUT-SCHUBS AUF WALZE ${rIdx + 1} AUSGEFÜHRT!`;
-      slotState.bannerColor = '#a78bfa';
-      evaluateSlotSpinResult(true);
-    }
-
     function pullSlotLeverOrStop() {
       if (!slotState.active) return;
 
-      // Falls Serie beendet -> Highscore-Dialog öffnen
       if (slotState.roundFinished) {
         finishSlotsAndSubmitScore();
         return;
@@ -8734,29 +8730,15 @@
         return;
       }
 
-      // 2. Neuen Spin starten!
-      const isFeverSpin = slotState.feverSpinsLeft > 0;
-      const spinCost = isFeverSpin ? 0 : (slotState.betMultiplier === 3 ? 2 : 1);
-
-      if (!isFeverSpin && slotState.spinsLeft <= 0) {
+      // 2. Prüfen, ob noch einer der 10 festen Spins übrig ist
+      if (slotState.spinsLeft <= 0) {
         checkIfSlotSeriesFinished();
         return;
       }
 
-      if (!isFeverSpin && slotState.spinsLeft < spinCost) {
-        slotState.betMultiplier = 1;
-      }
-
-      if (isFeverSpin) {
-        slotState.feverSpinsLeft--;
-      } else {
-        slotState.spinsLeft -= (slotState.betMultiplier === 3 ? 2 : 1);
-      }
-
-      slotState.totalSpinsPlayed++;
+      slotState.spinsLeft--;
+      slotState.spinsUsed++;
       slotState.winningLines = [];
-      slotState.nudgeAvailable = false;
-      slotState.nudgeTargetReel = -1;
       slotState.leverPullProgress = 1.0;
       playSound('leverPull');
 
@@ -8769,25 +8751,21 @@
           reel.bounce = 6;
         } else {
           reel.spinning = true;
-          reel.speed = 26 + idx * 3;
-          reel.stopDelay = 28 + idx * 22;
+          reel.speed = 28 + idx * 3;
+          reel.stopDelay = 24 + idx * 18;
         }
       });
 
-      // Wenn in diesem Zug Walzen gehalten wurden, werden die Holds nach dem Spin gelöst & für 1 Zug gesperrt
       slotState.holdAllowedThisTurn = !usedAnyHold;
       slotState.holds = [false, false, false];
 
-      slotState.bannerText = isFeverSpin
-        ? '🔥 TOR-FIEBER OVERDRIVE LÄUFT! DOPPELTE GEWINNE & EXTRA WILDS!'
-        : '🎰 WALZEN ROLLEN... DRÜCKE [LEERTASTE] ZUM MANUELLEN SKILL-STOPP!';
-      slotState.bannerColor = isFeverSpin ? '#f43f5e' : '#38bdf8';
+      slotState.bannerText = `🎰 SPIN ${slotState.spinsUsed} VON ${MAX_SLOT_SPINS} LÄUFT... DRÜCKE [LEERTASTE] ZUM STOPPEN!`;
+      slotState.bannerColor = '#38bdf8';
 
       updateSlotsUiControls();
 
-      // Falls alle 3 Walzen gehalten wurden (theoretisch max 2, aber sicherheitshalber)
       if (!slotState.reels.some(r => r.spinning)) {
-        evaluateSlotSpinResult(false);
+        evaluateSlotSpinResult();
       }
     }
 
@@ -8796,16 +8774,15 @@
       if (!reel || !reel.spinning) return;
       reel.spinning = false;
       reel.speed = 0;
-      reel.bounce = 15;
+      reel.bounce = 14;
 
-      const isFever = slotState.feverSpinsLeft > 0;
       reel.symbols = [
-        pickRandomSymbolIndex(isFever),
-        pickRandomSymbolIndex(isFever),
-        pickRandomSymbolIndex(isFever)
+        pickRandomSymbolIndex(),
+        pickRandomSymbolIndex(),
+        pickRandomSymbolIndex()
       ];
 
-      // Garantierter Schutz gegen doppelte Symbole direkt untereinander auf derselben Walze (sieht hochwertiger aus)
+      // Keine identischen Symbole direkt übereinander auf derselben Walze
       if (reel.symbols[1] === reel.symbols[0]) {
         reel.symbols[1] = (reel.symbols[0] + 1) % SLOT_SYMBOLS.length;
       }
@@ -8815,34 +8792,23 @@
 
       playSound('reelStop');
 
-      // Prüfen, ob jetzt alle 3 Walzen stehen
       if (!slotState.reels.some(r => r.spinning)) {
-        evaluateSlotSpinResult(false);
+        evaluateSlotSpinResult();
       } else {
         updateSlotsUiControls();
       }
     }
 
-    // Wertet alle 5 Gewinnlinien, Tor-Fieber-Bonus, Freispiele & den Mut-Schubs (Nudge) aus
-    function evaluateSlotSpinResult(wasNudged) {
+    // Wertet alle 5 Gewinnlinien klar & nachvollziehbar aus (Ohne Endlos-Freispiele!)
+    function evaluateSlotSpinResult() {
       const grid = [
-        slotState.reels[0].symbols, // [oben, mitte, unten]
+        slotState.reels[0].symbols,
         slotState.reels[1].symbols,
         slotState.reels[2].symbols
       ];
 
       let totalWin = 0;
       const hitLines = [];
-      let wildCountInGrid = 0;
-
-      for (let c = 0; c < 3; c++) {
-        for (let r = 0; r < 3; r++) {
-          if (grid[c][r] === 0) wildCountInGrid++;
-        }
-      }
-
-      const activeMultiplier = (slotState.betMultiplier === 3 ? 3 : (slotState.betMultiplier === 2 ? 1.5 : 1)) *
-                               (slotState.feverSpinsLeft > 0 ? 2 : 1);
 
       SLOT_PAYLINES.forEach(line => {
         const s0 = grid[0][line.rows[0]];
@@ -8857,7 +8823,7 @@
 
         if (nonWilds.length === 0) {
           isThreeOfAKind = true;
-          targetSymIdx = 0; // 3x WILD MEGA-JACKPOT!
+          targetSymIdx = 0;
         } else {
           const firstNonWild = nonWilds[0];
           if (nonWilds.every(s => s === firstNonWild)) {
@@ -8868,7 +8834,7 @@
 
         if (isThreeOfAKind) {
           const symObj = SLOT_SYMBOLS[targetSymIdx];
-          const lineWin = Math.round(symObj.pay3 * activeMultiplier);
+          const lineWin = symObj.pay3;
           totalWin += lineWin;
           hitLines.push({
             line: line,
@@ -8879,8 +8845,8 @@
           return;
         }
 
-        // 2.Auf der MITTE-LINIE (oder bei 2 gleichen links/rechts auf einer Linie) gibt es auch für 2 Gleiche + Nachbarschafts-Treffer Punkte!
-        if (line.id === 0 || slotState.betMultiplier >= 2) {
+        // 2. Auf den 3 waagerechten Linien zählen auch 2 nebeneinanderliegende Gleiche (Pärchen)!
+        if (line.id <= 2) {
           let pairSymIdx = -1;
           if (s0 === s1 || s0 === 0 || s1 === 0) {
             pairSymIdx = s0 !== 0 ? s0 : s1;
@@ -8889,7 +8855,7 @@
           }
           if (pairSymIdx >= 0) {
             const symObj = SLOT_SYMBOLS[pairSymIdx];
-            const pairWin = Math.round(symObj.pay2 * activeMultiplier);
+            const pairWin = symObj.pay2;
             totalWin += pairWin;
             hitLines.push({
               line: line,
@@ -8903,109 +8869,49 @@
 
       slotState.winningLines = hitLines;
 
-      // Tor-Fieber Leiste aufladen (Jeder Gewinn oder jedes WILD-Symbol lädt die 5er-Leiste auf)
-      if (hitLines.length > 0 || wildCountInGrid > 0) {
-        const addFever = hitLines.some(h => h.count === 3) ? 2 : 1;
-        slotState.feverCharge = Math.min(5, slotState.feverCharge + addFever);
-        if (slotState.feverCharge >= 5 && slotState.feverSpinsLeft === 0) {
-          slotState.feverCharge = 0;
-          slotState.feverSpinsLeft = 3;
-          playSound('powerup');
-          triggerParticleEffect('door');
-          showToast('🚨 TOR-FIEBER OVERDRIVE AKTIVIERT! +3 Gratis-Spins mit 2x Gewinn & Extra-Wilds!');
-        }
-      }
-
-      // Falls 3x Super-Dennis oder 3x Stapler -> +2 Bonus-Freispiele!
-      if (hitLines.some(h => h.count === 3 && (h.sym.id === 'FORKLIFT' || h.sym.id === 'DENNIS'))) {
-        slotState.spinsLeft += 2;
-        showToast('🎁 BONUS: +2 Extra Mut-Spins für deinen 3er-Treffer!');
-      }
-
-      // Prüfen, ob ein "Mut-Schubs" (Nudge) möglich ist, falls noch kein 3er-Treffer vorliegt
-      if (!wasNudged && !hitLines.some(h => h.count === 3)) {
-        // Prüfen, ob 2 Walzen in der Mitte übereinstimmen und auf der 3. Walze oben oder unten das passende Symbol liegt!
-        const m0 = grid[0][1], m1 = grid[1][1], m2 = grid[2][1];
-        const checkNudgeForReel = (rIdx, targetSym) => {
-          if (grid[rIdx][0] === targetSym || grid[rIdx][0] === 0) {
-            slotState.nudgeAvailable = true;
-            slotState.nudgeTargetReel = rIdx;
-            slotState.nudgeDirection = 1;
-            return true;
-          }
-          if (grid[rIdx][2] === targetSym || grid[rIdx][2] === 0) {
-            slotState.nudgeAvailable = true;
-            slotState.nudgeTargetReel = rIdx;
-            slotState.nudgeDirection = -1;
-            return true;
-          }
-          return false;
-        };
-
-        if (m0 === m1 || m0 === 0 || m1 === 0) {
-          const needed = m0 !== 0 ? m0 : m1;
-          checkNudgeForReel(2, needed);
-        } else if (m1 === m2 || m2 === 0) {
-          const needed = m1 !== 0 ? m1 : m2;
-          checkNudgeForReel(0, needed);
-        } else if (m0 === m2) {
-          checkNudgeForReel(1, m0);
-        }
-      }
-
       if (totalWin > 0) {
         slotState.pendingWin = totalWin;
         slotState.gambleStep = 0;
         const has3OfAKind = hitLines.some(h => h.count === 3);
 
         if (has3OfAKind) {
-          slotState.shakeTimer = 18;
+          slotState.shakeTimer = 16;
           playSound('jackpot');
           triggerParticleEffect('gold');
-          spawnSlotCoins(35, 340, 220);
+          spawnSlotCoins(32, 390, 220);
           const bestHit = hitLines.find(h => h.count === 3) || hitLines[0];
-          slotState.bannerText = `🏆 JACKPOT-LINIE: 3x ${bestHit.sym.short}! +${totalWin} PKT! RISIKO ODER SICHERN?`;
+          slotState.bannerText = `🏆 3x ${bestHit.sym.short}! +${totalWin} PKT! VERDOPPELN [R] ODER SICHERN [ENTER]?`;
           slotState.bannerColor = '#fbbf24';
         } else {
           playSound('score');
-          spawnSlotCoins(12, 340, 220);
-          slotState.bannerText = `✨ GEWINN: +${totalWin} PKT (${hitLines.length} LINIE${hitLines.length > 1 ? 'N' : ''})! VERDOPPELN (R) ODER SICHERN?`;
+          spawnSlotCoins(14, 390, 220);
+          slotState.bannerText = `✨ GEWINN: +${totalWin} PKT! MUT-RISIKO: VERDOPPELN [R] ODER SICHERN [ENTER]?`;
           slotState.bannerColor = '#34d399';
         }
       } else {
-        // Trost-Mut-Impuls bei einer Niete, wenn man Mut-Schubs hat
-        if (slotState.nudgeAvailable) {
-          playSound('beep');
-          slotState.bannerText = `👀 KNAPP DANEBEN! DRÜCKE [👋 MUT-SCHUBS (N)], UM WALZE ${slotState.nudgeTargetReel + 1} REINZUSCHUBSEN!`;
-          slotState.bannerColor = '#c084fc';
-        } else {
-          slotState.bannerText = '⚡ KEIN TREFFER – HALT GUTE SYMBOLE MIT [1] [2] [3] FEST & ZIEH NOCHMAL!';
-          slotState.bannerColor = '#94a3b8';
-          checkIfSlotSeriesFinished();
-        }
+        slotState.bannerText = slotState.spinsLeft > 0
+          ? '⚡ KEIN TREFFER – HALT GUTE WALZEN MIT [1] [2] [3] FEST & ZIEH NOCHMAL!'
+          : '🏁 ALLE 10 SPINS GESPIELT!';
+        slotState.bannerColor = '#94a3b8';
+        checkIfSlotSeriesFinished();
       }
 
       updateSlotsUiControls();
     }
 
     function checkIfSlotSeriesFinished() {
-      if (slotState.spinsLeft <= 0 && slotState.feverSpinsLeft <= 0 && slotState.pendingWin <= 0 && !slotState.nudgeAvailable) {
+      if (slotState.spinsLeft <= 0 && slotState.pendingWin <= 0) {
         slotState.roundFinished = true;
-        // Kleiner Abschluss-Bonus für gesammelte Fieber-Sterne
-        const finishBonus = slotState.feverCharge * 25;
-        if (finishBonus > 0) {
-          slotState.bankScore += finishBonus;
-        }
         playSound('victory');
         triggerParticleEffect('confetti');
-        slotState.bannerText = `🏁 SERIE BEENDET! GESAMT-MUT-KONTO: ${slotState.bankScore} PUNKTE!`;
+        slotState.bannerText = `🏁 10 SPINS BEENDET! DEIN ERGEBNIS: ${slotState.bankScore} PUNKTE!`;
         slotState.bannerColor = '#10b981';
         updateSlotsUiControls();
         setTimeout(() => {
           if (slotState.active && slotState.roundFinished && slotState.bankScore > 0) {
             promptScoreSubmit(slotState.bankScore, 'slots', 'Der Hörmann Mut-Automat');
           }
-        }, 650);
+        }, 600);
       }
     }
 
@@ -9014,7 +8920,7 @@
         collectSlotPendingWin();
       }
       if (slotState.bankScore <= 0) {
-        showToast('Erspiele erst ein paar Mut-Punkte am Automaten, bevor du abrechnest! 🎰');
+        showToast('Erspiele erst Punkte am Automaten, bevor du dich einträgst! 🎰');
         return;
       }
       slotState.roundFinished = true;
@@ -9022,12 +8928,9 @@
       promptScoreSubmit(slotState.bankScore, 'slots', 'Der Hörmann Mut-Automat');
     }
 
-    // Event-Listener für Buttons, Maus-Klick auf den Canvas (Hebel & Walzen-Holds) & Tastatur
     if (slotSpinBtn) slotSpinBtn.addEventListener('click', pullSlotLeverOrStop);
     if (slotCollectBtn) slotCollectBtn.addEventListener('click', collectSlotPendingWin);
     if (slotGambleBtn) slotGambleBtn.addEventListener('click', gambleSlotPendingWin);
-    if (slotNudgeBtn) slotNudgeBtn.addEventListener('click', triggerSlotNudge);
-    if (slotBetToggleBtn) slotBetToggleBtn.addEventListener('click', toggleSlotBetMode);
     if (slotCashoutBtn) slotCashoutBtn.addEventListener('click', finishSlotsAndSubmitScore);
     if (restartSlotsBtn) restartSlotsBtn.addEventListener('click', startSlotsGame);
     slotHoldBtns.forEach((btn, idx) => {
@@ -9043,10 +8946,22 @@
         const mx = (e.clientX - rect.left) * scaleX;
         const my = (e.clientY - rect.top) * scaleY;
 
-        // Klick auf eine der 3 Walzen (oder deren HOLD-Leiste unten) hält die Walze direkt fest!
+        // Falls ein Gewinn offen ist: Klick auf die eingeblendeten Risiko-/Sichern-Buttons unten im Canvas
+        if (slotState.pendingWin > 0 && !slotState.reels.some(re => re.spinning)) {
+          if (mx >= 115 && mx <= 380 && my >= 340 && my <= 382) {
+            gambleSlotPendingWin();
+            return;
+          }
+          if (mx >= 400 && mx <= 665 && my >= 340 && my <= 382) {
+            collectSlotPendingWin();
+            return;
+          }
+        }
+
+        // Klick direkt auf eine der 3 großen Walzen (stoppt im Lauf oder schaltet HOLD um)
         for (let r = 0; r < 3; r++) {
-          const rx = 168 + r * 124;
-          if (mx >= rx && mx <= rx + 114 && my >= 95 && my <= 375) {
+          const rx = 96 + r * 186;
+          if (mx >= rx && mx <= rx + 170 && my >= 95 && my <= 380) {
             if (slotState.reels.some(re => re.spinning)) {
               stopSingleReel(r);
             } else {
@@ -9056,13 +8971,7 @@
           }
         }
 
-        // Klick rechts auf die Mut-Risikoleiter (wenn Gewinn offen)
-        if (mx >= 595 && mx <= 765 && my >= 85 && my <= 365 && slotState.pendingWin > 0) {
-          gambleSlotPendingWin();
-          return;
-        }
-
-        // Klick auf den BiSecur-Hebel (links/rechts) oder Hauptbereich startet den Spin
+        // Klick auf den BiSecur-Hebel rechts oder Restfläche startet den Spin
         pullSlotLeverOrStop();
       });
     }
@@ -9086,127 +8995,106 @@
       } else if (e.key === 'r' || e.key === 'R') {
         e.preventDefault();
         gambleSlotPendingWin();
-      } else if (e.key === 'n' || e.key === 'N') {
-        e.preventDefault();
-        triggerSlotNudge();
-      } else if (e.key === 'e' || e.key === 'E') {
-        e.preventDefault();
-        toggleSlotBetMode();
       } else if (e.key === 'Enter' && slotState.pendingWin > 0) {
         e.preventDefault();
         collectSlotPendingWin();
       }
     });
 
-    // Zeichnet jedes der 7 Hörmann-Symbole als detaillierte Arcade-Vektor/Pixel-Grafik
+    // Zeichnet jedes der 6 Hörmann-Symbole groß, kontrastreich & aufgeräumt
     function drawSlotSymbolIcon(ctx, symIdx, cx, cy, isHighlighted) {
       const sym = SLOT_SYMBOLS[symIdx] || SLOT_SYMBOLS[0];
       ctx.save();
 
-      // Karten-Hintergrund
+      // Große, klare Walzen-Karte (148 x 68 px)
       ctx.fillStyle = isHighlighted ? '#fef3c7' : sym.bg;
-      ctx.fillRect(cx - 48, cy - 34, 96, 68);
+      ctx.fillRect(cx - 74, cy - 34, 148, 68);
       ctx.strokeStyle = isHighlighted ? '#f59c00' : sym.color;
-      ctx.lineWidth = isHighlighted ? 3 : 2;
-      ctx.strokeRect(cx - 48, cy - 34, 96, 68);
+      ctx.lineWidth = isHighlighted ? 3.5 : 2;
+      ctx.strokeRect(cx - 74, cy - 34, 148, 68);
 
-      // Symbol-Grafik im Zentrum
+      // Icon links auf der Karte (cx - 38), Name & Punkte rechts daneben für perfekte Lesbarkeit!
+      const ix = cx - 36;
+      const iy = cy;
+
       if (sym.id === 'WILD') {
-        // Goldenes Hörmann-Wappen + Krone (WILD)
         ctx.fillStyle = '#f59c00';
-        ctx.fillRect(cx - 34, cy - 24, 68, 30);
+        ctx.fillRect(ix - 26, iy - 20, 52, 40);
         ctx.strokeStyle = '#fde047';
         ctx.lineWidth = 2;
-        ctx.strokeRect(cx - 34, cy - 24, 68, 30);
+        ctx.strokeRect(ix - 26, iy - 20, 52, 40);
         ctx.fillStyle = '#002d62';
-        ctx.font = '900 13px Inter, sans-serif';
+        ctx.font = '900 10px Inter, sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText('HÖRMANN', cx, cy - 10);
+        ctx.fillText('HÖRMANN', ix, iy - 3);
         ctx.fillStyle = '#fde047';
         ctx.font = '900 10px Inter, sans-serif';
-        ctx.fillText('★ WILD JOKER ★', cx, cy + 3);
+        ctx.fillText('★ WILD ★', ix, iy + 12);
       } else if (sym.id === 'GATE') {
-        // Goldenes Hörmann Sektionaltor mit Lamellen & Lichtband
         ctx.fillStyle = '#002d62';
-        ctx.fillRect(cx - 30, cy - 26, 60, 36);
+        ctx.fillRect(ix - 25, iy - 21, 50, 42);
         for (let l = 0; l < 4; l++) {
           ctx.fillStyle = l === 1 ? '#38bdf8' : '#f59c00';
-          ctx.fillRect(cx - 26, cy - 23 + l * 8, 52, 6);
+          ctx.fillRect(ix - 21, iy - 17 + l * 9, 42, 7);
         }
       } else if (sym.id === 'FORKLIFT') {
-        // Lagermeister Nicos blauer Hörmann-Stapler mit Palette
         ctx.fillStyle = '#0284c7';
-        ctx.fillRect(cx - 24, cy - 14, 28, 18);
+        ctx.fillRect(ix - 22, iy - 8, 26, 18);
         ctx.fillStyle = '#1e293b';
-        ctx.fillRect(cx - 18, cy - 25, 18, 12);
+        ctx.fillRect(ix - 16, iy - 20, 16, 12);
         ctx.fillStyle = '#f59c00';
-        ctx.fillRect(cx + 6, cy - 26, 4, 32); // Hubmast
-        ctx.fillRect(cx + 10, cy - 8, 16, 4); // Gabel
+        ctx.fillRect(ix + 5, iy - 22, 4, 34);
+        ctx.fillRect(ix + 9, iy + 2, 14, 4);
         ctx.fillStyle = '#eab308';
-        ctx.fillRect(cx + 11, cy - 18, 14, 10); // Palette
+        ctx.fillRect(ix + 10, iy - 8, 12, 10);
         ctx.fillStyle = '#0f172a';
         ctx.beginPath();
-        ctx.arc(cx - 17, cy + 5, 5, 0, Math.PI * 2);
-        ctx.arc(cx - 2, cy + 5, 5, 0, Math.PI * 2);
+        ctx.arc(ix - 15, iy + 12, 5, 0, Math.PI * 2);
+        ctx.arc(ix - 1, iy + 12, 5, 0, Math.PI * 2);
         ctx.fill();
       } else if (sym.id === 'DENNIS') {
-        // Super Dennis mit gelbem Schutzhelm & Mut-Stern
         ctx.fillStyle = '#fbbf24';
         ctx.beginPath();
-        ctx.arc(cx, cy - 12, 16, Math.PI, 0);
+        ctx.arc(ix, iy - 6, 16, Math.PI, 0);
         ctx.fill();
-        ctx.fillRect(cx - 19, cy - 13, 38, 5);
+        ctx.fillRect(ix - 19, iy - 7, 38, 5);
         ctx.fillStyle = '#fde68a';
-        ctx.fillRect(cx - 11, cy - 8, 22, 14);
+        ctx.fillRect(ix - 11, iy - 2, 22, 15);
         ctx.fillStyle = '#002d62';
-        ctx.fillRect(cx - 7, cy - 4, 4, 4);
-        ctx.fillRect(cx + 3, cy - 4, 4, 4);
-        ctx.fillStyle = '#f59c00';
-        ctx.font = '900 10px Inter, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('DENNIS', cx, cy - 15);
+        ctx.fillRect(ix - 7, iy + 2, 4, 4);
+        ctx.fillRect(ix + 3, iy + 2, 4, 4);
       } else if (sym.id === 'MOTOR') {
-        // SupraMatic Torantrieb mit Funk-Blitzen
         ctx.fillStyle = '#cbd5e1';
-        ctx.fillRect(cx - 22, cy - 22, 44, 24);
+        ctx.fillRect(ix - 22, iy - 16, 44, 28);
         ctx.fillStyle = '#002d62';
-        ctx.fillRect(cx - 17, cy - 18, 34, 10);
+        ctx.fillRect(ix - 17, iy - 11, 34, 12);
         ctx.fillStyle = '#38bdf8';
-        ctx.fillRect(cx - 12, cy - 15, 24, 4);
+        ctx.fillRect(ix - 12, iy - 7, 24, 4);
         ctx.fillStyle = '#f59c00';
-        ctx.fillRect(cx - 6, cy - 4, 12, 5);
-      } else if (sym.id === 'DOOR') {
-        // Feuerschutz-Stahltür mit Zarge & Flammschutz-Schild
-        ctx.fillStyle = '#94a3b8';
-        ctx.fillRect(cx - 18, cy - 26, 36, 36);
-        ctx.fillStyle = '#e11d48';
-        ctx.fillRect(cx - 14, cy - 22, 28, 30);
-        ctx.fillStyle = '#fde047';
-        ctx.fillRect(cx + 6, cy - 8, 5, 3);
+        ctx.fillRect(ix - 6, iy + 5, 12, 5);
       } else {
-        // Dampfender Lager-Kaffee-Becher
         ctx.fillStyle = '#ffffff';
-        ctx.fillRect(cx - 14, cy - 18, 26, 26);
+        ctx.fillRect(ix - 14, iy - 16, 26, 30);
         ctx.strokeStyle = '#ffffff';
         ctx.lineWidth = 3;
-        ctx.strokeRect(cx + 12, cy - 13, 7, 13);
+        ctx.strokeRect(ix + 12, iy - 10, 7, 14);
         ctx.fillStyle = '#002d62';
-        ctx.fillRect(cx - 14, cy - 10, 26, 10);
+        ctx.fillRect(ix - 14, iy - 6, 26, 11);
         ctx.fillStyle = '#f59c00';
         ctx.font = '900 8px Inter, sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText('MUT', cx - 1, cy - 2);
+        ctx.fillText('MUT', ix - 1, iy + 2);
       }
 
-      // Symbol-Beschriftung + Wert unten auf der Walzenkarte
+      // Klar lesbarer Symbolname & Gewinnwert rechts neben dem Icon
       ctx.fillStyle = isHighlighted ? '#002d62' : '#ffffff';
-      ctx.font = '800 9.5px Inter, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(sym.short, cx, cy + 20);
+      ctx.font = '900 11px Inter, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(sym.short, cx - 2, cy - 4);
 
       ctx.fillStyle = isHighlighted ? '#d97706' : sym.color;
-      ctx.font = '900 9px monospace';
-      ctx.fillText(`3x=${sym.pay3}`, cx, cy + 30);
+      ctx.font = '900 11px monospace';
+      ctx.fillText(`3x = ${sym.pay3} Pkt`, cx - 2, cy + 14);
 
       ctx.restore();
     }
@@ -9214,22 +9102,17 @@
     function slotLoop() {
       if (!slotState.active || !sCtx) return;
 
-      slotState.bulbPhase += 0.12;
-      slotState.ladderTimer++;
-      if (slotState.ladderTimer % 16 === 0) {
-        slotState.ladderCursor = 1 - slotState.ladderCursor;
-      }
+      slotState.bulbPhase += 0.1;
 
       if (slotState.leverPullProgress > 0) {
         slotState.leverPullProgress = Math.max(0, slotState.leverPullProgress - 0.06);
       }
 
-      // Drehende Walzen animieren & nacheinander abstoppen
       slotState.reels.forEach((reel, idx) => {
         if (reel.spinning) {
-          const prevTick = Math.floor(reel.pos / 24);
+          const prevTick = Math.floor(reel.pos / 26);
           reel.pos += reel.speed;
-          const newTick = Math.floor(reel.pos / 24);
+          const newTick = Math.floor(reel.pos / 26);
           if (newTick !== prevTick && idx === 0) {
             playSound('slotTick');
           }
@@ -9244,7 +9127,6 @@
         }
       });
 
-      // Fliegende Münz-Partikel aktualisieren
       for (let i = slotState.floatingCoins.length - 1; i >= 0; i--) {
         const c = slotState.floatingCoins[i];
         c.x += c.vx;
@@ -9264,12 +9146,12 @@
 
       if (slotState.shakeTimer > 0) {
         slotState.shakeTimer--;
-        const sx = (Math.random() - 0.5) * 7;
-        const sy = (Math.random() - 0.5) * 7;
+        const sx = (Math.random() - 0.5) * 6;
+        const sy = (Math.random() - 0.5) * 6;
         sCtx.translate(sx, sy);
       }
 
-      // 1. Arcade-Hallen-Hintergrund (Dunkelblaues Hörmann-Werk mit goldenem Lichtschein)
+      // 1. Aufgeräumter dunkelblauer Hörmann-Hintergrund
       const bgGrad = sCtx.createLinearGradient(0, 0, 0, slotsCanvas.height);
       bgGrad.addColorStop(0, '#020617');
       bgGrad.addColorStop(0.5, '#0f172a');
@@ -9277,133 +9159,77 @@
       sCtx.fillStyle = bgGrad;
       sCtx.fillRect(0, 0, slotsCanvas.width, slotsCanvas.height);
 
-      // 2. TOP MARQUEE (Leuchtendes Automaten-Dach mit Lauflicht-Glühbirnen)
+      // 2. TOP HEADER & KOMPAKTE GEWINN-ÜBERSICHT
       sCtx.fillStyle = '#002d62';
-      sCtx.fillRect(14, 10, 752, 62);
+      sCtx.fillRect(20, 10, 740, 72);
       sCtx.strokeStyle = '#f59c00';
       sCtx.lineWidth = 3;
-      sCtx.strokeRect(14, 10, 752, 62);
+      sCtx.strokeRect(20, 10, 740, 72);
 
-      // Lauflicht-Perlen rund um das Automaten-Dach
-      for (let b = 0; b < 26; b++) {
-        const bx = 24 + b * 29;
+      // Dezente Lichterkette oben
+      for (let b = 0; b < 24; b++) {
+        const bx = 34 + b * 31;
         const isLit = Math.floor(slotState.bulbPhase + b) % 2 === 0;
         sCtx.fillStyle = isLit ? '#fde047' : '#78350f';
         sCtx.beginPath();
-        sCtx.arc(bx, 15, 3.5, 0, Math.PI * 2);
-        sCtx.arc(bx, 67, 3.5, 0, Math.PI * 2);
+        sCtx.arc(bx, 16, 3, 0, Math.PI * 2);
         sCtx.fill();
       }
 
       sCtx.fillStyle = '#fde047';
-      sCtx.font = '900 18px Inter, sans-serif';
+      sCtx.font = '900 17px Inter, sans-serif';
       sCtx.textAlign = 'center';
-      sCtx.fillText('🎰 HÖRMANN MUT-AUTOMAT • BISECUR SUPER-JACKPOT 🎰', 390, 36);
+      sCtx.fillText('🎰 DER HÖRMANN MUT-AUTOMAT • 10 SPINS ZUM REKORD 🎰', 390, 36);
 
-      // Dynamisches Info-Banner im Marquee
-      sCtx.fillStyle = slotState.bannerColor || '#ffffff';
-      sCtx.font = '800 12.5px Inter, sans-serif';
-      sCtx.fillText(slotState.bannerText, 390, 56);
-
-      // 3. LINKES PANEL: GEWINNTABELLE (PAYTABLE) & TOR-FIEBER-METER
-      sCtx.fillStyle = '#0f172a';
-      sCtx.fillRect(14, 82, 138, 300);
-      sCtx.strokeStyle = '#334155';
-      sCtx.lineWidth = 2;
-      sCtx.strokeRect(14, 82, 138, 300);
-
-      sCtx.fillStyle = '#f59c00';
-      sCtx.font = '900 11px Inter, sans-serif';
-      sCtx.textAlign = 'center';
-      sCtx.fillText('🏆 GEWINN-TABELLE', 83, 100);
-
-      const mult = (slotState.betMultiplier === 3 ? 3 : (slotState.betMultiplier === 2 ? 1.5 : 1)) *
-                   (slotState.feverSpinsLeft > 0 ? 2 : 1);
-
-      SLOT_SYMBOLS.forEach((sym, i) => {
-        const py = 118 + i * 26;
-        sCtx.fillStyle = i % 2 === 0 ? '#1e293b' : '#0f172a';
-        sCtx.fillRect(18, py - 11, 130, 23);
-        sCtx.fillStyle = sym.color;
-        sCtx.font = '800 9.5px Inter, sans-serif';
-        sCtx.textAlign = 'left';
-        sCtx.fillText(sym.short, 23, py + 4);
-        sCtx.fillStyle = '#fde047';
-        sCtx.font = '900 10px monospace';
-        sCtx.textAlign = 'right';
-        sCtx.fillText(`${Math.round(sym.pay3 * mult)}`, 144, py + 4);
-      });
-
-      // TOR-FIEBER OVERDRIVE ANZEIGE (links unten)
-      sCtx.fillStyle = '#1e293b';
-      sCtx.fillRect(18, 304, 130, 72);
-      sCtx.strokeStyle = slotState.feverSpinsLeft > 0 ? '#ec4899' : '#f59c00';
-      sCtx.strokeRect(18, 304, 130, 72);
-
-      sCtx.fillStyle = slotState.feverSpinsLeft > 0 ? '#f43f5e' : '#fbbf24';
-      sCtx.font = '900 10px Inter, sans-serif';
-      sCtx.textAlign = 'center';
-      sCtx.fillText(
-        slotState.feverSpinsLeft > 0 ? `🔥 OVERDRIVE (${slotState.feverSpinsLeft})` : '⚡ TOR-FIEBER METER',
-        83,
-        320
-      );
-
-      for (let f = 0; f < 5; f++) {
-        const fx = 26 + f * 24;
-        const active = slotState.feverSpinsLeft > 0 || f < slotState.feverCharge;
-        sCtx.fillStyle = active ? '#f59c00' : '#0f172a';
-        sCtx.fillRect(fx, 329, 19, 18);
-        sCtx.strokeStyle = '#fde047';
-        sCtx.strokeRect(fx, 329, 19, 18);
-      }
+      // Kompakte 1-Zeilen-Gewinntabelle im Header
       sCtx.fillStyle = '#cbd5e1';
-      sCtx.font = '700 8.5px Inter, sans-serif';
-      sCtx.fillText('5 Treffer = 3x Gratis-Overdrive!', 83, 364);
+      sCtx.font = '700 10.5px Inter, sans-serif';
+      sCtx.fillText('3x Gleiche:  🛡️ WILD 1000  •  🚪 Tor 600  •  🚜 Stapler 400  •  👷 Dennis 250  •  ⚡ Antrieb 160  •  ☕ Kaffee 100', 390, 54);
 
-      // 4. HAUPT-WALZENFENSTER (3 WALZEN x 3 REIHEN + BISECUR-HEBEL)
+      // Status-Banner
+      sCtx.fillStyle = slotState.bannerColor || '#ffffff';
+      sCtx.font = '800 12px Inter, sans-serif';
+      sCtx.fillText(slotState.bannerText, 390, 74);
+
+      // 3. GROSSES ZENTRALES 3-WALZEN-GEHÄUSE (Übersichtlich & ohne Seiten-Ballast!)
       sCtx.fillStyle = '#020617';
-      sCtx.fillRect(160, 82, 384, 300);
-      sCtx.strokeStyle = slotState.feverSpinsLeft > 0 ? '#ec4899' : '#f59c00';
+      sCtx.fillRect(80, 90, 580, 298);
+      sCtx.strokeStyle = slotState.pendingWin > 0 ? '#fde047' : '#f59c00';
       sCtx.lineWidth = 4;
-      sCtx.strokeRect(160, 82, 384, 300);
+      sCtx.strokeRect(80, 90, 580, 298);
 
-      // Gewinnlinien-Markierungen links am Rand
-      const rowCentersY = [132, 210, 288];
+      const rowCentersY = [136, 212, 288];
       rowCentersY.forEach((ry, rIdx) => {
         sCtx.fillStyle = rIdx === 1 ? '#f59c00' : '#38bdf8';
-        sCtx.fillRect(160, ry - 8, 6, 16);
-        sCtx.fillRect(538, ry - 8, 6, 16);
+        sCtx.fillRect(80, ry - 8, 8, 16);
+        sCtx.fillRect(652, ry - 8, 8, 16);
       });
 
-      // Die 3 Walzen zeichnen
+      // Die 3 großen, breiten Walzen zeichnen
       for (let r = 0; r < 3; r++) {
         const reel = slotState.reels[r];
-        const rx = 170 + r * 124;
-        const centerX = rx + 58;
+        const rx = 96 + r * 186;
+        const centerX = rx + 85;
 
-        // Walzen-Schacht
         sCtx.fillStyle = '#0f172a';
-        sCtx.fillRect(rx, 90, 116, 246);
+        sCtx.fillRect(rx, 98, 170, 236);
         sCtx.strokeStyle = slotState.holds[r] ? '#f59c00' : '#334155';
         sCtx.lineWidth = slotState.holds[r] ? 3 : 1.5;
-        sCtx.strokeRect(rx, 90, 116, 246);
+        sCtx.strokeRect(rx, 98, 170, 236);
 
         sCtx.save();
         sCtx.beginPath();
-        sCtx.rect(rx, 90, 116, 246);
+        sCtx.rect(rx, 98, 170, 236);
         sCtx.clip();
 
         if (reel.spinning) {
-          // Schnell rotierende verschwommene Walzen-Optik
-          const offset = (reel.pos % 78);
+          const offset = (reel.pos % 76);
           for (let k = -1; k <= 3; k++) {
-            const symIdx = Math.abs(Math.floor((reel.pos / 78) + k + r * 2)) % SLOT_SYMBOLS.length;
-            const sy = 132 + k * 78 + offset - 39;
+            const symIdx = Math.abs(Math.floor((reel.pos / 76) + k + r * 2)) % SLOT_SYMBOLS.length;
+            const sy = 136 + k * 76 + offset - 38;
             drawSlotSymbolIcon(sCtx, symIdx, centerX, sy, false);
           }
         } else {
-          // Stehende Walze mit Feder-Bounce beim Einrasten
           const bounceY = Math.sin(reel.bounce * 0.6) * (reel.bounce * 0.8);
           for (let row = 0; row < 3; row++) {
             const symIdx = reel.symbols[row];
@@ -9414,24 +9240,49 @@
         }
         sCtx.restore();
 
-        // HOLD-Status-Button direkt unter jeder Walze im Automaten-Gehäuse
-        const isHeld = slotState.holds[r];
-        sCtx.fillStyle = isHeld ? '#f59c00' : '#1e293b';
-        sCtx.fillRect(rx + 6, 343, 104, 28);
-        sCtx.strokeStyle = isHeld ? '#fde047' : '#475569';
-        sCtx.lineWidth = 2;
-        sCtx.strokeRect(rx + 6, 343, 104, 28);
+        // Wenn kein Gewinn offen ist: Große, klickbare HOLD-Buttons direkt unter jeder Walze
+        if (slotState.pendingWin <= 0) {
+          const isHeld = slotState.holds[r];
+          sCtx.fillStyle = isHeld ? '#f59c00' : '#1e293b';
+          sCtx.fillRect(rx + 8, 342, 154, 34);
+          sCtx.strokeStyle = isHeld ? '#fde047' : '#475569';
+          sCtx.lineWidth = 2;
+          sCtx.strokeRect(rx + 8, 342, 154, 34);
 
-        sCtx.fillStyle = isHeld ? '#001830' : '#cbd5e1';
-        sCtx.font = '900 10.5px Inter, sans-serif';
-        sCtx.textAlign = 'center';
-        sCtx.fillText(isHeld ? `🔒 GEHALTEN [${r + 1}]` : `🔓 HALTEN [${r + 1}]`, centerX, 361);
+          sCtx.fillStyle = isHeld ? '#001830' : '#e2e8f0';
+          sCtx.font = '900 11.5px Inter, sans-serif';
+          sCtx.textAlign = 'center';
+          sCtx.fillText(isHeld ? `🔒 WALZE ${r + 1} GEHALTEN` : `🔓 WALZE ${r + 1} HALTEN [${r + 1}]`, centerX, 363);
+        }
       }
 
-      // Leuchtende Gewinnlinien über den Walzen einzeichnen, wenn getroffen!
+      // Falls ein Gewinn offen ist: Statt der Hold-Leiste erscheint eine unübersehbare MUT-RISIKO Entscheidungsleiste!
+      if (slotState.pendingWin > 0 && !slotState.reels.some(re => re.spinning)) {
+        // Button Links: Verdoppeln (R)
+        sCtx.fillStyle = '#dc2626';
+        sCtx.fillRect(104, 340, 265, 38);
+        sCtx.strokeStyle = '#fde047';
+        sCtx.lineWidth = 2.5;
+        sCtx.strokeRect(104, 340, 265, 38);
+        sCtx.fillStyle = '#ffffff';
+        sCtx.font = '900 12px Inter, sans-serif';
+        sCtx.textAlign = 'center';
+        sCtx.fillText(`🔥 RISIKO: VERDOPPELN AUF ${slotState.pendingWin * 2} [R]`, 236, 363);
+
+        // Button Rechts: Sichern (Enter)
+        sCtx.fillStyle = '#16a34a';
+        sCtx.fillRect(380, 340, 265, 38);
+        sCtx.strokeStyle = '#86efac';
+        sCtx.lineWidth = 2.5;
+        sCtx.strokeRect(380, 340, 265, 38);
+        sCtx.fillStyle = '#ffffff';
+        sCtx.fillText(`💰 +${slotState.pendingWin} PUNKTE SICHERN [ENTER]`, 512, 363);
+      }
+
+      // Gewinnlinien einzeichnen
       slotState.winningLines.forEach(winItem => {
         const line = winItem.line;
-        const xCoords = [228, 352, 476];
+        const xCoords = [181, 367, 553];
         sCtx.save();
         sCtx.strokeStyle = line.color;
         sCtx.lineWidth = 5;
@@ -9445,134 +9296,62 @@
         sCtx.restore();
       });
 
-      // Mechanischer BiSecur-Hebel zwischen Walzen und Risikoleiter
-      const leverX = 566;
-      const leverTopY = 120 + slotState.leverPullProgress * 120;
+      // 4. GROSSER GOLDENER BISECUR-HEBEL RECHTS AM GEHÄUSE
+      const leverX = 706;
+      const leverTopY = 125 + slotState.leverPullProgress * 135;
       sCtx.fillStyle = '#334155';
-      sCtx.fillRect(548, 220, 16, 44);
+      sCtx.fillRect(660, 225, 24, 52);
       sCtx.strokeStyle = '#94a3b8';
-      sCtx.lineWidth = 6;
+      sCtx.lineWidth = 8;
       sCtx.beginPath();
-      sCtx.moveTo(leverX, 242);
+      sCtx.moveTo(leverX, 252);
       sCtx.lineTo(leverX, leverTopY);
       sCtx.stroke();
 
-      // Goldener Hebel-Knauf
       sCtx.fillStyle = '#f59c00';
       sCtx.beginPath();
-      sCtx.arc(leverX, leverTopY, 14, 0, Math.PI * 2);
+      sCtx.arc(leverX, leverTopY, 18, 0, Math.PI * 2);
       sCtx.fill();
       sCtx.strokeStyle = '#fde047';
-      sCtx.lineWidth = 2.5;
+      sCtx.lineWidth = 3;
       sCtx.stroke();
 
-      // 5. RECHTES PANEL: 5-STUFIGE HÖRMANN MUT-RISIKOLEITER (DOPPELT ODER NICHTS!)
-      sCtx.fillStyle = '#0f172a';
-      sCtx.fillRect(592, 82, 174, 300);
-      sCtx.strokeStyle = slotState.pendingWin > 0 ? '#ef4444' : '#334155';
-      sCtx.lineWidth = slotState.pendingWin > 0 ? 3 : 2;
-      sCtx.strokeRect(592, 82, 174, 300);
-
-      sCtx.fillStyle = '#fbbf24';
-      sCtx.font = '900 11.5px Inter, sans-serif';
-      sCtx.textAlign = 'center';
-      sCtx.fillText('🔥 MUT-RISIKOLEITER', 679, 101);
       sCtx.fillStyle = '#94a3b8';
-      sCtx.font = '700 9px Inter, sans-serif';
-      sCtx.fillText('Taste [R]: Gewinn verdoppeln!', 679, 115);
+      sCtx.font = '800 10px Inter, sans-serif';
+      sCtx.textAlign = 'center';
+      sCtx.fillText('HEBEL', leverX, 305);
+      sCtx.fillText('[SPACE]', leverX, 320);
 
-      const basePreview = slotState.pendingWin > 0 ? slotState.pendingWin : 100;
-      for (let step = 5; step >= 1; step--) {
-        const sy = 126 + (5 - step) * 40;
-        const isCurrentTarget = slotState.pendingWin > 0 && (slotState.gambleStep + 1 === step);
-        const isAlreadyReached = slotState.pendingWin > 0 && slotState.gambleStep >= step;
-        const pulseLit = isCurrentTarget && slotState.ladderCursor === 1;
+      // 5. UNTERE FORTSCHRITTS- & KONTO-LEISTE (10 Spins Kugeln + Punktestand)
+      sCtx.fillStyle = '#0f172a';
+      sCtx.fillRect(20, 395, 740, 38);
+      sCtx.strokeStyle = '#334155';
+      sCtx.lineWidth = 1.5;
+      sCtx.strokeRect(20, 395, 740, 38);
 
-        sCtx.fillStyle = isAlreadyReached
-          ? '#16a34a'
-          : (pulseLit ? '#f59c00' : (isCurrentTarget ? '#7c2d12' : '#1e293b'));
-        sCtx.fillRect(602, sy, 154, 32);
+      // Links: 10 Spin-Lämpchen zur klaren Runden-Übersicht
+      sCtx.fillStyle = '#cbd5e1';
+      sCtx.font = '800 11.5px Inter, sans-serif';
+      sCtx.textAlign = 'left';
+      sCtx.fillText(`SPINS (${slotState.spinsLeft} übrig):`, 34, 418);
 
-        sCtx.strokeStyle = isCurrentTarget ? '#fde047' : '#475569';
-        sCtx.lineWidth = isCurrentTarget ? 2.5 : 1;
-        sCtx.strokeRect(602, sy, 154, 32);
-
-        const stepMultiplier = Math.pow(2, step - slotState.gambleStep);
-        const stepValue = slotState.pendingWin > 0
-          ? (step <= slotState.gambleStep ? slotState.pendingWin : slotState.pendingWin * Math.pow(2, step - slotState.gambleStep))
-          : 50 * Math.pow(2, step);
-
-        sCtx.fillStyle = (pulseLit || isAlreadyReached) ? '#001830' : '#ffffff';
-        sCtx.font = '900 11px monospace';
-        sCtx.textAlign = 'left';
-        sCtx.fillText(`STUFE ${step}:`, 610, sy + 20);
-
-        sCtx.textAlign = 'right';
-        sCtx.fillStyle = (pulseLit || isAlreadyReached) ? '#001830' : '#fde047';
-        sCtx.fillText(`${stepValue} PKT`, 748, sy + 20);
+      for (let s = 0; s < MAX_SLOT_SPINS; s++) {
+        const sx = 155 + s * 22;
+        const isRemaining = s < slotState.spinsLeft;
+        sCtx.fillStyle = isRemaining ? '#f59c00' : '#334155';
+        sCtx.beginPath();
+        sCtx.arc(sx, 414, 7, 0, Math.PI * 2);
+        sCtx.fill();
+        sCtx.strokeStyle = isRemaining ? '#fde047' : '#475569';
+        sCtx.lineWidth = 1.5;
+        sCtx.stroke();
       }
 
-      // Unterer Hinweis in der Risikoleiter
-      sCtx.fillStyle = slotState.pendingWin > 0 ? '#fca5a5' : '#64748b';
-      sCtx.font = '800 9.5px Inter, sans-serif';
-      sCtx.textAlign = 'center';
-      sCtx.fillText(
-        slotState.pendingWin > 0
-          ? `⚡ OFFEN: ${slotState.pendingWin} PKT ([Enter]=Sichern)`
-          : 'Gewinne eine Linie zum Starten!',
-        679,
-        345
-      );
-      sCtx.fillStyle = '#38bdf8';
-      sCtx.font = '700 8.5px Inter, sans-serif';
-      sCtx.fillText('Trostpflaster bei Stromstoß: +15 Pkt', 679, 364);
-
-      // 6. BOTTOM ARCADE DASHBOARD (KONTO, SPINS, OFFENER GEWINN & QUICK-GUIDE)
-      sCtx.fillStyle = '#0f172a';
-      sCtx.fillRect(0, 392, slotsCanvas.width, 78);
-      sCtx.fillStyle = '#f59c00';
-      sCtx.fillRect(0, 392, slotsCanvas.width, 3);
-
-      // Box 1: Verbleibende Spins
-      sCtx.fillStyle = '#1e293b';
-      sCtx.fillRect(14, 402, 175, 58);
-      sCtx.strokeStyle = '#334155';
-      sCtx.strokeRect(14, 402, 175, 58);
-      sCtx.fillStyle = '#94a3b8';
-      sCtx.font = '800 10px Inter, sans-serif';
-      sCtx.textAlign = 'left';
-      sCtx.fillText('VERBLEIBENDE SPINS:', 24, 420);
-      sCtx.fillStyle = slotState.feverSpinsLeft > 0 ? '#f43f5e' : '#38bdf8';
-      sCtx.font = '900 22px monospace';
-      sCtx.fillText(
-        slotState.feverSpinsLeft > 0 ? `${slotState.spinsLeft} + ${slotState.feverSpinsLeft}🔥` : `${slotState.spinsLeft}`,
-        24,
-        448
-      );
-
-      // Box 2: Aktueller Gewinn / Risiko-Pot
-      sCtx.fillStyle = '#1e293b';
-      sCtx.fillRect(200, 402, 260, 58);
-      sCtx.strokeStyle = slotState.pendingWin > 0 ? '#fde047' : '#334155';
-      sCtx.strokeRect(200, 402, 260, 58);
-      sCtx.fillStyle = '#94a3b8';
-      sCtx.font = '800 10px Inter, sans-serif';
-      sCtx.fillText(slotState.pendingWin > 0 ? '🔥 OFFENER RISIKO-GEWINN:' : 'LETZTER GEWINN:', 212, 420);
-      sCtx.fillStyle = slotState.pendingWin > 0 ? '#fde047' : '#10b981';
-      sCtx.font = '900 22px monospace';
-      sCtx.fillText(`${slotState.pendingWin > 0 ? slotState.pendingWin : slotState.lastWin} PKT`, 212, 448);
-
-      // Box 3: Gesichertes Mut-Konto (Highscore)
-      sCtx.fillStyle = '#1e293b';
-      sCtx.fillRect(472, 402, 294, 58);
-      sCtx.strokeStyle = '#f59c00';
-      sCtx.strokeRect(472, 402, 294, 58);
-      sCtx.fillStyle = '#f59c00';
-      sCtx.font = '800 10px Inter, sans-serif';
-      sCtx.fillText('💰 GESICHERTES MUT-KONTO (HIGHSCORE):', 484, 420);
-      sCtx.fillStyle = '#ffffff';
-      sCtx.font = '900 24px monospace';
-      sCtx.fillText(`${slotState.bankScore} PUNKTE`, 484, 449);
+      // Rechts: Aktuelles Mut-Konto
+      sCtx.fillStyle = '#fde047';
+      sCtx.font = '900 14px monospace';
+      sCtx.textAlign = 'right';
+      sCtx.fillText(`💰 MUT-KONTO: ${slotState.bankScore} PUNKTE`, 744, 419);
 
       // Fliegende Goldmünzen zeichnen
       slotState.floatingCoins.forEach(c => {

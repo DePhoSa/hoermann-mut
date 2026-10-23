@@ -1,5 +1,4 @@
 {
-  "version": "2.8.0",
-  "releasedAt": "2026-10-23T10:48:00Z",
-  "notes": "Neu: Der Hörmann Mut-Automat 🎰 (Walzen, Hold, Mut-Schubs, 5-stufige Risikoleiter & Tor-Fieber Jackpot) + Fix gegen verschwindende Chat-Nachrichten!"
+  "version": "2.9.0",
+  "notes": "Übersichtlicher 10-Spins Mut-Automat (~2 Min.) + Spielschutz-Live-Update (kein Rauswurf mitten im Spiel & 100% CDN-Vorabprüfung)!"
 }
