@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>Hörmann Mut-Portal | Gib mir Mut & Mut-Spiele</title>
   <meta name="description" content="Tägliche Mut-Impulse, exklusive eigene Mut-Sprüche, visuelle Muteffekte und 4 Hörmann Mut-Spiele inklusive Super Dennis (Mario-Plattformer) mit Bestenliste.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1337,7 +1340,29 @@
 
   <footer>
     Hörmann Mut-Portal &bull; Sektionaltore &bull; Schwingtore &bull; Türen &bull; Stahlzargen &bull; Lagermeister Nico &amp; Dennis Ressemann Edition
+    <div style="margin-top:4px; font-size:0.74rem; color:rgba(255,255,255,0.5);">
+      <span id="app-version-badge">🟢 Version 2.4.0 (Live Auto-Update &amp; Online-Sync aktiv)</span>
+    </div>
   </footer>
+
+  <!-- ZWANGSUPDATE OVERLAY (Erscheint automatisch, sobald ein neues Update auf dem Server liegt) -->
+  <div id="force-update-overlay" style="display:none; position:fixed; inset:0; background:rgba(0, 20, 45, 0.92); z-index:9999; align-items:center; justify-content:center; padding:1.5rem; backdrop-filter:blur(4px);">
+    <div style="background:#ffffff; border:4px solid var(--hoermann-orange); border-radius:10px; max-width:520px; width:100%; padding:2rem 1.8rem; text-align:center; box-shadow:0 25px 50px rgba(0,0,0,0.5);">
+      <div style="font-size:3rem; margin-bottom:0.5rem;">🚀🔄</div>
+      <h2 style="color:var(--hoermann-blue); font-size:1.5rem; font-weight:900; margin-bottom:0.6rem;">
+        Neues Portal-Update verfügbar!
+      </h2>
+      <p id="force-update-text" style="color:var(--text-muted); font-size:0.98rem; line-height:1.5; margin-bottom:1.2rem;">
+        Damit alle Kollegen mit derselben aktuellen Version und der synchronen Online-Bestenliste spielen, wird deine Seite jetzt automatisch aktualisiert.
+      </p>
+      <div id="force-update-notes" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:0.7rem 1rem; font-size:0.85rem; color:#1e293b; font-weight:600; margin-bottom:1.3rem;">
+        Update wird geladen...
+      </div>
+      <button id="force-update-now-btn" class="btn-primary" style="width:100%; justify-content:center; padding:0.9rem; font-size:1.05rem;">
+        ⚡ Jetzt sofort aktualisieren (<span id="force-update-countdown">3</span>s)
+      </button>
+    </div>
+  </div>
 
   <div id="toast">Gedanken gespeichert!</div>
 
@@ -2216,14 +2241,89 @@
     migrateAndPreserveAllUserScores();
 
     /* ==========================================================
-       7b. GLOBAL ONLINE CLOUD LEADERBOARD SYNC (Alle Geräte sehen dieselbe Liste!)
+       7b. GLOBAL ONLINE CLOUD LEADERBOARD SYNC & ZWANGSUPDATE-SYSTEM
        ========================================================== */
-    const CLOUD_PRIMARY_URL = 'https://api.restful-api.dev/objects/ff808181a09d98f701a167784b4f66c4';
+    const APP_VERSION       = '2.4.0';
+    const CLOUD_PRIMARY_URL = 'https://api.restful-api.dev/objects/ff808181a09d98f701a1678998b666e3';
+    const CLOUD_LEGACY_URL  = 'https://api.restful-api.dev/objects/ff808181a09d98f701a167784b4f66c4';
     const CLOUD_MIRROR_URL  = 'https://api.restful-api.dev/objects/ff808181a09d98f701a167796f6166c7';
     const NTFY_TOPIC_URL    = 'https://ntfy.sh/hoermann_mut_dephosa_online_lb_v2';
     const cloudSyncBadge    = document.getElementById('cloud-sync-badge');
     const submitHighscoreFeedback = document.getElementById('submit-highscore-feedback');
     let pendingGameDisplayName = '';
+    let updateForcedAlready = false;
+
+    // Erzwingt einen harten Reload am Browser-Cache vorbei, sobald eine neue Version erkannt wird
+    function performHardCacheBustReload(targetVersion) {
+      try {
+        if ('caches' in window) {
+          caches.keys().then(names => names.forEach(name => caches.delete(name)));
+        }
+      } catch (e) {}
+      const cleanPath = window.location.origin + window.location.pathname;
+      window.location.replace(`${cleanPath}?v=${encodeURIComponent(targetVersion || Date.now())}&t=${Date.now()}`);
+    }
+
+    function triggerForcedUpdateModal(remoteVersion, releaseNotes) {
+      if (updateForcedAlready) return;
+      updateForcedAlready = true;
+
+      const overlay = document.getElementById('force-update-overlay');
+      const notesEl = document.getElementById('force-update-notes');
+      const countEl = document.getElementById('force-update-countdown');
+      const nowBtn  = document.getElementById('force-update-now-btn');
+
+      if (notesEl) {
+        notesEl.textContent = releaseNotes
+          ? `Neu in v${remoteVersion}: ${releaseNotes}`
+          : `Neue Version v${remoteVersion} wird geladen (Aktuell: v${APP_VERSION})`;
+      }
+      if (overlay) {
+        overlay.style.display = 'flex';
+      }
+      playSound('powerup');
+
+      let secondsLeft = 3;
+      if (countEl) countEl.textContent = secondsLeft;
+
+      if (nowBtn) {
+        nowBtn.onclick = () => performHardCacheBustReload(remoteVersion);
+      }
+
+      const timer = setInterval(() => {
+        secondsLeft--;
+        if (countEl) countEl.textContent = Math.max(0, secondsLeft);
+        if (secondsLeft <= 0) {
+          clearInterval(timer);
+          performHardCacheBustReload(remoteVersion);
+        }
+      }, 1000);
+    }
+
+    // Prüft regelmäßig version.json auf dem Server (mit Zeitstempel gegen Browser-Cache)
+    async function checkServerAppVersion() {
+      if (updateForcedAlready) return;
+      try {
+        const res = await fetch(`./version.json?nocache=${Date.now()}`, { cache: 'no-store' });
+        if (res.ok) {
+          const vData = await res.json();
+          if (vData && vData.version && vData.version !== APP_VERSION) {
+            triggerForcedUpdateModal(vData.version, vData.notes);
+          }
+        }
+      } catch (e) {}
+    }
+
+    // Bei Tab-Wechsel / Fokus sofort prüfen, ob zwischenzeitlich ein Update kam
+    window.addEventListener('focus', checkServerAppVersion);
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        checkServerAppVersion();
+        syncOnlineLeaderboards(false);
+      }
+    });
+    setInterval(checkServerAppVersion, 20000);
+    setTimeout(checkServerAppVersion, 1500);
 
     function setCloudBadgeState(status, text) {
       if (!cloudSyncBadge) return;
@@ -2252,14 +2352,35 @@
       let cloudDataLoaded = false;
       let cloudBeforeJson = '';
 
-      // 1. Primäre Cloud-DB abrufen
+      // 1. Primäre v2 Cloud-DB abrufen (enthält auch Versions-Check!)
       try {
         const res = await fetch(CLOUD_PRIMARY_URL, { cache: 'no-store' });
         if (res.ok) {
           const json = await res.json();
           if (json && json.data) {
-            cloudBeforeJson = JSON.stringify(json.data);
+            if (json.data.version && json.data.version !== APP_VERSION) {
+              checkServerAppVersion();
+            }
+            cloudBeforeJson = JSON.stringify({
+              forklift: json.data.forklift || [],
+              mario: json.data.mario || [],
+              buster: json.data.buster || [],
+              nerve: json.data.nerve || [],
+              parcours: json.data.parcours || []
+            });
             mergeScoreMaps(localMaster, json.data);
+            cloudDataLoaded = true;
+          }
+        }
+      } catch (e) {}
+
+      // 1b. Auch Legacy v1 Cloud-DB abfragen (falls jemand auf einem alten Tab noch einen höheren Rekord erspielt hat)
+      try {
+        const resLegacy = await fetch(CLOUD_LEGACY_URL, { cache: 'no-store' });
+        if (resLegacy.ok) {
+          const jsonL = await resLegacy.json();
+          if (jsonL && jsonL.data) {
+            mergeScoreMaps(localMaster, jsonL.data);
             cloudDataLoaded = true;
           }
         }
@@ -2272,7 +2393,6 @@
           if (resM.ok) {
             const jsonM = await resM.json();
             if (jsonM && jsonM.data) {
-              cloudBeforeJson = JSON.stringify(jsonM.data);
               mergeScoreMaps(localMaster, jsonM.data);
               cloudDataLoaded = true;
             }
@@ -2291,7 +2411,9 @@
               const evt = JSON.parse(line);
               if (evt && evt.event === 'message' && evt.message) {
                 const payload = JSON.parse(evt.message);
-                if (payload && payload.cat && payload.name && payload.score) {
+                if (payload && payload.type === 'FORCE_UPDATE' && payload.version && payload.version !== APP_VERSION) {
+                  triggerForcedUpdateModal(payload.version, payload.notes);
+                } else if (payload && payload.cat && payload.name && payload.score) {
                   mergeScoreMaps(localMaster, { [payload.cat]: [payload] });
                   cloudDataLoaded = true;
                 }
@@ -2330,9 +2452,18 @@
     }
 
     async function writeMasterToCloud(masterObj) {
+      const dataWithVersion = {
+        version: APP_VERSION,
+        forklift: deduplicateKeepBestPerName(masterObj.forklift || []),
+        mario: deduplicateKeepBestPerName(masterObj.mario || []),
+        buster: deduplicateKeepBestPerName(masterObj.buster || []),
+        nerve: deduplicateKeepBestPerName(masterObj.nerve || []),
+        parcours: deduplicateKeepBestPerName(masterObj.parcours || [])
+      };
+
       const payload = JSON.stringify({
-        name: 'hoermann_mut_global_leaderboard_v1',
-        data: masterObj
+        name: 'hoermann_mut_global_leaderboard_v2_strict',
+        data: dataWithVersion
       });
 
       try {
@@ -2342,6 +2473,14 @@
           body: payload
         });
         setCloudBadgeState('online');
+      } catch (e) {}
+
+      try {
+        await fetch(CLOUD_LEGACY_URL, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: payload
+        });
       } catch (e) {}
 
       try {
@@ -2369,7 +2508,7 @@
       await syncOnlineLeaderboards(true);
     }
 
-    // Echtzeit-Empfänger (SSE): Wenn ein anderer Spieler einen neuen Bestwert einträgt, erscheint er sofort live!
+    // Echtzeit-Empfänger (SSE): Empfängt sowohl Live-Highscores als auch Zwangsupdate-Signale!
     function startLiveScoreStream() {
       if (typeof EventSource === 'undefined') return;
       try {
@@ -2379,7 +2518,9 @@
             const data = JSON.parse(evt.data);
             if (data && data.message) {
               const item = JSON.parse(data.message);
-              if (item && item.cat && item.name && item.score) {
+              if (item && item.type === 'FORCE_UPDATE' && item.version && item.version !== APP_VERSION) {
+                triggerForcedUpdateModal(item.version, item.notes);
+              } else if (item && item.cat && item.name && item.score) {
                 const master = loadMasterUserScores();
                 const wasUpdated = mergeScoreMaps(master, { [item.cat]: [{ name: item.name, score: item.score, date: item.date, isUser: true }] });
                 if (wasUpdated) {
