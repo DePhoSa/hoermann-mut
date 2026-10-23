@@ -3326,7 +3326,7 @@
     /* ==========================================================
        7b. GLOBAL ONLINE CLOUD HUB (HIGHSCORES, IDEEN-BOX, LIVE-CHAT & ZWANGSUPDATE)
        ========================================================== */
-    const APP_VERSION           = '3.1.1';
+    const APP_VERSION           = '3.1.2';
     const NTFY_HUB_URL          = 'https://ntfy.sh/hoermann_mut_dephosa_hub_v3';
     const NTFY_LEGACY_URL       = 'https://ntfy.sh/hoermann_mut_dephosa_online_lb_v2';
     const BYTEBIN_POST_URL      = 'https://bytebin.lucko.me/post';
@@ -10994,7 +10994,7 @@
       mouthDir: 1,
       player: {
         x: 13.5 * PAC_TILE,
-        y: 22.5 * PAC_TILE,
+        y: 23.5 * PAC_TILE,
         dirX: -1,
         dirY: 0,
         nextDirX: -1,
@@ -11036,7 +11036,7 @@
 
     function resetPacmanActors() {
       pacState.player.x = 13.5 * PAC_TILE;
-      pacState.player.y = 22.5 * PAC_TILE;
+      pacState.player.y = 23.5 * PAC_TILE;
       pacState.player.dirX = -1;
       pacState.player.dirY = 0;
       pacState.player.nextDirX = -1;
@@ -11172,25 +11172,59 @@
       if (pacState.mouthAngle > 0.38) { pacState.mouthAngle = 0.38; pacState.mouthDir = -1; }
       else if (pacState.mouthAngle < 0.04) { pacState.mouthAngle = 0.04; pacState.mouthDir = 1; }
 
-      // 1. Mut-Man Bewegung & Richtungswechsel mit sanftem Achsen-Snap
+      // 1. Mut-Man Bewegung & Richtungswechsel nach echter Arcade-Tile-Logik
       const p = pacState.player;
+
+      // 180-Grad-Wende immer sofort und überall erlauben:
+      if (p.nextDirX === -p.dirX && p.nextDirY === -p.dirY && (p.nextDirX !== 0 || p.nextDirY !== 0)) {
+        p.dirX = p.nextDirX;
+        p.dirY = p.nextDirY;
+        p.nextDirX = 0;
+        p.nextDirY = 0;
+      }
+
+      const curTileX = Math.floor(p.x / PAC_TILE);
+      const curTileY = Math.floor(p.y / PAC_TILE);
+      const centerTileX = (curTileX + 0.5) * PAC_TILE;
+      const centerTileY = (curTileY + 0.5) * PAC_TILE;
+
+      // Abbiegen (Cornering) an Kachelkreuzungen
       if (p.nextDirX !== 0 || p.nextDirY !== 0) {
-        if (canMoveInDir(p.x, p.y, p.nextDirX, p.nextDirY, false)) {
-          if (p.nextDirX !== 0 && p.dirY !== 0) {
-            p.y = (Math.floor(p.y / PAC_TILE) + 0.5) * PAC_TILE;
-          } else if (p.nextDirY !== 0 && p.dirX !== 0) {
-            p.x = (Math.floor(p.x / PAC_TILE) + 0.5) * PAC_TILE;
+        const distToCenter = Math.hypot(p.x - centerTileX, p.y - centerTileY);
+        if (distToCenter <= p.speed * 2.2) {
+          const targetTileX = curTileX + p.nextDirX;
+          const targetTileY = curTileY + p.nextDirY;
+          if (!isTileBlockedForActor(targetTileX, targetTileY, false)) {
+            p.x = centerTileX;
+            p.y = centerTileY;
+            p.dirX = p.nextDirX;
+            p.dirY = p.nextDirY;
+            p.nextDirX = 0;
+            p.nextDirY = 0;
           }
-          p.dirX = p.nextDirX;
-          p.dirY = p.nextDirY;
-          p.nextDirX = 0;
-          p.nextDirY = 0;
         }
       }
 
-      if (canMoveInDir(p.x, p.y, p.dirX, p.dirY, false)) {
-        p.x += p.dirX * p.speed;
-        p.y += p.dirY * p.speed;
+      // Vorwärtsbewegung mit Stop am Kachelzentrum vor einer Wand
+      if (p.dirX !== 0 || p.dirY !== 0) {
+        const aheadTileX = curTileX + p.dirX;
+        const aheadTileY = curTileY + p.dirY;
+
+        let pastCenter = false;
+        if (p.dirX > 0 && p.x >= centerTileX) pastCenter = true;
+        else if (p.dirX < 0 && p.x <= centerTileX) pastCenter = true;
+        else if (p.dirY > 0 && p.y >= centerTileY) pastCenter = true;
+        else if (p.dirY < 0 && p.y <= centerTileY) pastCenter = true;
+
+        if (pastCenter && isTileBlockedForActor(aheadTileX, aheadTileY, false)) {
+          p.x = centerTileX;
+          p.y = centerTileY;
+          p.dirX = 0;
+          p.dirY = 0;
+        } else {
+          p.x += p.dirX * p.speed;
+          p.y += p.dirY * p.speed;
+        }
 
         // Tunnel-Wrapping (links <-> rechts)
         if (p.x < -PAC_TILE / 2) p.x = (PAC_COLS - 0.5) * PAC_TILE;
@@ -11198,19 +11232,19 @@
       }
 
       // 2. Pellets & Power-Pellets aufsammeln
-      const curTX = Math.floor(p.x / PAC_TILE);
-      const curTY = Math.floor(p.y / PAC_TILE);
-      if (curTY >= 0 && curTY < PAC_ROWS && curTX >= 0 && curTX < PAC_COLS) {
-        const cell = pacState.grid[curTY][curTX];
+      const pelletTX = Math.floor(p.x / PAC_TILE);
+      const pelletTY = Math.floor(p.y / PAC_TILE);
+      if (pelletTY >= 0 && pelletTY < PAC_ROWS && pelletTX >= 0 && pelletTX < PAC_COLS) {
+        const cell = pacState.grid[pelletTY][pelletTX];
         if (cell === 1) {
-          pacState.grid[curTY][curTX] = 0;
+          pacState.grid[pelletTY][pelletTX] = 0;
           pacState.score += 10;
           pacState.pelletsLeft--;
           playSound('pacWaka');
           updatePacmanUI();
         } else if (cell === 3) {
           // Großes Goldenes Hörmann-Tor (Power-Pellet)
-          pacState.grid[curTY][curTX] = 0;
+          pacState.grid[pelletTY][pelletTX] = 0;
           pacState.score += 50;
           pacState.pelletsLeft--;
           pacState.frightTimer = 340;
@@ -11332,60 +11366,74 @@
         return;
       }
 
-      let targetX = pacState.player.x;
-      let targetY = pacState.player.y;
+      const curTileX = Math.floor(g.x / PAC_TILE);
+      const curTileY = Math.floor(g.y / PAC_TILE);
+      const centerTileX = (curTileX + 0.5) * PAC_TILE;
+      const centerTileY = (curTileY + 0.5) * PAC_TILE;
 
-      if (g.state === 'scatter') {
-        targetX = g.targetCorner.x;
-        targetY = g.targetCorner.y;
-      } else if (g.state === 'fright') {
-        targetX = (PAC_COLS * PAC_TILE) - pacState.player.x;
-        targetY = (PAC_ROWS * PAC_TILE) - pacState.player.y;
-      } else {
-        if (g.id === 'blinky') {
-          targetX = pacState.player.x;
-          targetY = pacState.player.y;
-        } else if (g.id === 'pinky') {
-          targetX = pacState.player.x + pacState.player.dirX * (PAC_TILE * 4);
-          targetY = pacState.player.y + pacState.player.dirY * (PAC_TILE * 4);
-        } else if (g.id === 'inky') {
-          targetX = pacState.player.x * 2 - g.homeX;
-          targetY = pacState.player.y * 2 - g.homeY;
-        } else if (g.id === 'clyde') {
-          const distToPlayer = Math.hypot(g.x - pacState.player.x, g.y - pacState.player.y);
-          if (distToPlayer < PAC_TILE * 6) {
-            targetX = g.targetCorner.x;
-            targetY = g.targetCorner.y;
+      const pastCenterX = (g.dirX > 0 && g.x >= centerTileX) || (g.dirX < 0 && g.x <= centerTileX);
+      const pastCenterY = (g.dirY > 0 && g.y >= centerTileY) || (g.dirY < 0 && g.y <= centerTileY);
+
+      if ((pastCenterX || pastCenterY || (g.dirX === 0 && g.dirY === 0)) && (!g.lastTurnTile || g.lastTurnTile.x !== curTileX || g.lastTurnTile.y !== curTileY)) {
+        g.lastTurnTile = { x: curTileX, y: curTileY };
+        g.x = centerTileX;
+        g.y = centerTileY;
+
+        let targetX = pacState.player.x;
+        let targetY = pacState.player.y;
+
+        if (g.state === 'scatter') {
+          targetX = g.targetCorner.x;
+          targetY = g.targetCorner.y;
+        } else if (g.state === 'fright') {
+          targetX = (PAC_COLS * PAC_TILE) - pacState.player.x;
+          targetY = (PAC_ROWS * PAC_TILE) - pacState.player.y;
+        } else {
+          if (g.id === 'blinky') {
+            targetX = pacState.player.x;
+            targetY = pacState.player.y;
+          } else if (g.id === 'pinky') {
+            targetX = pacState.player.x + pacState.player.dirX * (PAC_TILE * 4);
+            targetY = pacState.player.y + pacState.player.dirY * (PAC_TILE * 4);
+          } else if (g.id === 'inky') {
+            targetX = pacState.player.x * 2 - g.homeX;
+            targetY = pacState.player.y * 2 - g.homeY;
+          } else if (g.id === 'clyde') {
+            const distToPlayer = Math.hypot(g.x - pacState.player.x, g.y - pacState.player.y);
+            if (distToPlayer < PAC_TILE * 6) {
+              targetX = g.targetCorner.x;
+              targetY = g.targetCorner.y;
+            }
           }
+        }
+
+        const directions = [
+          { dx: 0, dy: -1 },
+          { dx: -1, dy: 0 },
+          { dx: 0, dy: 1 },
+          { dx: 1, dy: 0 }
+        ];
+
+        const valid = directions.filter(d => {
+          if (d.dx === -g.dirX && d.dy === -g.dirY) return false;
+          return !isTileBlockedForActor(curTileX + d.dx, curTileY + d.dy, true, g.state);
+        });
+
+        if (valid.length > 0) {
+          valid.sort((a, b) => {
+            const distA = Math.hypot((curTileX + a.dx) * PAC_TILE - targetX, (curTileY + a.dy) * PAC_TILE - targetY);
+            const distB = Math.hypot((curTileX + b.dx) * PAC_TILE - targetX, (curTileY + b.dy) * PAC_TILE - targetY);
+            return distA - distB;
+          });
+          g.dirX = valid[0].dx;
+          g.dirY = valid[0].dy;
+        } else if (!isTileBlockedForActor(curTileX - g.dirX, curTileY - g.dirY, true, g.state)) {
+          g.dirX = -g.dirX;
+          g.dirY = -g.dirY;
         }
       }
 
       const curSpeed = (g.state === 'fright') ? (g.speed * 0.6) : g.speed;
-      const directions = [
-        { dx: 0, dy: -1 },
-        { dx: -1, dy: 0 },
-        { dx: 0, dy: 1 },
-        { dx: 1, dy: 0 }
-      ];
-
-      const validDirs = directions.filter(d => {
-        if (d.dx === -g.dirX && d.dy === -g.dirY) return false;
-        return canMoveInDir(g.x, g.y, d.dx, d.dy, true, g.state);
-      });
-
-      if (validDirs.length > 0) {
-        validDirs.sort((a, b) => {
-          const distA = Math.hypot((g.x + a.dx * PAC_TILE) - targetX, (g.y + a.dy * PAC_TILE) - targetY);
-          const distB = Math.hypot((g.x + b.dx * PAC_TILE) - targetX, (g.y + b.dy * PAC_TILE) - targetY);
-          return distA - distB;
-        });
-        g.dirX = validDirs[0].dx;
-        g.dirY = validDirs[0].dy;
-      } else if (!canMoveInDir(g.x, g.y, g.dirX, g.dirY, true, g.state)) {
-        g.dirX = -g.dirX;
-        g.dirY = -g.dirY;
-      }
-
       g.x += g.dirX * curSpeed;
       g.y += g.dirY * curSpeed;
 
