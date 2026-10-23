@@ -511,7 +511,7 @@
     /* ==========================================================
        GAMES COMMON VIEWS
        ========================================================== */
-    #forklift-view, #slots-view, #mario-view, #buster-view, #nerve-view, #parcours-view {
+    #forklift-view, #tower-view, #slots-view, #mario-view, #buster-view, #nerve-view, #parcours-view {
       display: none;
       width: 100%;
       flex-direction: column;
@@ -519,7 +519,7 @@
       padding: 1.25rem 1.25rem 1.8rem 1.25rem;
     }
 
-    #forkliftCanvas, #slotsCanvas, #marioCanvas, #busterCanvas, #parcoursCanvas {
+    #forkliftCanvas, #towerCanvas, #slotsCanvas, #marioCanvas, #busterCanvas, #parcoursCanvas {
       background: #001830;
       border: 3px solid var(--hoermann-blue);
       border-radius: 6px;
@@ -528,7 +528,7 @@
       touch-action: none;
     }
 
-    #forkliftCanvas, #slotsCanvas {
+    #forkliftCanvas, #towerCanvas, #slotsCanvas {
       image-rendering: pixelated;
       image-rendering: crisp-edges;
       background: #1e293b;
@@ -935,10 +935,25 @@
       z-index: 15;
     }
 
-    /* Nur auf der Online-Webseiten-Ansicht (Desktop/Breitbild) anzeigen, auf Mobilgeräten/schmalen Fenstern ausblenden */
-    @media (max-width: 1180px) {
+    /* Immer sichtbar auf allen PCs, Laptops (auch bei 125%/150% Windows-Skalierung) & Tablets:
+       Ab 980px nebeneinander, darunter sauber direkt unter dem Hauptfenster angedockt (niemals versteckt!) */
+    @media (max-width: 1200px) and (min-width: 981px) {
       #online-side-chat {
-        display: none !important;
+        width: 300px;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .portal-desktop-layout {
+        flex-direction: column;
+        align-items: center;
+      }
+      #online-side-chat {
+        width: 100%;
+        max-width: 820px;
+        height: 490px;
+        max-height: none;
+        position: static;
       }
     }
 
@@ -3078,24 +3093,56 @@
       const master = loadMasterUserScores();
       const categories = ['forklift', 'tower', 'slots', 'mario', 'buster', 'nerve', 'parcours'];
 
-      // Bisher erspielte echte Online-Highscores dauerhaft als Basis sichern, damit sie niemals verloren gehen
+      // Bisher erspielte echte Online-Highscores dauerhaft als Basis sichern, damit sie selbst bei Firewall-Blockaden niemals fehlen
       const permanentRealPlayerBaseline = {
-        forklift: [],
-        tower: [],
-        slots: [],
+        forklift: [
+          { name: "Mario", score: 9150, date: "23.10.", isUser: true },
+          { name: "Delia", score: 9137, date: "23.10.", isUser: true },
+          { name: "MMR15", score: 9034, date: "23.10.", isUser: true },
+          { name: "Lager-Profi", score: 8701, date: "23.10.", isUser: true },
+          { name: "Schumi", score: 8347, date: "23.10.", isUser: true }
+        ],
+        tower: [
+          { name: "Jensiboi", score: 2255, date: "23.10.", isUser: true }
+        ],
+        slots: [
+          { name: "Mary", score: 1910, date: "23.10.", isUser: true },
+          { name: "d.ressemann.n15@hoer", score: 760, date: "23.10.", isUser: true }
+        ],
         mario: [
-          { name: "Sibbelinho", score: 5360, date: "23.10.", isUser: true },
-          { name: "Mary", score: 3100, date: "23.10.", isUser: true },
-          { name: "Lager-Profi", score: 1250, date: "23.10.", isUser: true }
+          { name: "MMR15", score: 5780, date: "23.10.", isUser: true },
+          { name: "Meister Manni", score: 5770, date: "23.10.", isUser: true },
+          { name: "Lager-Profi", score: 5760, date: "23.10.", isUser: true },
+          { name: "Nico-Notentriegelung", score: 5760, date: "23.10.", isUser: true },
+          { name: "Mario", score: 5760, date: "23.10.", isUser: true },
+          { name: "Delia", score: 5760, date: "23.10.", isUser: true },
+          { name: "d.ressemann.n15@hoer", score: 5750, date: "23.10.", isUser: true },
+          { name: "Sibbelinho", score: 5550, date: "23.10.", isUser: true },
+          { name: "Mary", score: 3100, date: "23.10.", isUser: true }
         ],
         buster: [
-          { name: "Mary", score: 1690, date: "23.10.", isUser: true }
+          { name: "Mario", score: 3470, date: "23.10.", isUser: true },
+          { name: "Delia", score: 3445, date: "23.10.", isUser: true },
+          { name: "Mary", score: 3340, date: "23.10.", isUser: true },
+          { name: "Sibbelinho", score: 3150, date: "23.10.", isUser: true },
+          { name: "Nico", score: 1750, date: "23.10.", isUser: true }
         ],
         nerve: [
-          { name: "Mary", score: 1643, date: "23.10.", isUser: true }
+          { name: "Mary", score: 17835, date: "23.10.", isUser: true },
+          { name: "Sibbelinho", score: 9881, date: "23.10.", isUser: true },
+          { name: "Mario", score: 9881, date: "23.10.", isUser: true },
+          { name: "Delia", score: 5462, date: "23.10.", isUser: true },
+          { name: "Nico-Notentriegelung", score: 5462, date: "23.10.", isUser: true },
+          { name: "MMR15", score: 3007, date: "23.10.", isUser: true },
+          { name: "d.ressemann.n15@hoer", score: 885, date: "23.10.", isUser: true }
         ],
         parcours: [
-          { name: "Mary", score: 3, date: "23.10.", isUser: true }
+          { name: "Der wahre Mario", score: 67, date: "23.10.", isUser: true },
+          { name: "36 Grad", score: 36, date: "23.10.", isUser: true },
+          { name: "Sibbelinho", score: 32, date: "23.10.", isUser: true },
+          { name: "Delia", score: 9, date: "23.10.", isUser: true },
+          { name: "Lager-Profi", score: 6, date: "23.10.", isUser: true },
+          { name: "Mary", score: 5, date: "23.10.", isUser: true }
         ]
       };
       mergeScoreMaps(master, permanentRealPlayerBaseline);
@@ -3151,12 +3198,13 @@
     /* ==========================================================
        7b. GLOBAL ONLINE CLOUD HUB (HIGHSCORES, IDEEN-BOX, LIVE-CHAT & ZWANGSUPDATE)
        ========================================================== */
-    const APP_VERSION           = '3.0.0';
+    const APP_VERSION           = '3.0.1';
     const NTFY_HUB_URL          = 'https://ntfy.sh/hoermann_mut_dephosa_hub_v3';
     const NTFY_LEGACY_URL       = 'https://ntfy.sh/hoermann_mut_dephosa_online_lb_v2';
     const BYTEBIN_POST_URL      = 'https://bytebin.lucko.me/post';
     const BYTEBIN_BASE_URL      = 'https://bytebin.lucko.me/';
-    const INITIAL_SNAPSHOT_KEY  = '3clXvrUzSU';
+    const INITIAL_SNAPSHOT_KEY  = 'DzIXl4IwhT';
+    const LEGACY_POISON_KEYS    = new Set(['3clXvrUzSU', 'HhqiUAlDhY']);
     const cloudSyncBadge        = document.getElementById('cloud-sync-badge');
     const submitHighscoreFeedback = document.getElementById('submit-highscore-feedback');
     const ideaTicketBox         = document.getElementById('idea-ticket-box');
@@ -3176,7 +3224,13 @@
     let pendingGameDisplayName  = '';
     let updateForcedAlready     = false;
     let prefetchedNewHtml       = '';
-    let currentSnapshotKey      = localStorage.getItem('hoermann_cloud_snapshot_key_v3') || INITIAL_SNAPSHOT_KEY;
+    let storedSnapKey           = localStorage.getItem('hoermann_cloud_snapshot_key_v3') || '';
+    if (!storedSnapKey || LEGACY_POISON_KEYS.has(storedSnapKey)) {
+      storedSnapKey = INITIAL_SNAPSHOT_KEY;
+      try { localStorage.setItem('hoermann_cloud_snapshot_key_v3', INITIAL_SNAPSHOT_KEY); } catch (e) {}
+    }
+    let currentSnapshotKey      = storedSnapKey;
+    let hasCompletedInitialCloudSync = false;
     let currentIdeaEligibility  = { eligible: false, reason: '', badge: '', oldRank: null, newRank: null, rule: 'NONE' };
 
     // Feste Geräte-ID & Namens-Eigentümerschaft (verhindert, dass man fremde Namen eingibt oder sich mehrfach einträgt!)
@@ -3505,6 +3559,62 @@
           text: 'Willkommen im Hörmann Live-Chat! Hier könnt ihr euch ungefiltert austauschen & eure Rekorde feiern. 🚜🔥',
           time: 'Live',
           ts: 1729660000000
+        },
+        {
+          id: 'msg_1792740422298_ker2s',
+          sender: 'Sibbelinho',
+          text: 'Dies ist ein Test',
+          gifUrl: '',
+          time: '23.10. 09:27',
+          ts: 1792740422298
+        },
+        {
+          id: 'msg_1792740503540_m420z',
+          sender: 'Mary',
+          text: 'Hallöchen ihr Spielemäuse',
+          gifUrl: '',
+          time: '23.10. 09:28',
+          ts: 1792740503540
+        },
+        {
+          id: 'msg_1792740527347_t2c8i',
+          sender: 'Sibbelinho',
+          text: 'Guck guck',
+          gifUrl: '',
+          time: '23.10. 09:28',
+          ts: 1792740527347
+        },
+        {
+          id: 'msg_1792743552905_bqvmt',
+          sender: 'Sibbelinho',
+          text: '',
+          gifUrl: 'https://media3.giphy.com/media/v1.Y2lkPWE1YTU4ZDcwaXhncGE0dWkyYzFweHB3ZGNzY2h6Njh1YW42Mm1kaWEwa252eGhhayZlcD12MV9naWZzX3NlYXJjaCZjdD1n/cO39srN2EUIRaVqaVq/200.gif',
+          time: '23.10. 10:19',
+          ts: 1792743552905
+        },
+        {
+          id: 'msg_1792744140798_6n0kl',
+          sender: 'Der wahre Mario',
+          text: '',
+          gifUrl: 'https://media0.giphy.com/media/v1.Y2lkPWE1YTU4ZDcwOXNvenc2a3dpenR2YjA3MmpoYWN0eWM3ZXVmdmZqMm5oYXViZnN4MiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/75ZaxapnyMp2w/200.gif',
+          time: '23.10. 10:29',
+          ts: 1792744140798
+        },
+        {
+          id: 'msg_1792744145137_ywlqi',
+          sender: 'Sibbelinho',
+          text: '',
+          gifUrl: 'https://media1.giphy.com/media/v1.Y2lkPWE1YTU4ZDcwM3AyampxczZydWltNDVtMzRsYTQ5djY3YWFtcW52Y250YTFraGJyYSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/mcH0upG1TeEak/200.gif',
+          time: '23.10. 10:29',
+          ts: 1792744145137
+        },
+        {
+          id: 'msg_1792747803823_rbinv',
+          sender: 'Jensiboi',
+          text: 'Stimmung!',
+          gifUrl: 'https://media4.giphy.com/media/v1.Y2lkPWE1YTU4ZDcwODkwYzZodzk2anhpOWVtZmp4ZGo1MGg5bmcwaWFtaDEzMHRtbWwwbSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/10dHotK4K8R0AM/200.gif',
+          time: '23.10. 11:30',
+          ts: 1792747803823
         }
       ];
 
@@ -3518,7 +3628,8 @@
       );
 
       const rawList = [
-        ...(stored && Array.isArray(stored.messages) ? stored.messages : baseMessages),
+        ...baseMessages,
+        ...(stored && Array.isArray(stored.messages) ? stored.messages : []),
         ...(inMemoryChatCache && Array.isArray(inMemoryChatCache.messages) ? inMemoryChatCache.messages : [])
       ];
 
@@ -4005,8 +4116,28 @@
       return changed;
     }
 
-    // Speichert einen kompletten Cloud-Snapshot auf Bytebin und verteilt den Key über ntfy
+    // Speichert einen kompletten Cloud-Snapshot auf Bytebin und verteilt Echtzeit-Events sofort über ntfy
     async function publishCloudSnapshot(extraEventPayload = null) {
+      // 1. ECHTZEIT-SOFORTVERSAND: Wenn ein direktes Event (CHAT_MSG, SCORE, IDEA_ADD, RENAME_REQ etc.) vorliegt,
+      // SOFORT und OHNE Wartezeit an ntfy senden (ohne altes snapshotKey-Feld, damit kein alter Snapshot andere PCs überschreibt!)
+      if (extraEventPayload) {
+        try {
+          fetch(NTFY_HUB_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+            body: JSON.stringify(extraEventPayload)
+          }).then(r => {
+            if (r && r.ok) setCloudBadgeState('online');
+          }).catch(() => {});
+        } catch (e) {}
+      }
+
+      // 2. Falls dieser PC noch keinen ersten Cloud-Sync abgeschlossen hat, zuerst im Hintergrund synchronisieren,
+      // bevor ein Komplett-Snapshot auf Bytebin geschrieben wird!
+      if (!hasCompletedInitialCloudSync) {
+        await syncOnlineLeaderboards(false);
+      }
+
       const localMaster = loadMasterUserScores();
       const chatState   = loadChatState();
       const ideasState  = loadIdeasState();
@@ -4048,7 +4179,7 @@
         });
         if (res.ok) {
           const j = await res.json();
-          if (j && j.key) {
+          if (j && j.key && !LEGACY_POISON_KEYS.has(j.key)) {
             newKey = j.key;
             currentSnapshotKey = newKey;
             localStorage.setItem('hoermann_cloud_snapshot_key_v3', newKey);
@@ -4056,21 +4187,61 @@
         }
       } catch (e) {}
 
-      const ntfyPayload = extraEventPayload
-        ? { ...extraEventPayload, snapshotKey: newKey || currentSnapshotKey }
-        : { type: 'SNAPSHOT', snapshotKey: newKey || currentSnapshotKey, ts: Date.now() };
-
-      try {
-        await fetch(NTFY_HUB_URL, {
-          method: 'POST',
-          body: JSON.stringify(ntfyPayload)
-        });
-        setCloudBadgeState('online');
-      } catch (e) {}
+      // Nur wenn tatsächlich ein frischer Bytebin-Snapshot-Key erzeugt wurde, diesen als SNAPSHOT-Event bekanntgeben!
+      if (newKey) {
+        try {
+          await fetch(NTFY_HUB_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+            body: JSON.stringify({ type: 'SNAPSHOT', snapshotKey: newKey, ts: Date.now() })
+          });
+          setCloudBadgeState('online');
+        } catch (e) {}
+      }
     }
 
     // Verhindert überlappende Cloud-Sync-Läufe, damit niemals ein alter Sync-Stand eine gerade geschriebene Chat-Nachricht überschreibt!
     let isSyncOnlineInProgress = false;
+
+    // Hilfsfunktion: Verarbeitet ein einzelnes ntfy-Payload-Objekt in die übergebenen Status-Objekte
+    function processSingleNtfyPayload(payload, localMaster, chatState, ideasState, milestones) {
+      if (!payload || typeof payload !== 'object') return { changed: false, scoreToast: null };
+      let changed = false;
+      let scoreToast = null;
+
+      if (payload.type === 'FORCE_UPDATE' && payload.version && isNewerSemver(payload.version, APP_VERSION)) {
+        triggerForcedUpdateModal(payload.version, payload.notes);
+      } else if (payload.type === 'SCORE' && payload.cat && payload.name && payload.score) {
+        if (payload.deviceToken && payload.name) {
+          if (applyIncomingCloudData({ nameOwners: { [String(payload.name).trim().toLowerCase()]: payload.deviceToken } }, localMaster, chatState, ideasState, milestones)) {
+            changed = true;
+          }
+        }
+        if (mergeScoreMaps(localMaster, { [payload.cat]: [{ name: payload.name, score: payload.score, date: payload.date || 'Heute', isUser: true }] })) {
+          changed = true;
+          scoreToast = { name: payload.name, score: payload.score, cat: payload.cat };
+        }
+      } else if (payload.type === 'CHAT_MSG' && payload.msg) {
+        if (applyIncomingCloudData({ chat: [payload.msg] }, localMaster, chatState, ideasState, milestones)) changed = true;
+      } else if (payload.type === 'CHAT_DELETE' && payload.msgId) {
+        if (applyIncomingCloudData({ deletedChatIds: [payload.msgId] }, localMaster, chatState, ideasState, milestones)) changed = true;
+      } else if (payload.type === 'CHAT_CLEAR' && payload.clearedBefore) {
+        if (applyIncomingCloudData({ clearedBefore: payload.clearedBefore }, localMaster, chatState, ideasState, milestones)) changed = true;
+      } else if (payload.type === 'IDEA_ADD' && payload.idea) {
+        if (applyIncomingCloudData({ ideas: [payload.idea] }, localMaster, chatState, ideasState, milestones)) changed = true;
+      } else if (payload.type === 'IDEA_DELETE' && payload.ideaId) {
+        if (applyIncomingCloudData({ deletedIdeaIds: [payload.ideaId] }, localMaster, chatState, ideasState, milestones)) changed = true;
+      } else if (payload.type === 'RENAME_REQ' && (payload.renameReq || payload.req)) {
+        if (applyIncomingCloudData({ renameRequests: [payload.renameReq || payload.req] }, localMaster, chatState, ideasState, milestones)) changed = true;
+      } else if (payload.type === 'RENAME_APPROVE' && (payload.approvedRename || payload.ren)) {
+        if (applyIncomingCloudData({ approvedRenames: [payload.approvedRename || payload.ren] }, localMaster, chatState, ideasState, milestones)) changed = true;
+      } else if (payload.type === 'RENAME_REJECT' && payload.reqId) {
+        if (applyIncomingCloudData({ rejectedRenameIds: [payload.reqId] }, localMaster, chatState, ideasState, milestones)) changed = true;
+      } else if (payload.type === 'ADMIN_HASH' && payload.customAdminHash) {
+        if (applyIncomingCloudData({ customAdminHash: payload.customAdminHash }, localMaster, chatState, ideasState, milestones)) changed = true;
+      }
+      return { changed, scoreToast };
+    }
 
     // Lädt alle Online-Highscores, Chat-Nachrichten & Ideen vom Cloud-Hub
     async function syncOnlineLeaderboards(pushIfLocalHasMore = false) {
@@ -4086,10 +4257,11 @@
         const milestones  = loadPlayerMilestones();
         let cloudDataLoaded = false;
         let latestDiscoveredKey = currentSnapshotKey;
+        const parsedNtfyPayloads = [];
 
-        // 1. Echtzeit-Event-Historie aus ntfy Hub abrufen
+        // 1. Echtzeit-Event-Historie aus ntfy Hub abrufen & neuesten gültigen Snapshot-Key ermitteln
         try {
-          const resN = await fetch(`${NTFY_HUB_URL}/json?poll=1&since=48h`, { cache: 'no-store' });
+          const resN = await fetch(`${NTFY_HUB_URL}/json?poll=1&since=48h&_t=${Date.now()}`, { cache: 'no-store' });
           if (resN.ok) {
             const text = await resN.text();
             const lines = text.split('\n').filter(Boolean);
@@ -4099,51 +4271,39 @@
                 if (evt && evt.event === 'message' && evt.message) {
                   const payload = JSON.parse(evt.message);
                   if (!payload) return;
-                  if (payload.snapshotKey) {
+                  if (payload.snapshotKey && !LEGACY_POISON_KEYS.has(payload.snapshotKey)) {
                     latestDiscoveredKey = payload.snapshotKey;
                   }
-                  if (payload.type === 'FORCE_UPDATE' && payload.version && isNewerSemver(payload.version, APP_VERSION)) {
-                    triggerForcedUpdateModal(payload.version, payload.notes);
-                  } else if (payload.type === 'SCORE' && payload.cat && payload.name && payload.score) {
-                    mergeScoreMaps(localMaster, { [payload.cat]: [payload] });
-                    if (payload.deviceToken && payload.name) {
-                      applyIncomingCloudData({ nameOwners: { [String(payload.name).trim().toLowerCase()]: payload.deviceToken } }, localMaster, chatState, ideasState, milestones);
-                    }
-                    cloudDataLoaded = true;
-                  } else if (payload.type === 'CHAT_MSG' && payload.msg) {
-                    applyIncomingCloudData({ chat: [payload.msg] }, localMaster, chatState, ideasState, milestones);
-                    cloudDataLoaded = true;
-                  } else if (payload.type === 'CHAT_DELETE' && payload.msgId) {
-                    applyIncomingCloudData({ deletedChatIds: [payload.msgId] }, localMaster, chatState, ideasState, milestones);
-                    cloudDataLoaded = true;
-                  } else if (payload.type === 'CHAT_CLEAR' && payload.clearedBefore) {
-                    applyIncomingCloudData({ clearedBefore: payload.clearedBefore }, localMaster, chatState, ideasState, milestones);
-                    cloudDataLoaded = true;
-                  } else if (payload.type === 'IDEA_ADD' && payload.idea) {
-                    applyIncomingCloudData({ ideas: [payload.idea] }, localMaster, chatState, ideasState, milestones);
-                    cloudDataLoaded = true;
-                  } else if (payload.type === 'IDEA_DELETE' && payload.ideaId) {
-                    applyIncomingCloudData({ deletedIdeaIds: [payload.ideaId] }, localMaster, chatState, ideasState, milestones);
-                    cloudDataLoaded = true;
-                  } else if (payload.type === 'RENAME_REQ' && (payload.renameReq || payload.req)) {
-                    applyIncomingCloudData({ renameRequests: [payload.renameReq || payload.req] }, localMaster, chatState, ideasState, milestones);
-                    cloudDataLoaded = true;
-                  } else if (payload.type === 'RENAME_APPROVE' && (payload.approvedRename || payload.ren)) {
-                    applyIncomingCloudData({ approvedRenames: [payload.approvedRename || payload.ren] }, localMaster, chatState, ideasState, milestones);
-                    cloudDataLoaded = true;
-                  } else if (payload.type === 'RENAME_REJECT' && payload.reqId) {
-                    applyIncomingCloudData({ rejectedRenameIds: [payload.reqId] }, localMaster, chatState, ideasState, milestones);
-                    cloudDataLoaded = true;
-                  } else if (payload.type === 'ADMIN_HASH' && payload.customAdminHash) {
-                    applyIncomingCloudData({ customAdminHash: payload.customAdminHash }, localMaster, chatState, ideasState, milestones);
-                  }
+                  parsedNtfyPayloads.push(payload);
+                  cloudDataLoaded = true;
                 }
               } catch (err) {}
             });
           }
         } catch (e) {}
 
-        // 2. Auch Legacy ntfy Stream abfragen
+        // 2. ZUERST die Bytebin-Snapshots laden (Master-Baseline + neuester entdeckter Key),
+        // damit danach die Echtzeit-Events aus ntfy garantiert das letzte Wort haben!
+        const keysToFetch = Array.from(new Set([INITIAL_SNAPSHOT_KEY, latestDiscoveredKey].filter(k => k && !LEGACY_POISON_KEYS.has(k))));
+        for (const snapKey of keysToFetch) {
+          try {
+            const resSnap = await fetch(`${BYTEBIN_BASE_URL}${snapKey}`, { cache: 'no-store' });
+            if (resSnap.ok) {
+              const snapData = await resSnap.json();
+              applyIncomingCloudData(snapData, localMaster, chatState, ideasState, milestones);
+              currentSnapshotKey = snapKey;
+              localStorage.setItem('hoermann_cloud_snapshot_key_v3', snapKey);
+              cloudDataLoaded = true;
+            }
+          } catch (e) {}
+        }
+
+        // 3. JETZT alle Echtzeit-Events aus dem 48h ntfy-Stream darüberlegen (dadurch gehen niemals Scores/Chats verloren, selbst wenn Bytebin auf einem PC blockiert war!)
+        parsedNtfyPayloads.forEach(payload => {
+          processSingleNtfyPayload(payload, localMaster, chatState, ideasState, milestones);
+        });
+
+        // 4. Auch Legacy ntfy Stream abfragen
         try {
           const resLeg = await fetch(`${NTFY_LEGACY_URL}/json?poll=1&since=48h`, { cache: 'no-store' });
           if (resLeg.ok) {
@@ -4163,19 +4323,7 @@
           }
         } catch (e) {}
 
-        // 3. Aktuellen Komplett-Snapshot von Bytebin laden
-        if (latestDiscoveredKey) {
-          try {
-            const resSnap = await fetch(`${BYTEBIN_BASE_URL}${latestDiscoveredKey}`, { cache: 'no-store' });
-            if (resSnap.ok) {
-              const snapData = await resSnap.json();
-              applyIncomingCloudData(snapData, localMaster, chatState, ideasState, milestones);
-              currentSnapshotKey = latestDiscoveredKey;
-              localStorage.setItem('hoermann_cloud_snapshot_key_v3', latestDiscoveredKey);
-              cloudDataLoaded = true;
-            }
-          } catch (e) {}
-        }
+        hasCompletedInitialCloudSync = true;
 
         // WICHTIG GEGEN RACE-CONDITIONS: Falls der Spieler WÄHREND des Netzwerk-Abrufs eine neue Chat-Nachricht oder einen Highscore abgeschickt hat,
         // holen wir uns jetzt den allerneuesten lokalen Stand und führen ihn zusammen, damit NIEMALS eine gerade geschriebene Nachricht verschwindet!
@@ -4245,15 +4393,100 @@
       });
     }
 
-    // Echtzeit-Empfänger (SSE) für Scores, Live-Chat, Admin-Moderation, Spieler-Ideen & Zwangsupdate
+    // Schneller 4-Sekunden-Echtzeit-Poller für neue Chat-Nachrichten & Highscores (garantiert Live-Empfang OHNE Seiten-Refresh, selbst wenn SSE durch Firewall/Proxy getrennt wird!)
+    let isFastPollInProgress = false;
+    const processedLiveNtfyEventIds = new Set();
+
+    async function pollRecentLiveEvents() {
+      if (isFastPollInProgress || isSyncOnlineInProgress) return;
+      isFastPollInProgress = true;
+      try {
+        const res = await fetch(`${NTFY_HUB_URL}/json?poll=1&since=5m&_t=${Date.now()}`, { cache: 'no-store' });
+        if (!res.ok) return;
+        const text = await res.text();
+        const lines = text.split('\n').filter(Boolean);
+        if (!lines.length) return;
+
+        const localMaster = loadMasterUserScores();
+        const chatState   = loadChatState();
+        const ideasState  = loadIdeasState();
+        const milestones  = loadPlayerMilestones();
+        let anyChanged    = false;
+        let lastToastInfo = null;
+        let snapshotToSync = '';
+
+        lines.forEach(line => {
+          try {
+            const evt = JSON.parse(line);
+            if (!evt || evt.event !== 'message' || !evt.message) return;
+            if (evt.id && processedLiveNtfyEventIds.has(evt.id)) return;
+            if (evt.id) processedLiveNtfyEventIds.add(evt.id);
+
+            const payload = JSON.parse(evt.message);
+            if (!payload) return;
+
+            if (payload.snapshotKey && !LEGACY_POISON_KEYS.has(payload.snapshotKey) && payload.snapshotKey !== currentSnapshotKey) {
+              snapshotToSync = payload.snapshotKey;
+            }
+            const resProc = processSingleNtfyPayload(payload, localMaster, chatState, ideasState, milestones);
+            if (resProc.changed) anyChanged = true;
+            if (resProc.scoreToast) lastToastInfo = resProc.scoreToast;
+          } catch (e) {}
+        });
+
+        if (anyChanged) {
+          saveMasterUserScores(localMaster);
+          saveChatState(chatState);
+          saveIdeasState(ideasState);
+          savePlayerMilestones(milestones);
+
+          ['forklift', 'tower', 'slots', 'mario', 'buster', 'nerve', 'parcours'].forEach(cat => {
+            const combined = deduplicateKeepBestPerName([...(localMaster[cat] || []), ...(defaultLeaderboards[cat] || [])]);
+            try {
+              localStorage.setItem(`hoermann_lb_${cat}`, JSON.stringify(combined));
+            } catch (e) {}
+          });
+
+          if (typeof renderChatMessages === 'function') renderChatMessages();
+          if (typeof renderAdminIdeasList === 'function') renderAdminIdeasList();
+          if (typeof renderAdminRenamesList === 'function') renderAdminRenamesList();
+
+          if (highscoreCard.classList.contains('show')) {
+            switchLeaderboardTab(activeGameCategory, (lastToastInfo && lastToastInfo.name) || playerNameInput.value.trim());
+          }
+          if (scoreSubmitDialog.classList.contains('show')) {
+            evaluatePersonalHighscoreCheck();
+          }
+          if (lastToastInfo) {
+            showToast(`🌐 Neuer Bestwert: ${lastToastInfo.name} hat ${lastToastInfo.score} Pkt erreicht! 🏆`);
+          }
+          setCloudBadgeState('online');
+        }
+
+        if (snapshotToSync) {
+          syncOnlineLeaderboards(false);
+        }
+      } catch (e) {} finally {
+        isFastPollInProgress = false;
+      }
+    }
+
+    // Echtzeit-Empfänger (SSE) mit automatischem Reconnect bei Verbindungsabbruch
+    let liveEventSourceInstance = null;
     function startLiveScoreStream() {
       if (typeof EventSource === 'undefined') return;
       try {
+        if (liveEventSourceInstance) {
+          try { liveEventSourceInstance.close(); } catch (e) {}
+        }
         const es = new EventSource(`${NTFY_HUB_URL}/sse`);
+        liveEventSourceInstance = es;
+
         es.onmessage = async (evt) => {
           try {
             const data = JSON.parse(evt.data);
             if (!data || !data.message) return;
+            if (data.id) processedLiveNtfyEventIds.add(data.id);
             const item = JSON.parse(data.message);
             if (!item) return;
 
@@ -4262,7 +4495,7 @@
             const ideasState  = loadIdeasState();
             const milestones  = loadPlayerMilestones();
 
-            if (item.snapshotKey && item.snapshotKey !== currentSnapshotKey) {
+            if (item.snapshotKey && !LEGACY_POISON_KEYS.has(item.snapshotKey) && item.snapshotKey !== currentSnapshotKey) {
               currentSnapshotKey = item.snapshotKey;
               localStorage.setItem('hoermann_cloud_snapshot_key_v3', item.snapshotKey);
             }
@@ -4272,77 +4505,45 @@
               return;
             }
 
-            if (item.type === 'SCORE' && item.cat && item.name && item.score) {
-              if (item.deviceToken && item.name) {
-                applyIncomingCloudData({ nameOwners: { [String(item.name).trim().toLowerCase()]: item.deviceToken } }, localMaster, chatState, ideasState, milestones);
-              }
-              const wasUpdated = mergeScoreMaps(localMaster, { [item.cat]: [{ name: item.name, score: item.score, date: item.date, isUser: true }] });
-              if (wasUpdated) {
-                saveMasterUserScores(localMaster);
-                if (highscoreCard.classList.contains('show')) {
-                  switchLeaderboardTab(activeGameCategory, item.name);
-                }
-                if (scoreSubmitDialog.classList.contains('show')) {
-                  evaluatePersonalHighscoreCheck();
-                }
-                showToast(`🌐 Neuer Bestwert: ${item.name} hat ${item.score} Pkt erreicht! 🏆`);
-              }
-            } else if (item.type === 'CHAT_MSG' && item.msg) {
-              if (applyIncomingCloudData({ chat: [item.msg] }, localMaster, chatState, ideasState, milestones)) {
-                saveChatState(chatState);
-                if (typeof renderChatMessages === 'function') renderChatMessages();
-              }
-            } else if (item.type === 'CHAT_DELETE' && item.msgId) {
-              if (applyIncomingCloudData({ deletedChatIds: [item.msgId] }, localMaster, chatState, ideasState, milestones)) {
-                saveChatState(chatState);
-                if (typeof renderChatMessages === 'function') renderChatMessages();
-              }
-            } else if (item.type === 'CHAT_CLEAR' && item.clearedBefore) {
-              if (applyIncomingCloudData({ clearedBefore: item.clearedBefore }, localMaster, chatState, ideasState, milestones)) {
-                saveChatState(chatState);
-                if (typeof renderChatMessages === 'function') renderChatMessages();
-              }
-            } else if (item.type === 'IDEA_ADD' && item.idea) {
-              if (applyIncomingCloudData({ ideas: [item.idea] }, localMaster, chatState, ideasState, milestones)) {
-                saveIdeasState(ideasState);
-                if (typeof renderAdminIdeasList === 'function') renderAdminIdeasList();
-                if (isAdminUnlocked) {
-                  showToast(`💡 Neue Spieler-Idee von ${item.idea.player} im Admin-Postfach!`);
-                }
-              }
-            } else if (item.type === 'IDEA_DELETE' && item.ideaId) {
-              if (applyIncomingCloudData({ deletedIdeaIds: [item.ideaId] }, localMaster, chatState, ideasState, milestones)) {
-                saveIdeasState(ideasState);
-                if (typeof renderAdminIdeasList === 'function') renderAdminIdeasList();
-              }
-            } else if (item.type === 'RENAME_REQ' && (item.renameReq || item.req)) {
-              if (applyIncomingCloudData({ renameRequests: [item.renameReq || item.req] }, localMaster, chatState, ideasState, milestones)) {
-                if (typeof renderAdminRenamesList === 'function') renderAdminRenamesList();
-                if (isAdminUnlocked) {
-                  const r = item.renameReq || item.req;
-                  showToast(`✏️ Neuer Namensantrag: „${r.oldName}“ ➔ „${r.newName}“`);
-                }
-              }
-            } else if (item.type === 'RENAME_APPROVE' && (item.approvedRename || item.ren)) {
-              if (applyIncomingCloudData({ approvedRenames: [item.approvedRename || item.ren] }, localMaster, chatState, ideasState, milestones)) {
-                saveMasterUserScores(localMaster);
-                saveChatState(chatState);
-                saveIdeasState(ideasState);
-                savePlayerMilestones(milestones);
-                if (typeof renderChatMessages === 'function') renderChatMessages();
-                if (typeof renderAdminRenamesList === 'function') renderAdminRenamesList();
-                if (highscoreCard.classList.contains('show')) {
-                  switchLeaderboardTab(activeGameCategory, getLockedPlayerName());
-                }
-              }
-            } else if (item.type === 'RENAME_REJECT' && item.reqId) {
-              if (applyIncomingCloudData({ rejectedRenameIds: [item.reqId] }, localMaster, chatState, ideasState, milestones)) {
-                if (typeof renderAdminRenamesList === 'function') renderAdminRenamesList();
-              }
-            } else if (item.type === 'SNAPSHOT' && item.snapshotKey) {
+            if (item.type === 'SNAPSHOT' && item.snapshotKey && !LEGACY_POISON_KEYS.has(item.snapshotKey)) {
               syncOnlineLeaderboards(false);
+              return;
+            }
+
+            const resProc = processSingleNtfyPayload(item, localMaster, chatState, ideasState, milestones);
+            if (resProc.changed) {
+              saveMasterUserScores(localMaster);
+              saveChatState(chatState);
+              saveIdeasState(ideasState);
+              savePlayerMilestones(milestones);
+
+              ['forklift', 'tower', 'slots', 'mario', 'buster', 'nerve', 'parcours'].forEach(cat => {
+                const combined = deduplicateKeepBestPerName([...(localMaster[cat] || []), ...(defaultLeaderboards[cat] || [])]);
+                try {
+                  localStorage.setItem(`hoermann_lb_${cat}`, JSON.stringify(combined));
+                } catch (e) {}
+              });
+
+              if (typeof renderChatMessages === 'function') renderChatMessages();
+              if (typeof renderAdminIdeasList === 'function') renderAdminIdeasList();
+              if (typeof renderAdminRenamesList === 'function') renderAdminRenamesList();
+
+              if (highscoreCard.classList.contains('show')) {
+                switchLeaderboardTab(activeGameCategory, (resProc.scoreToast && resProc.scoreToast.name) || getLockedPlayerName());
+              }
+              if (scoreSubmitDialog.classList.contains('show')) {
+                evaluatePersonalHighscoreCheck();
+              }
+              if (resProc.scoreToast) {
+                showToast(`🌐 Neuer Bestwert: ${resProc.scoreToast.name} hat ${resProc.scoreToast.score} Pkt erreicht! 🏆`);
+              }
             }
           } catch (e) {}
+        };
+
+        es.onerror = () => {
+          try { es.close(); } catch (e) {}
+          setTimeout(startLiveScoreStream, 6000);
         };
       } catch (e) {}
     }
@@ -5340,7 +5541,7 @@
       saveIdeasState(ideasState);
       savePlayerMilestones(milestones);
 
-      ['forklift', 'slots', 'mario', 'buster', 'nerve', 'parcours'].forEach(cat => {
+      ['forklift', 'tower', 'slots', 'mario', 'buster', 'nerve', 'parcours'].forEach(cat => {
         try {
           localStorage.setItem(`hoermann_lb_${cat}`, JSON.stringify(getGameLeaderboard(cat)));
         } catch (e) {}
@@ -5840,11 +6041,12 @@
       });
     }
 
-    // Initiales Rendering & Online-Stream starten
+    // Initiales Rendering & Online-Stream + 3,5-Sekunden-Live-Polling starten (damit Chat & Scores IMMER ohne Refresh erscheinen!)
     refreshLockedNameUi();
     updateAdminUiState();
     syncOnlineLeaderboards(false);
     startLiveScoreStream();
+    setInterval(pollRecentLiveEvents, 3500);
     setInterval(() => { syncOnlineLeaderboards(false); }, 25000);
 
     /* ==========================================================
