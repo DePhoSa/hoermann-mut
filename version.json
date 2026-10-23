@@ -1,5 +1,5 @@
 {
-  "version": "2.4.0",
-  "updatedAt": "2026-10-23T08:54:00+02:00",
-  "notes": "Online-Bestenliste (nur bester Wert pro Spieler, Sperre bei kleinerem Wert) + Lagermeister Nico Staplerspiel + Zwangsupdate-System"
+  "version": "2.5.0",
+  "releasedAt": "2026-10-23T09:25:00Z",
+  "notes": "Neu: Spieler-Ideen-Box bei Highscore/Top-3 + Permanenter Online Live-Chat mit Admin-Rechten!"
 }

@@ -898,6 +898,323 @@
       }
     }
 
+    /* ==========================================================
+       ONLINE DESKTOP SIDE-LAYOUT (MAIN PORTAL + LIVE-CHAT NEBENEINANDER)
+       ========================================================== */
+    .portal-desktop-layout {
+      width: 100%;
+      max-width: 1290px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 1.25rem;
+      position: relative;
+      z-index: 10;
+    }
+
+    #online-side-chat {
+      width: 345px;
+      flex-shrink: 0;
+      background: #ffffff;
+      border-radius: 6px;
+      box-shadow: var(--shadow-lg);
+      border-top: 5px solid var(--hoermann-orange);
+      display: flex;
+      flex-direction: column;
+      height: 670px;
+      max-height: calc(100vh - 3rem);
+      position: sticky;
+      top: 1.25rem;
+      overflow: hidden;
+      z-index: 15;
+    }
+
+    /* Nur auf der Online-Webseiten-Ansicht (Desktop/Breitbild) anzeigen, auf Mobilgeräten/schmalen Fenstern ausblenden */
+    @media (max-width: 1180px) {
+      #online-side-chat {
+        display: none !important;
+      }
+    }
+
+    .chat-header {
+      background: var(--hoermann-blue);
+      color: #ffffff;
+      padding: 0.75rem 0.95rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .chat-header-title {
+      font-size: 0.92rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      letter-spacing: 0.02em;
+    }
+
+    .chat-online-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 8px #22c55e;
+      display: inline-block;
+    }
+
+    .chat-admin-toggle-btn {
+      background: rgba(255, 255, 255, 0.14);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 4px;
+      padding: 3px 8px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .chat-admin-toggle-btn:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    .chat-admin-toggle-btn.unlocked {
+      background: var(--hoermann-orange);
+      color: #111827;
+      border-color: #fbbf24;
+    }
+
+    .chat-admin-panel {
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 0.65rem 0.85rem;
+      border-bottom: 2px solid var(--hoermann-orange);
+      font-size: 0.78rem;
+      display: none;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .chat-admin-panel.show {
+      display: flex;
+    }
+
+    .chat-admin-tabs {
+      display: none;
+      background: #f1f5f9;
+      border-bottom: 1px solid #cbd5e1;
+      padding: 0.35rem;
+      gap: 0.35rem;
+    }
+
+    .chat-admin-tabs.show {
+      display: flex;
+    }
+
+    .chat-admin-tab-btn {
+      flex: 1;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: #334155;
+      padding: 0.4rem 0.5rem;
+      font-size: 0.78rem;
+      font-weight: 800;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .chat-admin-tab-btn.active {
+      background: var(--hoermann-blue);
+      color: #ffffff;
+      border-color: var(--hoermann-blue);
+    }
+
+    .chat-messages-list,
+    .admin-ideas-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0.75rem;
+      background: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    .chat-msg-item {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-left: 3px solid var(--hoermann-blue-light);
+      border-radius: 6px;
+      padding: 0.5rem 0.65rem;
+      font-size: 0.84rem;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+      position: relative;
+      word-break: break-word;
+    }
+
+    .chat-msg-item.own-msg {
+      border-left-color: var(--hoermann-orange);
+      background: #fffbeb;
+    }
+
+    .chat-msg-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      margin-bottom: 3px;
+      font-size: 0.74rem;
+    }
+
+    .chat-msg-author {
+      font-weight: 800;
+      color: var(--hoermann-blue);
+    }
+
+    .chat-msg-time {
+      color: #64748b;
+      font-size: 0.7rem;
+    }
+
+    .chat-msg-text {
+      color: #1e293b;
+      line-height: 1.38;
+      white-space: pre-wrap;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    .chat-delete-btn {
+      background: #fee2e2;
+      color: #b91c1c;
+      border: 1px solid #fca5a5;
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      cursor: pointer;
+      margin-left: 4px;
+    }
+
+    .chat-delete-btn:hover {
+      background: #ef4444;
+      color: #ffffff;
+    }
+
+    .chat-input-area {
+      padding: 0.65rem 0.75rem;
+      background: #ffffff;
+      border-top: 1px solid #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+
+    .chat-input-row {
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    .chat-input-field {
+      width: 100%;
+      padding: 0.48rem 0.65rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      font-size: 0.83rem;
+      font-family: inherit;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    .chat-input-field:focus {
+      outline: none;
+      border-color: var(--hoermann-blue);
+    }
+
+    .chat-send-btn {
+      background: var(--hoermann-orange);
+      color: #ffffff;
+      border: none;
+      border-radius: 4px;
+      padding: 0.48rem 0.85rem;
+      font-size: 0.83rem;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+
+    .chat-send-btn:hover {
+      background: var(--hoermann-orange-hover);
+    }
+
+    /* Highscore Ideen-Ticket Box */
+    .idea-ticket-box {
+      margin: 0.85rem auto 0.5rem auto;
+      max-width: 640px;
+      background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+      border: 2px solid #f59e0b;
+      border-radius: 8px;
+      padding: 0.9rem 1.05rem;
+      text-align: left;
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.14);
+      display: none;
+    }
+
+    .idea-ticket-box.show {
+      display: block;
+      animation: fadeIn 0.25s ease-out;
+    }
+
+    .idea-ticket-badge {
+      display: inline-block;
+      background: var(--hoermann-blue);
+      color: #ffffff;
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 99px;
+      margin-bottom: 0.4rem;
+      letter-spacing: 0.03em;
+    }
+
+    .idea-ticket-textarea {
+      width: 100%;
+      margin-top: 0.55rem;
+      padding: 0.6rem 0.75rem;
+      border: 2px solid #cbd5e1;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.88rem;
+      resize: vertical;
+      min-height: 68px;
+      background: #ffffff;
+      color: #0f172a;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    .idea-ticket-textarea:focus {
+      outline: none;
+      border-color: var(--hoermann-blue);
+    }
+
+    .admin-idea-card {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-left: 4px solid var(--hoermann-orange);
+      border-radius: 6px;
+      padding: 0.6rem 0.7rem;
+      font-size: 0.82rem;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
     @media (max-width: 640px) {
       body {
         padding: 0.75rem;
@@ -951,6 +1268,7 @@
 
   <canvas id="fx-canvas"></canvas>
 
+  <div class="portal-desktop-layout">
   <div class="container" id="main-card">
     <header class="top-bar">
       <div class="week-label" id="date-label">WOCHE 1 - MONTAG</div>
@@ -1293,6 +1611,19 @@
         Trage deinen Namen in die Hörmann Mut-Bestenliste ein:
       </p>
       <div id="submit-highscore-feedback" style="margin: 0.75rem auto 0.25rem auto; padding: 0.65rem 1rem; border-radius: 6px; font-size: 0.9rem; font-weight: 700; display: none; max-width: 640px; line-height: 1.4;"></div>
+
+      <!-- SPIELER-IDEEN-TICKET BOX (Wird bei Erstplatzierung, Top-3-Einzug, Top-3-Comeback oder Top-3-Verbesserung freigeschaltet) -->
+      <div class="idea-ticket-box" id="idea-ticket-box">
+        <div class="idea-ticket-badge" id="idea-ticket-badge">💡 BONUS FREIGESCHALTET: DEINE SPIEL-IDEE</div>
+        <div id="idea-ticket-reason" style="font-size:0.92rem; font-weight:800; color:#92400e; margin-bottom:3px;">
+          Du hast dir ein Ideen-Ticket erspielt!
+        </div>
+        <p style="font-size:0.82rem; color:#78350f; line-height:1.4; margin:0;">
+          Als Belohnung darfst du einmalig eine oder mehrere lustige oder mutige Ideen hinterlassen, die wir ins Spiel einbauen können (optional – landet direkt im geschützten Admin-Postfach):
+        </p>
+        <textarea id="player-idea-input" class="idea-ticket-textarea" maxlength="500" placeholder="Deine Idee(n) fürs Spiel (optional) – z.B. neues Hindernis, lustiger Spruch, geheimes Extra..."></textarea>
+      </div>
+
       <div class="submit-form">
         <input type="text" id="player-name-input" class="submit-input" maxlength="20" placeholder="Dein Name oder Spitzname">
         <button class="submit-btn" id="save-score-btn">In Bestenliste eintragen 🏆</button>
@@ -1338,10 +1669,75 @@
 
   </div>
 
+  <!-- PERMANENTES ONLINE LIVE-CHAT FENSTER (Nur in der Desktop-Webseiten-Ansicht rechts neben dem Portal) -->
+  <aside id="online-side-chat" aria-label="Hörmann Live-Chat">
+    <div class="chat-header">
+      <div class="chat-header-title">
+        <span class="chat-online-dot"></span>
+        <span>💬 Hörmann Live-Chat</span>
+      </div>
+      <button class="chat-admin-toggle-btn" id="chat-admin-toggle-btn" title="Admin-Bereich für Moderation &amp; Spieler-Ideen">
+        🔒 Admin
+      </button>
+    </div>
+
+    <!-- Geschütztes Admin-Panel (Passwort-Login via SHA-256 Hash – kein Klartext im Code!) -->
+    <div class="chat-admin-panel" id="chat-admin-panel">
+      <div id="chat-admin-login-row" style="display:flex; gap:6px; align-items:center;">
+        <input type="password" id="chat-admin-pass-input" class="chat-input-field" placeholder="Admin-PIN / Passwort..." style="padding:4px 8px; font-size:0.78rem; background:#1e293b; color:#fff; border-color:#475569;">
+        <button id="chat-admin-login-btn" class="chat-send-btn" style="padding:4px 10px; font-size:0.76rem;">Entsperren</button>
+      </div>
+      <div id="chat-admin-actions-row" style="display:none; flex-direction:column; gap:6px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:4px; flex-wrap:wrap;">
+          <span style="color:#fbbf24; font-weight:800;">🛡️ Admin-Modus aktiv</span>
+          <div style="display:flex; gap:4px;">
+            <button id="chat-admin-change-pw-btn" class="chat-admin-toggle-btn" style="font-size:0.7rem; padding:2px 6px;">🔑 PIN ändern</button>
+            <button id="chat-admin-clear-chat-btn" class="chat-delete-btn" style="font-size:0.7rem; padding:2px 6px;">🗑️ Chat leeren</button>
+            <button id="chat-admin-logout-btn" class="chat-admin-toggle-btn" style="font-size:0.7rem; padding:2px 6px;">Sperren</button>
+          </div>
+        </div>
+        <div id="chat-admin-new-pw-box" style="display:none; gap:4px; align-items:center; margin-top:2px;">
+          <input type="password" id="chat-admin-new-pw-input" class="chat-input-field" placeholder="Neues Admin-Passwort..." style="padding:3px 6px; font-size:0.74rem; background:#1e293b; color:#fff; border-color:#475569;">
+          <button id="chat-admin-save-pw-btn" class="chat-send-btn" style="padding:3px 8px; font-size:0.72rem;">Speichern</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Admin-Umschalter zwischen Live-Chat & Spieler-Ideen-Postfach -->
+    <div class="chat-admin-tabs" id="chat-admin-tabs">
+      <button class="chat-admin-tab-btn active" id="admin-tab-chat-btn">💬 Live-Chat</button>
+      <button class="chat-admin-tab-btn" id="admin-tab-ideas-btn">💡 Ideen-Postfach (<span id="admin-ideas-count">0</span>)</button>
+    </div>
+
+    <!-- Nachrichtenliste (Ungefilterter Echtzeit-Chat für alle Spieler) -->
+    <div class="chat-messages-list" id="chat-messages-list">
+      <div style="text-align:center; color:#64748b; font-size:0.8rem; padding:1rem 0.5rem;">
+        Lade Online-Chatverlauf... 💬
+      </div>
+    </div>
+
+    <!-- Geschütztes Admin-Postfach für eingereichte Highscore-Spieler-Ideen -->
+    <div class="admin-ideas-list" id="admin-ideas-list" style="display:none;">
+      <div style="text-align:center; color:#64748b; font-size:0.8rem; padding:1rem 0.5rem;">
+        Noch keine Spieler-Ideen eingegangen. 💡
+      </div>
+    </div>
+
+    <!-- Chat-Eingabe -->
+    <div class="chat-input-area" id="chat-input-area">
+      <input type="text" id="chat-sender-input" class="chat-input-field" maxlength="20" placeholder="Dein Name im Chat...">
+      <div class="chat-input-row">
+        <input type="text" id="chat-text-input" class="chat-input-field" maxlength="300" placeholder="Nachricht schreiben (Enter)...">
+        <button class="chat-send-btn" id="chat-send-btn">Senden ➤</button>
+      </div>
+    </div>
+  </aside>
+  </div>
+
   <footer>
     Hörmann Mut-Portal &bull; Sektionaltore &bull; Schwingtore &bull; Türen &bull; Stahlzargen &bull; Lagermeister Nico &amp; Dennis Ressemann Edition
     <div style="margin-top:4px; font-size:0.74rem; color:rgba(255,255,255,0.5);">
-      <span id="app-version-badge">🟢 Version 2.4.0 (Live Auto-Update &amp; Online-Sync aktiv)</span>
+      <span id="app-version-badge">🟢 Version 2.5.0 (Live Auto-Update, Ideen-Box &amp; Online-Chat aktiv)</span>
     </div>
   </footer>
 
@@ -2192,6 +2588,26 @@
       const master = loadMasterUserScores();
       const categories = ['forklift', 'mario', 'buster', 'nerve', 'parcours'];
 
+      // Bisher erspielte echte Online-Highscores dauerhaft als Basis sichern, damit sie niemals verloren gehen
+      const permanentRealPlayerBaseline = {
+        forklift: [],
+        mario: [
+          { name: "Sibbelinho", score: 5360, date: "23.10.", isUser: true },
+          { name: "Mary", score: 3100, date: "23.10.", isUser: true },
+          { name: "Lager-Profi", score: 1250, date: "23.10.", isUser: true }
+        ],
+        buster: [
+          { name: "Mary", score: 1690, date: "23.10.", isUser: true }
+        ],
+        nerve: [
+          { name: "Mary", score: 1643, date: "23.10.", isUser: true }
+        ],
+        parcours: [
+          { name: "Mary", score: 3, date: "23.10.", isUser: true }
+        ]
+      };
+      mergeScoreMaps(master, permanentRealPlayerBaseline);
+
       categories.forEach(cat => {
         master[cat] = deduplicateKeepBestPerName(master[cat]);
         try {
@@ -2241,17 +2657,106 @@
     migrateAndPreserveAllUserScores();
 
     /* ==========================================================
-       7b. GLOBAL ONLINE CLOUD LEADERBOARD SYNC & ZWANGSUPDATE-SYSTEM
+       7b. GLOBAL ONLINE CLOUD HUB (HIGHSCORES, IDEEN-BOX, LIVE-CHAT & ZWANGSUPDATE)
        ========================================================== */
-    const APP_VERSION       = '2.4.0';
-    const CLOUD_PRIMARY_URL = 'https://api.restful-api.dev/objects/ff808181a09d98f701a1678998b666e3';
-    const CLOUD_LEGACY_URL  = 'https://api.restful-api.dev/objects/ff808181a09d98f701a167784b4f66c4';
-    const CLOUD_MIRROR_URL  = 'https://api.restful-api.dev/objects/ff808181a09d98f701a167796f6166c7';
-    const NTFY_TOPIC_URL    = 'https://ntfy.sh/hoermann_mut_dephosa_online_lb_v2';
-    const cloudSyncBadge    = document.getElementById('cloud-sync-badge');
+    const APP_VERSION           = '2.5.0';
+    const NTFY_HUB_URL          = 'https://ntfy.sh/hoermann_mut_dephosa_hub_v3';
+    const NTFY_LEGACY_URL       = 'https://ntfy.sh/hoermann_mut_dephosa_online_lb_v2';
+    const BYTEBIN_POST_URL      = 'https://bytebin.lucko.me/post';
+    const BYTEBIN_BASE_URL      = 'https://bytebin.lucko.me/';
+    const INITIAL_SNAPSHOT_KEY  = 'HhqiUAlDhY';
+    const cloudSyncBadge        = document.getElementById('cloud-sync-badge');
     const submitHighscoreFeedback = document.getElementById('submit-highscore-feedback');
-    let pendingGameDisplayName = '';
-    let updateForcedAlready = false;
+    const ideaTicketBox         = document.getElementById('idea-ticket-box');
+    const ideaTicketBadge       = document.getElementById('idea-ticket-badge');
+    const ideaTicketReason      = document.getElementById('idea-ticket-reason');
+    const playerIdeaInput       = document.getElementById('player-idea-input');
+
+    let pendingGameDisplayName  = '';
+    let updateForcedAlready     = false;
+    let currentSnapshotKey      = localStorage.getItem('hoermann_cloud_snapshot_key_v3') || INITIAL_SNAPSHOT_KEY;
+    let currentIdeaEligibility  = { eligible: false, reason: '', badge: '', oldRank: null, newRank: null, rule: 'NONE' };
+
+    // Lokaler & Cloud-synchronisierter Status für Chat, gelöschte Nachrichten, Spieler-Ideen & Spieler-Meilensteine
+    const CHAT_STORAGE_KEY      = 'hoermann_mut_live_chat_v3';
+    const IDEAS_STORAGE_KEY     = 'hoermann_mut_player_ideas_v3';
+    const MILESTONE_STORAGE_KEY = 'hoermann_mut_idea_milestones_v3';
+    const CUSTOM_ADMIN_HASH_KEY = 'hoermann_mut_custom_admin_hash_v3';
+
+    // SHA-256 Hashes der Admin-Zugänge (KEIN Klartext-Passwort oder E-Mail im Quellcode sichtbar!)
+    const DEFAULT_ADMIN_HASHES = new Set([
+      'e6ebcbc1b665b1572775d503c80d174bf29028ad57f81e2f649e1de765c14fb5',
+      '90bbc9533a02213ffdf4d1482eb9b97a5feec554e33641d40f24777cbe5a8341'
+    ]);
+    let isAdminUnlocked = sessionStorage.getItem('hoermann_admin_unlocked') === '1';
+    let activeAdminTab  = 'chat';
+
+    function loadChatState() {
+      try {
+        const raw = localStorage.getItem(CHAT_STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          return {
+            messages: Array.isArray(parsed.messages) ? parsed.messages : [],
+            deletedIds: Array.isArray(parsed.deletedIds) ? parsed.deletedIds : [],
+            clearedBefore: Number(parsed.clearedBefore) || 0
+          };
+        }
+      } catch (e) {}
+      return {
+        messages: [
+          {
+            id: 'welcome_msg_1',
+            sender: 'Lagermeister Nico',
+            text: 'Willkommen im Hörmann Live-Chat! Hier könnt ihr euch ungefiltert austauschen & eure Rekorde feiern. 🚜🔥',
+            time: 'Live',
+            ts: 1729660000000
+          }
+        ],
+        deletedIds: [],
+        clearedBefore: 0
+      };
+    }
+
+    function saveChatState(state) {
+      try {
+        localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {}
+    }
+
+    function loadIdeasState() {
+      try {
+        const raw = localStorage.getItem(IDEAS_STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          return {
+            ideas: Array.isArray(parsed.ideas) ? parsed.ideas : [],
+            deletedIdeaIds: Array.isArray(parsed.deletedIdeaIds) ? parsed.deletedIdeaIds : []
+          };
+        }
+      } catch (e) {}
+      return { ideas: [], deletedIdeaIds: [] };
+    }
+
+    function saveIdeasState(state) {
+      try {
+        localStorage.setItem(IDEAS_STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {}
+    }
+
+    function loadPlayerMilestones() {
+      try {
+        const raw = localStorage.getItem(MILESTONE_STORAGE_KEY);
+        if (raw) return JSON.parse(raw) || {};
+      } catch (e) {}
+      return {};
+    }
+
+    function savePlayerMilestones(m) {
+      try {
+        localStorage.setItem(MILESTONE_STORAGE_KEY, JSON.stringify(m));
+      } catch (e) {}
+    }
 
     // Erzwingt einen harten Reload am Browser-Cache vorbei, sobald eine neue Version erkannt wird
     function performHardCacheBustReload(targetVersion) {
@@ -2314,7 +2819,6 @@
       } catch (e) {}
     }
 
-    // Bei Tab-Wechsel / Fokus sofort prüfen, ob zwischenzeitlich ein Update kam
     window.addEventListener('focus', checkServerAppVersion);
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'visible') {
@@ -2331,7 +2835,7 @@
         cloudSyncBadge.style.background = '#fef3c7';
         cloudSyncBadge.style.color = '#b45309';
         cloudSyncBadge.style.borderColor = '#fcd34d';
-        cloudSyncBadge.textContent = text || '🔄 Synchronisiere Online-Highscores...';
+        cloudSyncBadge.textContent = text || '🔄 Synchronisiere Online-Daten...';
       } else if (status === 'online') {
         cloudSyncBadge.style.background = '#dcfce7';
         cloudSyncBadge.style.color = '#15803d';
@@ -2345,64 +2849,192 @@
       }
     }
 
-    // Lädt alle Online-Highscores von Cloud-DB + Live-Stream und gleicht sie mit lokalen Highscores ab
-    async function syncOnlineLeaderboards(pushIfLocalHasMore = true) {
-      setCloudBadgeState('syncing');
-      const localMaster = loadMasterUserScores();
-      let cloudDataLoaded = false;
-      let cloudBeforeJson = '';
+    // Führt einen eingehenden Snapshot oder ein Echtzeit-Event mit dem lokalen Stand zusammen
+    function applyIncomingCloudData(data, localMaster, chatState, ideasState, milestones) {
+      if (!data || typeof data !== 'object') return false;
+      let changed = false;
 
-      // 1. Primäre v2 Cloud-DB abrufen (enthält auch Versions-Check!)
-      try {
-        const res = await fetch(CLOUD_PRIMARY_URL, { cache: 'no-store' });
-        if (res.ok) {
-          const json = await res.json();
-          if (json && json.data) {
-            if (json.data.version && json.data.version !== APP_VERSION) {
-              checkServerAppVersion();
-            }
-            cloudBeforeJson = JSON.stringify({
-              forklift: json.data.forklift || [],
-              mario: json.data.mario || [],
-              buster: json.data.buster || [],
-              nerve: json.data.nerve || [],
-              parcours: json.data.parcours || []
-            });
-            mergeScoreMaps(localMaster, json.data);
-            cloudDataLoaded = true;
-          }
-        }
-      } catch (e) {}
-
-      // 1b. Auch Legacy v1 Cloud-DB abfragen (falls jemand auf einem alten Tab noch einen höheren Rekord erspielt hat)
-      try {
-        const resLegacy = await fetch(CLOUD_LEGACY_URL, { cache: 'no-store' });
-        if (resLegacy.ok) {
-          const jsonL = await resLegacy.json();
-          if (jsonL && jsonL.data) {
-            mergeScoreMaps(localMaster, jsonL.data);
-            cloudDataLoaded = true;
-          }
-        }
-      } catch (e) {}
-
-      // 2. Falls Primär-DB nicht erreichbar war, Mirror-Cloud-DB abrufen
-      if (!cloudDataLoaded) {
-        try {
-          const resM = await fetch(CLOUD_MIRROR_URL, { cache: 'no-store' });
-          if (resM.ok) {
-            const jsonM = await resM.json();
-            if (jsonM && jsonM.data) {
-              mergeScoreMaps(localMaster, jsonM.data);
-              cloudDataLoaded = true;
-            }
-          }
-        } catch (e) {}
+      if (data.version && data.version !== APP_VERSION) {
+        checkServerAppVersion();
       }
 
-      // 3. Zusätzlich Echtzeit-Stream-Cache (ntfy) abrufen
+      if (data.scores) {
+        if (mergeScoreMaps(localMaster, data.scores)) changed = true;
+      } else if (data.forklift || data.mario || data.buster || data.nerve || data.parcours) {
+        if (mergeScoreMaps(localMaster, data)) changed = true;
+      }
+
+      if (typeof data.clearedBefore === 'number' && data.clearedBefore > chatState.clearedBefore) {
+        chatState.clearedBefore = data.clearedBefore;
+        changed = true;
+      }
+
+      if (Array.isArray(data.deletedChatIds)) {
+        data.deletedChatIds.forEach(id => {
+          if (id && !chatState.deletedIds.includes(id)) {
+            chatState.deletedIds.push(id);
+            changed = true;
+          }
+        });
+      }
+
+      if (Array.isArray(data.chat)) {
+        const existingIds = new Set(chatState.messages.map(m => m.id));
+        data.chat.forEach(msg => {
+          if (!msg || !msg.id || !msg.text) return;
+          if (chatState.deletedIds.includes(msg.id)) return;
+          if (msg.ts && msg.ts < chatState.clearedBefore) return;
+          if (!existingIds.has(msg.id)) {
+            chatState.messages.push({
+              id: String(msg.id),
+              sender: String(msg.sender || 'Spieler').slice(0, 24),
+              text: String(msg.text).slice(0, 300),
+              time: String(msg.time || 'Heute'),
+              ts: Number(msg.ts) || Date.now()
+            });
+            existingIds.add(msg.id);
+            changed = true;
+          }
+        });
+      }
+
+      chatState.messages = chatState.messages
+        .filter(m => !chatState.deletedIds.includes(m.id) && (!m.ts || m.ts >= chatState.clearedBefore))
+        .sort((a, b) => (a.ts || 0) - (b.ts || 0))
+        .slice(-80);
+
+      if (Array.isArray(data.deletedIdeaIds)) {
+        data.deletedIdeaIds.forEach(id => {
+          if (id && !ideasState.deletedIdeaIds.includes(id)) {
+            ideasState.deletedIdeaIds.push(id);
+            changed = true;
+          }
+        });
+      }
+
+      if (Array.isArray(data.ideas)) {
+        const existingIdeaIds = new Set(ideasState.ideas.map(i => i.id));
+        data.ideas.forEach(idea => {
+          if (!idea || !idea.id || !idea.text) return;
+          if (ideasState.deletedIdeaIds.includes(idea.id)) return;
+          if (!existingIdeaIds.has(idea.id)) {
+            ideasState.ideas.push({
+              id: String(idea.id),
+              player: String(idea.player || 'Spieler').slice(0, 24),
+              game: String(idea.game || ''),
+              score: Number(idea.score) || 0,
+              rank: Number(idea.rank) || 0,
+              reason: String(idea.reason || 'Highscore-Idee'),
+              text: String(idea.text).slice(0, 500),
+              date: String(idea.date || 'Heute'),
+              ts: Number(idea.ts) || Date.now()
+            });
+            existingIdeaIds.add(idea.id);
+            changed = true;
+          }
+        });
+      }
+
+      ideasState.ideas = ideasState.ideas
+        .filter(i => !ideasState.deletedIdeaIds.includes(i.id))
+        .sort((a, b) => (b.ts || 0) - (a.ts || 0))
+        .slice(0, 100);
+
+      if (data.milestones && typeof data.milestones === 'object') {
+        Object.keys(data.milestones).forEach(k => {
+          const inc = data.milestones[k];
+          if (!inc) return;
+          if (!milestones[k]) {
+            milestones[k] = { ...inc };
+            changed = true;
+          } else {
+            if (inc.firstIdeaUsed) milestones[k].firstIdeaUsed = true;
+            if (inc.wasEverInTop3) milestones[k].wasEverInTop3 = true;
+            if (typeof inc.bestTop3RankIdeaUsed === 'number') {
+              if (typeof milestones[k].bestTop3RankIdeaUsed !== 'number' || inc.bestTop3RankIdeaUsed < milestones[k].bestTop3RankIdeaUsed) {
+                milestones[k].bestTop3RankIdeaUsed = inc.bestTop3RankIdeaUsed;
+              }
+            }
+          }
+        });
+      }
+
+      if (data.customAdminHash && typeof data.customAdminHash === 'string' && data.customAdminHash.length === 64) {
+        localStorage.setItem(CUSTOM_ADMIN_HASH_KEY, data.customAdminHash);
+      }
+
+      return changed;
+    }
+
+    // Speichert einen kompletten Cloud-Snapshot auf Bytebin und verteilt den Key über ntfy
+    async function publishCloudSnapshot(extraEventPayload = null) {
+      const localMaster = loadMasterUserScores();
+      const chatState   = loadChatState();
+      const ideasState  = loadIdeasState();
+      const milestones  = loadPlayerMilestones();
+      const customHash  = localStorage.getItem(CUSTOM_ADMIN_HASH_KEY) || '';
+
+      const snapshotObj = {
+        version: APP_VERSION,
+        scores: {
+          forklift: deduplicateKeepBestPerName(localMaster.forklift || []),
+          mario: deduplicateKeepBestPerName(localMaster.mario || []),
+          buster: deduplicateKeepBestPerName(localMaster.buster || []),
+          nerve: deduplicateKeepBestPerName(localMaster.nerve || []),
+          parcours: deduplicateKeepBestPerName(localMaster.parcours || [])
+        },
+        chat: chatState.messages.slice(-80),
+        deletedChatIds: chatState.deletedIds.slice(-150),
+        clearedBefore: chatState.clearedBefore || 0,
+        ideas: ideasState.ideas.slice(0, 100),
+        deletedIdeaIds: ideasState.deletedIdeaIds.slice(-150),
+        milestones: milestones,
+        customAdminHash: customHash
+      };
+
+      let newKey = '';
       try {
-        const resN = await fetch(`${NTFY_TOPIC_URL}/json?poll=1&since=48h`, { cache: 'no-store' });
+        const res = await fetch(BYTEBIN_POST_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(snapshotObj)
+        });
+        if (res.ok) {
+          const j = await res.json();
+          if (j && j.key) {
+            newKey = j.key;
+            currentSnapshotKey = newKey;
+            localStorage.setItem('hoermann_cloud_snapshot_key_v3', newKey);
+          }
+        }
+      } catch (e) {}
+
+      const ntfyPayload = extraEventPayload
+        ? { ...extraEventPayload, snapshotKey: newKey || currentSnapshotKey }
+        : { type: 'SNAPSHOT', snapshotKey: newKey || currentSnapshotKey, ts: Date.now() };
+
+      try {
+        await fetch(NTFY_HUB_URL, {
+          method: 'POST',
+          body: JSON.stringify(ntfyPayload)
+        });
+        setCloudBadgeState('online');
+      } catch (e) {}
+    }
+
+    // Lädt alle Online-Highscores, Chat-Nachrichten & Ideen vom Cloud-Hub
+    async function syncOnlineLeaderboards(pushIfLocalHasMore = false) {
+      setCloudBadgeState('syncing');
+      const localMaster = loadMasterUserScores();
+      const chatState   = loadChatState();
+      const ideasState  = loadIdeasState();
+      const milestones  = loadPlayerMilestones();
+      let cloudDataLoaded = false;
+      let latestDiscoveredKey = currentSnapshotKey;
+
+      // 1. Echtzeit-Event-Historie aus ntfy Hub abrufen
+      try {
+        const resN = await fetch(`${NTFY_HUB_URL}/json?poll=1&since=48h`, { cache: 'no-store' });
         if (resN.ok) {
           const text = await resN.text();
           const lines = text.split('\n').filter(Boolean);
@@ -2411,10 +3043,51 @@
               const evt = JSON.parse(line);
               if (evt && evt.event === 'message' && evt.message) {
                 const payload = JSON.parse(evt.message);
-                if (payload && payload.type === 'FORCE_UPDATE' && payload.version && payload.version !== APP_VERSION) {
+                if (!payload) return;
+                if (payload.snapshotKey) {
+                  latestDiscoveredKey = payload.snapshotKey;
+                }
+                if (payload.type === 'FORCE_UPDATE' && payload.version && payload.version !== APP_VERSION) {
                   triggerForcedUpdateModal(payload.version, payload.notes);
-                } else if (payload && payload.cat && payload.name && payload.score) {
+                } else if (payload.type === 'SCORE' && payload.cat && payload.name && payload.score) {
                   mergeScoreMaps(localMaster, { [payload.cat]: [payload] });
+                  cloudDataLoaded = true;
+                } else if (payload.type === 'CHAT_MSG' && payload.msg) {
+                  applyIncomingCloudData({ chat: [payload.msg] }, localMaster, chatState, ideasState, milestones);
+                  cloudDataLoaded = true;
+                } else if (payload.type === 'CHAT_DELETE' && payload.msgId) {
+                  applyIncomingCloudData({ deletedChatIds: [payload.msgId] }, localMaster, chatState, ideasState, milestones);
+                  cloudDataLoaded = true;
+                } else if (payload.type === 'CHAT_CLEAR' && payload.clearedBefore) {
+                  applyIncomingCloudData({ clearedBefore: payload.clearedBefore }, localMaster, chatState, ideasState, milestones);
+                  cloudDataLoaded = true;
+                } else if (payload.type === 'IDEA_ADD' && payload.idea) {
+                  applyIncomingCloudData({ ideas: [payload.idea] }, localMaster, chatState, ideasState, milestones);
+                  cloudDataLoaded = true;
+                } else if (payload.type === 'IDEA_DELETE' && payload.ideaId) {
+                  applyIncomingCloudData({ deletedIdeaIds: [payload.ideaId] }, localMaster, chatState, ideasState, milestones);
+                  cloudDataLoaded = true;
+                } else if (payload.type === 'ADMIN_HASH' && payload.customAdminHash) {
+                  applyIncomingCloudData({ customAdminHash: payload.customAdminHash }, localMaster, chatState, ideasState, milestones);
+                }
+              }
+            } catch (err) {}
+          });
+        }
+      } catch (e) {}
+
+      // 2. Auch Legacy ntfy Stream abfragen
+      try {
+        const resLeg = await fetch(`${NTFY_LEGACY_URL}/json?poll=1&since=48h`, { cache: 'no-store' });
+        if (resLeg.ok) {
+          const textL = await resLeg.text();
+          textL.split('\n').filter(Boolean).forEach(line => {
+            try {
+              const evt = JSON.parse(line);
+              if (evt && evt.event === 'message' && evt.message) {
+                const p = JSON.parse(evt.message);
+                if (p && p.cat && p.name && p.score) {
+                  mergeScoreMaps(localMaster, { [p.cat]: [p] });
                   cloudDataLoaded = true;
                 }
               }
@@ -2423,8 +3096,26 @@
         }
       } catch (e) {}
 
-      // Lokal speichern (streng dedupliziert: nur 1 Bestwert pro Name)
+      // 3. Aktuellen Komplett-Snapshot von Bytebin laden
+      if (latestDiscoveredKey) {
+        try {
+          const resSnap = await fetch(`${BYTEBIN_BASE_URL}${latestDiscoveredKey}`, { cache: 'no-store' });
+          if (resSnap.ok) {
+            const snapData = await resSnap.json();
+            applyIncomingCloudData(snapData, localMaster, chatState, ideasState, milestones);
+            currentSnapshotKey = latestDiscoveredKey;
+            localStorage.setItem('hoermann_cloud_snapshot_key_v3', latestDiscoveredKey);
+            cloudDataLoaded = true;
+          }
+        } catch (e) {}
+      }
+
+      // Alles lokal persistieren
       saveMasterUserScores(localMaster);
+      saveChatState(chatState);
+      saveIdeasState(ideasState);
+      savePlayerMilestones(milestones);
+
       ['forklift', 'mario', 'buster', 'nerve', 'parcours'].forEach(cat => {
         const combined = deduplicateKeepBestPerName([...(localMaster[cat] || []), ...(defaultLeaderboards[cat] || [])]);
         try {
@@ -2432,11 +3123,12 @@
         } catch (e) {}
       });
 
-      const afterJson = JSON.stringify(localMaster);
-      const hasAnyUserScores = Object.values(localMaster).some(arr => arr.length > 0);
-      if (pushIfLocalHasMore && hasAnyUserScores && afterJson !== cloudBeforeJson) {
-        await writeMasterToCloud(localMaster);
+      if (pushIfLocalHasMore) {
+        await publishCloudSnapshot();
       }
+
+      if (typeof renderChatMessages === 'function') renderChatMessages();
+      if (typeof renderAdminIdeasList === 'function') renderAdminIdeasList();
 
       if (highscoreCard.classList.contains('show')) {
         switchLeaderboardTab(activeGameCategory, playerNameInput.value.trim());
@@ -2451,105 +3143,97 @@
       setCloudBadgeState(cloudDataLoaded ? 'online' : 'offline');
     }
 
-    async function writeMasterToCloud(masterObj) {
-      const dataWithVersion = {
-        version: APP_VERSION,
-        forklift: deduplicateKeepBestPerName(masterObj.forklift || []),
-        mario: deduplicateKeepBestPerName(masterObj.mario || []),
-        buster: deduplicateKeepBestPerName(masterObj.buster || []),
-        nerve: deduplicateKeepBestPerName(masterObj.nerve || []),
-        parcours: deduplicateKeepBestPerName(masterObj.parcours || [])
-      };
-
-      const payload = JSON.stringify({
-        name: 'hoermann_mut_global_leaderboard_v2_strict',
-        data: dataWithVersion
-      });
-
-      try {
-        await fetch(CLOUD_PRIMARY_URL, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: payload
-        });
-        setCloudBadgeState('online');
-      } catch (e) {}
-
-      try {
-        await fetch(CLOUD_LEGACY_URL, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: payload
-        });
-      } catch (e) {}
-
-      try {
-        await fetch(CLOUD_MIRROR_URL, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: payload
-        });
-      } catch (e) {}
-    }
-
     async function broadcastSingleScoreLive(category, entryObj) {
-      try {
-        fetch(NTFY_TOPIC_URL, {
-          method: 'POST',
-          body: JSON.stringify({
-            cat: category,
-            name: entryObj.name,
-            score: entryObj.score,
-            date: entryObj.date
-          })
-        }).catch(() => {});
-      } catch (e) {}
-
-      await syncOnlineLeaderboards(true);
+      await publishCloudSnapshot({
+        type: 'SCORE',
+        cat: category,
+        name: entryObj.name,
+        score: entryObj.score,
+        date: entryObj.date,
+        ts: Date.now()
+      });
     }
 
-    // Echtzeit-Empfänger (SSE): Empfängt sowohl Live-Highscores als auch Zwangsupdate-Signale!
+    // Echtzeit-Empfänger (SSE) für Scores, Live-Chat, Admin-Moderation, Spieler-Ideen & Zwangsupdate
     function startLiveScoreStream() {
       if (typeof EventSource === 'undefined') return;
       try {
-        const es = new EventSource(`${NTFY_TOPIC_URL}/sse`);
-        es.onmessage = (evt) => {
+        const es = new EventSource(`${NTFY_HUB_URL}/sse`);
+        es.onmessage = async (evt) => {
           try {
             const data = JSON.parse(evt.data);
-            if (data && data.message) {
-              const item = JSON.parse(data.message);
-              if (item && item.type === 'FORCE_UPDATE' && item.version && item.version !== APP_VERSION) {
-                triggerForcedUpdateModal(item.version, item.notes);
-              } else if (item && item.cat && item.name && item.score) {
-                const master = loadMasterUserScores();
-                const wasUpdated = mergeScoreMaps(master, { [item.cat]: [{ name: item.name, score: item.score, date: item.date, isUser: true }] });
-                if (wasUpdated) {
-                  saveMasterUserScores(master);
-                  if (highscoreCard.classList.contains('show')) {
-                    switchLeaderboardTab(activeGameCategory, item.name);
-                  }
-                  if (scoreSubmitDialog.classList.contains('show')) {
-                    evaluatePersonalHighscoreCheck();
-                  }
-                  showToast(`🌐 Neuer Bestwert: ${item.name} hat ${item.score} Pkt erreicht! 🏆`);
+            if (!data || !data.message) return;
+            const item = JSON.parse(data.message);
+            if (!item) return;
+
+            const localMaster = loadMasterUserScores();
+            const chatState   = loadChatState();
+            const ideasState  = loadIdeasState();
+            const milestones  = loadPlayerMilestones();
+
+            if (item.snapshotKey && item.snapshotKey !== currentSnapshotKey) {
+              currentSnapshotKey = item.snapshotKey;
+              localStorage.setItem('hoermann_cloud_snapshot_key_v3', item.snapshotKey);
+            }
+
+            if (item.type === 'FORCE_UPDATE' && item.version && item.version !== APP_VERSION) {
+              triggerForcedUpdateModal(item.version, item.notes);
+              return;
+            }
+
+            if (item.type === 'SCORE' && item.cat && item.name && item.score) {
+              const wasUpdated = mergeScoreMaps(localMaster, { [item.cat]: [{ name: item.name, score: item.score, date: item.date, isUser: true }] });
+              if (wasUpdated) {
+                saveMasterUserScores(localMaster);
+                if (highscoreCard.classList.contains('show')) {
+                  switchLeaderboardTab(activeGameCategory, item.name);
+                }
+                if (scoreSubmitDialog.classList.contains('show')) {
+                  evaluatePersonalHighscoreCheck();
+                }
+                showToast(`🌐 Neuer Bestwert: ${item.name} hat ${item.score} Pkt erreicht! 🏆`);
+              }
+            } else if (item.type === 'CHAT_MSG' && item.msg) {
+              if (applyIncomingCloudData({ chat: [item.msg] }, localMaster, chatState, ideasState, milestones)) {
+                saveChatState(chatState);
+                if (typeof renderChatMessages === 'function') renderChatMessages();
+              }
+            } else if (item.type === 'CHAT_DELETE' && item.msgId) {
+              if (applyIncomingCloudData({ deletedChatIds: [item.msgId] }, localMaster, chatState, ideasState, milestones)) {
+                saveChatState(chatState);
+                if (typeof renderChatMessages === 'function') renderChatMessages();
+              }
+            } else if (item.type === 'CHAT_CLEAR' && item.clearedBefore) {
+              if (applyIncomingCloudData({ clearedBefore: item.clearedBefore }, localMaster, chatState, ideasState, milestones)) {
+                saveChatState(chatState);
+                if (typeof renderChatMessages === 'function') renderChatMessages();
+              }
+            } else if (item.type === 'IDEA_ADD' && item.idea) {
+              if (applyIncomingCloudData({ ideas: [item.idea] }, localMaster, chatState, ideasState, milestones)) {
+                saveIdeasState(ideasState);
+                if (typeof renderAdminIdeasList === 'function') renderAdminIdeasList();
+                if (isAdminUnlocked) {
+                  showToast(`💡 Neue Spieler-Idee von ${item.idea.player} im Admin-Postfach!`);
                 }
               }
+            } else if (item.type === 'IDEA_DELETE' && item.ideaId) {
+              if (applyIncomingCloudData({ deletedIdeaIds: [item.ideaId] }, localMaster, chatState, ideasState, milestones)) {
+                saveIdeasState(ideasState);
+                if (typeof renderAdminIdeasList === 'function') renderAdminIdeasList();
+              }
+            } else if (item.type === 'SNAPSHOT' && item.snapshotKey) {
+              syncOnlineLeaderboards(false);
             }
           } catch (e) {}
         };
       } catch (e) {}
     }
 
-    // Automatischer Online-Sync beim Seitenstart & alle 30 Sekunden im Hintergrund
-    syncOnlineLeaderboards(true);
-    startLiveScoreStream();
-    setInterval(() => { syncOnlineLeaderboards(false); }, 30000);
-
     const refreshLbBtn = document.getElementById('refresh-leaderboard-btn');
     if (refreshLbBtn) {
       refreshLbBtn.addEventListener('click', () => {
         syncOnlineLeaderboards(true);
-        showToast('Online-Bestenliste wird abgeglichen... 🌐');
+        showToast('Online-Bestenliste & Chat werden abgeglichen... 🌐');
       });
     }
 
@@ -2560,13 +3244,104 @@
       return deduplicateKeepBestPerName([...userEntries, ...npcEntries]);
     }
 
-    // Sucht den bestehenden Bestwert eines Spielernamens in der gesamten Bestenliste der Spielkategorie
+    // Sucht den bestehenden Bestwert + Platzierung eines Spielernamens in der gesamten Bestenliste der Spielkategorie
     function findExistingPlayerBest(category, playerName) {
       if (!playerName) return null;
       const key = String(playerName).trim().toLowerCase();
       if (!key) return null;
       const fullList = getGameLeaderboard(category);
-      return fullList.find(e => e.name.trim().toLowerCase() === key) || null;
+      const idx = fullList.findIndex(e => e.name.trim().toLowerCase() === key);
+      if (idx === -1) return null;
+      return { ...fullList[idx], rank: idx + 1 };
+    }
+
+    // Berechnet, auf welchem Platz (1-basiert) ein Spieler mit newScore landen würde
+    function calculateProjectedRank(category, playerName, newScore) {
+      const cleanName = (playerName && playerName.trim()) ? playerName.trim() : '__temp_player__';
+      const key = cleanName.toLowerCase();
+      const master = loadMasterUserScores();
+      const simulated = deduplicateKeepBestPerName([
+        ...(master[category] || []),
+        ...(defaultLeaderboards[category] || []),
+        { name: cleanName, score: Number(newScore) || 0, date: 'Heute', isUser: true }
+      ]);
+      const idx = simulated.findIndex(e => e.name.trim().toLowerCase() === key);
+      return idx === -1 ? simulated.length : (idx + 1);
+    }
+
+    // Prüft nach den 4 Regeln, ob der Spieler eine Spiel-Idee einreichen darf
+    function evaluateIdeaTicketEligibility(category, playerName, newScore, existingBest) {
+      const cleanName = (playerName || '').trim();
+      const nameKey = cleanName ? cleanName.toLowerCase() : '__guest__';
+      const milestoneKey = `${category}:${nameKey}`;
+      const milestones = loadPlayerMilestones();
+      const m = milestones[milestoneKey] || {
+        firstIdeaUsed: false,
+        wasEverInTop3: false,
+        bestTop3RankIdeaUsed: null
+      };
+
+      const oldRank = existingBest ? existingBest.rank : null;
+      const newRank = calculateProjectedRank(category, cleanName, newScore);
+
+      const hadTop3Before = Boolean(m.wasEverInTop3 || (oldRank !== null && oldRank <= 3));
+
+      // Regel 4: In den Top 3 gewesen und sich um mindestens einen Platz innerhalb der Top 3 verbessert (z.B. Platz 3 -> 2 oder 2 -> 1)
+      if (oldRank !== null && oldRank <= 3 && newRank < oldRank) {
+        return {
+          eligible: true,
+          oldRank,
+          newRank,
+          rule: 'TOP3_IMPROVED',
+          badge: `🥇 TOP-3 VERBESSERUNG (PLATZ ${oldRank} ➔ PLATZ ${newRank})`,
+          reason: `Stark! Du hast dich in den Top 3 von Platz ${oldRank} auf Platz ${newRank} verbessert – dafür darfst du noch einmal eine Spiel-Idee einreichen!`
+        };
+      }
+
+      // Regel 3: Aus den Top 3 rausgeflogen gewesen (aktuell Platz 4+ oder nicht in Top 3, aber früher schon mal Top 3 gewesen) und jetzt wieder Top 3 geschafft!
+      if ((oldRank === null || oldRank > 3) && newRank <= 3 && hadTop3Before) {
+        return {
+          eligible: true,
+          oldRank,
+          newRank,
+          rule: 'TOP3_COMEBACK',
+          badge: `🔥 TOP-3 COMEBACK AUF PLATZ ${newRank}!`,
+          reason: `Willkommen zurück auf dem Podium (Platz ${newRank})! Weil du dir deinen Platz in den Top 3 zurückerobert hast, darfst du wieder eine Idee hinterlassen!`
+        };
+      }
+
+      // Regel 2: Zum ersten Mal unter die Top 3 geschafft (oder Top 3 direkt beim Einstieg erreicht)
+      if (newRank <= 3 && (oldRank === null || oldRank > 3)) {
+        return {
+          eligible: true,
+          oldRank,
+          newRank,
+          rule: 'TOP3_ENTRY',
+          badge: `🏆 TOP-3 PODIUM ERREICHT (PLATZ ${newRank})!`,
+          reason: `Mega-Leistung: Du hast es auf Platz ${newRank} unter die Top 3 geschafft! Zur Belohnung darfst du eine oder mehrere Ideen fürs Spiel hinterlassen.`
+        };
+      }
+
+      // Regel 1: Erstmalige Highscore-Platzierung dieses Spielers in dieser Spiel-Bestenliste
+      if (oldRank === null || !m.firstIdeaUsed) {
+        return {
+          eligible: true,
+          oldRank,
+          newRank,
+          rule: 'FIRST_HIGHSCORE',
+          badge: `💡 BONUS ZUR HIGHSCORE-PLATZIERUNG (PLATZ ${newRank})`,
+          reason: `Glückwunsch zu deiner Highscore-Platzierung! Du darfst einmalig eine oder mehrere Ideen hinterlassen, die wir ins Spiel einbauen können.`
+        };
+      }
+
+      return {
+        eligible: false,
+        oldRank,
+        newRank,
+        rule: 'NONE',
+        badge: '',
+        reason: ''
+      };
     }
 
     function saveGameLeaderboard(category, newEntry) {
@@ -2680,7 +3455,7 @@
     document.getElementById('nerve-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('nerve'));
     document.getElementById('parcours-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('parcours'));
 
-    // Prüft live, ob der eingegebene Name bereits einen höheren oder gleichen Highscore in der Bestenliste hat
+    // Prüft live, ob der eingegebene Name bereits einen höheren oder gleichen Highscore in der Bestenliste hat + ob ein Ideen-Ticket freigeschaltet wird
     function evaluatePersonalHighscoreCheck() {
       const unit = (pendingSubmitGame === 'parcours') ? 'Tore' : 'Punkte';
       const typedName = playerNameInput.value.trim();
@@ -2697,8 +3472,11 @@
         submitHighscoreFeedback.style.border = '2px solid #fca5a5';
         submitHighscoreFeedback.innerHTML =
           `⚠️ <strong>Du bist unter deinem Highscore!</strong><br>` +
-          `Für <strong>„${escapeHtml(existingBest.name)}“</strong> steht bereits ein besserer Wert von <strong>${existingBest.score} ${unit}</strong> in der Bestenliste (Aktuell: <strong>${pendingScoreToSave} ${unit}</strong>).<br>` +
+          `Für <strong>„${escapeHtml(existingBest.name)}“</strong> steht bereits ein besserer Wert von <strong>${existingBest.score} ${unit}</strong> (Platz ${existingBest.rank}) in der Bestenliste (Aktuell: <strong>${pendingScoreToSave} ${unit}</strong>).<br>` +
           `Da in der Liste immer nur dein bester Wert gespeichert wird, kannst du diesen kleineren Wert nicht eintragen.`;
+
+        if (ideaTicketBox) ideaTicketBox.classList.remove('show');
+        currentIdeaEligibility = { eligible: false, reason: '', badge: '', oldRank: existingBest.rank, newRank: existingBest.rank, rule: 'NONE' };
 
         saveScoreBtn.disabled = true;
         saveScoreBtn.style.opacity = '0.5';
@@ -2708,7 +3486,21 @@
           switchLeaderboardTab(pendingSubmitGame, existingBest.name);
         }
         return false;
-      } else if (existingBest && pendingScoreToSave > existingBest.score) {
+      }
+
+      // Gültiger neuer Highscore (entweder neuer persönlicher Rekord oder Ersteintrag) -> Ideen-Ticket prüfen!
+      currentIdeaEligibility = evaluateIdeaTicketEligibility(pendingSubmitGame, typedName, pendingScoreToSave, existingBest);
+      if (ideaTicketBox) {
+        if (currentIdeaEligibility.eligible) {
+          ideaTicketBadge.textContent = currentIdeaEligibility.badge;
+          ideaTicketReason.textContent = currentIdeaEligibility.reason;
+          ideaTicketBox.classList.add('show');
+        } else {
+          ideaTicketBox.classList.remove('show');
+        }
+      }
+
+      if (existingBest && pendingScoreToSave > existingBest.score) {
         // NEUER PERSÖNLICHER REKORD -> ALTER WERT WIRD ERSETZT!
         submitDialogTitle.textContent = `🎉 Neuer persönlicher Rekord: ${pendingScoreToSave} ${unit}!`;
         submitDialogSubtitle.textContent = `Abgleich mit der Online-Bestenliste für „${pendingGameDisplayName}“:`;
@@ -2716,8 +3508,8 @@
         submitHighscoreFeedback.style.color = '#047857';
         submitHighscoreFeedback.style.border = '2px solid #6ee7b7';
         submitHighscoreFeedback.innerHTML =
-          `🚀 <strong>Neuer persönlicher Bestwert für „${escapeHtml(existingBest.name)}“!</strong><br>` +
-          `Du hast deinen bisherigen Highscore von <strong>${existingBest.score} ${unit}</strong> geschlagen! Dein Eintrag in der Bestenliste wird auf <strong>${pendingScoreToSave} ${unit}</strong> aktualisiert.`;
+          `🚀 <strong>Neuer persönlicher Bestwert für „${escapeHtml(existingBest.name)}“ (voraussichtlich Platz ${currentIdeaEligibility.newRank})!</strong><br>` +
+          `Du hast deinen bisherigen Highscore von <strong>${existingBest.score} ${unit}</strong> (Platz ${existingBest.rank}) geschlagen! Dein Eintrag wird auf <strong>${pendingScoreToSave} ${unit}</strong> aktualisiert.`;
 
         saveScoreBtn.disabled = false;
         saveScoreBtn.style.opacity = '1';
@@ -2732,7 +3524,7 @@
         submitHighscoreFeedback.style.color = '#1e40af';
         submitHighscoreFeedback.style.border = '1px solid #93c5fd';
         submitHighscoreFeedback.innerHTML = typedName
-          ? `✨ Für <strong>„${escapeHtml(typedName)}“</strong> liegt noch kein höherer Wert vor – du kannst deinen Highscore (<strong>${pendingScoreToSave} ${unit}</strong>) direkt eintragen!`
+          ? `✨ Für <strong>„${escapeHtml(typedName)}“</strong> liegt noch kein höherer Wert vor – du landest mit <strong>${pendingScoreToSave} ${unit}</strong> auf <strong>Platz ${currentIdeaEligibility.newRank}</strong>!`
           : `💡 Gib deinen Namen ein. Es wird automatisch geprüft, ob du deinen bisherigen Bestwert geschlagen hast!`;
 
         saveScoreBtn.disabled = false;
@@ -2749,6 +3541,8 @@
       pendingScoreToSave = score;
       pendingSubmitGame = category;
       pendingGameDisplayName = gameDisplayName;
+
+      if (playerIdeaInput) playerIdeaInput.value = '';
 
       // Letzten Spielernamen vorbelegen, falls bekannt
       const savedName = localStorage.getItem('hoermann_player_name') || '';
@@ -2795,6 +3589,49 @@
       localStorage.setItem('hoermann_player_name', name);
       localStorage.setItem('hoermann_last_lb_cat', pendingSubmitGame);
 
+      // Chat-Namen automatisch mitbelegen, falls noch leer
+      const chatSenderEl = document.getElementById('chat-sender-input');
+      if (chatSenderEl && !chatSenderEl.value.trim()) {
+        chatSenderEl.value = name;
+      }
+
+      // Meilenstein-Status für diesen Spieler aktualisieren & ggf. optionale Spiel-Idee ins Admin-Postfach legen
+      const nameKey = name.toLowerCase();
+      const milestoneKey = `${pendingSubmitGame}:${nameKey}`;
+      const milestones = loadPlayerMilestones();
+      const prevM = milestones[milestoneKey] || { firstIdeaUsed: false, wasEverInTop3: false, bestTop3RankIdeaUsed: null };
+      const projectedRank = currentIdeaEligibility.newRank || calculateProjectedRank(pendingSubmitGame, name, pendingScoreToSave);
+
+      prevM.firstIdeaUsed = true;
+      if (projectedRank <= 3) {
+        prevM.wasEverInTop3 = true;
+        if (typeof prevM.bestTop3RankIdeaUsed !== 'number' || projectedRank < prevM.bestTop3RankIdeaUsed) {
+          prevM.bestTop3RankIdeaUsed = projectedRank;
+        }
+      }
+      milestones[milestoneKey] = prevM;
+      savePlayerMilestones(milestones);
+
+      const submittedIdeaText = (playerIdeaInput && currentIdeaEligibility.eligible) ? playerIdeaInput.value.trim() : '';
+      let createdIdeaObj = null;
+      if (submittedIdeaText) {
+        const ideasState = loadIdeasState();
+        createdIdeaObj = {
+          id: 'idea_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
+          player: name,
+          game: pendingGameDisplayName || pendingSubmitGame,
+          score: pendingScoreToSave,
+          rank: projectedRank,
+          reason: currentIdeaEligibility.badge || 'Highscore-Platzierung',
+          text: submittedIdeaText.slice(0, 500),
+          date: today + ' ' + new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }),
+          ts: Date.now()
+        };
+        ideasState.ideas.unshift(createdIdeaObj);
+        saveIdeasState(ideasState);
+        if (typeof renderAdminIdeasList === 'function') renderAdminIdeasList();
+      }
+
       saveGameLeaderboard(pendingSubmitGame, {
         name: name,
         score: pendingScoreToSave,
@@ -2802,12 +3639,413 @@
         isUser: true
       });
 
+      if (createdIdeaObj) {
+        await publishCloudSnapshot({
+          type: 'IDEA_ADD',
+          idea: createdIdeaObj,
+          ts: Date.now()
+        });
+      }
+
+      if (playerIdeaInput) playerIdeaInput.value = '';
       scoreSubmitDialog.classList.remove('show');
       openGlobalLeaderboard(pendingSubmitGame, name);
       playSound('victory');
       triggerParticleEffect('confetti');
-      showToast(`Neuer Bestwert für ${name} (${pendingScoreToSave}) online gespeichert! 🏅`);
+      showToast(
+        createdIdeaObj
+          ? `Rekord (${pendingScoreToSave}) & deine Spiel-Idee wurden gespeichert! 💡🏅`
+          : `Neuer Bestwert für ${name} (${pendingScoreToSave}) online gespeichert! 🏅`
+      );
     }
+
+    /* ==========================================================
+       7c. PERMANENTES ONLINE LIVE-CHAT-SYSTEM & SHA-256 ADMIN-MODERATION
+       ========================================================== */
+    const chatMessagesList    = document.getElementById('chat-messages-list');
+    const adminIdeasList      = document.getElementById('admin-ideas-list');
+    const adminIdeasCountSpan = document.getElementById('admin-ideas-count');
+    const chatSenderInput     = document.getElementById('chat-sender-input');
+    const chatTextInput       = document.getElementById('chat-text-input');
+    const chatSendBtn         = document.getElementById('chat-send-btn');
+
+    const chatAdminToggleBtn  = document.getElementById('chat-admin-toggle-btn');
+    const chatAdminPanel      = document.getElementById('chat-admin-panel');
+    const chatAdminLoginRow   = document.getElementById('chat-admin-login-row');
+    const chatAdminActionsRow = document.getElementById('chat-admin-actions-row');
+    const chatAdminPassInput  = document.getElementById('chat-admin-pass-input');
+    const chatAdminLoginBtn   = document.getElementById('chat-admin-login-btn');
+    const chatAdminLogoutBtn  = document.getElementById('chat-admin-logout-btn');
+    const chatAdminClearBtn   = document.getElementById('chat-admin-clear-chat-btn');
+    const chatAdminChangePwBtn = document.getElementById('chat-admin-change-pw-btn');
+    const chatAdminNewPwBox   = document.getElementById('chat-admin-new-pw-box');
+    const chatAdminNewPwInput = document.getElementById('chat-admin-new-pw-input');
+    const chatAdminSavePwBtn  = document.getElementById('chat-admin-save-pw-btn');
+
+    const chatAdminTabs       = document.getElementById('chat-admin-tabs');
+    const adminTabChatBtn     = document.getElementById('admin-tab-chat-btn');
+    const adminTabIdeasBtn    = document.getElementById('admin-tab-ideas-btn');
+
+    // Vorbelegen des Chat-Namens aus dem gespeicherten Spielernamen
+    if (chatSenderInput) {
+      const savedPlayer = localStorage.getItem('hoermann_player_name') || '';
+      if (savedPlayer) chatSenderInput.value = savedPlayer;
+    }
+
+    // Kryptografischer SHA-256 Hash (damit niemals ein Klartext-Passwort im Code steht)
+    async function computeSha256Hex(str) {
+      const clean = String(str || '').trim();
+      if (window.crypto && window.crypto.subtle) {
+        const buf = new TextEncoder().encode(clean);
+        const hashBuf = await window.crypto.subtle.digest('SHA-256', buf);
+        return Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
+      }
+      return '';
+    }
+
+    function updateAdminUiState() {
+      if (!chatAdminToggleBtn) return;
+      if (isAdminUnlocked) {
+        chatAdminToggleBtn.classList.add('unlocked');
+        chatAdminToggleBtn.textContent = '🛡️ Admin aktiv';
+        chatAdminLoginRow.style.display = 'none';
+        chatAdminActionsRow.style.display = 'flex';
+        chatAdminTabs.classList.add('show');
+      } else {
+        chatAdminToggleBtn.classList.remove('unlocked');
+        chatAdminToggleBtn.textContent = '🔒 Admin';
+        chatAdminLoginRow.style.display = 'flex';
+        chatAdminActionsRow.style.display = 'none';
+        chatAdminNewPwBox.style.display = 'none';
+        chatAdminTabs.classList.remove('show');
+        switchAdminViewTab('chat');
+      }
+      renderChatMessages();
+      renderAdminIdeasList();
+    }
+
+    function switchAdminViewTab(tab) {
+      activeAdminTab = tab;
+      if (!chatMessagesList || !adminIdeasList) return;
+      if (tab === 'ideas' && isAdminUnlocked) {
+        chatMessagesList.style.display = 'none';
+        adminIdeasList.style.display = 'flex';
+        adminTabChatBtn.classList.remove('active');
+        adminTabIdeasBtn.classList.add('active');
+      } else {
+        chatMessagesList.style.display = 'flex';
+        adminIdeasList.style.display = 'none';
+        adminTabChatBtn.classList.add('active');
+        adminTabIdeasBtn.classList.remove('active');
+      }
+    }
+
+    if (adminTabChatBtn) adminTabChatBtn.addEventListener('click', () => switchAdminViewTab('chat'));
+    if (adminTabIdeasBtn) adminTabIdeasBtn.addEventListener('click', () => switchAdminViewTab('ideas'));
+
+    if (chatAdminToggleBtn) {
+      chatAdminToggleBtn.addEventListener('click', () => {
+        chatAdminPanel.classList.toggle('show');
+        if (chatAdminPanel.classList.contains('show') && !isAdminUnlocked && chatAdminPassInput) {
+          chatAdminPassInput.focus();
+        }
+      });
+    }
+
+    async function attemptAdminLogin() {
+      const rawPw = chatAdminPassInput ? chatAdminPassInput.value.trim() : '';
+      if (!rawPw) return;
+      const hash = await computeSha256Hex(rawPw);
+      const customHash = localStorage.getItem(CUSTOM_ADMIN_HASH_KEY) || '';
+      if (DEFAULT_ADMIN_HASHES.has(hash) || (customHash && hash === customHash)) {
+        isAdminUnlocked = true;
+        sessionStorage.setItem('hoermann_admin_unlocked', '1');
+        chatAdminPassInput.value = '';
+        updateAdminUiState();
+        playSound('powerup');
+        showToast('🛡️ Admin-Rechte freigeschaltet! Du kannst jetzt Nachrichten löschen & Spieler-Ideen lesen.');
+      } else {
+        playSound('alarm');
+        showToast('❌ Falsches Admin-Passwort!');
+      }
+    }
+
+    if (chatAdminLoginBtn) chatAdminLoginBtn.addEventListener('click', attemptAdminLogin);
+    if (chatAdminPassInput) {
+      chatAdminPassInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') attemptAdminLogin();
+      });
+    }
+
+    if (chatAdminLogoutBtn) {
+      chatAdminLogoutBtn.addEventListener('click', () => {
+        isAdminUnlocked = false;
+        sessionStorage.removeItem('hoermann_admin_unlocked');
+        chatAdminPanel.classList.remove('show');
+        updateAdminUiState();
+        showToast('🔒 Admin-Modus gesperrt.');
+      });
+    }
+
+    if (chatAdminChangePwBtn) {
+      chatAdminChangePwBtn.addEventListener('click', () => {
+        if (!isAdminUnlocked) return;
+        const isVisible = chatAdminNewPwBox.style.display === 'flex';
+        chatAdminNewPwBox.style.display = isVisible ? 'none' : 'flex';
+        if (!isVisible && chatAdminNewPwInput) chatAdminNewPwInput.focus();
+      });
+    }
+
+    if (chatAdminSavePwBtn) {
+      chatAdminSavePwBtn.addEventListener('click', async () => {
+        if (!isAdminUnlocked || !chatAdminNewPwInput) return;
+        const newPw = chatAdminNewPwInput.value.trim();
+        if (newPw.length < 3) {
+          showToast('Bitte mindestens 3 Zeichen für das neue Admin-Passwort eingeben!');
+          return;
+        }
+        const newHash = await computeSha256Hex(newPw);
+        if (newHash) {
+          localStorage.setItem(CUSTOM_ADMIN_HASH_KEY, newHash);
+          chatAdminNewPwInput.value = '';
+          chatAdminNewPwBox.style.display = 'none';
+          await publishCloudSnapshot({
+            type: 'ADMIN_HASH',
+            customAdminHash: newHash,
+            ts: Date.now()
+          });
+          showToast('🔑 Neues Admin-Passwort (verschlüsselt) gespeichert!');
+        }
+      });
+    }
+
+    if (chatAdminClearBtn) {
+      chatAdminClearBtn.addEventListener('click', async () => {
+        if (!isAdminUnlocked) return;
+        const chatState = loadChatState();
+        const nowTs = Date.now();
+        chatState.clearedBefore = nowTs;
+        chatState.messages = [];
+        saveChatState(chatState);
+        renderChatMessages();
+        await publishCloudSnapshot({
+          type: 'CHAT_CLEAR',
+          clearedBefore: nowTs,
+          ts: nowTs
+        });
+        showToast('🗑️ Gesamter Live-Chat wurde durch Admin geleert.');
+      });
+    }
+
+    async function deleteSingleChatMessage(msgId) {
+      if (!isAdminUnlocked || !msgId) return;
+      const chatState = loadChatState();
+      if (!chatState.deletedIds.includes(msgId)) {
+        chatState.deletedIds.push(msgId);
+      }
+      chatState.messages = chatState.messages.filter(m => m.id !== msgId);
+      saveChatState(chatState);
+      renderChatMessages();
+      await publishCloudSnapshot({
+        type: 'CHAT_DELETE',
+        msgId: msgId,
+        ts: Date.now()
+      });
+      showToast('🗑️ Chat-Nachricht gelöscht.');
+    }
+
+    async function deleteSinglePlayerIdea(ideaId) {
+      if (!isAdminUnlocked || !ideaId) return;
+      const ideasState = loadIdeasState();
+      if (!ideasState.deletedIdeaIds.includes(ideaId)) {
+        ideasState.deletedIdeaIds.push(ideaId);
+      }
+      ideasState.ideas = ideasState.ideas.filter(i => i.id !== ideaId);
+      saveIdeasState(ideasState);
+      renderAdminIdeasList();
+      await publishCloudSnapshot({
+        type: 'IDEA_DELETE',
+        ideaId: ideaId,
+        ts: Date.now()
+      });
+      showToast('🗑️ Spieler-Idee aus dem Postfach entfernt.');
+    }
+
+    function renderChatMessages() {
+      if (!chatMessagesList) return;
+      const chatState = loadChatState();
+      const myName = (chatSenderInput ? chatSenderInput.value.trim().toLowerCase() : '') || (localStorage.getItem('hoermann_player_name') || '').trim().toLowerCase();
+
+      chatMessagesList.innerHTML = '';
+      if (!chatState.messages.length) {
+        chatMessagesList.innerHTML = `
+          <div style="text-align:center; color:#64748b; font-size:0.8rem; padding:1.4rem 0.5rem;">
+            Noch keine Nachrichten im Chat. Schreib den ersten Gruß! 💬
+          </div>
+        `;
+        return;
+      }
+
+      chatState.messages.forEach(msg => {
+        const div = document.createElement('div');
+        const isOwn = myName && msg.sender && msg.sender.trim().toLowerCase() === myName;
+        div.className = 'chat-msg-item' + (isOwn ? ' own-msg' : '');
+
+        const meta = document.createElement('div');
+        meta.className = 'chat-msg-meta';
+
+        const authorSpan = document.createElement('span');
+        authorSpan.className = 'chat-msg-author';
+        authorSpan.textContent = msg.sender || 'Spieler';
+
+        const rightMeta = document.createElement('div');
+        rightMeta.style.display = 'flex';
+        rightMeta.style.alignItems = 'center';
+
+        const timeSpan = document.createElement('span');
+        timeSpan.className = 'chat-msg-time';
+        timeSpan.textContent = msg.time || '';
+        rightMeta.appendChild(timeSpan);
+
+        if (isAdminUnlocked) {
+          const delBtn = document.createElement('button');
+          delBtn.className = 'chat-delete-btn';
+          delBtn.title = 'Nachricht löschen (Admin)';
+          delBtn.textContent = '🗑️';
+          delBtn.addEventListener('click', () => deleteSingleChatMessage(msg.id));
+          rightMeta.appendChild(delBtn);
+        }
+
+        meta.appendChild(authorSpan);
+        meta.appendChild(rightMeta);
+
+        const body = document.createElement('div');
+        body.className = 'chat-msg-text';
+        body.textContent = msg.text || '';
+
+        div.appendChild(meta);
+        div.appendChild(body);
+        chatMessagesList.appendChild(div);
+      });
+
+      chatMessagesList.scrollTop = chatMessagesList.scrollHeight;
+    }
+
+    function renderAdminIdeasList() {
+      const ideasState = loadIdeasState();
+      if (adminIdeasCountSpan) {
+        adminIdeasCountSpan.textContent = ideasState.ideas.length;
+      }
+      if (!adminIdeasList) return;
+      adminIdeasList.innerHTML = '';
+
+      if (!ideasState.ideas.length) {
+        adminIdeasList.innerHTML = `
+          <div style="text-align:center; color:#64748b; font-size:0.8rem; padding:1.4rem 0.5rem;">
+            Noch keine Spieler-Ideen im Admin-Postfach. Sobald ein Spieler beim Highscore eine Idee einträgt, erscheint sie sofort hier! 💡
+          </div>
+        `;
+        return;
+      }
+
+      ideasState.ideas.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'admin-idea-card';
+
+        const topRow = document.createElement('div');
+        topRow.style.display = 'flex';
+        topRow.style.justifyContent = 'space-between';
+        topRow.style.alignItems = 'center';
+        topRow.style.gap = '4px';
+
+        const titleEl = document.createElement('strong');
+        titleEl.style.color = 'var(--hoermann-blue)';
+        titleEl.textContent = `👤 ${item.player} (Platz ${item.rank || '?'} • ${item.score || 0} Pkt)`;
+
+        const delBtn = document.createElement('button');
+        delBtn.className = 'chat-delete-btn';
+        delBtn.textContent = '🗑️';
+        delBtn.title = 'Idee löschen';
+        delBtn.addEventListener('click', () => deleteSinglePlayerIdea(item.id));
+
+        topRow.appendChild(titleEl);
+        topRow.appendChild(delBtn);
+
+        const subRow = document.createElement('div');
+        subRow.style.fontSize = '0.72rem';
+        subRow.style.color = '#b45309';
+        subRow.style.fontWeight = '700';
+        subRow.textContent = `🎮 ${item.game} • ${item.reason || 'Highscore'} • ${item.date || ''}`;
+
+        const textEl = document.createElement('div');
+        textEl.style.color = '#0f172a';
+        textEl.style.marginTop = '3px';
+        textEl.style.whiteSpace = 'pre-wrap';
+        textEl.style.lineHeight = '1.38';
+        textEl.textContent = item.text;
+
+        card.appendChild(topRow);
+        card.appendChild(subRow);
+        card.appendChild(textEl);
+        adminIdeasList.appendChild(card);
+      });
+    }
+
+    async function sendLiveChatMessage() {
+      if (!chatTextInput || !chatSenderInput) return;
+      const sender = chatSenderInput.value.trim() || localStorage.getItem('hoermann_player_name') || '';
+      const text = chatTextInput.value.trim();
+
+      if (!sender) {
+        showToast('Bitte gib oben im Chat kurz deinen Namen ein! ✍️');
+        chatSenderInput.focus();
+        return;
+      }
+      if (!text) return;
+
+      localStorage.setItem('hoermann_player_name', sender);
+      if (playerNameInput && !playerNameInput.value.trim()) {
+        playerNameInput.value = sender;
+      }
+
+      const now = new Date();
+      const timeLabel = now.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' }) + ' ' +
+                        now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+
+      const newMsg = {
+        id: 'msg_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
+        sender: sender.slice(0, 20),
+        text: text.slice(0, 300),
+        time: timeLabel,
+        ts: Date.now()
+      };
+
+      chatTextInput.value = '';
+      const chatState = loadChatState();
+      chatState.messages.push(newMsg);
+      if (chatState.messages.length > 80) chatState.messages = chatState.messages.slice(-80);
+      saveChatState(chatState);
+      renderChatMessages();
+
+      await publishCloudSnapshot({
+        type: 'CHAT_MSG',
+        msg: newMsg,
+        ts: newMsg.ts
+      });
+    }
+
+    if (chatSendBtn) chatSendBtn.addEventListener('click', sendLiveChatMessage);
+    if (chatTextInput) {
+      chatTextInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') sendLiveChatMessage();
+      });
+    }
+
+    // Initiales Rendering & Online-Stream starten
+    updateAdminUiState();
+    syncOnlineLeaderboards(false);
+    startLiveScoreStream();
+    setInterval(() => { syncOnlineLeaderboards(false); }, 25000);
 
     /* ==========================================================
        8. GAME 0: SUPER DENNIS (OPTIMIERTE MARIO-PHYSIK & LEVELDESIGN)
