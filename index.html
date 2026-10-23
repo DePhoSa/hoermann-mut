@@ -1979,54 +1979,188 @@
     let pendingSubmitGame = 'forklift';
     let pendingScoreToSave = 0;
 
+    // Standard-NPC-Bestenlisten (Deutlich niedrigere Startpunkte, damit echte Spieler leicht Platz 1 erobern!)
     const defaultLeaderboards = {
       forklift: [
-        { name: "Lagermeister Nico", score: 9840, date: "Gestern" },
-        { name: "Dennis Ressemann", score: 9120, date: "22.10." },
-        { name: "Stapler-König Kai", score: 8450, date: "21.10." },
-        { name: "Schichtführer Uwe", score: 7600, date: "20.10." },
-        { name: "Azubi Kevin", score: 5200, date: "19.10." }
+        { name: "Lagermeister Nico", score: 1850, date: "Startwert", isNpc: true },
+        { name: "Schichtführer Uwe", score: 1420, date: "Startwert", isNpc: true },
+        { name: "Stapler-König Kai", score: 1150, date: "Startwert", isNpc: true },
+        { name: "Dennis Ressemann", score: 880, date: "Startwert", isNpc: true },
+        { name: "Azubi Kevin", score: 450, date: "Startwert", isNpc: true }
       ],
       mario: [
-        { name: "Dennis Ressemann", score: 2850, date: "Gestern" },
-        { name: "Meister Torsten", score: 2100, date: "21.10." },
-        { name: "Mut-Pionierin Anna", score: 1750, date: "20.10." },
-        { name: "Zargen-Profi Dennis", score: 1200, date: "19.10." },
-        { name: "Montage-Hero", score: 850, date: "18.10." }
+        { name: "Dennis Ressemann", score: 850, date: "Startwert", isNpc: true },
+        { name: "Meister Torsten", score: 650, date: "Startwert", isNpc: true },
+        { name: "Mut-Pionierin Anna", score: 500, date: "Startwert", isNpc: true },
+        { name: "Zargen-Profi Dennis", score: 350, date: "Startwert", isNpc: true },
+        { name: "Azubi Kevin", score: 200, date: "Startwert", isNpc: true }
       ],
       buster: [
-        { name: "Meister Torsten", score: 840, date: "Gestern" },
-        { name: "Dennis Ressemann", score: 720, date: "21.10." },
-        { name: "Mut-Pionierin Anna", score: 650, date: "20.10." },
-        { name: "Technik-Tobi", score: 380, date: "19.10." },
-        { name: "Montage-Hero", score: 240, date: "18.10." }
+        { name: "Meister Torsten", score: 280, date: "Startwert", isNpc: true },
+        { name: "Dennis Ressemann", score: 210, date: "Startwert", isNpc: true },
+        { name: "Mut-Pionierin Anna", score: 150, date: "Startwert", isNpc: true },
+        { name: "Technik-Tobi", score: 110, date: "Startwert", isNpc: true },
+        { name: "Azubi Kevin", score: 70, date: "Startwert", isNpc: true }
       ],
       nerve: [
-        { name: "Risiko-Rudi", score: 2450, date: "Gestern" },
-        { name: "Dennis Ressemann", score: 1800, date: "21.10." },
-        { name: "Stahlmut Sandra", score: 1600, date: "20.10." },
-        { name: "Zargen-König", score: 750, date: "19.10." },
-        { name: "Courage-Chris", score: 400, date: "18.10." }
+        { name: "Risiko-Rudi", score: 400, date: "Startwert", isNpc: true },
+        { name: "Dennis Ressemann", score: 300, date: "Startwert", isNpc: true },
+        { name: "Stahlmut Sandra", score: 200, date: "Startwert", isNpc: true },
+        { name: "Zargen-König", score: 150, date: "Startwert", isNpc: true },
+        { name: "Azubi Kevin", score: 100, date: "Startwert", isNpc: true }
       ],
       parcours: [
-        { name: "Reflex-Robin", score: 18, date: "Gestern" },
-        { name: "Dennis Ressemann", score: 16, date: "21.10." },
-        { name: "Meister Torsten", score: 14, date: "20.10." },
-        { name: "Anna Hörmann", score: 11, date: "19.10." },
-        { name: "Tor-Tobi", score: 5, date: "18.10." }
+        { name: "Reflex-Robin", score: 5, date: "Startwert", isNpc: true },
+        { name: "Dennis Ressemann", score: 4, date: "Startwert", isNpc: true },
+        { name: "Meister Torsten", score: 3, date: "Startwert", isNpc: true },
+        { name: "Anna Hörmann", score: 2, date: "Startwert", isNpc: true },
+        { name: "Azubi Kevin", score: 1, date: "Startwert", isNpc: true }
       ]
     };
 
-    function getGameLeaderboard(category) {
-      try {
-        const stored = localStorage.getItem(`hoermann_lb_${category}`);
-        if (stored) return JSON.parse(stored);
-      } catch (e) {}
-      return defaultLeaderboards[category] || [];
+    // Liste alter, zu hoher NPC-Dummy-Einträge aus früheren Versionen (werden automatisch bereinigt, echte Spielereinträge bleiben 100% erhalten!)
+    const legacyNpcSignatures = new Set([
+      "Lagermeister Nico|9840", "Dennis Ressemann|9120", "Stapler-König Kai|8450", "Schichtführer Uwe|7600", "Azubi Kevin|5200",
+      "Dennis Ressemann|2850", "Meister Torsten|2100", "Mut-Pionierin Anna|1750", "Zargen-Profi Dennis|1200", "Montage-Hero|850",
+      "Meister Torsten|840", "Dennis Ressemann|720", "Mut-Pionierin Anna|650", "Technik-Tobi|380", "Montage-Hero|240",
+      "Risiko-Rudi|2450", "Dennis Ressemann|1800", "Stahlmut Sandra|1600", "Zargen-König|750", "Courage-Chris|400",
+      "Reflex-Robin|18", "Dennis Ressemann|16", "Meister Torsten|14", "Anna Hörmann|11", "Tor-Tobi|5",
+      "Meister Torsten|420", "Mut-Pionierin Anna|350", "Dennis H.|280", "Stahlzargen-Profi|190", "Tor-Legende|140",
+      "Stahlzargen-Profi|8", "Tor-Starter|5", "Neuling|2"
+    ]);
+
+    function isLegacyNpcEntry(entry) {
+      if (!entry || entry.isUser) return false;
+      if (entry.isNpc) return true;
+      const sig = `${entry.name}|${entry.score}`;
+      const oldDates = ["Gestern", "22.10.", "21.10.", "20.10.", "19.10.", "18.10.", "Startwert"];
+      return legacyNpcSignatures.has(sig) && oldDates.includes(entry.date);
     }
 
-    function saveGameLeaderboard(category, list) {
-      localStorage.setItem(`hoermann_lb_${category}`, JSON.stringify(list));
+    // Permanente Speicherung echter Spieler-Highscores (Update-sicher + Dual-Backup in localStorage & window.name)
+    const USER_SCORES_MASTER_KEY = 'hoermann_mut_user_scores_v1';
+
+    function loadMasterUserScores() {
+      let master = { forklift: [], mario: [], buster: [], nerve: [], parcours: [] };
+      try {
+        const raw = localStorage.getItem(USER_SCORES_MASTER_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          Object.keys(master).forEach(k => {
+            if (Array.isArray(parsed[k])) master[k] = parsed[k];
+          });
+        }
+      } catch (e) {}
+
+      // Fallback-Wiederherstellung aus window.name falls localStorage geleert wurde
+      try {
+        if (window.name && window.name.startsWith('HOERMANN_LB_BACKUP:')) {
+          const backup = JSON.parse(window.name.replace('HOERMANN_LB_BACKUP:', ''));
+          Object.keys(master).forEach(k => {
+            if (Array.isArray(backup[k])) {
+              backup[k].forEach(bEntry => {
+                const exists = master[k].some(m => m.name === bEntry.name && m.score === bEntry.score && m.date === bEntry.date);
+                if (!exists) master[k].push(bEntry);
+              });
+            }
+          });
+        }
+      } catch (e) {}
+
+      return master;
+    }
+
+    function saveMasterUserScores(master) {
+      try {
+        const serialized = JSON.stringify(master);
+        localStorage.setItem(USER_SCORES_MASTER_KEY, serialized);
+        window.name = 'HOERMANN_LB_BACKUP:' + serialized;
+      } catch (e) {}
+    }
+
+    // Einmalige & laufende Migration: Rettet ALLE jemals eingetragenen echten Spielernamen aus allen bisherigen Schlüsseln!
+    function migrateAndPreserveAllUserScores() {
+      const master = loadMasterUserScores();
+      const categories = ['forklift', 'mario', 'buster', 'nerve', 'parcours'];
+
+      categories.forEach(cat => {
+        try {
+          const stored = localStorage.getItem(`hoermann_lb_${cat}`);
+          if (stored) {
+            const arr = JSON.parse(stored);
+            if (Array.isArray(arr)) {
+              arr.forEach(item => {
+                if (!isLegacyNpcEntry(item)) {
+                  const cleanItem = { name: item.name, score: Number(item.score) || 0, date: item.date || 'Heute', isUser: true };
+                  const exists = master[cat].some(m => m.name === cleanItem.name && m.score === cleanItem.score);
+                  if (!exists) master[cat].push(cleanItem);
+                }
+              });
+            }
+          }
+        } catch (e) {}
+      });
+
+      // Auch aus ganz alten Keys (v1 / v2) retten, falls vorhanden
+      ['hoermann_mut_leaderboard_v2', 'hoermann_mut_leaderboard'].forEach(oldKey => {
+        try {
+          const oldRaw = localStorage.getItem(oldKey);
+          if (oldRaw) {
+            const arr = JSON.parse(oldRaw);
+            if (Array.isArray(arr)) {
+              arr.forEach(item => {
+                if (!isLegacyNpcEntry(item)) {
+                  const targetCat = (item.score <= 40) ? 'parcours' : 'buster';
+                  const cleanItem = { name: item.name, score: Number(item.score) || 0, date: item.date || 'Heute', isUser: true };
+                  const exists = master[targetCat].some(m => m.name === cleanItem.name && m.score === cleanItem.score);
+                  if (!exists) master[targetCat].push(cleanItem);
+                }
+              });
+            }
+          }
+        } catch (e) {}
+      });
+
+      saveMasterUserScores(master);
+
+      // Aktualisiere auch die Einzel-Keys mit der sauberen Kombination aus ECHTEN Spielern + neuen niedrigen NPC-Werten
+      categories.forEach(cat => {
+        const combined = [...master[cat], ...(defaultLeaderboards[cat] || [])];
+        combined.sort((a, b) => b.score - a.score);
+        try {
+          localStorage.setItem(`hoermann_lb_${cat}`, JSON.stringify(combined));
+        } catch (e) {}
+      });
+    }
+
+    // Direkt beim Start ausführen, damit echte Highscores immer geschützt sind
+    migrateAndPreserveAllUserScores();
+
+    function getGameLeaderboard(category) {
+      const master = loadMasterUserScores();
+      const userEntries = master[category] || [];
+      const npcEntries = defaultLeaderboards[category] || [];
+      const combined = [...userEntries, ...npcEntries];
+      combined.sort((a, b) => b.score - a.score);
+      return combined;
+    }
+
+    function saveGameLeaderboard(category, newEntry) {
+      const master = loadMasterUserScores();
+      if (!master[category]) master[category] = [];
+      if (newEntry && !Array.isArray(newEntry)) {
+        master[category].push({
+          name: newEntry.name,
+          score: Number(newEntry.score) || 0,
+          date: newEntry.date || 'Heute',
+          isUser: true
+        });
+      }
+      saveMasterUserScores(master);
+      const combined = getGameLeaderboard(category);
+      try {
+        localStorage.setItem(`hoermann_lb_${category}`, JSON.stringify(combined));
+      } catch (e) {}
     }
 
     function switchLeaderboardTab(category, highlightName = "") {
@@ -2066,9 +2200,13 @@
           ? `${entry.score} <small style="color:#64748b; font-weight:600; font-size:0.75rem;">(${(entry.score / 100).toFixed(1)}%)</small>`
           : entry.score;
 
+        const userBadge = entry.isUser
+          ? ` <span style="background:rgba(245,156,0,0.18); color:#d97706; font-size:0.68rem; padding:1px 6px; border-radius:99px; margin-left:4px; font-weight:800;">⭐ SPIELER</span>`
+          : '';
+
         tr.innerHTML = `
           <td>${rankBadge}</td>
-          <td><strong>${escapeHtml(entry.name)}</strong></td>
+          <td><strong>${escapeHtml(entry.name)}</strong>${userBadge}</td>
           <td style="text-align:right; color:var(--hoermann-orange); font-weight:800; font-size:1.05rem;">
             ${scoreLabel}
           </td>
@@ -2101,7 +2239,10 @@
       highscoreCard.classList.remove('show');
     });
 
-    document.getElementById('menu-view-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('forklift'));
+    document.getElementById('menu-view-leaderboard-btn').addEventListener('click', () => {
+      const lastPlayedCat = localStorage.getItem('hoermann_last_lb_cat') || 'forklift';
+      openGlobalLeaderboard(lastPlayedCat);
+    });
     document.getElementById('forklift-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('forklift'));
     document.getElementById('mario-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('mario'));
     document.getElementById('buster-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('buster'));
@@ -2124,19 +2265,22 @@
     });
 
     function executeScoreSubmit() {
-      const name = playerNameInput.value.trim() || 'Dennis-Fan';
+      const name = playerNameInput.value.trim() || 'Lager-Profi';
       const today = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' });
 
-      const list = getGameLeaderboard(pendingSubmitGame);
-      list.push({ name: name, score: pendingScoreToSave, date: today });
-      list.sort((a, b) => b.score - a.score);
-      saveGameLeaderboard(pendingSubmitGame, list);
+      localStorage.setItem('hoermann_last_lb_cat', pendingSubmitGame);
+      saveGameLeaderboard(pendingSubmitGame, {
+        name: name,
+        score: pendingScoreToSave,
+        date: today,
+        isUser: true
+      });
 
       scoreSubmitDialog.classList.remove('show');
       openGlobalLeaderboard(pendingSubmitGame, name);
       playSound('victory');
       triggerParticleEffect('confetti');
-      showToast(`Super ${name}! In Bestenliste verewigt! 🏅`);
+      showToast(`Super ${name}! Dauerhaft in der Bestenliste gesichert! 🏅`);
     }
 
     /* ==========================================================
