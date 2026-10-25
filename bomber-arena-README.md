@@ -38,13 +38,27 @@ Eigenständige Browser-Nachbildung einer klassischen Bomber-Arena für **2–4 P
 
 Für die gebündelte Online-Ausgabe `bomber-arena.html` und diese Anleitung in das Stammverzeichnis übernehmen. Die modulare Entwicklungsfassung im Komplettpaket liegt weiterhin im Ordner `bomber-arena`. Danach ist die Arena unter `https://dephosa.github.io/hoermann-mut/bomber-arena.html` erreichbar, sobald GitHub Pages die Änderung veröffentlicht hat. Das ist die vorgesehene Zieladresse, keine Bestätigung einer bereits erfolgten Veröffentlichung.
 
-1. Namen eingeben und „Raum erstellen“ auswählen.
-2. Einladungslink kopieren und an bis zu drei Mitspieler weitergeben. Alternativ geben sie denselben achtstelligen Code ein.
+1. Namen eingeben und einen offenen Spielraum auswählen oder „Eigenen Raum erstellen“ auswählen.
+2. Andere Spieler sehen den Raum automatisch in der Lobby und wählen „Beitreten“. Alternativ kannst du einen Einladungslink weitergeben; der Raumcode bleibt optional aufklappbar.
 3. Alle wählen „Ich bin bereit“. Der Gastgeber startet das Match.
 4. WASD oder Pfeiltasten bewegen, Leertaste legt eine Bombe. Auf Touch-Geräten gibt es Bildschirmtasten.
 5. Drei Rundensiege gewinnen das Match. Danach können alle eine Revanche starten.
 
 Ein alleiniger Spieler kann weder Runde noch Match starten. Es gibt keine Bots, kein Training und keinen Singleplayer. Während einer laufenden Runde ist kein später Beitritt vorgesehen. Bei Ausscheiden bleibt man Zuschauer bis zur nächsten Runde. Verlässt ein Spieler den Raum, scheidet er aus; bei weniger als zwei verbundenen Spielern wird das Match abgebrochen.
+
+## Gemeinsame Lobby mit Firebase
+
+Projekt `bomberman-a6456`, Realtime Database in Belgien (`europe-west1`), kostenloser Spark-Tarif. Firebase speichert nur Gastgebername, Raumkennung, Spieleranzahl, Status, Versionsnummer und Aktualisierungszeit. Die Spielsimulation läuft weiterhin über WebRTC. Analytics, Firestore, Storage, Cloud Functions und kostenpflichtiges Hosting werden von dieser Erweiterung nicht verwendet.
+
+Die Browser melden sich automatisch als anonyme Gäste an; die Spieler brauchen kein Konto und keine Anmeldedaten. Pro Browser-Tab wird eine eigene temporäre Identität verwendet. Der Gastgebername ist in der Raumliste sichtbar. Es gibt keine dauerhafte Spieler- oder Ergebnisdatenbank in dieser Erweiterung.
+
+Die Regeln in `database.rules.json` erlauben nur dem Eigentümer des Raumeintrags dessen Änderung und Löschung. Sie begrenzen Schema, Felder, Werte und Listenabfragen. Abgerufen werden höchstens 30 zuletzt aktualisierte Räume, ungültige oder mehr als 75 Sekunden alte Einträge werden nicht angezeigt. Gastgeber aktualisieren ihren Eintrag bei Änderungen und etwa alle 20 Sekunden. Beim Verlassen wird der Eintrag entfernt; `onDisconnect` sorgt zusätzlich für serverseitige Bereinigung bei Verbindungsverlust.
+
+Laufende Matches und volle Räume bleiben sichtbar, ihre Beitreten-Schaltfläche ist gesperrt. Bei Ausfall der Raumliste sind Einladungslink und Raumcode weiterhin nutzbar. Eigene Relay-Räume werden nicht im öffentlichen Verzeichnis eingetragen.
+
+Zum Einrichtungszeitpunkt umfasst Spark für Realtime Database 100 gleichzeitige Verbindungen, 1 GB Speicher und 10 GB Downloads pro Monat. Es wurde kein Abrechnungskonto verknüpft und kein Blaze-Upgrade ausgeführt. Die Begrenzungen gelten für das gesamte Projekt. Quelle: https://firebase.google.com/pricing
+
+Browser-SDK: Firebase 13.1.0, bedarfsgerecht vom offiziellen Google-CDN geladen. Die Web-Konfiguration im Quelltext ist öffentliche Client-Konfiguration; sie ist kein Admin-Zugang. Der tatsächliche Datenzugriff wird durch anonyme Authentifizierung und die Datenbankregeln begrenzt. Firebase und die Vermittlungsdienste erhalten verbindungsbedingte Netzwerkdaten.
 
 ## Kostenloser Standardmodus: WebRTC
 
@@ -103,6 +117,8 @@ Im Relay-Modus berechnet der Node-Server das Spiel. Wenn der Raumersteller geht 
 - `engine.mjs`: Simulation mit festen 60 Schritten/s, Kollision, Bomben, Items, Runden.
 - `room.mjs`: Lobby, maximal vier Teilnehmer, Bereitschaft und Gastgeberrechte.
 - `network.mjs`: PeerJS-Direktmodus sowie optional WebSocket-Relay.
+- `directory.mjs`: automatische offene Raumliste, anonyme Gastkennung und Bereinigung von Raumeinträgen.
+- `database.rules.json`: in Firebase veröffentlichte Regeln für das Raumverzeichnis.
 - `app.mjs`, `render.mjs`, `style.css`: Bedienung, synthetischer Ton und eigene Canvas-Grafiken. 20 Zustandsupdates/s, interpolierte Darstellung.
 - `server.mjs`: optionaler HTTP-/WebSocket-Server mit erlaubter Liste statischer Dateien und Heartbeats.
 - `tests/`: Simulationstests sowie Integration über vier echte WebSocket-Verbindungen.
