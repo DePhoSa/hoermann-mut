@@ -4,7 +4,7 @@
   function reset(key) { clocks.delete(key); }
   function run(key, timestamp, tick) {
     const now = Number.isFinite(timestamp) ? timestamp : performance.now();
-    if (typeof document !== 'undefined' && document.hidden) { reset(key); return 0; }
+    if ((typeof document !== 'undefined' && document.hidden) || root.HoermannGameSession?.blocked()) { reset(key); return 0; }
     let clock = clocks.get(key);
     if (!clock) { clock = { last: now, remainder: 0 }; clocks.set(key, clock); tick(); return 1; }
     const elapsed = Math.max(0, now - clock.last); clock.last = now;

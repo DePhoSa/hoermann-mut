@@ -18,3 +18,12 @@
 .game-launch-actions button { min-height: 48px; }
 #leaderboard-game-link { display: block; margin: 16px 0; max-width: 100%; white-space: normal; text-align: left; min-height: 48px; }
 @media(max-width:600px) { .game-rank-ribbon { font-size: 13px; } .game-launch-actions { align-items: stretch; flex-direction: column; width: 100%; } }
+.game-version-button { align-self: flex-start; background: transparent; color: inherit; border: 1px solid currentColor; border-radius: 4px; padding: 8px 12px; min-height: 44px; font: inherit; cursor: pointer; }
+#game-session-dialog { width: min(440px, calc(100vw - 32px)); max-height: calc(100dvh - 40px); overflow: auto; box-sizing: border-box; border: 0; border-top: 5px solid #f59c00; border-radius: 0; padding: 26px; color: #122b46; background: #fff; box-shadow: 0 16px 40px #0005; font-family: inherit; }
+#game-session-dialog::backdrop { background: #00152b99; }
+#game-session-dialog h2 { font-size: 1.6rem; margin: 0 0 18px; line-height: 1.25; }
+#game-session-dialog p { line-height: 1.55; }
+#game-session-dialog button { min-height: 48px; width: 100%; white-space: normal; }
+#game-session-dialog button:focus-visible,.game-version-button:focus-visible { outline: 3px solid #a65c00; outline-offset: 3px; }
+
+#game-session-dialog { position: fixed; inset: 0; margin: auto; }

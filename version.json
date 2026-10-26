@@ -1,4 +1,4 @@
 {
-  "version": "3.1.6",
-  "notes": "Gleichmäßiges Spieltempo unabhängig von der Bildschirmfrequenz. Rang-Banner, direkte Spielnavigation und bewusster Spielstart. Bomber-Arena/Mut-Man: Coming soon; Automat: Überarbeitung."
+  "version": "3.1.7",
+  "notes": "Pause mit P/Escape, Countdown aus dem Menü, Vorschau mit Start-Popup, Spiel-Updatefenster und Zweifel-Buster 0.2 mit sanftem Einstieg, Combo und Fehlklick-Abzug."
 }
