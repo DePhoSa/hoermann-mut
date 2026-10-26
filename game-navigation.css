@@ -27,3 +27,14 @@
 #game-session-dialog button:focus-visible,.game-version-button:focus-visible { outline: 3px solid #a65c00; outline-offset: 3px; }
 
 #game-session-dialog { position: fixed; inset: 0; margin: auto; }
+
+/* One card format; DOM order also matches keyboard and screen-reader order. */
+.games-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 1fr; align-items: stretch; }
+.game-choice-card { grid-column: auto !important; display: flex; min-width: 0; box-sizing: border-box; background: #f8fafc; color: #002d62; border: 2px solid #d9e1eb; box-shadow: none; }
+.game-choice-card .game-card-title { margin: 0; font-size: 1.25rem; line-height: 1.3; color: #002d62; min-height: 2.6em; }
+.game-choice-card .game-card-desc { margin: 0; color: #34465a; font-size: .95rem; line-height: 1.55; flex: 1 !important; }
+.game-choice-card .game-state-label { font-size: .85rem; background: #e7edf5; padding: 6px 10px; }
+.game-unavailable .game-state-label { background: #ffd269; }
+.game-choice-card .game-open-action, .game-choice-card .game-version-button { width: 100%; margin: 0; }
+.game-choice-card .game-version-button { text-align: center; }
+@media(max-width:600px) { .games-grid { grid-template-columns: minmax(0, 1fr); } }

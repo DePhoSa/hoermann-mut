@@ -1,5 +1,15 @@
 # Live-Änderung 3.1.7
 
+Erweiterung des noch unveröffentlichten Releases: einheitliche Spielkarten mit
+gleicher Breite/Höhe, zwei Spalten am Desktop und einer auf Mobilgeräten.
+Verfügbare Spiele ohne eigenen Rang zuerst, danach absteigend nach numerischem
+Rang (z. B. 3 vor 2 vor 1). Gleiche Ränge behalten die feste Katalogreihenfolge.
+Gesperrte/angekündigte Spiele folgen unabhängig von vorhandenen Rängen am Ende.
+Sortiert wird der DOM, damit Tastatur- und Lesereihenfolge übereinstimmen.
+Die jeweils aktuelle Spielwertung ist maßgeblich; Buster 0.1 bleibt separat.
+Tower of Mut ist wie der Automat mit „Überarbeitung“ vorübergehend gesperrt;
+seine Bestenliste bleibt erreichbar. Jetzt sind fünf Spiele aktiv, vier gesperrt.
+
 Spiele: Pause mit P und Escape sowie sichtbarem Pause-Button. Eingabefelder
 behalten ihre normale Tastaturbedienung. Beim Verlassen des Tabs pausiert eine
 laufende Runde; Fortsetzen erfolgt ausdrücklich. Simulation und verwaltete
@@ -47,10 +57,11 @@ Ihre bekannten Identitäts-/Parallelitätsgrenzen bestehen weiterhin.
 
 Mit Playwright und Edge: `node tests/live-game-navigation.cjs` und
 `node tests/game-session-browser.cjs`. Externe Verbindungen werden abgefangen.
-Abgedeckt sind sechs aktive Spiele, Pause/Resume, eingefrorene Zeit/Blasen und
+Abgedeckt sind die fünf verbleibenden aktiven Spiele, Pause/Resume, eingefrorene Zeit/Blasen und
 verzögerte Aktionen, Countdown, direkter Neustart, modale Vorschau, aktive
 Updatebestätigung samt Neuladen, Combo/Fehlklick, Erhalt alter/neuer Kategorien,
-gesperrte Spiele und Desktop/Mobil. Sieben Schleifen werden bei
+vier gesperrte Spiele, einheitliche Kartengrößen, gemischte Ränge samt Sortierung
+und Desktop/Mobil. Sieben Schleifen werden bei
 30/60/120/144/240 Hz auf identische Simulationsschritte geprüft.
 
 Keine produktiven Testnachrichten oder Testrekorde. Die vorbereiteten Konto-/

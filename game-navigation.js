@@ -1,7 +1,7 @@
 /* Shared UI navigation only. Existing score storage, ranking and game rules stay authoritative. */
 const portalGameNavigation = {
   forklift: { title: 'Lagermeister Nico malocht', start: startForkliftGame },
-  tower: { title: 'Tower of Mut', start: startTowerGame },
+  tower: { title: 'Tower of Mut', status: 'Überarbeitung' },
   pacman: { title: 'Hörmann Mut-Man', status: 'Coming soon' },
   slots: { title: 'Hörmann Mut-Automat', status: 'Überarbeitung' },
   mario: { title: 'Super Dennis', start: startMarioGame },
@@ -60,6 +60,7 @@ document.getElementById('game-launch-ranks').addEventListener('click', () => ope
 document.getElementById('game-launch-menu').addEventListener('click', showGamesMenu);
 
 function refreshGameRibbons() {
+  const cards = [];
   const name = getLockedPlayerName();
   for (const [category, game] of Object.entries(portalGameNavigation)) {
     const ribbon = document.querySelector('[data-game-rank="' + category + '"]');
@@ -69,7 +70,16 @@ function refreshGameRibbons() {
     ribbon.className = 'game-rank-ribbon' + (rank && rank <= 3 ? ' rank-' + rank : rank ? ' rank-listed' : ' rank-empty');
     ribbon.textContent = rank ? 'Platz ' + rank : category === 'bomber' ? 'Bestenlisten' : 'Noch kein Rang';
     ribbon.setAttribute('aria-label', game.title + ': ' + (rank ? 'dein Platz ' + rank : 'noch kein eigener Rang') + ' – Bestenliste öffnen');
+    const card = ribbon.closest('[data-game]');
+    cards.push({card, unavailable: Boolean(game.status), rank: rank || 0, index: Object.keys(portalGameNavigation).indexOf(category)});
     ribbon.title = rank ? 'Dein Bestwert: ' + best.score + ' · Bestenliste öffnen' : 'Noch kein eigener Highscore · Bestenliste öffnen';
+  }
+  cards.sort((a,b) => Number(a.unavailable)-Number(b.unavailable) || (a.unavailable ? 0 : a.rank===0 ? (b.rank===0 ? 0 : -1) : b.rank===0 ? 1 : b.rank-a.rank) || a.index-b.index);
+  const grid = gamesMenuView.querySelector('.games-grid');
+  if(cards.some((entry,index) => grid.children[index] !== entry.card)) {
+    const focused = document.activeElement;
+    grid.append(...cards.map(entry => entry.card));
+    if(grid.contains(focused)) focused.focus({preventScroll:true});
   }
 }
 for (const [category, game] of Object.entries(portalGameNavigation)) {
@@ -81,12 +91,23 @@ for (const [category, game] of Object.entries(portalGameNavigation)) {
     replacement.innerHTML = card.innerHTML; card.replaceWith(replacement); card = replacement;
   }
   card.dataset.game = category;
-  card.querySelectorAll('.card-badge-rec').forEach(badge => badge.remove());
-  if (category === 'bomber') card.querySelector('span')?.remove();
-  if (game.status) {
-    card.classList.add('game-unavailable');
-    card.append(Object.assign(document.createElement('strong'), { className: 'game-state-label', textContent: game.status }));
-  }
+  const descriptions = {
+    forklift: 'Entlade LKWs, transportiere Hörmann-Paletten und staple sie sicher ins Lager. Wie nah kommst du an 100 %?',
+    tower: 'Klettere mit Resse durch den Schicksalsturm: Tutorial und fünf Level voller Mutproben.',
+    pacman: 'Sammle Mut-Punkte im Labyrinth, weiche Zweifel-Geistern aus und nutze die Power-Pellets.',
+    slots: 'Walzen, Risiko und Jackpot im Hörmann Mut-Automaten.',
+    mario: 'Hüpfe mit Dennis durch die Hörmann-Welt, knacke Blöcke und erreiche das Werkstor.',
+    buster: 'Zerschlage Zweifel per Klick. Sammle Power und baue deine Treffer-Combo für mehr Punkte aus.',
+    nerve: 'Wähle eines von drei Toren: Gewinne Punkte und entscheide, wann du sie sicherst.',
+    parcours: 'Steuere durch die Sektionaltore und stelle deine Reflexe auf die Probe.',
+    bomber: 'Online-Arena für zwei bis vier Spieler: Räume, Bomben und Items. Nur Multiplayer.'
+  };
+  card.removeAttribute('style');
+  card.replaceChildren();
+  card.append(Object.assign(document.createElement('h3'), {className:'game-card-title',textContent:game.title}));
+  card.append(Object.assign(document.createElement('p'), {className:'game-card-desc',textContent:descriptions[category]}));
+  card.append(Object.assign(document.createElement('strong'), {className:'game-state-label',textContent:game.status || 'Jetzt verbessern'}));
+  if (game.status) card.classList.add('game-unavailable');
   const ribbon = document.createElement('button');
   ribbon.type = 'button'; ribbon.dataset.gameRank = category;
   ribbon.addEventListener('click', event => { event.stopPropagation(); openGlobalLeaderboard(category === 'bomber' ? 'forklift' : HoermannGameReleases.release(category).scoreCategory, getLockedPlayerName()); });
