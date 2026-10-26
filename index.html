@@ -1451,6 +1451,8 @@
       }
     }
   </style>
+  <script src="game-clock.js?v=3.1.6"></script>
+  <link rel="stylesheet" href="game-navigation.css?v=3.1.6">
 </head>
 <body>
 
@@ -2177,7 +2179,7 @@
   <footer>
     Hörmann Mut-Portal &bull; Sektionaltore &bull; Schwingtore &bull; Türen &bull; Stahlzargen &bull; Lagermeister Nico &amp; Dennis Ressemann Edition
     <div style="margin-top:4px; font-size:0.74rem; color:rgba(255,255,255,0.5);">
-      <span id="app-version-badge">🟢 Version 3.0.0 (NEU: Tower of Mut 🏰 • Resse im Schicksalsturm + Tutorial &amp; 5 Level)</span>
+      <span id="app-version-badge">Version 3.1.6 · Spieleübersicht &amp; gleichmäßiges Spieltempo</span>
     </div>
   </footer>
 
@@ -2882,6 +2884,8 @@
     const parcoursView = document.getElementById('parcours-view');
 
     function hideAllViews() {
+      const launch = document.getElementById('game-launch-view');
+      if (launch) launch.style.display = 'none';
       portalView.style.display = 'none';
       gamesMenuView.style.display = 'none';
       forkliftView.style.display = 'none';
@@ -2919,6 +2923,7 @@
     function showGamesMenu() {
       hideAllViews();
       gamesMenuView.style.display = 'flex';
+      if (typeof refreshGameRibbons === 'function') refreshGameRibbons();
       playSound('coin');
       if (typeof checkAndApplyDeferredUpdateIfOutOfGame === 'function') {
         setTimeout(checkAndApplyDeferredUpdateIfOutOfGame, 300);
@@ -2928,62 +2933,7 @@
     document.getElementById('menu-btn').addEventListener('click', showGamesMenu);
     document.getElementById('back-to-portal-btn').addEventListener('click', showPortalView);
 
-    document.getElementById('choose-forklift-btn').addEventListener('click', () => {
-      hideAllViews();
-      forkliftView.style.display = 'flex';
-      startForkliftGame();
-    });
-
-    const chooseTowerBtn = document.getElementById('choose-tower-btn');
-    if (chooseTowerBtn) {
-      chooseTowerBtn.addEventListener('click', () => {
-        hideAllViews();
-        towerView.style.display = 'flex';
-        startTowerGame();
-      });
-    }
-
-    const choosePacmanBtn = document.getElementById('choose-pacman-btn');
-    if (choosePacmanBtn) {
-      choosePacmanBtn.addEventListener('click', () => {
-        hideAllViews();
-        pacmanView.style.display = 'flex';
-        startPacmanGame();
-      });
-    }
-
-    const chooseSlotsBtn = document.getElementById('choose-slots-btn');
-    if (chooseSlotsBtn) {
-      chooseSlotsBtn.addEventListener('click', () => {
-        hideAllViews();
-        slotsView.style.display = 'flex';
-        startSlotsGame();
-      });
-    }
-
-    document.getElementById('choose-mario-btn').addEventListener('click', () => {
-      hideAllViews();
-      marioView.style.display = 'flex';
-      startMarioGame();
-    });
-
-    document.getElementById('choose-buster-btn').addEventListener('click', () => {
-      hideAllViews();
-      busterView.style.display = 'flex';
-      startBusterGame();
-    });
-
-    document.getElementById('choose-nerve-btn').addEventListener('click', () => {
-      hideAllViews();
-      nerveView.style.display = 'flex';
-      startNerveGame();
-    });
-
-    document.getElementById('choose-parcours-btn').addEventListener('click', () => {
-      hideAllViews();
-      parcoursView.style.display = 'flex';
-      startParcoursGame();
-    });
+    // Game selection is coordinated by game-navigation.js.
 
     document.getElementById('exit-forklift-btn').addEventListener('click', showGamesMenu);
     const exitTowerBtn = document.getElementById('exit-tower-btn');
@@ -3169,6 +3119,7 @@
         const serialized = JSON.stringify(master);
         localStorage.setItem(USER_SCORES_MASTER_KEY, serialized);
         window.name = 'HOERMANN_LB_BACKUP:' + serialized;
+        if (typeof refreshGameRibbons === 'function') queueMicrotask(refreshGameRibbons);
       } catch (e) {}
     }
 
@@ -3331,7 +3282,7 @@
     /* ==========================================================
        7b. GLOBAL ONLINE CLOUD HUB (HIGHSCORES, IDEEN-BOX, LIVE-CHAT & ZWANGSUPDATE)
        ========================================================== */
-    const APP_VERSION           = '3.1.2';
+    const APP_VERSION           = '3.1.6';
     const NTFY_HUB_URL          = 'https://ntfy.sh/hoermann_mut_dephosa_hub_v3';
     const NTFY_LEGACY_URL       = 'https://ntfy.sh/hoermann_mut_dephosa_online_lb_v2';
     const BYTEBIN_POST_URL      = 'https://bytebin.lucko.me/post';
@@ -3893,30 +3844,14 @@
       return false;
     }
 
-    // Schaltet sofort & garantiert ohne Cache-Hänger auf die bereits im Hintergrund geladene neue Version um
+    // Wechselt per normaler Navigation in einen frischen JavaScript-Kontext
     async function performHardCacheBustReload(targetVersion) {
       try {
         sessionStorage.setItem('hoermann_updated_to_version', String(targetVersion || ''));
       } catch (e) {}
 
-      try {
-        if ('caches' in window) {
-          const names = await caches.keys();
-          await Promise.all(names.map(name => caches.delete(name)));
-        }
-      } catch (e) {}
-
-      if (prefetchedNewHtml && prefetchedNewHtml.includes('<html') && prefetchedNewHtml.includes('</html>')) {
-        try {
-          const cleanUrl = `${window.location.origin}${window.location.pathname}?v=${encodeURIComponent(targetVersion || Date.now())}`;
-          window.history.replaceState(null, '', cleanUrl);
-          document.open();
-          document.write(prefetchedNewHtml);
-          document.close();
-          return;
-        } catch (e) {}
-      }
-
+      // Normal navigation replaces the JS context and all old game loops.
+      hideAllViews();
       const cleanPath = window.location.origin + window.location.pathname;
       window.location.replace(`${cleanPath}?v=${encodeURIComponent(targetVersion || Date.now())}&t=${Date.now()}`);
     }
@@ -6416,6 +6351,7 @@
 
       marioActive = true;
       if (marioLoopId) cancelAnimationFrame(marioLoopId);
+      HoermannGameClock.reset("marioLoop");
       marioLoop();
       playSound('coin');
     }
@@ -6427,11 +6363,15 @@
 
     restartMarioBtn.addEventListener('click', startMarioGame);
 
-    function marioLoop() {
+    function marioLoop(frameTime) {
+      if (!(marioActive)) return;
+      HoermannGameClock.run("marioLoop", frameTime, () => {
       if (!marioActive) return;
       updateMarioPhysics();
       drawMarioScene();
-      marioLoopId = requestAnimationFrame(marioLoop);
+
+      });
+      if (marioActive) marioLoopId = requestAnimationFrame(marioLoop);
     }
 
     function updateMarioPhysics() {
@@ -6958,6 +6898,7 @@
       }, 1000);
 
       if (busterLoopId) cancelAnimationFrame(busterLoopId);
+      HoermannGameClock.reset("busterLoop");
       busterLoop();
       playSound('mut');
     }
@@ -7023,7 +6964,9 @@
       }
     });
 
-    function busterLoop() {
+    function busterLoop(frameTime) {
+      if (!(busterActive)) return;
+      HoermannGameClock.run("busterLoop", frameTime, () => {
       if (!busterActive) return;
 
       if (Math.random() < 0.05 && targets.length < 6) {
@@ -7103,7 +7046,9 @@
         if (s.alpha <= 0) splats.splice(i, 1);
       }
 
-      busterLoopId = requestAnimationFrame(busterLoop);
+
+      });
+      if (busterActive) busterLoopId = requestAnimationFrame(busterLoop);
     }
 
     function endBusterGame() {
@@ -7299,6 +7244,7 @@
 
       parcoursActive = true;
       if (parcoursLoopId) cancelAnimationFrame(parcoursLoopId);
+      HoermannGameClock.reset("parcoursLoop");
       parcoursLoop();
       playSound('mut');
     }
@@ -7349,7 +7295,9 @@
       parcoursJump();
     });
 
-    function parcoursLoop() {
+    function parcoursLoop(frameTime) {
+      if (!(parcoursActive)) return;
+      HoermannGameClock.run("parcoursLoop", frameTime, () => {
       if (!parcoursActive) return;
 
       if (!parcoursGameOver) {
@@ -7434,7 +7382,9 @@
         parcoursCtx.fillText('NOCHMAL ↺', parcoursCanvas.width / 2, 236);
       }
 
-      parcoursLoopId = requestAnimationFrame(parcoursLoop);
+
+      });
+      if (parcoursActive) parcoursLoopId = requestAnimationFrame(parcoursLoop);
     }
 
     function handleParcoursOver() {
@@ -7705,6 +7655,7 @@
       highscoreCard.classList.remove('show');
       flActive = true;
       if (flLoopId) cancelAnimationFrame(flLoopId);
+      HoermannGameClock.reset("flLoop");
       flLoop();
       playSound('horn');
     }
@@ -7999,11 +7950,15 @@
       }, 1100);
     }
 
-    function flLoop() {
+    function flLoop(frameTime) {
+      if (!(flActive)) return;
+      HoermannGameClock.run("flLoop", frameTime, () => {
       if (!flActive) return;
       updateForkliftPhysics();
       drawForkliftScene();
-      flLoopId = requestAnimationFrame(flLoop);
+
+      });
+      if (flActive) flLoopId = requestAnimationFrame(flLoop);
     }
 
     function updateForkliftPhysics() {
@@ -8984,6 +8939,7 @@
     function startSlotsGame() {
       stopSlotsGame();
       initSlotsGame();
+      HoermannGameClock.reset("slotLoop");
       slotLoop();
     }
 
@@ -9522,7 +9478,9 @@
       ctx.restore();
     }
 
-    function slotLoop() {
+    function slotLoop(frameTime) {
+      if (!(slotState.active && sCtx)) return;
+      HoermannGameClock.run("slotLoop", frameTime, () => {
       if (!slotState.active || !sCtx) return;
 
       slotState.bulbPhase += 0.1;
@@ -9560,7 +9518,9 @@
       }
 
       drawSlotsScene();
-      slotAnimId = requestAnimationFrame(slotLoop);
+
+      });
+      if (slotState.active && sCtx) slotAnimId = requestAnimationFrame(slotLoop);
     }
 
     function drawSlotsScene() {
@@ -10204,6 +10164,7 @@
       stopTowerGame();
       twState.active = true;
       loadTowerLevel(typeof startLvl === 'number' ? startLvl : 0, true);
+      HoermannGameClock.reset("towerLoop");
       towerLoop();
     }
 
@@ -10891,11 +10852,15 @@
       twCtx.restore();
     }
 
-    function towerLoop() {
+    function towerLoop(frameTime) {
+      if (!(twState.active)) return;
+      HoermannGameClock.run("towerLoop", frameTime, () => {
       if (!twState.active) return;
       updateTowerPhysics();
       drawTowerScene();
-      towerAnimId = requestAnimationFrame(towerLoop);
+
+      });
+      if (twState.active) towerAnimId = requestAnimationFrame(towerLoop);
     }
 
     if (towerJumpBtn) {
@@ -11651,17 +11616,22 @@
       }
     }
 
-    function pacmanLoop() {
+    function pacmanLoop(frameTime) {
+      if (!(pacState.active)) return;
+      HoermannGameClock.run("pacmanLoop", frameTime, () => {
       if (!pacState.active) return;
       updatePacmanPhysics();
       drawPacmanScene();
-      pacLoopId = requestAnimationFrame(pacmanLoop);
+
+      });
+      if (pacState.active) pacLoopId = requestAnimationFrame(pacmanLoop);
     }
 
     function startPacmanGame() {
       pacState.active = true;
       initPacmanLevel(1, true);
       if (pacLoopId) cancelAnimationFrame(pacLoopId);
+      HoermannGameClock.reset("pacmanLoop");
       pacLoopId = requestAnimationFrame(pacmanLoop);
     }
 
@@ -11726,5 +11696,6 @@
     });
 
   </script>
+  <script src="game-navigation.js?v=3.1.6"></script>
 </body>
 </html>

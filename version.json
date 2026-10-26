@@ -1,4 +1,4 @@
 {
-  "version": "3.1.2",
-  "notes": "Bugfix: Mut-Man Spawnpunkt & Arcade-Wegfindung korrigiert – Mut-Man startet frei im Gang, kann nicht mehr in Wänden festhängen und gleitet flüssig um alle Ecken!"
+  "version": "3.1.6",
+  "notes": "Gleichmäßiges Spieltempo unabhängig von der Bildschirmfrequenz. Rang-Banner, direkte Spielnavigation und bewusster Spielstart. Bomber-Arena/Mut-Man: Coming soon; Automat: Überarbeitung."
 }
