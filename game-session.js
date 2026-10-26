@@ -1,6 +1,10 @@
 /* One session controller: pause, delayed callbacks, update acknowledgements and start dialogs. */
 (function(root) {
   let game = null, phase = 'idle', beforePause = null, pauseAt = 0, next = null;
+  let countdownValue = '3';
+  const countdownElement = document.createElement('div');countdownElement.id='game-countdown';countdownElement.hidden=true;countdownElement.setAttribute('role','status');countdownElement.setAttribute('aria-live','polite');
+  countdownElement.innerHTML='<span class=game-countdown-label>Mach dich bereit</span><strong></strong>';
+  function showCountdown(){const view=document.getElementById(game+'-view');const field=view.querySelector('canvas,.doors-arena');let stage=field.parentElement;if(!stage.classList.contains('game-stage')){stage=document.createElement('div');stage.className='game-stage';field.before(stage);stage.append(field);}stage.append(countdownElement);countdownElement.querySelector('strong').textContent=countdownValue;countdownElement.hidden=false;}
   const timers = new Set(), memorySeen = new Set();
   const dialog = document.createElement('dialog'); dialog.id = 'game-session-dialog';
   dialog.setAttribute('aria-labelledby','game-session-title');
@@ -10,7 +14,7 @@
   const heading = dialog.querySelector('h2'), copy = dialog.querySelector('#game-session-copy'), action = dialog.querySelector('button'), status = dialog.querySelector('#game-session-status');
   function modal(title, text, label, callback) {
     heading.textContent = title; copy.replaceChildren();
-    for (const line of Array.isArray(text) ? text : [text]) { const p = document.createElement('p'); p.textContent = line; copy.append(p); }
+    if(Array.isArray(text)){const list=document.createElement('ul');for(const line of text){const item=document.createElement('li');const colon=line.indexOf(':');if(colon>0){const label=document.createElement('strong');label.textContent=line.slice(0,colon+1);item.append(label,document.createTextNode(' '+line.slice(colon+1).trim()));}else item.textContent=line;list.append(item);}copy.append(list);}else{const p=document.createElement('p');p.textContent=text;copy.append(p);}
     status.textContent = ''; action.textContent = label || ''; action.hidden = !label; next = callback;
     if (!dialog.open) dialog.showModal(); if (label) action.focus();
   }
@@ -21,14 +25,14 @@
   function delay(callback, ms) { const timer = {callback, remaining: Math.max(0,ms), started:0, id:null}; timers.add(timer); if(phase!=='paused') arm(timer); return timer; }
   function clearTimers() { for(const timer of timers) clearTimeout(timer.id); timers.clear(); }
   function blocked() { return ['preview','countdown','paused','update'].includes(phase); }
-  function close() { if(dialog.open) dialog.close(); }
+  function close() { if(dialog.open) dialog.close();countdownElement.hidden=true; }
   function stop() { clearTimers(); close(); phase='idle'; game=null; next=null; }
   function resume() {
     if(phase!=='paused') return;
     const pausedMs=performance.now()-pauseAt;
     if(game==='forklift' && nico?.cargo) nico.cargo.pickupTime += pausedMs;
     phase=beforePause; close(); for(const timer of timers) arm(timer);
-    if(phase==='countdown') modal('Gleich geht’s los', 'Der Countdown läuft weiter.', null);
+    if(phase==='countdown') showCountdown();
   }
   function pause() {
     if(!game || !['playing','countdown'].includes(phase)) return;
@@ -40,7 +44,7 @@
   }
   function beginPlaying(){phase='playing';close();}
   function countdown(){phase='countdown';let remaining=3;
-    const step=()=>{modal(remaining>0?String(remaining):'Los!',remaining>0?'Mach dich bereit.':'Viel Erfolg!',null);
+    const step=()=>{countdownValue=remaining>0?String(remaining):'Los!';showCountdown();
       if(remaining>0){remaining--;delay(step,1000);}else delay(beginPlaying,350);}; step();
   }
   function enter(category, origin) {
@@ -73,7 +77,7 @@
     if(blocked()){if(!event.target.closest?.('#game-session-dialog'))event.preventDefault();event.stopImmediatePropagation();}
   },true);
   document.addEventListener('pointerdown',event=>{
-    if(blocked()&&!event.target.closest('#game-session-dialog')){event.preventDefault();event.stopImmediatePropagation();}
+    if(blocked()&&!event.target.closest('#game-session-dialog')&&!(phase==='countdown'&&event.target.closest('.game-actions-bar'))){event.preventDefault();event.stopImmediatePropagation();}
   },true);
   document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();});
   document.addEventListener('click',event=>{if(event.target.closest('[id^="restart-"]') && game){clearTimers();phase='playing';close();}},true);

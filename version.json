@@ -1,4 +1,4 @@
 {
-  "version": "3.1.7",
-  "notes": "Pause mit P/Escape, Countdown aus dem Menü, Vorschau mit Start-Popup, Spiel-Updatefenster und Zweifel-Buster 0.2 mit sanftem Einstieg, Combo und Fehlklick-Abzug."
+  "version": "3.1.8",
+  "notes": "Spielvorschauen wieder sichtbar, lesbare Updatehinweise, Countdown direkt im Spielfeld und zeitbasierte optimierte Mut-Effekte."
 }

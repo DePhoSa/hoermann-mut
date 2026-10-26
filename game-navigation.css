@@ -19,7 +19,7 @@
 #leaderboard-game-link { display: block; margin: 16px 0; max-width: 100%; white-space: normal; text-align: left; min-height: 48px; }
 @media(max-width:600px) { .game-rank-ribbon { font-size: 13px; } .game-launch-actions { align-items: stretch; flex-direction: column; width: 100%; } }
 .game-version-button { align-self: flex-start; background: transparent; color: inherit; border: 1px solid currentColor; border-radius: 4px; padding: 8px 12px; min-height: 44px; font: inherit; cursor: pointer; }
-#game-session-dialog { width: min(440px, calc(100vw - 32px)); max-height: calc(100dvh - 40px); overflow: auto; box-sizing: border-box; border: 0; border-top: 5px solid #f59c00; border-radius: 0; padding: 26px; color: #122b46; background: #fff; box-shadow: 0 16px 40px #0005; font-family: inherit; }
+#game-session-dialog { width: min(440px, calc(100vw - 32px)); max-height: calc(100dvh - 40px); overflow: auto; box-sizing: border-box; border: 0; border-top: 0; border-radius: 0; padding: 26px; color: #122b46; background: #fff; box-shadow: 0 16px 40px #0005; font-family: inherit; }
 #game-session-dialog::backdrop { background: #00152b99; }
 #game-session-dialog h2 { font-size: 1.6rem; margin: 0 0 18px; line-height: 1.25; }
 #game-session-dialog p { line-height: 1.55; }
@@ -38,3 +38,21 @@
 .game-choice-card .game-open-action, .game-choice-card .game-version-button { width: 100%; margin: 0; }
 .game-choice-card .game-version-button { text-align: center; }
 @media(max-width:600px) { .games-grid { grid-template-columns: minmax(0, 1fr); } }
+
+.game-card-preview { display: flex; align-items: center; justify-content: center; height: 72px; width: 100%; font-size: 3rem; line-height: 1; }
+#game-session-dialog { width: min(560px, calc(100vw - 32px)); padding: 28px; border-top: 0; border-radius: 8px; }
+#game-session-dialog h2 { font-size: 1.5rem; line-height: 1.35; margin-bottom: 20px; }
+#game-session-copy { font-size: 1rem; text-align: left; }
+#game-session-copy ul { margin: 0; padding-left: 22px; display: grid; gap: 14px; }
+#game-session-copy li { padding-left: 4px; line-height: 1.6; }
+#game-session-copy p { margin: 0; }
+#game-session-status:empty { display: none; }
+#game-session-action { margin-top: 24px; }
+.game-stage { position: relative; width: max-content; max-width: 100%; isolation: isolate; }
+#nerve-view .game-stage { width: 100%; max-width: 660px; }
+.game-stage > canvas { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+#game-countdown { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; background: #001830bf; color: #fff; border-radius: 6px; pointer-events: none; }
+#game-countdown[hidden] { display: none; }
+.game-countdown-label { font-size: 1rem; font-weight: 600; }
+#game-countdown strong { font-size: clamp(3.5rem, 12vw, 6rem); font-weight: 900; line-height: 1; color: #ffd269; font-variant-numeric: tabular-nums; }
+@media(max-width:600px) { #game-session-dialog { padding: 24px; } }

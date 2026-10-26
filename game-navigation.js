@@ -102,8 +102,11 @@ for (const [category, game] of Object.entries(portalGameNavigation)) {
     parcours: 'Steuere durch die Sektionaltore und stelle deine Reflexe auf die Probe.',
     bomber: 'Online-Arena für zwei bis vier Spieler: Räume, Bomben und Items. Nur Multiplayer.'
   };
+  const preview = card.querySelector('.game-icon-large') || [...card.children].find(child => child.tagName==='DIV' && child.style.fontSize && !child.classList.contains('card-badge-rec'));
   card.removeAttribute('style');
   card.replaceChildren();
+  if(preview){preview.removeAttribute('style');preview.className='game-card-preview';preview.setAttribute('aria-hidden','true');card.append(preview);}
+  else {const preview=document.createElement('div');preview.className='game-card-preview';preview.setAttribute('aria-hidden','true');preview.textContent='💣';card.append(preview);}
   card.append(Object.assign(document.createElement('h3'), {className:'game-card-title',textContent:game.title}));
   card.append(Object.assign(document.createElement('p'), {className:'game-card-desc',textContent:descriptions[category]}));
   card.append(Object.assign(document.createElement('strong'), {className:'game-state-label',textContent:game.status || 'Jetzt verbessern'}));
