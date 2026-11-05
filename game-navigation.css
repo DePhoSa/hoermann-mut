@@ -125,3 +125,12 @@
 @media (min-resolution: 1.1dppx) {
   #forkliftCanvas, #towerCanvas, #pacmanCanvas, #slotsCanvas { image-rendering: auto !important; }
 }
+
+/* Pausierte Spiele ("Coming soon" / "Überarbeitung") wirken klar deaktiviert */
+.game-choice-card.game-unavailable { background: #eef0f3; border-color: #d3d8df; cursor: not-allowed; box-shadow: none; opacity: 1; }
+.game-choice-card.game-unavailable > .game-card-preview { filter: grayscale(1); opacity: .45; }
+.game-choice-card.game-unavailable .game-card-title { color: #6b7686; }
+.game-choice-card.game-unavailable .game-card-desc { color: #7b8594; }
+.game-choice-card.game-unavailable .game-state-label { background: #dfe3e9; color: #4b5563; }
+.game-choice-card.game-unavailable .game-open-action { background: #cfd5dd; color: #5b6573; border-color: #cfd5dd; cursor: not-allowed; }
+.game-choice-card.game-unavailable:hover { transform: none; box-shadow: none; }
