@@ -528,6 +528,23 @@
       touch-action: none;
     }
 
+    /* Lagermeister Nico 0.2: grosse Touch-Steuerung */
+    #forklift-view .fl-pad .touch-btn { width: 52px; height: 46px; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+    #forklift-view .fl-controls .btn-card-start { touch-action: manipulation; }
+    @media (pointer: coarse), (max-width: 640px) {
+      #forklift-view { padding-left: 0.6rem; padding-right: 0.6rem; }
+      #forklift-view .fl-controls { flex-direction: column-reverse; align-items: stretch !important; gap: 10px !important; }
+      #forklift-view .fl-pad { justify-content: center; gap: 10px !important; }
+      #forklift-view .fl-pad .touch-btn { width: 72px; height: 62px; font-size: 1.5rem !important; }
+      #forklift-view .fl-actions { display: grid !important; grid-template-columns: 1fr 1fr; gap: 8px !important; }
+      #forklift-view .fl-actions .btn-card-start { min-height: 52px; padding: 0.4rem 0.5rem !important; font-size: 0.9rem !important; }
+      #forklift-view #fl-btn-action { grid-column: 1 / -1; min-height: 60px; }
+      #forklift-view .fl-keyhint { display: none; }
+      #forklift-view .game-instructions { display: none; }
+    }
+
+    #parcoursCanvas { height: auto; }
+
     #forkliftCanvas, #towerCanvas, #pacmanCanvas, #slotsCanvas {
       image-rendering: pixelated;
       image-rendering: crisp-edges;
@@ -582,6 +599,19 @@
       color: #fff;
     }
 
+    /* Super Dennis 0.2: groessere, wischfeste Touch-Buttons */
+    .mario-touch-bar .touch-btn {
+      width: 76px;
+      height: 68px;
+      font-size: 1.7rem;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+      touch-action: none;
+    }
+    .mario-touch-bar .touch-btn-jump { width: 120px; font-size: 1.1rem; }
+    .mario-touch-bar .touch-btn.is-down { background: var(--hoermann-orange); color: #fff; }
+
     .touch-btn-jump {
       width: 80px;
       background: var(--hoermann-orange);
@@ -629,6 +659,30 @@
     .mystery-door.opened {
       pointer-events: none;
       transform: none;
+    }
+
+    .mystery-door:focus-visible {
+      outline: 3px solid var(--hoermann-orange);
+      outline-offset: 3px;
+    }
+
+    .mystery-door.opened:not(.chosen) {
+      opacity: 0.55;
+    }
+
+    .mystery-door.chosen {
+      border-color: var(--hoermann-orange);
+      box-shadow: 0 0 0 4px rgba(245, 156, 0, 0.35), 0 12px 28px rgba(0, 0, 0, 0.3);
+    }
+
+    .mystery-door.chosen.alarm {
+      border-color: #ef4444;
+      box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.4), 0 12px 28px rgba(0, 0, 0, 0.3);
+    }
+
+    #bank-nerve-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
     }
 
     .door-face {
@@ -924,44 +978,53 @@
       z-index: 10;
     }
 
+    /* Chat hinter Button: schwebender Chat-Button + Seitenpanel (Desktop) / Vollbild-Sheet (Handy) */
+    #chat-fab {
+      position: fixed; right: 16px; bottom: 16px; z-index: 900;
+      min-width: 56px; min-height: 56px; padding: 0 18px;
+      border-radius: 28px; border: 2px solid #fff; cursor: pointer;
+      background: var(--hoermann-blue); color: #fff; font-weight: 800; font-size: 1rem;
+      box-shadow: 0 6px 18px rgba(0,0,0,.35); display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    #chat-fab:hover { background: #003a70; }
+    #chat-unread-badge {
+      min-width: 24px; height: 24px; padding: 0 6px; box-sizing: border-box; border-radius: 12px;
+      background: #dc2626; color: #fff; font-size: .8rem; line-height: 24px; text-align: center; font-weight: 800;
+    }
+    #chat-unread-badge[hidden] { display: none; }
     #online-side-chat {
-      width: 345px;
-      flex-shrink: 0;
-      background: #ffffff;
-      border-radius: 6px;
-      box-shadow: var(--shadow-lg);
+      position: fixed; top: 0; right: 0; bottom: 0; width: 400px; max-width: 100vw;
+      background: #ffffff; box-shadow: -8px 0 28px rgba(0,0,0,.35);
       border-top: 5px solid var(--hoermann-orange);
-      display: flex;
-      flex-direction: column;
-      height: 670px;
-      max-height: calc(100vh - 3rem);
-      position: sticky;
-      top: 1.25rem;
-      overflow: hidden;
-      z-index: 15;
+      display: none; flex-direction: column; overflow: hidden; z-index: 1000; box-sizing: border-box;
+    }
+    #online-side-chat.open { display: flex; }
+    #chat-close-btn {
+      min-width: 44px; min-height: 44px; background: rgba(255,255,255,.14); color: #fff;
+      border: 1px solid rgba(255,255,255,.35); border-radius: 4px; font-size: 1.1rem; cursor: pointer;
+    }
+    @media (max-width: 640px) {
+      #online-side-chat { width: 100vw; border-top-width: 0; height: var(--chat-vvh, 100dvh); bottom: auto; }
+      #chat-fab { right: 12px; bottom: 12px; }
     }
 
-    /* Immer sichtbar auf allen PCs, Laptops (auch bei 125%/150% Windows-Skalierung) & Tablets:
-       Ab 980px nebeneinander, darunter sauber direkt unter dem Hauptfenster angedockt (niemals versteckt!) */
-    @media (max-width: 1200px) and (min-width: 981px) {
-      #online-side-chat {
-        width: 300px;
-      }
-    }
-
-    @media (max-width: 980px) {
-      .portal-desktop-layout {
-        flex-direction: column;
-        align-items: center;
-      }
-      #online-side-chat {
-        width: 100%;
-        max-width: 820px;
-        height: 490px;
-        max-height: none;
-        position: static;
-      }
-    }
+    /* Admin-Dialog */
+    #admin-dialog-backdrop { position: fixed; inset: 0; background: rgba(0,10,25,.65); z-index: 1100; display: none; align-items: center; justify-content: center; padding: 16px; box-sizing: border-box; }
+    #admin-dialog-backdrop.show { display: flex; }
+    #admin-dialog { width: min(720px, 100%); max-height: 86dvh; background: #fff; border-radius: 8px; border-top: 5px solid var(--hoermann-orange); display: flex; flex-direction: column; overflow: hidden; box-shadow: var(--shadow-lg); }
+    #admin-dialog .admin-dialog-head { background: var(--hoermann-blue); color: #fff; padding: .7rem .95rem; display: flex; justify-content: space-between; align-items: center; gap: .5rem; font-weight: 800; }
+    #admin-dialog .admin-dialog-head button { min-width: 44px; min-height: 44px; background: rgba(255,255,255,.14); color: #fff; border: 1px solid rgba(255,255,255,.35); border-radius: 4px; cursor: pointer; font-size: 1rem; }
+    #admin-dialog .admin-pane { flex: 1; overflow-y: auto; padding: .75rem; background: #f8fafc; display: none; flex-direction: column; gap: .55rem; min-height: 200px; }
+    #admin-dialog .admin-pane.show { display: flex; }
+    #admin-dialog .admin-login { padding: 1rem; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    #admin-dialog .admin-login .chat-input-field { flex: 1; min-width: 160px; min-height: 44px; box-sizing: border-box; }
+    #admin-dialog button.chat-send-btn, #admin-dialog .chat-admin-tab-btn, #admin-dialog .chat-delete-btn { min-height: 44px; }
+    #admin-dialog .chat-delete-btn { min-width: 44px; }
+    #admin-dialog .admin-bar { display: none; justify-content: space-between; align-items: center; gap: 6px; flex-wrap: wrap; padding: .5rem .75rem; background: #0f172a; color: #fbbf24; font-weight: 800; font-size: .85rem; }
+    #admin-dialog .admin-bar button { min-height: 44px; }
+    @media (max-width: 640px) { #admin-dialog-backdrop { padding: 0; } #admin-dialog { width: 100%; height: 100dvh; max-height: none; border-radius: 0; } }
+    #chat-admin-toggle-btn { background: transparent; color: rgba(255,255,255,.7); border: 1px solid rgba(255,255,255,.3); min-height: 44px; min-width: 44px; margin-top: 6px; font-size: .78rem; }
+    #chat-admin-toggle-btn.unlocked { background: var(--hoermann-orange); color: #111827; }
 
     .chat-header {
       background: var(--hoermann-blue);
@@ -1441,7 +1504,14 @@
         flex-direction: column;
       }
       .mystery-door {
-        height: 140px;
+        height: 120px;
+        min-width: 0;
+        width: 100%;
+        padding: 0.5rem;
+      }
+      .doors-arena {
+        gap: 0.6rem;
+        margin: 0.75rem 0;
       }
       .leaderboard-tabs {
         flex-direction: column;
@@ -1451,11 +1521,12 @@
       }
     }
   </style>
-  <script defer src="mut-effects.js?v=3.2.0"></script>
-  <script src="firebase-sync.js?v=3.2.0"></script>
-  <script src="game-releases.js?v=3.2.0"></script>
-  <script src="game-clock.js?v=3.2.0"></script>
-  <link rel="stylesheet" href="game-navigation.css?v=3.2.0">
+  <script defer src="mut-effects.js?v=3.3.0"></script>
+  <script src="firebase-sync.js?v=3.3.0"></script>
+  <script src="game-releases.js?v=3.3.0"></script>
+  <script src="changelog.js?v=3.3.0"></script>
+  <script src="game-clock.js?v=3.3.0"></script>
+  <link rel="stylesheet" href="game-navigation.css?v=3.3.0">
 </head>
 <body>
 
@@ -1468,7 +1539,8 @@
       <div class="top-divider"></div>
       <div class="brand-watermark">HÖRMANN</div>
       <div class="top-controls">
-        <button class="icon-btn" id="sound-toggle-btn" title="Ton an / ausschalten">
+        <button type="button" class="header-lb-btn" id="header-leaderboard-btn" aria-haspopup="dialog">🏆 Bestenlisten</button>
+        <button class="icon-btn" id="sound-toggle-btn" title="Ton an / ausschalten" aria-label="Ton an oder ausschalten">
           <svg id="sound-icon-on" viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
             <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
@@ -1478,7 +1550,7 @@
             <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
           </svg>
         </button>
-        <button class="icon-btn" id="reset-view-btn" title="Ansicht zurücksetzen">
+        <button class="icon-btn" id="reset-view-btn" title="Ansicht zurücksetzen" aria-label="Ansicht zurücksetzen">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <line x1="18" y1="6" x2="6" y2="18"></line>
             <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -1538,15 +1610,15 @@
       <div class="thoughts-section" id="thoughts-box">
         <div class="thought-input-group">
           <span class="thought-num">1</span>
-          <input type="text" id="thought-1" class="thought-input" placeholder="Erster Gedanke...">
+          <input type="text" id="thought-1" class="thought-input" aria-label="Erster Gedanke" placeholder="Erster Gedanke...">
         </div>
         <div class="thought-input-group">
           <span class="thought-num">2</span>
-          <input type="text" id="thought-2" class="thought-input" placeholder="Zweiter Gedanke...">
+          <input type="text" id="thought-2" class="thought-input" aria-label="Zweiter Gedanke" placeholder="Zweiter Gedanke...">
         </div>
         <div class="thought-input-group">
           <span class="thought-num">3</span>
-          <input type="text" id="thought-3" class="thought-input" placeholder="Dritter Gedanke...">
+          <input type="text" id="thought-3" class="thought-input" aria-label="Dritter Gedanke" placeholder="Dritter Gedanke...">
         </div>
         <button class="save-thoughts-btn" id="save-thoughts-btn">Speichern</button>
       </div>
@@ -1687,22 +1759,22 @@
       <canvas id="forkliftCanvas" width="780" height="470"></canvas>
 
       <!-- Quick Action & Touch Controls Bar -->
-      <div style="display:flex; flex-wrap:wrap; gap:8px; width:100%; max-width:780px; justify-content:space-between; align-items:center; margin-top:0.65rem;">
-        <div style="display:flex; gap:6px; align-items:center;">
-          <button class="touch-btn" id="fl-btn-left" style="width:44px; height:40px; font-size:1.1rem;" title="Links lenken (A / ◀)">◀</button>
-          <button class="touch-btn" id="fl-btn-up" style="width:44px; height:40px; font-size:1.1rem;" title="Gas geben (W / ▲)">▲</button>
-          <button class="touch-btn" id="fl-btn-down" style="width:44px; height:40px; font-size:1.1rem;" title="Bremsen / Rückwärts (S / ▼)">▼</button>
-          <button class="touch-btn" id="fl-btn-right" style="width:44px; height:40px; font-size:1.1rem;" title="Rechts lenken (D / ▶)">▶</button>
+      <div class="fl-controls" style="display:flex; flex-wrap:wrap; gap:8px; width:100%; max-width:780px; justify-content:space-between; align-items:center; margin-top:0.65rem;">
+        <div class="fl-pad" style="display:flex; gap:6px; align-items:center;">
+          <button class="touch-btn" id="fl-btn-left" style="font-size:1.1rem;" title="Links lenken (A / ◀)">◀</button>
+          <button class="touch-btn" id="fl-btn-up" style="font-size:1.1rem;" title="Gas geben (W / ▲)">▲</button>
+          <button class="touch-btn" id="fl-btn-down" style="font-size:1.1rem;" title="Bremsen / Rückwärts (S / ▼)">▼</button>
+          <button class="touch-btn" id="fl-btn-right" style="font-size:1.1rem;" title="Rechts lenken (D / ▶)">▶</button>
         </div>
-        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <div class="fl-actions" style="display:flex; gap:8px; flex-wrap:wrap;">
           <button class="btn-card-start" id="fl-btn-action" style="background:var(--hoermann-orange); padding:0.5rem 0.95rem; font-size:0.85rem;">
-            📦 Gabel Aufnehmen / Absetzen (Leertaste)
+            📦 Aufnehmen / Absetzen<span class="fl-keyhint"> (Leertaste)</span>
           </button>
           <button class="btn-card-start" id="fl-btn-mast" style="background:var(--hoermann-blue); padding:0.5rem 0.95rem; font-size:0.85rem;">
-            ⬆️ Mast: Ebene 1 / Ebene 2 (E)
+            ⬆️ Mast hoch / runter<span class="fl-keyhint"> (E)</span>
           </button>
           <button class="btn-card-start" id="fl-btn-horn" style="background:#475569; padding:0.5rem 0.85rem; font-size:0.85rem;">
-            📯 Hupe (H)
+            📯 Hupe<span class="fl-keyhint"> (H)</span>
           </button>
           <button class="utility-link" id="restart-forklift-btn" style="margin-left:4px;">Neustart ↺</button>
         </div>
@@ -1881,7 +1953,7 @@
     <section class="card-content" id="nerve-view">
       <div class="game-ui-header">
         <div class="game-stat">Gesicherter Mut: <span id="nerve-banked">0</span></div>
-        <div class="game-stat">Aktueller Einsatz: <span id="nerve-current">100</span></div>
+        <div class="game-stat">Im Topf: <span id="nerve-current">0</span></div>
         <div class="game-actions-bar">
           <button class="utility-link" id="nerve-leaderboard-btn" style="text-decoration:none; font-weight:700;">🏆 Bestenliste</button>
           <button class="utility-link" id="exit-nerve-btn" style="text-decoration:none; font-weight:800;">✕ Menü</button>
@@ -1891,12 +1963,12 @@
       <h3 style="font-size:1.4rem; color:var(--hoermann-blue); margin-top:0.5rem; font-weight:800;" id="nerve-title">
         Runde <span id="nerve-round">1</span>: Welches Tor wagst du zu öffnen?
       </h3>
-      <p style="font-size:0.95rem; color:var(--text-muted); margin-bottom:0.5rem;">
+      <p style="font-size:0.95rem; color:var(--text-muted); margin-bottom:0.5rem;" id="nerve-hint" aria-live="polite">
         Hinter 2 Toren wartet gewaltiger Mut &ndash; hinter 1 Tor ein Zweifel-Alarm!
       </p>
 
       <div class="doors-arena">
-        <div class="mystery-door" id="door-1">
+        <div class="mystery-door" id="door-1" role="button" tabindex="0" aria-label="Tor 1 öffnen (Taste 1)">
           <div class="door-face">
             <span style="font-size:2rem; margin-bottom:6px;">🚪</span>
             <strong style="color:var(--hoermann-orange);">TOR 1</strong>
@@ -1905,7 +1977,7 @@
           <div class="door-content" id="door-content-1"></div>
         </div>
 
-        <div class="mystery-door" id="door-2">
+        <div class="mystery-door" id="door-2" role="button" tabindex="0" aria-label="Tor 2 öffnen (Taste 2)">
           <div class="door-face">
             <span style="font-size:2rem; margin-bottom:6px;">🚪</span>
             <strong style="color:var(--hoermann-orange);">TOR 2</strong>
@@ -1914,7 +1986,7 @@
           <div class="door-content" id="door-content-2"></div>
         </div>
 
-        <div class="mystery-door" id="door-3">
+        <div class="mystery-door" id="door-3" role="button" tabindex="0" aria-label="Tor 3 öffnen (Taste 3)">
           <div class="door-face">
             <span style="font-size:2rem; margin-bottom:6px;">🚪</span>
             <strong style="color:var(--hoermann-orange);">TOR 3</strong>
@@ -1925,7 +1997,7 @@
       </div>
 
       <div class="btn-row">
-        <button class="btn-primary" id="bank-nerve-btn" style="padding:0.8rem 1.8rem; font-size:1.05rem;">
+        <button class="btn-primary" id="bank-nerve-btn" disabled style="padding:0.8rem 1.8rem; font-size:1.05rem;">
           💰 Punkte sichern &amp; einsacken!
         </button>
         <button class="btn-game" id="next-nerve-round-btn" style="display:none; padding:0.8rem 1.8rem; font-size:1.05rem;">
@@ -1994,7 +2066,7 @@
             Falls du deinen Namen beim ersten Mal falsch geschrieben hast, kannst du hier deinen Wunschnamen beantragen. Sobald der Admin zustimmt, werden dein Name und deine Highscores automatisch umgestellt!
           </p>
           <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:2px;">
-            <input type="text" id="rename-request-input" class="chat-input-field" maxlength="20" placeholder="Dein gewünschter richtiger Name..." style="flex:1; min-width:160px;">
+            <input type="text" id="rename-request-input" aria-label="Gewünschter Name" class="chat-input-field" maxlength="20" placeholder="Dein gewünschter richtiger Name..." style="flex:1; min-width:160px;">
             <button type="button" id="send-rename-request-btn" class="chat-send-btn" style="padding:0.45rem 0.85rem; font-size:0.78rem;">Antrag absenden 📨</button>
             <button type="button" id="cancel-rename-request-btn" class="chat-tool-btn" style="padding:0.45rem 0.65rem; font-size:0.75rem;">Abbrechen</button>
           </div>
@@ -2002,7 +2074,7 @@
 
         <!-- Eingabefeld erscheint NUR beim allerersten Mal, wenn auf diesem Gerät noch kein Name festgelegt wurde -->
         <div id="first-time-name-row" style="display:flex; flex-direction:column; gap:4px; width:100%; max-width:460px;">
-          <input type="text" id="player-name-input" class="submit-input" maxlength="20" placeholder="Einmalig deinen festen Spielernamen wählen..." style="width:100%;">
+          <input type="text" id="player-name-input" aria-label="Spielername" autocomplete="nickname" class="submit-input" maxlength="20" placeholder="Einmalig deinen festen Spielernamen wählen..." style="width:100%;">
           <small style="font-size:0.75rem; color:#64748b;">🔒 Hinweis: Dein Name wird nach dem ersten Speichern fest mit deinem Gerät verknüpft (kein Überschreiben fremder Namen möglich).</small>
         </div>
         <button class="submit-btn" id="save-score-btn" style="width:100%; max-width:460px; justify-content:center;">⚡ Sofort in Bestenliste speichern 🏆</button>
@@ -2010,7 +2082,7 @@
     </div>
 
     <!-- GLOBAL LEADERBOARD CARD WITH TABS (For ALL 5 Games) -->
-    <div class="highscore-card" id="highscore-card" style="margin: 0 auto 1.5rem auto; max-width: 780px;">
+    <div class="highscore-card" id="highscore-card" role="dialog" aria-modal="true" aria-labelledby="global-lb-title" tabindex="-1">
       <div class="highscore-header" style="flex-wrap: wrap; gap: 8px;">
         <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
           <div class="highscore-title" id="global-lb-title">🏆 Hörmann Mut-Bestenliste</div>
@@ -2052,64 +2124,22 @@
   </div>
 
   <!-- PERMANENTES ONLINE LIVE-CHAT FENSTER (Nur in der Desktop-Webseiten-Ansicht rechts neben dem Portal) -->
-  <aside id="online-side-chat" aria-label="Hörmann Live-Chat">
+  </div>
+
+  <button type="button" id="chat-fab" aria-haspopup="dialog" aria-controls="online-side-chat" aria-expanded="false" aria-label="Live-Chat öffnen">💬 Chat <span id="chat-unread-badge" hidden>0</span></button>
+  <aside id="online-side-chat" role="dialog" aria-modal="false" aria-label="Hörmann Live-Chat">
     <div class="chat-header">
       <div class="chat-header-title">
         <span class="chat-online-dot"></span>
         <span>💬 Hörmann Live-Chat</span>
       </div>
-      <button class="chat-admin-toggle-btn" id="chat-admin-toggle-btn" title="Admin-Bereich für Moderation &amp; Spieler-Ideen">
-        🔒 Admin
-      </button>
-    </div>
-
-    <!-- Geschütztes Admin-Panel (Passwort-Login via SHA-256 Hash – kein Klartext im Code!) -->
-    <div class="chat-admin-panel" id="chat-admin-panel">
-      <div id="chat-admin-login-row" style="display:flex; gap:6px; align-items:center;">
-        <input type="password" id="chat-admin-pass-input" class="chat-input-field" placeholder="Admin-PIN / Passwort..." style="padding:4px 8px; font-size:0.78rem; background:#1e293b; color:#fff; border-color:#475569;">
-        <button id="chat-admin-login-btn" class="chat-send-btn" style="padding:4px 10px; font-size:0.76rem;">Entsperren</button>
-      </div>
-      <div id="chat-admin-actions-row" style="display:none; flex-direction:column; gap:6px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; gap:4px; flex-wrap:wrap;">
-          <span style="color:#fbbf24; font-weight:800;">🛡️ Admin-Modus aktiv</span>
-          <div style="display:flex; gap:4px;">
-            <button id="chat-admin-change-pw-btn" class="chat-admin-toggle-btn" style="font-size:0.7rem; padding:2px 6px;">🔑 PIN ändern</button>
-            <button id="chat-admin-clear-chat-btn" class="chat-delete-btn" style="font-size:0.7rem; padding:2px 6px;">🗑️ Chat leeren</button>
-            <button id="chat-admin-logout-btn" class="chat-admin-toggle-btn" style="font-size:0.7rem; padding:2px 6px;">Sperren</button>
-          </div>
-        </div>
-        <div id="chat-admin-new-pw-box" style="display:none; gap:4px; align-items:center; margin-top:2px;">
-          <input type="password" id="chat-admin-new-pw-input" class="chat-input-field" placeholder="Neues Admin-Passwort..." style="padding:3px 6px; font-size:0.74rem; background:#1e293b; color:#fff; border-color:#475569;">
-          <button id="chat-admin-save-pw-btn" class="chat-send-btn" style="padding:3px 8px; font-size:0.72rem;">Speichern</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Admin-Umschalter zwischen Live-Chat, Ideen-Postfach & Namensanträgen -->
-    <div class="chat-admin-tabs" id="chat-admin-tabs">
-      <button class="chat-admin-tab-btn active" id="admin-tab-chat-btn" style="font-size:0.72rem; padding:0.35rem 0.3rem;">💬 Chat</button>
-      <button class="chat-admin-tab-btn" id="admin-tab-ideas-btn" style="font-size:0.72rem; padding:0.35rem 0.3rem;">💡 Ideen (<span id="admin-ideas-count">0</span>)</button>
-      <button class="chat-admin-tab-btn" id="admin-tab-renames-btn" style="font-size:0.72rem; padding:0.35rem 0.3rem;">✏️ Namen (<span id="admin-renames-count">0</span>)</button>
+      <button type="button" id="chat-close-btn" aria-label="Chat schließen">✕</button>
     </div>
 
     <!-- Nachrichtenliste (Ungefilterter Echtzeit-Chat für alle Spieler) -->
-    <div class="chat-messages-list" id="chat-messages-list">
+    <div class="chat-messages-list" id="chat-messages-list" role="log" aria-live="polite" aria-label="Chat-Nachrichten">
       <div style="text-align:center; color:#64748b; font-size:0.8rem; padding:1rem 0.5rem;">
         Lade Online-Chatverlauf... 💬
-      </div>
-    </div>
-
-    <!-- Geschütztes Admin-Postfach für eingereichte Highscore-Spieler-Ideen -->
-    <div class="admin-ideas-list" id="admin-ideas-list" style="display:none;">
-      <div style="text-align:center; color:#64748b; font-size:0.8rem; padding:1rem 0.5rem;">
-        Noch keine Spieler-Ideen eingegangen. 💡
-      </div>
-    </div>
-
-    <!-- Geschütztes Admin-Postfach für einmalige Namensänderungs-Anträge -->
-    <div class="admin-ideas-list" id="admin-renames-list" style="display:none;">
-      <div style="text-align:center; color:#64748b; font-size:0.8rem; padding:1rem 0.5rem;">
-        Keine offenen Namensanträge. ✏️
       </div>
     </div>
 
@@ -2119,7 +2149,7 @@
       <div class="chat-popover-tray" id="chat-emoji-tray">
         <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.73rem; font-weight:800; color:var(--hoermann-blue);">
           <span>😀 Smileys &amp; Reaktionen</span>
-          <button type="button" id="close-emoji-tray-btn" class="chat-tool-btn" style="padding:1px 6px; font-size:0.68rem;">✕</button>
+          <button type="button" id="close-emoji-tray-btn" aria-label="Smileys schließen" class="chat-tool-btn" style="padding:1px 6px; font-size:0.68rem;">✕</button>
         </div>
         <div class="emoji-grid" id="chat-emoji-grid"></div>
       </div>
@@ -2128,10 +2158,10 @@
       <div class="chat-popover-tray" id="chat-gif-tray">
         <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.73rem; font-weight:800; color:var(--hoermann-blue);">
           <span>🎬 GIF suchen oder Link/Grafik einfügen</span>
-          <button type="button" id="close-gif-tray-btn" class="chat-tool-btn" style="padding:1px 6px; font-size:0.68rem;">✕</button>
+          <button type="button" id="close-gif-tray-btn" aria-label="GIFs schließen" class="chat-tool-btn" style="padding:1px 6px; font-size:0.68rem;">✕</button>
         </div>
         <div style="display:flex; gap:4px;">
-          <input type="text" id="chat-gif-search-input" class="chat-input-field" placeholder="z.B. lachender typ, stapler, party..." style="padding:4px 7px; font-size:0.77rem;">
+          <input type="text" id="chat-gif-search-input" aria-label="GIF suchen" class="chat-input-field" placeholder="z.B. lachender typ, stapler, party..." style="padding:4px 7px; font-size:0.77rem;">
           <button type="button" id="chat-gif-search-btn" class="chat-send-btn" style="padding:4px 9px; font-size:0.75rem;">🔍 Suchen</button>
         </div>
         <div class="gif-quick-tags" id="gif-quick-tags">
@@ -2143,7 +2173,7 @@
         </div>
         <div class="gif-results-grid" id="chat-gif-results"></div>
         <div style="border-top:1px solid #e2e8f0; padding-top:4px; display:flex; gap:4px; align-items:center;">
-          <input type="text" id="chat-gif-url-input" class="chat-input-field" placeholder="Oder GIF-Link (https://...) / Strg+V Grafik..." style="padding:3px 6px; font-size:0.73rem;">
+          <input type="text" id="chat-gif-url-input" aria-label="GIF-Link" class="chat-input-field" placeholder="Oder GIF-Link (https://...) / Strg+V Grafik..." style="padding:3px 6px; font-size:0.73rem;">
           <button type="button" id="chat-gif-url-btn" class="chat-tool-btn" style="padding:3px 7px; font-size:0.72rem; white-space:nowrap;">➕ Einfügen</button>
         </div>
       </div>
@@ -2154,11 +2184,11 @@
           <img id="chat-pending-gif-img" src="" alt="GIF">
           <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">🎬 GIF angehängt</span>
         </div>
-        <button type="button" id="chat-remove-gif-btn" class="chat-delete-btn" title="GIF wieder entfernen">✕</button>
+        <button type="button" id="chat-remove-gif-btn" aria-label="GIF entfernen" class="chat-delete-btn" title="GIF wieder entfernen">✕</button>
       </div>
 
       <div style="display:flex; gap:4px; align-items:center;">
-        <input type="text" id="chat-sender-input" class="chat-input-field" maxlength="20" placeholder="Dein fester Name..." style="flex:1; padding:0.36rem 0.55rem; font-size:0.78rem;">
+        <input type="text" id="chat-sender-input" aria-label="Dein Name im Chat" autocomplete="nickname" class="chat-input-field" maxlength="20" placeholder="Dein fester Name..." style="flex:1; padding:0.36rem 0.55rem; font-size:0.78rem;">
         <button type="button" id="chat-rename-req-btn" class="chat-tool-btn" style="display:none; padding:4px 7px; font-size:0.7rem;" title="Falls du deinen Namen falsch gespeichert hast, hier einmalig Änderung beim Admin beantragen">
           ✏️ Name falsch?
         </button>
@@ -2173,31 +2203,64 @@
       </div>
 
       <div class="chat-input-row">
-        <input type="text" id="chat-text-input" class="chat-input-field" maxlength="300" placeholder="Nachricht, Emoji oder GIF-Link (Enter)...">
+        <input type="text" id="chat-text-input" aria-label="Chat-Nachricht" enterkeyhint="send" class="chat-input-field" maxlength="300" placeholder="Nachricht, Emoji oder GIF-Link (Enter)...">
         <button class="chat-send-btn" id="chat-send-btn">Senden ➤</button>
       </div>
     </div>
   </aside>
+  <div id="admin-dialog-backdrop">
+    <div id="admin-dialog" role="dialog" aria-modal="true" aria-labelledby="admin-dialog-title">
+      <div class="admin-dialog-head"><span id="admin-dialog-title">🛡️ Admin-Bereich</span><button type="button" id="admin-dialog-close" aria-label="Admin-Bereich schließen">✕</button></div>
+      <div class="chat-admin-panel" id="chat-admin-panel" style="display:none"></div>
+      <div class="admin-login" id="chat-admin-login-row">
+        <span style="flex:1;min-width:160px;font-size:.9rem;color:#475569">Anmeldung über die Admin-Liste in der Cloud (kein Passwort).</span>
+        <button type="button" id="chat-admin-login-btn" class="chat-send-btn">Als Admin anmelden</button>
+      </div>
+      <div class="admin-bar" id="chat-admin-actions-row">
+        <span>🛡️ Admin-Modus aktiv</span>
+        <button type="button" id="chat-admin-logout-btn" class="chat-admin-toggle-btn">Sperren</button>
+      </div>
+      <div class="chat-admin-tabs" id="chat-admin-tabs" role="tablist">
+        <button type="button" class="chat-admin-tab-btn active" id="admin-tab-chat-btn" role="tab">💬 Chat</button>
+        <button type="button" class="chat-admin-tab-btn" id="admin-tab-ideas-btn" role="tab">💡 Ideen (<span id="admin-ideas-count">0</span>)</button>
+        <button type="button" class="chat-admin-tab-btn" id="admin-tab-renames-btn" role="tab">✏️ Namen (<span id="admin-renames-count">0</span>)</button>
+        <button type="button" class="chat-admin-tab-btn" id="chat-admin-change-pw-btn" role="tab">🔑 Passwort</button>
+      </div>
+      <div class="admin-pane" id="admin-chat-pane">
+        <div><button type="button" id="chat-admin-clear-chat-btn" class="chat-delete-btn" style="padding:0 12px;">🗑️ Chat leeren</button></div>
+        <div id="admin-chat-mod-list" style="display:flex; flex-direction:column; gap:.5rem;"></div>
+      </div>
+      <div class="admin-pane admin-ideas-list" id="admin-ideas-list"></div>
+      <div class="admin-pane admin-ideas-list" id="admin-renames-list"></div>
+      <div class="admin-pane" id="admin-pw-pane">
+        <div id="chat-admin-new-pw-box" style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+          <input type="password" id="chat-admin-new-pw-input" aria-label="Neues Admin-Passwort" autocomplete="new-password" class="chat-input-field" placeholder="Neues Admin-Passwort..." style="flex:1; min-width:160px; min-height:44px; box-sizing:border-box;">
+          <button type="button" id="chat-admin-save-pw-btn" class="chat-send-btn">Speichern</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <footer>
     Hörmann Mut-Portal &bull; Sektionaltore &bull; Schwingtore &bull; Türen &bull; Stahlzargen &bull; Lagermeister Nico &amp; Dennis Ressemann Edition
+    <div><button type="button" class="chat-admin-toggle-btn" id="chat-admin-toggle-btn" aria-haspopup="dialog" aria-expanded="false" title="Admin-Bereich">🔒 Admin</button></div>
     <div style="margin-top:4px; font-size:0.74rem; color:rgba(255,255,255,0.5);">
-      <span id="app-version-badge">Version 3.2.0 · Neue Cloud (Firebase)</span>
+      <span id="app-version-badge"><button type="button" class="version-btn" id="version-changelog-btn" aria-haspopup="dialog">Version 3.3.0</button></span>
+      <div id="version-highlights" class="version-highlights"></div>
     </div>
   </footer>
 
   <!-- DEZENTE HINWEIS-LEISTE FÜR UPDATES WÄHREND EINES AKTIVEN SPIELS (Wirft niemanden aus dem Spiel!) -->
-  <div id="deferred-update-bar" style="display:none; position:fixed; top:10px; left:50%; transform:translateX(-50%); background:linear-gradient(90deg, #002d62, #0d448a); color:#ffffff; border:2px solid #f59c00; border-radius:999px; padding:0.45rem 1rem; font-size:0.82rem; font-weight:800; z-index:9998; box-shadow:0 8px 25px rgba(0,0,0,0.45); align-items:center; gap:10px; white-space:nowrap;">
+  <div id="deferred-update-bar" role="status" style="display:none; position:fixed; top:10px; left:50%; transform:translateX(-50%); background:linear-gradient(90deg, #002d62, #0d448a); color:#ffffff; border:2px solid #f59c00; border-radius:999px; padding:0.45rem 1rem; font-size:0.82rem; font-weight:800; z-index:9998; box-shadow:0 8px 25px rgba(0,0,0,0.45); align-items:center; gap:10px; white-space:nowrap;">
     <span>🔄 Neues Update (<span id="deferred-update-ver">v2.9.0</span>) im Hintergrund geladen! Spiel deine Runde in Ruhe zu Ende.</span>
     <button id="deferred-update-apply-btn" style="background:#f59c00; color:#001830; border:none; border-radius:999px; padding:0.25rem 0.75rem; font-size:0.78rem; font-weight:900; cursor:pointer;">⚡ Jetzt laden</button>
   </div>
 
   <!-- UPDATE OVERLAY (Erscheint erst, wenn das Update zu 100% auf dem CDN fertig geladen ist & der Spieler NICHT mitten im Spiel ist!) -->
-  <div id="force-update-overlay" style="display:none; position:fixed; inset:0; background:rgba(0, 20, 45, 0.92); z-index:9999; align-items:center; justify-content:center; padding:1.5rem; backdrop-filter:blur(4px);">
+  <div id="force-update-overlay" role="dialog" aria-modal="true" aria-labelledby="force-update-title" style="display:none; position:fixed; inset:0; background:rgba(0, 20, 45, 0.92); z-index:9999; align-items:center; justify-content:center; padding:1.5rem; backdrop-filter:blur(4px);">
     <div style="background:#ffffff; border:4px solid var(--hoermann-orange); border-radius:10px; max-width:520px; width:100%; padding:2rem 1.8rem; text-align:center; box-shadow:0 25px 50px rgba(0,0,0,0.5);">
       <div style="font-size:3rem; margin-bottom:0.5rem;">🚀🔄</div>
-      <h2 style="color:var(--hoermann-blue); font-size:1.5rem; font-weight:900; margin-bottom:0.6rem;">
+      <h2 id="force-update-title" style="color:var(--hoermann-blue); font-size:1.5rem; font-weight:900; margin-bottom:0.6rem;">
         Neues Portal-Update komplett geladen!
       </h2>
       <p id="force-update-text" style="color:var(--text-muted); font-size:0.95rem; line-height:1.5; margin-bottom:1.1rem;">
@@ -2217,7 +2280,7 @@
     </div>
   </div>
 
-  <div id="toast">Gedanken gespeichert!</div>
+  <div id="toast" role="status" aria-live="polite">Gedanken gespeichert!</div>
 
   <script>
     /* ==========================================================
@@ -3106,7 +3169,7 @@
     /* ==========================================================
        7b. GLOBAL ONLINE CLOUD HUB (HIGHSCORES, IDEEN-BOX, LIVE-CHAT & ZWANGSUPDATE)
        ========================================================== */
-    const APP_VERSION           = '3.2.0';
+    const APP_VERSION           = '3.3.0';
     const cloudSyncBadge        = document.getElementById('cloud-sync-badge');
     const submitHighscoreFeedback = document.getElementById('submit-highscore-feedback');
     const ideaTicketBox         = document.getElementById('idea-ticket-box');
@@ -3734,6 +3797,7 @@
       }
       if (overlay) {
         overlay.style.display = 'flex';
+        if (nowBtn) nowBtn.focus({ preventScroll: true });
       }
       playSound('powerup');
 
@@ -3798,7 +3862,7 @@
         syncOnlineLeaderboards(false);
       }
     });
-    setInterval(checkServerAppVersion, 20000);
+    setInterval(() => { if (document.visibilityState === 'visible') checkServerAppVersion(); }, 20000);
     setTimeout(checkServerAppVersion, 1500);
 
     function setCloudBadgeState(status, text) {
@@ -4258,28 +4322,32 @@
 
     function switchLeaderboardTab(category, highlightName = "") {
       activeGameCategory = category;
-      tabForkliftBtn.classList.toggle('active', category === 'forklift');
+      tabForkliftBtn.classList.toggle('active', HoermannGameReleases.baseGame(category) === 'forklift');
       if (tabTowerBtn) tabTowerBtn.classList.toggle('active', category === 'tower');
       if (tabPacmanBtn) tabPacmanBtn.classList.toggle('active', category === 'pacman');
       if (tabSlotsBtn) tabSlotsBtn.classList.toggle('active', category === 'slots');
-      tabMarioBtn.classList.toggle('active', category === 'mario');
-      tabBusterBtn.classList.toggle('active', ['buster','buster_v02'].includes(category));
-      tabNerveBtn.classList.toggle('active', category === 'nerve');
-      tabParcoursBtn.classList.toggle('active', category === 'parcours');
+      tabMarioBtn.classList.toggle('active', HoermannGameReleases.baseGame(category) === 'mario');
+      tabBusterBtn.classList.toggle('active', HoermannGameReleases.baseGame(category) === 'buster');
+      tabNerveBtn.classList.toggle('active', HoermannGameReleases.baseGame(category) === 'nerve');
+      tabParcoursBtn.classList.toggle('active', HoermannGameReleases.baseGame(category) === 'parcours');
 
       const titles = {
-        forklift: "🏆 Bestenliste: 🚜 Lagermeister Nico malocht (Max: 10.000 Pkt = 100%)",
+        forklift: "🏆 Lagermeister Nico · 0.1 (bisherige Rekorde)",
         tower: "🏆 Bestenliste: 🏰 Tower of Mut (Resse im Schicksalsturm • Tutorial + 5 Level)",
         pacman: "🏆 Bestenliste: 🟡 Hörmann Mut-Man (Labyrinth, Zweifel-Geister & Power-Tore)",
         slots: "🏆 Bestenliste: 🎰 Der Hörmann Mut-Automat (Walzen & Risiko-Jackpot)",
-        mario: "🏆 Bestenliste: 🍄 Super Dennis (Mut-Welt)",
+        mario: "🏆 Super Dennis · 0.1 (bisherige Rekorde)",
         buster: "🏆 Zweifel-Buster · 0.1 (bisherige Rekorde)",
         buster_v02: "🏆 Zweifel-Buster · Update 0.2",
-        nerve: "🏆 Bestenliste: 🎲 Die Mut-Probe",
-        parcours: "🏆 Bestenliste: 🕹️ Tor-Parcours"
+        forklift_v02: "🏆 Lagermeister Nico · Update 0.2 (Max: 10.000 Pkt = 100%)",
+        mario_v02: "🏆 Super Dennis · Update 0.2",
+        nerve_v02: "🏆 Die Mut-Probe · Update 0.2",
+        parcours_v02: "🏆 Tor-Parcours · Update 0.2",
+        nerve: "🏆 Die Mut-Probe · 0.1 (bisherige Rekorde)",
+        parcours: "🏆 Tor-Parcours · 0.1 (bisherige Rekorde)"
       };
       globalLbTitle.textContent = titles[category] || titles.forklift;
-      lbScoreColHeader.textContent = (category === 'parcours') ? 'Tore' : 'Punkte';
+      lbScoreColHeader.textContent = (HoermannGameReleases.baseGame(category) === 'parcours') ? 'Tore' : 'Punkte';
 
       const list = getGameLeaderboard(category);
       const top10 = list.slice(0, 10);
@@ -4296,7 +4364,7 @@
         if (idx === 1) rankBadge = '🥈 2.';
         if (idx === 2) rankBadge = '🥉 3.';
 
-        const scoreLabel = (category === 'forklift')
+        const scoreLabel = (HoermannGameReleases.baseGame(category) === 'forklift')
           ? `${entry.score} <small style="color:#64748b; font-weight:600; font-size:0.75rem;">(${(entry.score / 100).toFixed(1)}%)</small>`
           : entry.score;
 
@@ -4325,14 +4393,14 @@
       return div.innerHTML;
     }
 
-    tabForkliftBtn.addEventListener('click', () => switchLeaderboardTab('forklift'));
+    tabForkliftBtn.addEventListener('click', () => switchLeaderboardTab(HoermannGameReleases.release('forklift').scoreCategory));
     if (tabTowerBtn) tabTowerBtn.addEventListener('click', () => switchLeaderboardTab('tower'));
     if (tabPacmanBtn) tabPacmanBtn.addEventListener('click', () => switchLeaderboardTab('pacman'));
     if (tabSlotsBtn) tabSlotsBtn.addEventListener('click', () => switchLeaderboardTab('slots'));
-    tabMarioBtn.addEventListener('click', () => switchLeaderboardTab('mario'));
+    tabMarioBtn.addEventListener('click', () => switchLeaderboardTab(HoermannGameReleases.release('mario').scoreCategory));
     tabBusterBtn.addEventListener('click', () => switchLeaderboardTab('buster_v02'));
-    tabNerveBtn.addEventListener('click', () => switchLeaderboardTab('nerve'));
-    tabParcoursBtn.addEventListener('click', () => switchLeaderboardTab('parcours'));
+    tabNerveBtn.addEventListener('click', () => switchLeaderboardTab(HoermannGameReleases.release('nerve').scoreCategory));
+    tabParcoursBtn.addEventListener('click', () => switchLeaderboardTab(HoermannGameReleases.release('parcours').scoreCategory));
 
     function openGlobalLeaderboard(category = 'forklift', highlightName = "") {
       switchLeaderboardTab(category, highlightName);
@@ -4348,21 +4416,21 @@
       const lastPlayedCat = localStorage.getItem('hoermann_last_lb_cat') || 'forklift';
       openGlobalLeaderboard(lastPlayedCat);
     });
-    document.getElementById('forklift-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('forklift'));
+    document.getElementById('forklift-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('forklift_v02'));
     const towerLbBtn = document.getElementById('tower-leaderboard-btn');
     if (towerLbBtn) towerLbBtn.addEventListener('click', () => openGlobalLeaderboard('tower'));
     const pacmanLbBtn = document.getElementById('pacman-leaderboard-btn');
     if (pacmanLbBtn) pacmanLbBtn.addEventListener('click', () => openGlobalLeaderboard('pacman'));
     const slotsLbBtn = document.getElementById('slots-leaderboard-btn');
     if (slotsLbBtn) slotsLbBtn.addEventListener('click', () => openGlobalLeaderboard('slots'));
-    document.getElementById('mario-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('mario'));
+    document.getElementById('mario-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('mario_v02'));
     document.getElementById('buster-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('buster_v02'));
-    document.getElementById('nerve-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('nerve'));
-    document.getElementById('parcours-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('parcours'));
+    document.getElementById('nerve-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('nerve_v02'));
+    document.getElementById('parcours-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('parcours_v02'));
 
     // Prüft live, ob der eingegebene Name frei/gültig ist, ob bereits ein höherer Highscore vorliegt + ob ein Ideen-Ticket freigeschaltet wird
     function evaluatePersonalHighscoreCheck() {
-      const unit = (pendingSubmitGame === 'parcours') ? 'Tore' : 'Punkte';
+      const unit = (HoermannGameReleases.baseGame(pendingSubmitGame) === 'parcours') ? 'Tore' : 'Punkte';
       const lockedName = getLockedPlayerName();
       const typedName = lockedName || playerNameInput.value.trim();
 
@@ -5241,65 +5309,106 @@
         chatAdminToggleBtn.textContent = '🛡️ Admin aktiv';
         chatAdminLoginRow.style.display = 'none';
         chatAdminActionsRow.style.display = 'flex';
+        switchAdminViewTab(activeAdminTab);
         chatAdminTabs.classList.add('show');
       } else {
         chatAdminToggleBtn.classList.remove('unlocked');
         chatAdminToggleBtn.textContent = '🔒 Admin';
         chatAdminLoginRow.style.display = 'flex';
         chatAdminActionsRow.style.display = 'none';
-        chatAdminNewPwBox.style.display = 'none';
         chatAdminTabs.classList.remove('show');
         switchAdminViewTab('chat');
       }
       renderChatMessages();
+      renderAdminChatModeration();
       renderAdminIdeasList();
       renderAdminRenamesList();
     }
 
     function switchAdminViewTab(tab) {
       activeAdminTab = tab;
-      if (!chatMessagesList || !adminIdeasList) return;
-      const showIdeas = (tab === 'ideas' && isAdminUnlocked);
-      const showRenames = (tab === 'renames' && isAdminUnlocked);
-      const showChat = !showIdeas && !showRenames;
-
-      chatMessagesList.style.display = showChat ? 'flex' : 'none';
-      adminIdeasList.style.display = showIdeas ? 'flex' : 'none';
-      if (adminRenamesList) adminRenamesList.style.display = showRenames ? 'flex' : 'none';
-
-      if (adminTabChatBtn) adminTabChatBtn.classList.toggle('active', showChat);
-      if (adminTabIdeasBtn) adminTabIdeasBtn.classList.toggle('active', showIdeas);
-      if (adminTabRenamesBtn) adminTabRenamesBtn.classList.toggle('active', showRenames);
+      const panes = { chat: 'admin-chat-pane', ideas: 'admin-ideas-list', renames: 'admin-renames-list', pw: 'admin-pw-pane' };
+      const btns = { chat: adminTabChatBtn, ideas: adminTabIdeasBtn, renames: adminTabRenamesBtn, pw: chatAdminChangePwBtn };
+      Object.keys(panes).forEach(k => {
+        const el = document.getElementById(panes[k]);
+        const on = isAdminUnlocked && k === tab;
+        if (el) el.classList.toggle('show', on);
+        if (btns[k]) { btns[k].classList.toggle('active', on); btns[k].setAttribute('aria-selected', String(on)); }
+      });
     }
 
     if (adminTabChatBtn) adminTabChatBtn.addEventListener('click', () => switchAdminViewTab('chat'));
     if (adminTabIdeasBtn) adminTabIdeasBtn.addEventListener('click', () => switchAdminViewTab('ideas'));
     if (adminTabRenamesBtn) adminTabRenamesBtn.addEventListener('click', () => switchAdminViewTab('renames'));
+    if (chatAdminChangePwBtn) chatAdminChangePwBtn.addEventListener('click', () => { switchAdminViewTab('pw'); if (chatAdminNewPwInput) chatAdminNewPwInput.focus(); });
 
-    if (chatAdminToggleBtn) {
-      chatAdminToggleBtn.addEventListener('click', () => {
-        chatAdminPanel.classList.toggle('show');
-        if (chatAdminPanel.classList.contains('show') && !isAdminUnlocked && chatAdminPassInput) {
-          chatAdminPassInput.focus();
-        }
+    // Admin-Dialog (modal)
+    const adminDialogBackdrop = document.getElementById('admin-dialog-backdrop');
+    let adminDialogReturnFocus = null;
+    function openAdminDialog() {
+      adminDialogReturnFocus = document.activeElement;
+      adminDialogBackdrop.classList.add('show');
+      chatAdminToggleBtn.setAttribute('aria-expanded', 'true');
+      renderAdminChatModeration();
+      switchAdminViewTab(activeAdminTab);
+      if (!isAdminUnlocked && chatAdminPassInput) chatAdminPassInput.focus();
+      else if (adminTabChatBtn) adminTabChatBtn.focus();
+    }
+    function closeAdminDialog() {
+      adminDialogBackdrop.classList.remove('show');
+      chatAdminToggleBtn.setAttribute('aria-expanded', 'false');
+      if (adminDialogReturnFocus && adminDialogReturnFocus.focus) adminDialogReturnFocus.focus();
+    }
+    if (chatAdminToggleBtn) chatAdminToggleBtn.addEventListener('click', openAdminDialog);
+    document.getElementById('admin-dialog-close').addEventListener('click', closeAdminDialog);
+    adminDialogBackdrop.addEventListener('click', e => { if (e.target === adminDialogBackdrop) closeAdminDialog(); });
+    document.addEventListener('keydown', e => {
+      if (!adminDialogBackdrop.classList.contains('show')) return;
+      if (e.key === 'Escape') { e.stopPropagation(); closeAdminDialog(); return; }
+      if (e.key === 'Tab') {
+        const f = [...adminDialogBackdrop.querySelectorAll('button, input')].filter(x => x.offsetParent && !x.disabled);
+        if (!f.length) return;
+        if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
+        else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
+      }
+    }, true);
+
+    function renderAdminChatModeration() {
+      const list = document.getElementById('admin-chat-mod-list');
+      if (!list || !isAdminUnlocked) return;
+      const msgs = loadChatState().messages.slice(-60).reverse();
+      list.innerHTML = '';
+      if (!msgs.length) { list.textContent = 'Keine Nachrichten im Chat.'; return; }
+      msgs.forEach(msg => {
+        const row = document.createElement('div');
+        row.className = 'chat-msg-item';
+        row.style.cssText = 'display:flex; gap:8px; align-items:center; justify-content:space-between;';
+        const txt = document.createElement('div');
+        txt.style.cssText = 'min-width:0; overflow-wrap:anywhere;';
+        const who = document.createElement('strong'); who.textContent = (msg.sender || 'Spieler') + ' · ' + (msg.time || '');
+        const body = document.createElement('div'); body.textContent = (msg.text || '') + (msg.gifUrl ? ' [GIF]' : '');
+        txt.append(who, body);
+        const del = document.createElement('button');
+        del.type = 'button'; del.className = 'chat-delete-btn'; del.title = 'Nachricht löschen (Admin)'; del.setAttribute('aria-label', 'Nachricht löschen'); del.textContent = '🗑️';
+        del.addEventListener('click', async () => { await deleteSingleChatMessage(msg.id); renderAdminChatModeration(); });
+        row.append(txt, del);
+        list.appendChild(row);
       });
     }
 
+    // Admin-Anmeldung ohne Passwort: Entscheidend ist die serverseitige Liste config/admins in Firestore.
     async function attemptAdminLogin() {
-      const rawPw = chatAdminPassInput ? chatAdminPassInput.value.trim() : '';
-      if (!rawPw) return;
-      const hash = await computeSha256Hex(rawPw);
-      const customHash = localStorage.getItem(CUSTOM_ADMIN_HASH_KEY) || '';
-      if (DEFAULT_ADMIN_HASHES.has(hash) || (customHash && hash === customHash)) {
+      let ok = false;
+      try { ok = await HoermannCloud.isAdmin(); } catch (e) {}
+      if (ok) {
         isAdminUnlocked = true;
         sessionStorage.setItem('hoermann_admin_unlocked', '1');
-        chatAdminPassInput.value = '';
         updateAdminUiState();
         playSound('powerup');
         showToast('🛡️ Admin-Rechte aktiv: Chat moderieren, Ideen lesen & Namensanträge prüfen.');
       } else {
         playSound('alarm');
-        showToast('❌ Falsches Admin-Passwort!');
+        showToast('❌ Dieses Gerät ist nicht als Admin eingetragen. Geräte-ID: ' + (HoermannCloud.uid || 'unbekannt'));
       }
     }
 
@@ -5314,18 +5423,8 @@
       chatAdminLogoutBtn.addEventListener('click', () => {
         isAdminUnlocked = false;
         sessionStorage.removeItem('hoermann_admin_unlocked');
-        chatAdminPanel.classList.remove('show');
         updateAdminUiState();
         showToast('🔒 Admin-Modus gesperrt.');
-      });
-    }
-
-    if (chatAdminChangePwBtn) {
-      chatAdminChangePwBtn.addEventListener('click', () => {
-        if (!isAdminUnlocked) return;
-        const isVisible = chatAdminNewPwBox.style.display === 'flex';
-        chatAdminNewPwBox.style.display = isVisible ? 'none' : 'flex';
-        if (!isVisible && chatAdminNewPwInput) chatAdminNewPwInput.focus();
       });
     }
 
@@ -5341,7 +5440,6 @@
         if (newHash) {
           localStorage.setItem(CUSTOM_ADMIN_HASH_KEY, newHash);
           chatAdminNewPwInput.value = '';
-          chatAdminNewPwBox.style.display = 'none';
           await publishCloudSnapshot({
             type: 'ADMIN_HASH',
             customAdminHash: newHash,
@@ -5404,10 +5502,64 @@
       showToast('🗑️ Spieler-Idee aus dem Postfach entfernt.');
     }
 
+    // ---- Chat hinter Button: Panel, Ungelesen-Zähler, Tastatur (visualViewport) ----
+    const chatFab = document.getElementById('chat-fab');
+    const chatPanelEl = document.getElementById('online-side-chat');
+    const chatUnreadBadge = document.getElementById('chat-unread-badge');
+    const CHAT_SEEN_KEY = 'hoermann_chat_seen_ts';
+    function chatLatestTs(state) { return state.messages.reduce((m, x) => Math.max(m, Number(x.ts) || 0), 0); }
+    function chatPanelOpen() { return chatPanelEl.classList.contains('open'); }
+    function updateChatUnreadBadge(state) {
+      if (!chatUnreadBadge) return;
+      if (localStorage.getItem(CHAT_SEEN_KEY) === null) localStorage.setItem(CHAT_SEEN_KEY, String(chatLatestTs(state) || Date.now()));
+      if (chatPanelOpen()) { localStorage.setItem(CHAT_SEEN_KEY, String(Math.max(Number(localStorage.getItem(CHAT_SEEN_KEY)) || 0, chatLatestTs(state)))); }
+      const seen = Number(localStorage.getItem(CHAT_SEEN_KEY)) || 0;
+      const me = (getLockedPlayerName() || '').trim().toLowerCase();
+      const n = chatPanelOpen() ? 0 : state.messages.filter(m => (Number(m.ts) || 0) > seen && !(me && String(m.sender || '').trim().toLowerCase() === me)).length;
+      chatUnreadBadge.hidden = n === 0;
+      chatUnreadBadge.textContent = n > 99 ? '99+' : String(n);
+      chatFab.setAttribute('aria-label', n ? 'Live-Chat öffnen, ' + n + ' ungelesene Nachrichten' : 'Live-Chat öffnen');
+    }
+    function fitChatToViewport() {
+      const vv = window.visualViewport;
+      if (!vv || !chatPanelOpen() || window.innerWidth > 640) { chatPanelEl.style.removeProperty('--chat-vvh'); chatPanelEl.style.top = ''; return; }
+      chatPanelEl.style.setProperty('--chat-vvh', vv.height + 'px');
+      chatPanelEl.style.top = vv.offsetTop + 'px';
+      if (chatMessagesList) chatMessagesList.scrollTop = chatMessagesList.scrollHeight;
+    }
+    function setChatPanel(open) {
+      chatPanelEl.classList.toggle('open', open);
+      chatFab.setAttribute('aria-expanded', String(open));
+      chatFab.style.display = open && window.innerWidth <= 640 ? 'none' : '';
+      if (open) {
+        fitChatToViewport();
+        updateChatUnreadBadge(loadChatState());
+        chatMessagesList.scrollTop = chatMessagesList.scrollHeight;
+        document.getElementById('chat-close-btn').focus({ preventScroll: true });
+      } else {
+        fitChatToViewport();
+        updateChatUnreadBadge(loadChatState());
+        chatFab.focus({ preventScroll: true });
+      }
+    }
+    chatFab.addEventListener('click', () => setChatPanel(!chatPanelOpen()));
+    document.getElementById('chat-close-btn').addEventListener('click', () => setChatPanel(false));
+    chatPanelEl.addEventListener('keydown', e => { if (e.key === 'Escape' && !e.defaultPrevented) setChatPanel(false); });
+    if (window.visualViewport) { window.visualViewport.addEventListener('resize', fitChatToViewport); window.visualViewport.addEventListener('scroll', fitChatToViewport); }
+    window.addEventListener('resize', () => { if (chatPanelOpen()) { chatFab.style.display = window.innerWidth <= 640 ? 'none' : ''; fitChatToViewport(); } });
+    updateChatUnreadBadge(loadChatState());
+
     function renderChatMessages() {
       if (!chatMessagesList) return;
       const chatState = loadChatState();
+      updateChatUnreadBadge(chatState);
       const myName = (getLockedPlayerName() || (chatSenderInput ? chatSenderInput.value.trim() : '') || (localStorage.getItem('hoermann_player_name') || '')).trim().toLowerCase();
+
+      // Unveränderte Liste nicht neu aufbauen (verhindert GIF-Neuladen, Flackern und Scroll-Sprünge)
+      const renderSig = [myName, isAdminUnlocked ? 1 : 0, chatState.messages.length, chatState.messages.map(m => m.id + '|' + (m.text || '') + '|' + (m.gifUrl || '')).join('~')].join('#');
+      if (chatMessagesList.dataset.renderSig === renderSig) return;
+      chatMessagesList.dataset.renderSig = renderSig;
+      const wasAtBottom = chatMessagesList.scrollHeight - chatMessagesList.scrollTop - chatMessagesList.clientHeight < 80 || !chatMessagesList.childElementCount;
 
       chatMessagesList.innerHTML = '';
       if (!chatState.messages.length) {
@@ -5419,7 +5571,8 @@
         return;
       }
 
-      chatState.messages.forEach(msg => {
+      // Nur die letzten 60 Nachrichten zeichnen (Daten bleiben unverändert gespeichert)
+      chatState.messages.slice(-60).forEach(msg => {
         const div = document.createElement('div');
         const isOwn = myName && msg.sender && msg.sender.trim().toLowerCase() === myName;
         div.className = 'chat-msg-item' + (isOwn ? ' own-msg' : '');
@@ -5474,8 +5627,9 @@
           mediaImg.src = displayGifUrl;
           mediaImg.alt = 'Chat GIF';
           mediaImg.loading = 'lazy';
+          mediaImg.decoding = 'async';
           mediaImg.addEventListener('load', () => {
-            chatMessagesList.scrollTop = chatMessagesList.scrollHeight;
+            if (wasAtBottom) chatMessagesList.scrollTop = chatMessagesList.scrollHeight;
           });
           div.appendChild(mediaImg);
         }
@@ -5483,7 +5637,7 @@
         chatMessagesList.appendChild(div);
       });
 
-      chatMessagesList.scrollTop = chatMessagesList.scrollHeight;
+      if (wasAtBottom) chatMessagesList.scrollTop = chatMessagesList.scrollHeight;
     }
 
     function renderAdminIdeasList() {
@@ -5701,10 +5855,35 @@
     const btnJump = document.getElementById('btn-jump');
 
     const bindTouch = (elem, pressHandler, releaseHandler) => {
-      elem.addEventListener('pointerdown', (e) => { e.preventDefault(); pressHandler(); });
-      elem.addEventListener('pointerup', (e) => { e.preventDefault(); releaseHandler(); });
-      elem.addEventListener('pointercancel', (e) => { e.preventDefault(); releaseHandler(); });
+      // Pointer-Capture: Loslassen ausserhalb des Buttons haengt nie fest.
+      let down = false;
+      const release = (e) => {
+        if (e) e.preventDefault();
+        if (!down) return;
+        down = false;
+        elem.classList.remove('is-down');
+        releaseHandler();
+      };
+      elem.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        try { elem.setPointerCapture(e.pointerId); } catch (_) {}
+        if (down) return;
+        down = true;
+        elem.classList.add('is-down');
+        pressHandler();
+      });
+      elem.addEventListener('pointerup', release);
+      elem.addEventListener('pointercancel', release);
+      elem.addEventListener('lostpointercapture', release);
+      elem.addEventListener('contextmenu', (e) => e.preventDefault());
     };
+
+    function resetMarioKeys() {
+      mKeys.left = false; mKeys.right = false; mKeys.up = false;
+      document.querySelectorAll('.mario-touch-bar .touch-btn').forEach(b => b.classList.remove('is-down'));
+    }
+    window.addEventListener('blur', resetMarioKeys);
+    document.addEventListener('visibilitychange', () => { if (document.hidden) resetMarioKeys(); });
 
     bindTouch(btnLeft, () => { mKeys.left = true; }, () => { mKeys.left = false; });
     bindTouch(btnRight, () => { mKeys.right = true; }, () => { mKeys.right = false; });
@@ -5722,6 +5901,7 @@
     let mCoinsList = [];
     let mEnemies = [];
     let mFloatingTexts = [];
+    let mLastSafe = { x: 80, y: 250 };
     let levelGoal = { x: 2560, y: 120, w: 70, h: 200, touched: false };
 
     function initMarioLevel() {
@@ -5743,6 +5923,9 @@
       dennis.won = false;
       dennis.invincibleTimer = 0;
       dennis.starTimer = 0;
+      dennis.facing = 1;
+      mLastSafe = { x: 80, y: 250 };
+      resetMarioKeys();
 
       mFloatingTexts = [];
       levelGoal.touched = false;
@@ -5784,16 +5967,16 @@
       // Question blocks [?] & Bricks [🧱]
       mBlocks = [
         { x: 190, y: 210, w: 32, h: 32, type: 'question', content: 'coin', hit: false, bumpY: 0 },
-        { x: 470, y: 140, w: 32, h: 32, type: 'question', content: 'coin', hit: false, bumpY: 0 },
-        { x: 502, y: 140, w: 32, h: 32, type: 'brick', bumpY: 0 },
-        { x: 534, y: 140, w: 32, h: 32, type: 'question', content: 'star', hit: false, bumpY: 0 },
+        { x: 470, y: 110, w: 32, h: 32, type: 'question', content: 'coin', hit: false, bumpY: 0 },
+        { x: 502, y: 110, w: 32, h: 32, type: 'brick', bumpY: 0 },
+        { x: 534, y: 110, w: 32, h: 32, type: 'question', content: 'star', hit: false, bumpY: 0 },
 
-        { x: 1180, y: 130, w: 32, h: 32, type: 'question', content: 'coin', hit: false, bumpY: 0 },
-        { x: 1212, y: 130, w: 32, h: 32, type: 'question', content: 'bisecur', hit: false, bumpY: 0 },
+        { x: 1180, y: 100, w: 32, h: 32, type: 'question', content: 'coin', hit: false, bumpY: 0 },
+        { x: 1212, y: 100, w: 32, h: 32, type: 'question', content: 'bisecur', hit: false, bumpY: 0 },
 
-        { x: 1600, y: 120, w: 32, h: 32, type: 'question', content: 'coin', hit: false, bumpY: 0 },
-        { x: 1632, y: 120, w: 32, h: 32, type: 'brick', bumpY: 0 },
-        { x: 1664, y: 120, w: 32, h: 32, type: 'question', content: 'coin', hit: false, bumpY: 0 }
+        { x: 1600, y: 70, w: 32, h: 32, type: 'question', content: 'coin', hit: false, bumpY: 0 },
+        { x: 1632, y: 70, w: 32, h: 32, type: 'brick', bumpY: 0 },
+        { x: 1664, y: 70, w: 32, h: 32, type: 'question', content: 'coin', hit: false, bumpY: 0 }
       ];
 
       // Coins scattered across level
@@ -5806,7 +5989,7 @@
         { x: 770, y: 150, collected: false },
         { x: 810, y: 150, collected: false },
         { x: 1100, y: 270, collected: false },
-        { x: 1200, y: 90, collected: false },
+        { x: 1196, y: 62, collected: false },
         { x: 1404, y: 220, collected: false },
         { x: 1580, y: 140, collected: false },
         { x: 1620, y: 140, collected: false },
@@ -5816,8 +5999,8 @@
       ];
 
       // M-U-T Giant letters
-      mCoinsList.push({ x: 480, y: 80, collected: false, letter: 'M' });
-      mCoinsList.push({ x: 1220, y: 70, collected: false, letter: 'U' });
+      mCoinsList.push({ x: 518, y: 62, collected: false, letter: 'M' });
+      mCoinsList.push({ x: 1232, y: 62, collected: false, letter: 'U' });
       mCoinsList.push({ x: 1980, y: 140, collected: false, letter: 'T' });
 
       // Zweifel-Enemies (Stompable like Goombas)
@@ -5859,6 +6042,7 @@
     function stopMarioGame() {
       marioActive = false;
       if (marioLoopId) cancelAnimationFrame(marioLoopId);
+      resetMarioKeys();
     }
 
     restartMarioBtn.addEventListener('click', startMarioGame);
@@ -5914,6 +6098,8 @@
       // PROPER COLLISION RESOLUTION (SEPARATE AXES WITH SAFE SKIN MARGINS)
       // 1. Move X and resolve X collisions
       dennis.x += dennis.vx;
+      if (dennis.x < 0) { dennis.x = 0; dennis.vx = 0; } // linke Levelgrenze
+      if (dennis.x > 2850 - dennis.w) dennis.x = 2850 - dennis.w;
 
       // Inset vertical bounds by 6px so Dennis' feet NEVER snag on floor seams or pipe tops!
       const playerTop = dennis.y + 6;
@@ -5936,6 +6122,8 @@
       }
 
       // 2. Move Y and resolve Y collisions
+      const prevBottom = dennis.y + dennis.h;
+      let landedOn = null;
       dennis.y += dennis.vy;
       dennis.grounded = false;
 
@@ -5947,12 +6135,19 @@
         const solidDrawY = s.y - (s.bumpY || 0);
         if (playerRight > s.x && playerLeft < s.x + s.w &&
             dennis.y < solidDrawY + s.h && dennis.y + dennis.h > solidDrawY) {
-          if (dennis.vy > 0) {
-            // Land on top
+          if (dennis.vy >= 0 && prevBottom <= solidDrawY + 4) {
+            // Land on top (nur von oben: kein Hochteleportieren mehr)
             dennis.y = solidDrawY - dennis.h;
             dennis.vy = 0;
             dennis.grounded = true;
+            landedOn = s;
           } else if (dennis.vy < 0) {
+            // Ecken-Hilfe: nur wenige Pixel Ueberlappung -> seitlich vorbeirutschen
+            const ovl = Math.min(playerRight, s.x + s.w) - Math.max(playerLeft, s.x);
+            if (ovl <= 8) {
+              dennis.x += (dennis.x + dennis.w / 2 < s.x + s.w / 2) ? -ovl : ovl;
+              continue;
+            }
             // Hit from below
             dennis.y = solidDrawY + s.h;
             dennis.vy = 1;
@@ -5961,6 +6156,12 @@
             }
           }
         }
+      }
+
+      // Merke sicheren Boden fuer faires Respawnen nach Sturz
+      if (landedOn && landedOn.type === 'ground' &&
+          dennis.x > landedOn.x + 40 && dennis.x + dennis.w < landedOn.x + landedOn.w - 40) {
+        mLastSafe = { x: dennis.x, y: dennis.y };
       }
 
       // Fell into pit
@@ -5995,14 +6196,23 @@
       // Update Enemies
       mEnemies.forEach(e => {
         if (!e.alive) return;
-        e.x += e.vx;
-        if (e.x < 10 || e.x > 2600) e.vx *= -1;
+        // Patrouille: an Rohren/Stufen/Bloecken und Grubenkanten umdrehen
+        const nx = e.x + e.vx;
+        const frontX = e.vx > 0 ? nx + e.w : nx;
+        let turn = false;
+        for (const s of allSolids) {
+          if (frontX > s.x && frontX < s.x + s.w && e.y + e.h - 2 > s.y && e.y + 2 < s.y + s.h) { turn = true; break; }
+        }
+        if (!turn) {
+          turn = !mPlatforms.some(s => s.type === 'ground' && frontX >= s.x && frontX <= s.x + s.w);
+        }
+        if (turn) e.vx *= -1; else e.x = nx;
 
         if (dennis.x < e.x + e.w && dennis.x + dennis.w > e.x &&
             dennis.y < e.y + e.h && dennis.y + dennis.h > e.y) {
-          if ((dennis.vy > 0 && dennis.y + dennis.h - dennis.vy <= e.y + 18) || dennis.starTimer > 0) {
+          if ((dennis.vy > 0 && dennis.y + dennis.h - dennis.vy <= e.y + 22) || dennis.starTimer > 0) {
             e.alive = false;
-            dennis.vy = -9.2; // High bounce
+            dennis.vy = mKeys.up ? -11.5 : -8.5; // Sprungtaste gehalten = hoeherer Abpraller
             mScore += 200;
             updateMarioHUD();
             playSound('stomp');
@@ -6020,10 +6230,10 @@
       }
 
       // Smooth camera follows player
-      const targetCamX = dennis.x - mCanvas.width * 0.35;
-      cameraX += (targetCamX - cameraX) * 0.12;
+      const targetCamX = dennis.x - mCanvas.width * 0.38 + dennis.facing * 40;
+      cameraX += (targetCamX - cameraX) * 0.14;
       if (cameraX < 0) cameraX = 0;
-      if (cameraX > 2800 - mCanvas.width) cameraX = 2800 - mCanvas.width;
+      if (cameraX > 2850 - mCanvas.width) cameraX = 2850 - mCanvas.width;
 
       if (dennis.invincibleTimer > 0) dennis.invincibleTimer--;
       if (dennis.starTimer > 0) dennis.starTimer--;
@@ -6064,28 +6274,30 @@
     }
 
     function dennisHurt(fellInPit) {
-      if (dennis.invincibleTimer > 0 || dennis.starTimer > 0) return;
+      if (dennis.dead || dennis.won) return;
+      // Treffer durch Gegner ignorieren bei Unverwundbarkeit; ein Sturz in die Grube zaehlt immer
+      if (!fellInPit && (dennis.invincibleTimer > 0 || dennis.starTimer > 0)) return;
 
       mLives--;
       updateMarioHUD();
       playSound('hit');
 
-      if (mLives <= 0 || fellInPit) {
-        if (mLives <= 0) {
-          dennis.dead = true;
-          HoermannGameSession.delay(() => {
-            promptScoreSubmit(mScore, 'mario', 'Super Dennis (Mut-Welt)');
-          }, 800);
-        } else {
-          dennis.x = Math.max(80, dennis.x - 240);
-          dennis.y = 220;
-          dennis.vx = 0;
-          dennis.vy = 0;
-          dennis.invincibleTimer = 80;
-        }
+      if (mLives <= 0) {
+        dennis.dead = true;
+        HoermannGameSession.delay(() => {
+          promptScoreSubmit(mScore, 'mario_v02', 'Super Dennis 0.2');
+        }, 800);
+      } else if (fellInPit) {
+        // Respawn auf dem zuletzt sicheren Boden (nie wieder in der Grube)
+        dennis.x = mLastSafe.x;
+        dennis.y = mLastSafe.y;
+        dennis.vx = 0;
+        dennis.vy = 0;
+        dennis.invincibleTimer = 100;
+        cameraX = Math.max(0, Math.min(2850 - mCanvas.width, dennis.x - mCanvas.width * 0.38));
       } else {
         dennis.vy = -7;
-        dennis.invincibleTimer = 70;
+        dennis.invincibleTimer = 90;
       }
     }
 
@@ -6098,7 +6310,7 @@
       triggerParticleEffect('confetti');
 
       HoermannGameSession.delay(() => {
-        promptScoreSubmit(mScore, 'mario', 'Super Dennis (Mut-Welt)');
+        promptScoreSubmit(mScore, 'mario_v02', 'Super Dennis 0.2');
       }, 1200);
     }
 
@@ -6239,10 +6451,21 @@
         mCtx.fillRect(e.x + 7, e.y + 9, 3, 3);
         mCtx.fillRect(e.x + 20, e.y + 9, 3, 3);
 
-        mCtx.fillStyle = '#ffffff';
-        mCtx.font = 'bold 8px Inter, sans-serif';
+        // Wuetende Augenbrauen + gut lesbares Namensschild ueber dem Kopf
+        mCtx.strokeStyle = '#450a0a';
+        mCtx.lineWidth = 2;
+        mCtx.beginPath();
+        mCtx.moveTo(e.x + 4, e.y + 4); mCtx.lineTo(e.x + 12, e.y + 8);
+        mCtx.moveTo(e.x + 26, e.y + 4); mCtx.lineTo(e.x + 18, e.y + 8);
+        mCtx.stroke();
+        mCtx.font = '800 11px Inter, sans-serif';
         mCtx.textAlign = 'center';
-        mCtx.fillText(e.name, e.x + e.w / 2, e.y + 24);
+        mCtx.textBaseline = 'alphabetic';
+        mCtx.lineWidth = 3;
+        mCtx.strokeStyle = 'rgba(0,10,30,0.9)';
+        mCtx.strokeText(e.name, e.x + e.w / 2, e.y - 5);
+        mCtx.fillStyle = '#ffffff';
+        mCtx.fillText(e.name, e.x + e.w / 2, e.y - 5);
       });
 
       // Draw Level Goal: Grand Hörmann Werkstor & Flagpole
@@ -6322,6 +6545,19 @@
       }
 
       mCtx.restore();
+
+      // Stern-Power Anzeige (Restdauer)
+      if (dennis.starTimer > 0 && !dennis.dead && !dennis.won) {
+        mCtx.fillStyle = 'rgba(0, 20, 50, 0.75)';
+        mCtx.fillRect(10, 10, 150, 22);
+        mCtx.fillStyle = '#f59c00';
+        mCtx.fillRect(14, 24, 142 * (dennis.starTimer / 400), 5);
+        mCtx.fillStyle = '#ffffff';
+        mCtx.font = '800 12px Inter, sans-serif';
+        mCtx.textAlign = 'left';
+        mCtx.textBaseline = 'alphabetic';
+        mCtx.fillText('⭐ MUT-STERN', 16, 21);
+      }
 
       // Game state overlays
       if (dennis.won) {
@@ -6587,33 +6823,53 @@
     const nextNerveRoundBtn = document.getElementById('next-nerve-round-btn');
     const restartNerveBtn = document.getElementById('restart-nerve-btn');
 
+    const nerveHint = document.getElementById('nerve-hint');
     let nerveRound = 1;
-    let nerveCurrentStake = 100;
+    let nerveCurrentStake = 0; // Topf: wird bei Sicherung gutgeschrieben, bei Alarm verloren
     let nerveBanked = 0;
     let nerveCanClick = true;
+    let nerveOver = false;
+    let nerveNextTimer = null;
+
+    // Fairer Topf: 2 von 3 Toren sind sicher, Topf waechst um x1.5 (= Break-even bei 2/3 Trefferchance).
+    // Weiterspielen lohnt sich also nie "automatisch" - es ist eine echte Risiko-Entscheidung.
+    function nervePotAfterSafe(pot) {
+      return pot <= 0 ? 100 : Math.round(pot * 1.5 / 10) * 10;
+    }
+
+    function updateNerveHint() {
+      const next = nervePotAfterSafe(nerveCurrentStake);
+      nerveHint.textContent = nerveCurrentStake > 0
+        ? `Im Topf: ${nerveCurrentStake}. Ein sicheres Tor (2 von 3) macht daraus ${next} – ein Alarm (1 von 3) kostet alles im Topf.`
+        : 'Hinter 2 Toren wartet gewaltiger Mut – hinter 1 Tor ein Zweifel-Alarm! Erster Treffer bringt 100.';
+    }
 
     function startNerveGame() {
+      clearTimeout(nerveNextTimer);
       nerveRound = 1;
-      nerveCurrentStake = 100;
+      nerveCurrentStake = 0;
       nerveBanked = 0;
+      nerveOver = false;
       nerveCanClick = true;
-      nerveRoundSpan.textContent = '1';
-      nerveCurrentSpan.textContent = '100';
+      nerveCurrentSpan.textContent = '0';
       nerveBankedSpan.textContent = '0';
-      nerveTitle.textContent = "Runde 1: Welches Tor wagst du zu öffnen?";
+      nerveTitle.innerHTML = 'Runde <span id="nerve-round">1</span>: Welches Tor wagst du zu öffnen?';
       bankNerveBtn.style.display = 'inline-flex';
+      bankNerveBtn.disabled = true;
       nextNerveRoundBtn.style.display = 'none';
       restartNerveBtn.style.display = 'none';
       scoreSubmitDialog.classList.remove('show');
       highscoreCard.classList.remove('show');
       resetDoorsUI();
+      updateNerveHint();
     }
 
     function resetDoorsUI() {
-      nerveCanClick = true;
+      nerveCanClick = !nerveOver;
       for (let i = 1; i <= 3; i++) {
         const door = document.getElementById(`door-${i}`);
-        door.classList.remove('opened');
+        door.classList.remove('opened', 'chosen', 'alarm');
+        door.setAttribute('aria-disabled', 'false');
         document.getElementById(`door-content-${i}`).innerHTML = "";
       }
     }
@@ -6624,77 +6880,107 @@
         if (!nerveCanClick) return;
         openMysteryDoor(i);
       });
+      door.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          if (nerveCanClick) openMysteryDoor(i);
+        }
+      });
     }
 
+    document.addEventListener('keydown', (e) => {
+      if (!nerveView.classList.contains('active') && getComputedStyle(nerveView).display === 'none') return;
+      if (!nerveCanClick || nerveOver) return;
+      if (e.target && /^(INPUT|TEXTAREA)$/.test(e.target.tagName)) return;
+      if (e.key >= '1' && e.key <= '3') openMysteryDoor(Number(e.key));
+    });
+
     function openMysteryDoor(chosenIndex) {
+      if (!nerveCanClick) return;
       nerveCanClick = false;
       playSound('gate');
 
       const alarmDoorIndex = Math.floor(Math.random() * 3) + 1;
       const isAlarm = (chosenIndex === alarmDoorIndex);
+      const newPot = nervePotAfterSafe(nerveCurrentStake);
 
       for (let i = 1; i <= 3; i++) {
         const d = document.getElementById(`door-${i}`);
         d.classList.add('opened');
+        d.setAttribute('aria-disabled', 'true');
+        if (i === chosenIndex) d.classList.add('chosen');
         const content = document.getElementById(`door-content-${i}`);
 
         if (i === alarmDoorIndex) {
+          if (i === chosenIndex) d.classList.add('alarm');
           content.innerHTML = `
             <span style="font-size:2rem;">⚠️</span>
             <strong style="color:#ef4444; font-size:1.1rem; margin-top:4px;">ZWEIFEL-ALARM!</strong>
-            <small style="color:#cbd5e1; font-size:0.75rem;">Mut verloren!</small>
+            <small style="color:#cbd5e1; font-size:0.75rem;">${i === chosenIndex ? 'Dieses Tor hast du gewählt' : 'Hier lauerte der Alarm'}</small>
           `;
         } else {
           content.innerHTML = `
             <span style="font-size:2rem;">🌟</span>
-            <strong style="color:var(--hoermann-orange); font-size:1.1rem; margin-top:4px;">+${nerveCurrentStake} PUNKTE!</strong>
-            <small style="color:#cbd5e1; font-size:0.75rem;">Mut-Bonus!</small>
+            <strong style="color:var(--hoermann-orange); font-size:1.1rem; margin-top:4px;">${i === chosenIndex ? 'Topf: ' + newPot : 'Sicher'}</strong>
+            <small style="color:#cbd5e1; font-size:0.75rem;">${i === chosenIndex ? 'Mut-Bonus!' : 'Hier war Mut'}</small>
           `;
         }
       }
 
       if (isAlarm) {
+        nerveOver = true;
+        const lost = nerveCurrentStake;
         playSound('alarm');
-        nerveTitle.textContent = "Oh nein! Der Zweifel-Alarm hat dich erwischt!";
+        nerveTitle.textContent = lost > 0
+          ? `Zweifel-Alarm! Der Topf (${lost}) ist verloren – nächstes Mal früher sichern?`
+          : 'Zweifel-Alarm gleich beim ersten Tor! Neuer Versuch?';
+        nerveHint.textContent = 'Gewertet wird nur gesicherter Mut.';
+        nerveCurrentStake = 0;
+        nerveCurrentSpan.textContent = '0';
         bankNerveBtn.style.display = 'none';
         nextNerveRoundBtn.style.display = 'none';
         restartNerveBtn.style.display = 'inline-flex';
-
-        if (nerveBanked > 0) {
-          promptScoreSubmit(nerveBanked, 'nerve', 'Die Mut-Probe');
-        }
+        // Nichts gesichert: kein Score. (Sichern beendet den Durchgang, daher ist banked hier immer 0.)
       } else {
         playSound('powerup');
         triggerParticleEffect('gold');
-        nerveCurrentStake = Math.floor(nerveCurrentStake * 1.8 + 50);
+        nerveCurrentStake = newPot;
         nerveCurrentSpan.textContent = nerveCurrentStake;
-        nerveTitle.textContent = `Geschafft! Einsatz verdoppelt! Noch mehr Mut wagen?`;
+        nerveTitle.textContent = `Geschafft! Im Topf: ${nerveCurrentStake}. Sichern oder weiter wagen?`;
+        updateNerveHint();
 
         bankNerveBtn.style.display = 'inline-flex';
+        bankNerveBtn.disabled = false;
         nextNerveRoundBtn.style.display = 'inline-flex';
         restartNerveBtn.style.display = 'none';
       }
     }
 
     nextNerveRoundBtn.addEventListener('click', () => {
+      if (nerveOver) return;
       nerveRound++;
-      nerveRoundSpan.textContent = nerveRound;
-      nerveTitle.textContent = `Runde ${nerveRound}: Welches Tor wagst du zu öffnen?`;
+      nerveTitle.innerHTML = `Runde <span id="nerve-round">${nerveRound}</span>: Welches Tor wagst du zu öffnen?`;
       nextNerveRoundBtn.style.display = 'none';
       resetDoorsUI();
     });
 
     bankNerveBtn.addEventListener('click', () => {
+      if (nerveOver || nerveCurrentStake <= 0) return;
+      nerveOver = true;
+      nerveCanClick = false;
       nerveBanked += nerveCurrentStake;
+      nerveCurrentStake = 0;
+      nerveCurrentSpan.textContent = '0';
       nerveBankedSpan.textContent = nerveBanked;
       playSound('score');
       triggerParticleEffect('confetti');
       nerveTitle.textContent = `Erfolgreich gesichert: ${nerveBanked} Punkte!`;
+      nerveHint.textContent = 'Mutig und klug – das ist dein Ergebnis.';
       bankNerveBtn.style.display = 'none';
       nextNerveRoundBtn.style.display = 'none';
       restartNerveBtn.style.display = 'inline-flex';
 
-      promptScoreSubmit(nerveBanked, 'nerve', 'Die Mut-Probe');
+      promptScoreSubmit(nerveBanked, 'nerve_v02', 'Die Mut-Probe 0.2');
     });
 
     restartNerveBtn.addEventListener('click', startNerveGame);
@@ -6714,38 +7000,56 @@
     let parcoursGameOver = false;
 
     function updateParcoursHighscoreDisplay() {
-      const pList = getGameLeaderboard('parcours');
+      const pList = getGameLeaderboard('parcours_v02');
       const maxScore = pList.length > 0 ? Math.max(...pList.map(x => x.score)) : 0;
       parcoursHighscoreSpan.textContent = maxScore;
     }
 
+    const P_BASE_SPEED = 2.4, P_MAX_SPEED = 3.4, P_RAMP_GATES = 30;
+    const P_BASE_GAP = 176, P_MIN_GAP = 144, P_GATE_SPACING = 270, P_MAX_CENTER_STEP = 110;
     let pPlayer = {
       x: 90,
       y: 180,
       radius: 17,
+      hitRadius: 15,
       vy: 0,
       gravity: 0.36,
       jumpForce: -7.2,
       trail: []
     };
     let pGates = [];
-    let pSpeed = 2.6;
+    let pSpeed = P_BASE_SPEED;
+    let pReady = true;
+    let pTick = 0;
+    let pShake = 0;
+    let pOverAt = 0;
+    let pPopups = [];
+    let pLastCenter = 180;
+    let pBestBefore = 0;
+
+    function parcoursDifficulty() { return Math.min(1, parcoursScore / P_RAMP_GATES); }
 
     function startParcoursGame() {
       parcoursScore = 0;
       parcoursScoreSpan.textContent = '0';
-      pSpeed = 2.6;
+      pSpeed = P_BASE_SPEED;
       parcoursGameOver = false;
+      pReady = true;
+      pTick = 0;
+      pShake = 0;
+      pPopups = [];
       pPlayer.y = parcoursCanvas.height / 2;
       pPlayer.vy = 0;
       pPlayer.trail = [];
       pGates = [];
+      pLastCenter = parcoursCanvas.height / 2;
       updateParcoursHighscoreDisplay();
+      pBestBefore = parseInt(parcoursHighscoreSpan.textContent, 10) || 0;
       scoreSubmitDialog.classList.remove('show');
       highscoreCard.classList.remove('show');
 
-      spawnParcoursGate(parcoursCanvas.width + 100);
-      spawnParcoursGate(parcoursCanvas.width + 380);
+      spawnParcoursGate(parcoursCanvas.width + 120);
+      spawnParcoursGate(parcoursCanvas.width + 120 + P_GATE_SPACING);
 
       parcoursActive = true;
       if (parcoursLoopId) cancelAnimationFrame(parcoursLoopId);
@@ -6762,10 +7066,15 @@
     restartParcoursBtn.addEventListener('click', startParcoursGame);
 
     function spawnParcoursGate(posX) {
-      const gap = 160;
-      const minHeight = 40;
-      const maxHeight = parcoursCanvas.height - gap - minHeight;
-      const topHeight = Math.floor(Math.random() * (maxHeight - minHeight) + minHeight);
+      const gap = Math.round(P_BASE_GAP - (P_BASE_GAP - P_MIN_GAP) * parcoursDifficulty());
+      const margin = 34;
+      const H = parcoursCanvas.height;
+      // Neues Tor ist immer erreichbar: Lochmitte weicht nur begrenzt vom vorigen Tor ab.
+      const lo = Math.max(margin + gap / 2, pLastCenter - P_MAX_CENTER_STEP);
+      const hi = Math.min(H - margin - gap / 2, pLastCenter + P_MAX_CENTER_STEP);
+      const center = Math.round(lo + Math.random() * Math.max(0, hi - lo));
+      pLastCenter = center;
+      const topHeight = center - Math.round(gap / 2);
 
       pGates.push({
         x: posX,
@@ -6778,19 +7087,21 @@
 
     function parcoursJump() {
       if (parcoursGameOver) {
-        if (!scoreSubmitDialog.classList.contains('show')) {
+        if (!scoreSubmitDialog.classList.contains('show') && performance.now() - pOverAt > 600) {
           startParcoursGame();
         }
         return;
       }
+      if (pReady) pReady = false;
       pPlayer.vy = pPlayer.jumpForce;
       playSound('jump');
     }
 
     window.addEventListener('keydown', (e) => {
-      if (e.target.tagName === 'INPUT') return;
-      if (e.code === 'Space' && parcoursView.style.display !== 'none') {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if (e.code === 'Space' && getComputedStyle(parcoursView).display !== 'none' && !scoreSubmitDialog.classList.contains('show')) {
         e.preventDefault();
+        if (e.repeat) return;
         parcoursJump();
       }
     });
@@ -6800,46 +7111,60 @@
       parcoursJump();
     });
 
+    function parcoursHitsGate(g) {
+      const r = pPlayer.hitRadius, px = pPlayer.x, py = pPlayer.y;
+      const rects = [[g.x, -1000, g.width, g.topHeight + 1000], [g.x, g.bottomY, g.width, 1000]];
+      return rects.some(([rx, ry, rw, rh]) => {
+        const cx = Math.max(rx, Math.min(px, rx + rw));
+        const cy = Math.max(ry, Math.min(py, ry + rh));
+        return (px - cx) * (px - cx) + (py - cy) * (py - cy) < r * r;
+      });
+    }
+
     function parcoursLoop(frameTime) {
       if (!(parcoursActive)) return;
       HoermannGameClock.run("parcoursLoop", frameTime, () => {
       if (!parcoursActive) return;
+      pTick++;
+      if (pShake > 0) pShake--;
+      pPopups.forEach(p => { p.y -= 0.8; p.life--; });
+      pPopups = pPopups.filter(p => p.life > 0);
 
-      if (!parcoursGameOver) {
-        pPlayer.vy += pPlayer.gravity;
+      if (pReady) {
+        pPlayer.y = parcoursCanvas.height / 2 + Math.sin(pTick / 14) * 8;
+      } else if (!parcoursGameOver) {
+        pSpeed = P_BASE_SPEED + (P_MAX_SPEED - P_BASE_SPEED) * parcoursDifficulty();
+        pPlayer.vy = Math.min(9, pPlayer.vy + pPlayer.gravity);
         pPlayer.y += pPlayer.vy;
+        pPlayer.trail.push({ x: pPlayer.x, y: pPlayer.y });
+        if (pPlayer.trail.length > 14) pPlayer.trail.shift();
 
         if (pPlayer.y - pPlayer.radius < 0) {
           pPlayer.y = pPlayer.radius;
           pPlayer.vy = 0;
         }
         if (pPlayer.y + pPlayer.radius > parcoursCanvas.height) {
+          pPlayer.y = parcoursCanvas.height - pPlayer.radius;
           handleParcoursOver();
         }
 
+        pGates.forEach(g => { g.x -= pSpeed; });
         for (let i = pGates.length - 1; i >= 0; i--) {
           const g = pGates[i];
-          g.x -= pSpeed;
-
-          if (!g.passed && g.x + g.width < pPlayer.x) {
+          if (!parcoursGameOver && parcoursHitsGate(g)) handleParcoursOver();
+          if (!parcoursGameOver && !g.passed && g.x + g.width / 2 < pPlayer.x) {
             g.passed = true;
             parcoursScore++;
             parcoursScoreSpan.textContent = parcoursScore;
+            pPopups.push({ x: pPlayer.x + 26, y: pPlayer.y - 24, life: 40, text: '+1' });
             playSound('coin');
           }
-
-          if (pPlayer.x + pPlayer.radius > g.x && pPlayer.x - pPlayer.radius < g.x + g.width) {
-            if (pPlayer.y - pPlayer.radius < g.topHeight || pPlayer.y + pPlayer.radius > g.bottomY) {
-              handleParcoursOver();
-            }
-          }
-
           if (g.x + g.width < -10) pGates.splice(i, 1);
         }
 
         const lastGate = pGates[pGates.length - 1];
-        if (lastGate && lastGate.x < parcoursCanvas.width - 240) {
-          spawnParcoursGate(parcoursCanvas.width);
+        if (lastGate && lastGate.x <= parcoursCanvas.width + 120 - P_GATE_SPACING) {
+          spawnParcoursGate(lastGate.x + P_GATE_SPACING);
         }
       }
 
@@ -6849,59 +7174,96 @@
     }
 
     function drawParcoursScene() {
-      parcoursCtx.fillStyle = '#001a35';
-      parcoursCtx.fillRect(0, 0, parcoursCanvas.width, parcoursCanvas.height);
+      const c = parcoursCtx, W = parcoursCanvas.width, H = parcoursCanvas.height;
+      c.save();
+      if (pShake > 0) c.translate((Math.random() - 0.5) * pShake * 0.8, (Math.random() - 0.5) * pShake * 0.8);
+      c.fillStyle = '#001a35';
+      c.fillRect(-10, -10, W + 20, H + 20);
 
       pGates.forEach(g => {
-        parcoursCtx.fillStyle = '#002d62';
-        parcoursCtx.fillRect(g.x, 0, g.width, g.topHeight);
-        parcoursCtx.fillRect(g.x, g.bottomY, g.width, parcoursCanvas.height - g.bottomY);
+        c.fillStyle = '#0a4a94';
+        c.fillRect(g.x, 0, g.width, g.topHeight);
+        c.fillRect(g.x, g.bottomY, g.width, H - g.bottomY);
+        c.strokeStyle = '#6fb1ff';
+        c.lineWidth = 2;
+        c.strokeRect(g.x + 1, -2, g.width - 2, g.topHeight + 1);
+        c.strokeRect(g.x + 1, g.bottomY, g.width - 2, H - g.bottomY + 2);
 
-        parcoursCtx.fillStyle = '#f59c00';
-        parcoursCtx.fillRect(g.x + 3, g.topHeight - 5, g.width - 6, 5);
-        parcoursCtx.fillRect(g.x + 3, g.bottomY, g.width - 6, 5);
+        c.fillStyle = '#f59c00';
+        c.fillRect(g.x + 3, g.topHeight - 6, g.width - 6, 6);
+        c.fillRect(g.x + 3, g.bottomY, g.width - 6, 6);
       });
 
-      parcoursCtx.fillStyle = '#f59c00';
-      parcoursCtx.beginPath();
-      parcoursCtx.arc(pPlayer.x, pPlayer.y, pPlayer.radius, 0, Math.PI * 2);
-      parcoursCtx.fill();
-      parcoursCtx.strokeStyle = '#ffffff';
-      parcoursCtx.lineWidth = 2.5;
-      parcoursCtx.stroke();
+      pPlayer.trail.forEach((t, i) => {
+        c.fillStyle = `rgba(245, 156, 0, ${(i / pPlayer.trail.length) * 0.3})`;
+        c.beginPath();
+        c.arc(t.x - (pPlayer.trail.length - i) * pSpeed, t.y, pPlayer.radius * (0.4 + 0.5 * i / pPlayer.trail.length), 0, Math.PI * 2);
+        c.fill();
+      });
+
+      c.fillStyle = '#f59c00';
+      c.beginPath();
+      c.arc(pPlayer.x, pPlayer.y, pPlayer.radius, 0, Math.PI * 2);
+      c.fill();
+      c.strokeStyle = '#ffffff';
+      c.lineWidth = 2.5;
+      c.stroke();
+
+      c.textAlign = 'center';
+      c.font = '800 16px Inter, sans-serif';
+      pPopups.forEach(p => {
+        c.fillStyle = `rgba(255, 255, 255, ${Math.min(1, p.life / 20)})`;
+        c.fillText(p.text, p.x, p.y);
+      });
+
+      // Punktestand gross auf dem Spielfeld (auch auf dem Handy gut lesbar)
+      c.fillStyle = 'rgba(255, 255, 255, 0.85)';
+      c.font = '800 34px Inter, sans-serif';
+      c.fillText(String(parcoursScore), W / 2, 44);
+
+      if (pReady && !parcoursGameOver) {
+        c.fillStyle = 'rgba(0, 20, 45, 0.6)';
+        c.fillRect(W / 2 - 150, H - 72, 300, 40);
+        c.fillStyle = '#ffffff';
+        c.font = '800 16px Inter, sans-serif';
+        c.fillText('Tippen / Leertaste zum Starten', W / 2, H - 46);
+      }
+      c.restore();
 
       if (parcoursGameOver) {
-        parcoursCtx.fillStyle = 'rgba(0, 31, 59, 0.88)';
-        parcoursCtx.fillRect(0, 0, parcoursCanvas.width, parcoursCanvas.height);
+        c.fillStyle = 'rgba(0, 31, 59, 0.88)';
+        c.fillRect(0, 0, W, H);
 
-        parcoursCtx.fillStyle = '#f59c00';
-        parcoursCtx.font = '800 24px Inter, sans-serif';
-        parcoursCtx.textAlign = 'center';
-        parcoursCtx.fillText('PARCOURS BEENDET', parcoursCanvas.width / 2, 130);
+        c.textAlign = 'center';
+        c.fillStyle = '#f59c00';
+        c.font = '800 24px Inter, sans-serif';
+        c.fillText('PARCOURS BEENDET', W / 2, 130);
 
-        parcoursCtx.fillStyle = '#ffffff';
-        parcoursCtx.font = '700 18px Inter, sans-serif';
-        parcoursCtx.fillText(`Tore gemeistert: ${parcoursScore}`, parcoursCanvas.width / 2, 170);
+        c.fillStyle = '#ffffff';
+        c.font = '700 18px Inter, sans-serif';
+        c.fillText(`Tore gemeistert: ${parcoursScore}`, W / 2, 170);
 
-        parcoursCtx.fillStyle = '#f59c00';
-        parcoursCtx.beginPath();
-        parcoursCtx.roundRect(parcoursCanvas.width / 2 - 100, 210, 200, 42, 6);
-        parcoursCtx.fill();
+        c.fillStyle = '#f59c00';
+        c.beginPath();
+        c.roundRect(W / 2 - 100, 210, 200, 44, 6);
+        c.fill();
 
-        parcoursCtx.fillStyle = '#ffffff';
-        parcoursCtx.font = '800 14px Inter, sans-serif';
-        parcoursCtx.fillText('NOCHMAL ↺', parcoursCanvas.width / 2, 236);
+        c.fillStyle = '#ffffff';
+        c.font = '800 15px Inter, sans-serif';
+        c.fillText('NOCHMAL ↺', W / 2, 238);
       }
     }
 
     function handleParcoursOver() {
       if (parcoursGameOver) return;
       parcoursGameOver = true;
+      pOverAt = performance.now();
+      pShake = 14;
       playSound('hit');
-      triggerParticleEffect('confetti');
+      if (parcoursScore > pBestBefore) triggerParticleEffect('confetti');
 
       if (parcoursScore > 0) {
-        promptScoreSubmit(parcoursScore, 'parcours', 'Tor-Parcours');
+        promptScoreSubmit(parcoursScore, 'parcours_v02', 'Tor-Parcours 0.2');
       }
     }
 
@@ -7158,6 +7520,7 @@
 
     function startForkliftGame() {
       initForkliftLevel();
+      flReleaseAllKeys();
       scoreSubmitDialog.classList.remove('show');
       highscoreCard.classList.remove('show');
       flActive = true;
@@ -7185,6 +7548,8 @@
     window.addEventListener('keydown', (e) => {
       if (e.target.tagName === 'INPUT') return;
       if (forkliftView.style.display === 'none') return;
+      const flOneShot = ['Space', 'KeyE', 'ShiftLeft', 'ShiftRight', 'KeyH'].includes(e.code);
+      if (flOneShot && e.repeat) { e.preventDefault(); return; } // Halten der Taste soll nicht dauernd umschalten
 
       if (e.code === 'KeyW' || e.code === 'ArrowUp') { flKeys.up = true; e.preventDefault(); }
       if (e.code === 'KeyS' || e.code === 'ArrowDown') { flKeys.down = true; e.preventDefault(); }
@@ -7212,7 +7577,17 @@
       if (e.code === 'KeyD' || e.code === 'ArrowRight') flKeys.right = false;
     });
 
+    function flReleaseAllKeys() { flKeys.up = flKeys.down = flKeys.left = flKeys.right = false; }
+    window.addEventListener('blur', flReleaseAllKeys);
+    document.addEventListener('visibilitychange', flReleaseAllKeys);
+
     // Touch / Button bindings for Forklift
+    ['fl-btn-left', 'fl-btn-right', 'fl-btn-up', 'fl-btn-down'].forEach(id => {
+      const el = document.getElementById(id);
+      el.addEventListener('pointerdown', (ev) => { try { el.setPointerCapture(ev.pointerId); } catch (_) {} });
+      el.addEventListener('lostpointercapture', flReleaseAllKeys);
+      el.addEventListener('contextmenu', (ev) => ev.preventDefault());
+    });
     bindTouch(document.getElementById('fl-btn-left'), () => { flKeys.left = true; }, () => { flKeys.left = false; });
     bindTouch(document.getElementById('fl-btn-right'), () => { flKeys.right = true; }, () => { flKeys.right = false; });
     bindTouch(document.getElementById('fl-btn-up'), () => { flKeys.up = true; }, () => { flKeys.up = false; });
@@ -7302,7 +7677,7 @@
           nico.cargo = {
             type: picked.type,
             condition: picked.condition,
-            pickupTime: performance.now()
+            pickupTime: flState.ticks || 0
           };
           playSound('hydraulic');
           flFloatingTexts.push({
@@ -7321,8 +7696,8 @@
       }
 
       // CASE 2: CARRYING CARGO -> TRY TO PLACE IN STORAGE BAY
-      if (nico.kmh > 5.0) {
-        showForkliftWarning('⚠️ Zum Absetzen fast stillstehen (< 5 km/h)!');
+      if (nico.kmh > 6.5) {
+        showForkliftWarning('⚠️ Zum Absetzen fast stillstehen (< 6 km/h)!');
         playSound('bump');
         return;
       }
@@ -7368,7 +7743,11 @@
           showForkliftWarning('⬇️ Fach ist leer (0/2)! Senke den Mast mit [E] auf Ebene 1 (Boden)!');
         }
         // Tiny hesitation penalty on condition so 100% requires knowing the mast level beforehand
-        nico.cargo.condition = Math.max(10, nico.cargo.condition - 0.8);
+        if (!nico.cargo.lastHesitation || (flState.ticks - nico.cargo.lastHesitation) > 90) {
+          nico.cargo.condition = Math.max(10, nico.cargo.condition - 0.8);
+          nico.cargo.lastHesitation = flState.ticks;
+          updateForkliftHUD();
+        }
         playSound('bump');
         return;
       }
@@ -7386,8 +7765,8 @@
       const placementPrecision = (posPrecision * 0.6 + angPrecision * 0.4);
 
       // Delivery duration factor (Optimal under 11.5 seconds)
-      const elapsedSec = (performance.now() - nico.cargo.pickupTime) / 1000;
-      const timeEfficiency = elapsedSec <= 10.5 ? 100 : Math.max(70, 100 - (elapsedSec - 10.5) * 1.4);
+      const elapsedSec = ((flState.ticks || 0) - nico.cargo.pickupTime) / 60; // Spielzeit, pausiert mit dem Spiel
+      const timeEfficiency = elapsedSec <= 14 ? 100 : Math.max(70, 100 - (elapsedSec - 14) * 1.2);
 
       const condPct = nico.cargo.condition;
       // Weighted total quality for this pallet (Max = 100.0%)
@@ -7451,8 +7830,8 @@
       HoermannGameSession.delay(() => {
         promptScoreSubmit(
           flState.score,
-          'forklift',
-          `Lagermeister Nico (${avgQ}% Präzision)`
+          'forklift_v02',
+          `Lagermeister Nico 0.2 (${avgQ}% Präzision)`
         );
       }, 1100);
     }
@@ -7470,6 +7849,7 @@
 
     function updateForkliftPhysics() {
       if (flState.shiftComplete) return;
+      flState.ticks = (flState.ticks || 0) + 1;
 
       // Smoothly animate fork height
       const targetZ = (nico.mastLevel === 2) ? 24 : 2;
@@ -7521,8 +7901,8 @@
         if (nico.speed > nico.maxFwdSpeed) nico.speed = nico.maxFwdSpeed;
       } else if (flKeys.down) {
         // Hard braking check when carrying cargo at high speed
-        if (nico.speed > 2.3 && nico.cargo) {
-          nico.cargo.condition = Math.max(0, nico.cargo.condition - 0.14);
+        if (nico.speed > 2.6 && nico.cargo) {
+          nico.cargo.condition = Math.max(0, nico.cargo.condition - 0.1);
           nico.wobbleAngle = (Math.random() - 0.5) * 0.35;
           showForkliftWarning('⚠️ VOLLBREMSUNG! Ladung verrutscht auf der Gabel!');
           updateForkliftHUD();
@@ -7680,10 +8060,11 @@
           alpha: 1.8
         });
         // Respawn replacement on LKW with penalty
+        const flFreeY = [186, 244, 302].find(y => !lkwPallets.some(q => Math.abs(q.y - y) < 20)) || 244;
         lkwPallets.push({
           slotIndex: 0,
           x: 136,
-          y: 244,
+          y: flFreeY,
           type: nico.cargo.type,
           condition: 85.0,
           pickupTime: 0
@@ -7946,7 +8327,7 @@
         let badgeColor = '#38bdf8';
 
         if (b.items.length === 1) {
-          statusText = '1/2 ⬆ HOCHSTAPELN [E]';
+          statusText = '1/2 ⬆ STAPELN [E]';
           badgeColor = '#f59c00';
         } else if (b.items.length >= 2) {
           statusText = '2/2 FACH VOLL!';
@@ -8227,7 +8608,7 @@
         flCtx.fillText('GABEL LEER — BEREIT ZUM AUFLADEN', 278, 424);
         flCtx.fillStyle = '#38bdf8';
         flCtx.font = '700 10.5px Inter, sans-serif';
-        flCtx.fillText('➔ Fahre links an den blauen Hörmann-LKW & drücke [Leertaste]', 278, 444);
+        flCtx.fillText(flState.truckPhase === 'DOCKED' ? '➔ Zum LKW fahren, dann Aufnehmen' : '⏳ LKW fährt – gleich geht es weiter', 278, 444);
       }
 
       // Right Panel: MAST HEIGHT & PERFECTION METER
@@ -11203,7 +11584,7 @@
     });
 
   </script>
-  <script src="game-session.js?v=3.2.0"></script>
-  <script src="game-navigation.js?v=3.2.0"></script>
+  <script src="game-session.js?v=3.3.0"></script>
+  <script src="game-navigation.js?v=3.3.0"></script>
 </body>
 </html>
