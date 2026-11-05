@@ -9,6 +9,7 @@ node tests/portal-mobile-browser.cjs
 node tests/portal-03-browser.cjs
 node tests/v02-leaderboards-browser.cjs
 node tests/chat-admin-browser.cjs
+node tests/lb-in-game-browser.cjs
 PLAYWRIGHT_CHANNEL=chromium node tests/game-session-browser.cjs
 PLAYWRIGHT_CHANNEL=chromium node tests/mut-effects-browser.cjs
 ```
