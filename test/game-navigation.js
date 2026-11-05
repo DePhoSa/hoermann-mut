@@ -124,6 +124,7 @@ for (const [category, game] of Object.entries(portalGameNavigation)) {
   action.textContent = game.status ? game.status : 'Spielen'; action.disabled = Boolean(game.status);
   action.addEventListener('click', event => { event.stopPropagation(); openGamePreview(category, 'menu'); });
   card.append(action);
+  if(HoermannGameReleases.isVersioned(category)){const news=document.createElement('button');news.type='button';news.className='game-version-button';news.textContent='Neu in Update '+HoermannGameReleases.release(category).version+' – lesen ›';news.addEventListener('click',event=>{event.stopPropagation();HoermannGameSession.update(category,false);});card.append(news);}
   card.addEventListener('click', event => { if (!game.status && !event.target.closest('button')) openGamePreview(category, 'menu'); });
   if(!game.status){const pause=document.createElement('button');pause.type='button';pause.className='utility-link game-pause-button';pause.textContent='Pause · P / Esc';pause.addEventListener('click',()=>HoermannGameSession.pause());const bar=document.querySelector('#'+category+'-view .game-actions-bar');bar.append(pause);const upd=document.createElement('button');upd.type='button';upd.className='utility-link game-update-button';upd.textContent='Update '+HoermannGameReleases.release(category).version;upd.addEventListener('click',()=>HoermannGameSession.update(category,false));bar.append(upd);}
 }

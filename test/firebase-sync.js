@@ -56,6 +56,12 @@
       delete ev.deviceToken;
       await fs.addDoc(fs.collection(db, PRE + 'events'), ev);
     },
+    // Admin = diese anonyme Geräte-ID steht in Firestore unter config/admins (Feld uids).
+    async isAdmin() {
+      const { fs, db, au } = await init();
+      const snap = await fs.getDoc(fs.doc(db, 'config', 'admins'));
+      return snap.exists() && Array.isArray(snap.data().uids) && snap.data().uids.includes(au.currentUser.uid);
+    },
     // onItems(payloads[]) bekommt alle neuen/geänderten Daten, setBadge(status) den Verbindungsstatus.
     async start(onItems, setBadge) {
       if (started) return;
