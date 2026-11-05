@@ -34,14 +34,15 @@
     phase=beforePause; close(); for(const timer of timers) arm(timer);
     if(phase==='countdown') showCountdown();
   }
-  function pause() {
+  function pause(silent) {
     if(!game || !['playing','countdown'].includes(phase)) return;
     beforePause=phase;phase='paused';pauseAt=performance.now();
     for(const timer of timers){clearTimeout(timer.id);timer.remaining=Math.max(0,timer.remaining-(pauseAt-timer.started));}
     if(typeof mKeys!=='undefined'){mKeys.left=false;mKeys.right=false;mKeys.up=false;mKeys.jumpPressed=false;}
     if(typeof flKeys!=='undefined') for(const key of Object.keys(flKeys)) flKeys[key]=false;
-    modal('Spiel pausiert','Mit P, Escape oder dem Button fortsetzen.','Weiter spielen',resume);
+    if(silent!==true) modal('Spiel pausiert','Mit P, Escape oder dem Button fortsetzen.','Weiter spielen',resume);
   }
+  function reopenPause() { if(phase==='paused' && game) modal('Spiel pausiert','Mit P, Escape oder dem Button fortsetzen.','Weiter spielen',resume); }
   function beginPlaying(){phase='playing';close();}
   function countdown(){phase='countdown';let remaining=3;
     const step=()=>{countdownValue=remaining>0?String(remaining):'Los!';showCountdown();
@@ -82,7 +83,7 @@
   },true);
   document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();});
   document.addEventListener('click',event=>{if(event.target.closest('[id^="restart-"]') && game){clearTimers();phase='playing';close();}},true);
-  root.HoermannGameSession=Object.freeze({delay,blocked,stop,enter,update,pause,resume,state:()=>({game,phase}),finish:()=>{clearTimers();phase='finished';close();},restart:()=>{clearTimers();phase='playing';close();}});
+  root.HoermannGameSession=Object.freeze({delay,blocked,stop,enter,update,pause,reopenPause,resume,state:()=>({game,phase}),finish:()=>{clearTimers();phase='finished';close();},restart:()=>{clearTimers();phase='playing';close();}});
 })(globalThis);
 
 

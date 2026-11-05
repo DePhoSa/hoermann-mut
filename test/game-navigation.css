@@ -144,7 +144,7 @@
 .game-card-head { display: flex; align-items: center; gap: 12px; width: 100%; }
 .games-grid .game-choice-card .game-card-preview { width: 52px; height: 52px; flex: none; font-size: 2rem; display: flex; align-items: center; justify-content: center; margin: 0; }
 .games-grid .game-choice-card .game-card-title { margin: 0; font-size: 1.1rem; line-height: 1.25; min-height: 0; overflow-wrap: anywhere; }
-.games-grid .game-choice-card .game-card-desc { margin: 0; flex: none !important; font-size: .9rem; line-height: 1.45; min-height: 4.35em; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden; }
+.games-grid .game-choice-card .game-card-desc { margin: 0; flex: none !important; font-size: .9rem; line-height: 1.45; min-height: 4.35em; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; line-clamp: 4; overflow: hidden; }
 .game-card-foot { margin-top: auto; display: flex; flex-direction: column; align-items: stretch; gap: 6px; width: 100%; }
 .game-card-foot .game-rank-ribbon { position: static; transform: none; width: auto; align-self: flex-start; min-height: 44px; padding: 0; margin: 0; border: 0; background: none; box-shadow: none; display: inline-flex; align-items: center; cursor: pointer; font: inherit; color: inherit; }
 .game-rank-chip { display: inline-block; padding: 4px 12px; border-radius: 999px; background: #e7edf5; color: #234261; font-size: .85rem; font-weight: 800; line-height: 1.4; border: 1px solid #c9d5e3; }

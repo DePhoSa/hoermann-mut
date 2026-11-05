@@ -97,15 +97,15 @@ for (const [category, game] of Object.entries(portalGameNavigation)) {
   }
   card.dataset.game = category;
   const descriptions = {
-    forklift: 'Entlade LKWs, transportiere Hörmann-Paletten und staple sie sicher ins Lager. Wie nah kommst du an 100 %?',
-    tower: 'Klettere mit Resse durch den Schicksalsturm: Tutorial und fünf Level voller Mutproben.',
-    pacman: 'Sammle Mut-Punkte im Labyrinth, weiche Zweifel-Geistern aus und nutze die Power-Pellets.',
+    forklift: 'Entlade LKWs und staple Hörmann-Paletten sicher ins Lager. Schaffst du 100 %?',
+    tower: 'Klettere mit Resse durch den Schicksalsturm: Tutorial und fünf Level.',
+    pacman: 'Sammle Mut-Punkte im Labyrinth und weiche den Zweifel-Geistern aus.',
     slots: 'Walzen, Risiko und Jackpot im Hörmann Mut-Automaten.',
     mario: 'Hüpfe mit Dennis durch die Hörmann-Welt, knacke Blöcke und erreiche das Werkstor.',
-    buster: 'Zerschlage Zweifel per Klick. Sammle Power und baue deine Treffer-Combo für mehr Punkte aus.',
+    buster: 'Zerschlage Zweifel per Klick und baue deine Treffer-Combo für mehr Punkte aus.',
     nerve: 'Wähle eines von drei Toren: Gewinne Punkte und entscheide, wann du sie sicherst.',
     parcours: 'Steuere durch die Sektionaltore und stelle deine Reflexe auf die Probe.',
-    bomber: 'Online-Arena für zwei bis vier Spieler: Räume, Bomben und Items. Nur Multiplayer.'
+    bomber: 'Online-Arena für zwei bis vier Spieler mit Bomben und Items.'
   };
   const preview = card.querySelector('.game-icon-large') || [...card.children].find(child => child.tagName==='DIV' && child.style.fontSize && !child.classList.contains('card-badge-rec'));
   card.removeAttribute('style');
@@ -155,6 +155,13 @@ window.addEventListener('storage', refreshGameRibbons);
 refreshGameRibbons(); updateLeaderboardGameLink();
 
 /* ===== Bestenlisten als Overlay (Dialog) ===== */
+// Beim Öffnen aus einem laufenden Spiel wird das Spiel pausiert (ohne eigenen Dialog), beim Schließen erscheint "Weiter spielen".
+const openGlobalLeaderboardOriginal = openGlobalLeaderboard;
+openGlobalLeaderboard = function (...args) {
+  const phase = HoermannGameSession.state().phase;
+  if (phase === 'playing' || phase === 'countdown') HoermannGameSession.pause(true);
+  return openGlobalLeaderboardOriginal.apply(this, args);
+};
 document.body.append(highscoreCard);
 const lbOverlay = { opener: null };
 const lbOpen = () => highscoreCard.classList.contains('show');
@@ -169,6 +176,7 @@ new MutationObserver(() => {
     (highscoreCard.querySelector('.lb-tab-btn.active') || closeLeaderboardBtn).focus({preventScroll: true});
   } else {
     document.documentElement.classList.remove('lb-overlay-open');
+    if (HoermannGameSession.state().phase === 'paused') queueMicrotask(() => HoermannGameSession.reopenPause());
     const o = lbOverlay.opener; lbOverlay.opener = null;
     if (o && o.isConnected && o.getClientRects().length && !document.querySelector('dialog[open]')) o.focus({preventScroll: true});
   }
@@ -185,8 +193,6 @@ document.addEventListener('keydown', event => {
 }, true);
 document.addEventListener('pointerdown', event => { if (lbOpen() && !highscoreCard.contains(event.target) && !event.target.closest('#game-session-dialog, #toast')) { lbOverlay.opener = null; closeLeaderboardOverlay(); } }, true);
 document.getElementById('header-leaderboard-btn').addEventListener('click', event => {
-  const phase = HoermannGameSession.state().phase;
-  if (phase === 'playing' || phase === 'countdown') { HoermannGameSession.pause(); return; }
   lbOverlay.opener = event.currentTarget;
   openGlobalLeaderboard(localStorage.getItem('hoermann_last_lb_cat') || 'forklift_v02', getLockedPlayerName());
 });
