@@ -6,6 +6,7 @@
   countdownElement.innerHTML='<span class=game-countdown-label>Mach dich bereit</span><strong></strong>';
   function showCountdown(){const view=document.getElementById(game+'-view');const field=view.querySelector('canvas,.doors-arena');let stage=field.parentElement;if(!stage.classList.contains('game-stage')){stage=document.createElement('div');stage.className='game-stage';field.before(stage);stage.append(field);}stage.append(countdownElement);countdownElement.querySelector('strong').textContent=countdownValue;countdownElement.hidden=false;}
   const timers = new Set(), memorySeen = new Set();
+  let held = new Set(), holdStart = 0; // Spiel-Zeitgeber, die beim Fortsetzen bis "Los!" eingefroren bleiben
   const dialog = document.createElement('dialog'); dialog.id = 'game-session-dialog';
   dialog.setAttribute('aria-labelledby','game-session-title');
   dialog.innerHTML = '<h2 id="game-session-title"></h2><div id="game-session-copy"></div><p id="game-session-status" role="status"></p><button type="button" id="game-session-action" class="submit-btn"></button>';
@@ -23,7 +24,7 @@
     timer.started = performance.now(); timer.id = setTimeout(() => { timers.delete(timer); timer.callback(); }, timer.remaining);
   }
   function delay(callback, ms) { const timer = {callback, remaining: Math.max(0,ms), started:0, id:null}; timers.add(timer); if(phase!=='paused') arm(timer); return timer; }
-  function clearTimers() { for(const timer of timers) clearTimeout(timer.id); timers.clear(); }
+  function clearTimers() { for(const timer of timers) clearTimeout(timer.id); timers.clear(); held.clear(); }
   function blocked() { return ['preview','countdown','paused','update'].includes(phase); }
   function close() { if(dialog.open) dialog.close();countdownElement.hidden=true; }
   function stop() { clearTimers(); close(); phase='idle'; game=null; next=null; }
@@ -31,8 +32,19 @@
     if(phase!=='paused') return;
     const pausedMs=performance.now()-pauseAt;
     if(game==='forklift' && nico?.cargo) nico.cargo.pickupTime += pausedMs;
+    if(beforePause==='playing') {
+      /* Fortsetzen: erst wieder 3-2-1-Los, die Spielzeit bleibt bis dahin eingefroren. */
+      close(); held=new Set(timers); timers.clear(); holdStart=performance.now(); countdown(); return;
+    }
     phase=beforePause; close(); for(const timer of timers) arm(timer);
     if(phase==='countdown') showCountdown();
+  }
+  function releaseHeld() {
+    if(!held.size) return;
+    const waited=performance.now()-holdStart;
+    if(game==='forklift' && nico?.cargo) nico.cargo.pickupTime += waited;
+    for(const timer of held){timers.add(timer);arm(timer);}
+    held=new Set();
   }
   function pause(silent) {
     if(!game || !['playing','countdown'].includes(phase)) return;
@@ -43,7 +55,7 @@
     if(silent!==true) modal('Spiel pausiert','Mit P, Escape oder dem Button fortsetzen.','Weiter spielen',resume);
   }
   function reopenPause() { if(phase==='paused' && game) modal('Spiel pausiert','Mit P, Escape oder dem Button fortsetzen.','Weiter spielen',resume); }
-  function beginPlaying(){phase='playing';close();}
+  function beginPlaying(){phase='playing';close();releaseHeld();}
   function countdown(){phase='countdown';let remaining=3;
     const step=()=>{countdownValue=remaining>0?String(remaining):'Los!';showCountdown();
       if(remaining>0){remaining--;delay(step,1000);}else delay(beginPlaying,350);}; step();
