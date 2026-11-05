@@ -582,6 +582,19 @@
       color: #fff;
     }
 
+    /* Super Dennis 0.2: groessere, wischfeste Touch-Buttons */
+    .mario-touch-bar .touch-btn {
+      width: 76px;
+      height: 68px;
+      font-size: 1.7rem;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+      touch-action: none;
+    }
+    .mario-touch-bar .touch-btn-jump { width: 120px; font-size: 1.1rem; }
+    .mario-touch-bar .touch-btn.is-down { background: var(--hoermann-orange); color: #fff; }
+
     .touch-btn-jump {
       width: 80px;
       background: var(--hoermann-orange);
@@ -5701,10 +5714,35 @@
     const btnJump = document.getElementById('btn-jump');
 
     const bindTouch = (elem, pressHandler, releaseHandler) => {
-      elem.addEventListener('pointerdown', (e) => { e.preventDefault(); pressHandler(); });
-      elem.addEventListener('pointerup', (e) => { e.preventDefault(); releaseHandler(); });
-      elem.addEventListener('pointercancel', (e) => { e.preventDefault(); releaseHandler(); });
+      // Pointer-Capture: Loslassen ausserhalb des Buttons haengt nie fest.
+      let down = false;
+      const release = (e) => {
+        if (e) e.preventDefault();
+        if (!down) return;
+        down = false;
+        elem.classList.remove('is-down');
+        releaseHandler();
+      };
+      elem.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        try { elem.setPointerCapture(e.pointerId); } catch (_) {}
+        if (down) return;
+        down = true;
+        elem.classList.add('is-down');
+        pressHandler();
+      });
+      elem.addEventListener('pointerup', release);
+      elem.addEventListener('pointercancel', release);
+      elem.addEventListener('lostpointercapture', release);
+      elem.addEventListener('contextmenu', (e) => e.preventDefault());
     };
+
+    function resetMarioKeys() {
+      mKeys.left = false; mKeys.right = false; mKeys.up = false;
+      document.querySelectorAll('.mario-touch-bar .touch-btn').forEach(b => b.classList.remove('is-down'));
+    }
+    window.addEventListener('blur', resetMarioKeys);
+    document.addEventListener('visibilitychange', () => { if (document.hidden) resetMarioKeys(); });
 
     bindTouch(btnLeft, () => { mKeys.left = true; }, () => { mKeys.left = false; });
     bindTouch(btnRight, () => { mKeys.right = true; }, () => { mKeys.right = false; });
@@ -5722,6 +5760,7 @@
     let mCoinsList = [];
     let mEnemies = [];
     let mFloatingTexts = [];
+    let mLastSafe = { x: 80, y: 250 };
     let levelGoal = { x: 2560, y: 120, w: 70, h: 200, touched: false };
 
     function initMarioLevel() {
@@ -5743,6 +5782,9 @@
       dennis.won = false;
       dennis.invincibleTimer = 0;
       dennis.starTimer = 0;
+      dennis.facing = 1;
+      mLastSafe = { x: 80, y: 250 };
+      resetMarioKeys();
 
       mFloatingTexts = [];
       levelGoal.touched = false;
@@ -5784,16 +5826,16 @@
       // Question blocks [?] & Bricks [🧱]
       mBlocks = [
         { x: 190, y: 210, w: 32, h: 32, type: 'question', content: 'coin', hit: false, bumpY: 0 },
-        { x: 470, y: 140, w: 32, h: 32, type: 'question', content: 'coin', hit: false, bumpY: 0 },
-        { x: 502, y: 140, w: 32, h: 32, type: 'brick', bumpY: 0 },
-        { x: 534, y: 140, w: 32, h: 32, type: 'question', content: 'star', hit: false, bumpY: 0 },
+        { x: 470, y: 110, w: 32, h: 32, type: 'question', content: 'coin', hit: false, bumpY: 0 },
+        { x: 502, y: 110, w: 32, h: 32, type: 'brick', bumpY: 0 },
+        { x: 534, y: 110, w: 32, h: 32, type: 'question', content: 'star', hit: false, bumpY: 0 },
 
-        { x: 1180, y: 130, w: 32, h: 32, type: 'question', content: 'coin', hit: false, bumpY: 0 },
-        { x: 1212, y: 130, w: 32, h: 32, type: 'question', content: 'bisecur', hit: false, bumpY: 0 },
+        { x: 1180, y: 100, w: 32, h: 32, type: 'question', content: 'coin', hit: false, bumpY: 0 },
+        { x: 1212, y: 100, w: 32, h: 32, type: 'question', content: 'bisecur', hit: false, bumpY: 0 },
 
-        { x: 1600, y: 120, w: 32, h: 32, type: 'question', content: 'coin', hit: false, bumpY: 0 },
-        { x: 1632, y: 120, w: 32, h: 32, type: 'brick', bumpY: 0 },
-        { x: 1664, y: 120, w: 32, h: 32, type: 'question', content: 'coin', hit: false, bumpY: 0 }
+        { x: 1600, y: 70, w: 32, h: 32, type: 'question', content: 'coin', hit: false, bumpY: 0 },
+        { x: 1632, y: 70, w: 32, h: 32, type: 'brick', bumpY: 0 },
+        { x: 1664, y: 70, w: 32, h: 32, type: 'question', content: 'coin', hit: false, bumpY: 0 }
       ];
 
       // Coins scattered across level
@@ -5806,7 +5848,7 @@
         { x: 770, y: 150, collected: false },
         { x: 810, y: 150, collected: false },
         { x: 1100, y: 270, collected: false },
-        { x: 1200, y: 90, collected: false },
+        { x: 1196, y: 62, collected: false },
         { x: 1404, y: 220, collected: false },
         { x: 1580, y: 140, collected: false },
         { x: 1620, y: 140, collected: false },
@@ -5816,8 +5858,8 @@
       ];
 
       // M-U-T Giant letters
-      mCoinsList.push({ x: 480, y: 80, collected: false, letter: 'M' });
-      mCoinsList.push({ x: 1220, y: 70, collected: false, letter: 'U' });
+      mCoinsList.push({ x: 518, y: 62, collected: false, letter: 'M' });
+      mCoinsList.push({ x: 1232, y: 62, collected: false, letter: 'U' });
       mCoinsList.push({ x: 1980, y: 140, collected: false, letter: 'T' });
 
       // Zweifel-Enemies (Stompable like Goombas)
@@ -5859,6 +5901,7 @@
     function stopMarioGame() {
       marioActive = false;
       if (marioLoopId) cancelAnimationFrame(marioLoopId);
+      resetMarioKeys();
     }
 
     restartMarioBtn.addEventListener('click', startMarioGame);
@@ -5914,6 +5957,8 @@
       // PROPER COLLISION RESOLUTION (SEPARATE AXES WITH SAFE SKIN MARGINS)
       // 1. Move X and resolve X collisions
       dennis.x += dennis.vx;
+      if (dennis.x < 0) { dennis.x = 0; dennis.vx = 0; } // linke Levelgrenze
+      if (dennis.x > 2850 - dennis.w) dennis.x = 2850 - dennis.w;
 
       // Inset vertical bounds by 6px so Dennis' feet NEVER snag on floor seams or pipe tops!
       const playerTop = dennis.y + 6;
@@ -5936,6 +5981,8 @@
       }
 
       // 2. Move Y and resolve Y collisions
+      const prevBottom = dennis.y + dennis.h;
+      let landedOn = null;
       dennis.y += dennis.vy;
       dennis.grounded = false;
 
@@ -5947,12 +5994,19 @@
         const solidDrawY = s.y - (s.bumpY || 0);
         if (playerRight > s.x && playerLeft < s.x + s.w &&
             dennis.y < solidDrawY + s.h && dennis.y + dennis.h > solidDrawY) {
-          if (dennis.vy > 0) {
-            // Land on top
+          if (dennis.vy >= 0 && prevBottom <= solidDrawY + 4) {
+            // Land on top (nur von oben: kein Hochteleportieren mehr)
             dennis.y = solidDrawY - dennis.h;
             dennis.vy = 0;
             dennis.grounded = true;
+            landedOn = s;
           } else if (dennis.vy < 0) {
+            // Ecken-Hilfe: nur wenige Pixel Ueberlappung -> seitlich vorbeirutschen
+            const ovl = Math.min(playerRight, s.x + s.w) - Math.max(playerLeft, s.x);
+            if (ovl <= 8) {
+              dennis.x += (dennis.x + dennis.w / 2 < s.x + s.w / 2) ? -ovl : ovl;
+              continue;
+            }
             // Hit from below
             dennis.y = solidDrawY + s.h;
             dennis.vy = 1;
@@ -5961,6 +6015,12 @@
             }
           }
         }
+      }
+
+      // Merke sicheren Boden fuer faires Respawnen nach Sturz
+      if (landedOn && landedOn.type === 'ground' &&
+          dennis.x > landedOn.x + 40 && dennis.x + dennis.w < landedOn.x + landedOn.w - 40) {
+        mLastSafe = { x: dennis.x, y: dennis.y };
       }
 
       // Fell into pit
@@ -5995,14 +6055,23 @@
       // Update Enemies
       mEnemies.forEach(e => {
         if (!e.alive) return;
-        e.x += e.vx;
-        if (e.x < 10 || e.x > 2600) e.vx *= -1;
+        // Patrouille: an Rohren/Stufen/Bloecken und Grubenkanten umdrehen
+        const nx = e.x + e.vx;
+        const frontX = e.vx > 0 ? nx + e.w : nx;
+        let turn = false;
+        for (const s of allSolids) {
+          if (frontX > s.x && frontX < s.x + s.w && e.y + e.h - 2 > s.y && e.y + 2 < s.y + s.h) { turn = true; break; }
+        }
+        if (!turn) {
+          turn = !mPlatforms.some(s => s.type === 'ground' && frontX >= s.x && frontX <= s.x + s.w);
+        }
+        if (turn) e.vx *= -1; else e.x = nx;
 
         if (dennis.x < e.x + e.w && dennis.x + dennis.w > e.x &&
             dennis.y < e.y + e.h && dennis.y + dennis.h > e.y) {
-          if ((dennis.vy > 0 && dennis.y + dennis.h - dennis.vy <= e.y + 18) || dennis.starTimer > 0) {
+          if ((dennis.vy > 0 && dennis.y + dennis.h - dennis.vy <= e.y + 22) || dennis.starTimer > 0) {
             e.alive = false;
-            dennis.vy = -9.2; // High bounce
+            dennis.vy = mKeys.up ? -11.5 : -8.5; // Sprungtaste gehalten = hoeherer Abpraller
             mScore += 200;
             updateMarioHUD();
             playSound('stomp');
@@ -6020,10 +6089,10 @@
       }
 
       // Smooth camera follows player
-      const targetCamX = dennis.x - mCanvas.width * 0.35;
-      cameraX += (targetCamX - cameraX) * 0.12;
+      const targetCamX = dennis.x - mCanvas.width * 0.38 + dennis.facing * 40;
+      cameraX += (targetCamX - cameraX) * 0.14;
       if (cameraX < 0) cameraX = 0;
-      if (cameraX > 2800 - mCanvas.width) cameraX = 2800 - mCanvas.width;
+      if (cameraX > 2850 - mCanvas.width) cameraX = 2850 - mCanvas.width;
 
       if (dennis.invincibleTimer > 0) dennis.invincibleTimer--;
       if (dennis.starTimer > 0) dennis.starTimer--;
@@ -6064,28 +6133,30 @@
     }
 
     function dennisHurt(fellInPit) {
-      if (dennis.invincibleTimer > 0 || dennis.starTimer > 0) return;
+      if (dennis.dead || dennis.won) return;
+      // Treffer durch Gegner ignorieren bei Unverwundbarkeit; ein Sturz in die Grube zaehlt immer
+      if (!fellInPit && (dennis.invincibleTimer > 0 || dennis.starTimer > 0)) return;
 
       mLives--;
       updateMarioHUD();
       playSound('hit');
 
-      if (mLives <= 0 || fellInPit) {
-        if (mLives <= 0) {
-          dennis.dead = true;
-          HoermannGameSession.delay(() => {
-            promptScoreSubmit(mScore, 'mario', 'Super Dennis (Mut-Welt)');
-          }, 800);
-        } else {
-          dennis.x = Math.max(80, dennis.x - 240);
-          dennis.y = 220;
-          dennis.vx = 0;
-          dennis.vy = 0;
-          dennis.invincibleTimer = 80;
-        }
+      if (mLives <= 0) {
+        dennis.dead = true;
+        HoermannGameSession.delay(() => {
+          promptScoreSubmit(mScore, 'mario_v02', 'Super Dennis 0.2');
+        }, 800);
+      } else if (fellInPit) {
+        // Respawn auf dem zuletzt sicheren Boden (nie wieder in der Grube)
+        dennis.x = mLastSafe.x;
+        dennis.y = mLastSafe.y;
+        dennis.vx = 0;
+        dennis.vy = 0;
+        dennis.invincibleTimer = 100;
+        cameraX = Math.max(0, Math.min(2850 - mCanvas.width, dennis.x - mCanvas.width * 0.38));
       } else {
         dennis.vy = -7;
-        dennis.invincibleTimer = 70;
+        dennis.invincibleTimer = 90;
       }
     }
 
@@ -6098,7 +6169,7 @@
       triggerParticleEffect('confetti');
 
       HoermannGameSession.delay(() => {
-        promptScoreSubmit(mScore, 'mario', 'Super Dennis (Mut-Welt)');
+        promptScoreSubmit(mScore, 'mario_v02', 'Super Dennis 0.2');
       }, 1200);
     }
 
@@ -6239,10 +6310,21 @@
         mCtx.fillRect(e.x + 7, e.y + 9, 3, 3);
         mCtx.fillRect(e.x + 20, e.y + 9, 3, 3);
 
-        mCtx.fillStyle = '#ffffff';
-        mCtx.font = 'bold 8px Inter, sans-serif';
+        // Wuetende Augenbrauen + gut lesbares Namensschild ueber dem Kopf
+        mCtx.strokeStyle = '#450a0a';
+        mCtx.lineWidth = 2;
+        mCtx.beginPath();
+        mCtx.moveTo(e.x + 4, e.y + 4); mCtx.lineTo(e.x + 12, e.y + 8);
+        mCtx.moveTo(e.x + 26, e.y + 4); mCtx.lineTo(e.x + 18, e.y + 8);
+        mCtx.stroke();
+        mCtx.font = '800 11px Inter, sans-serif';
         mCtx.textAlign = 'center';
-        mCtx.fillText(e.name, e.x + e.w / 2, e.y + 24);
+        mCtx.textBaseline = 'alphabetic';
+        mCtx.lineWidth = 3;
+        mCtx.strokeStyle = 'rgba(0,10,30,0.9)';
+        mCtx.strokeText(e.name, e.x + e.w / 2, e.y - 5);
+        mCtx.fillStyle = '#ffffff';
+        mCtx.fillText(e.name, e.x + e.w / 2, e.y - 5);
       });
 
       // Draw Level Goal: Grand Hörmann Werkstor & Flagpole
@@ -6322,6 +6404,19 @@
       }
 
       mCtx.restore();
+
+      // Stern-Power Anzeige (Restdauer)
+      if (dennis.starTimer > 0 && !dennis.dead && !dennis.won) {
+        mCtx.fillStyle = 'rgba(0, 20, 50, 0.75)';
+        mCtx.fillRect(10, 10, 150, 22);
+        mCtx.fillStyle = '#f59c00';
+        mCtx.fillRect(14, 24, 142 * (dennis.starTimer / 400), 5);
+        mCtx.fillStyle = '#ffffff';
+        mCtx.font = '800 12px Inter, sans-serif';
+        mCtx.textAlign = 'left';
+        mCtx.textBaseline = 'alphabetic';
+        mCtx.fillText('⭐ MUT-STERN', 16, 21);
+      }
 
       // Game state overlays
       if (dennis.won) {
