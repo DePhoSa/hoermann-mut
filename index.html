@@ -3107,11 +3107,9 @@
        ========================================================== */
     const APP_VERSION           = '3.1.8';
     const NTFY_HUB_URL          = 'https://ntfy.sh/hoermann_mut_dephosa_hub_v3';
-    const NTFY_LEGACY_URL       = 'https://ntfy.sh/hoermann_mut_dephosa_online_lb_v2';
     const BYTEBIN_POST_URL      = 'https://bytebin.lucko.me/post';
     const BYTEBIN_BASE_URL      = 'https://bytebin.lucko.me/';
     const INITIAL_SNAPSHOT_KEY  = 'DzIXl4IwhT';
-    const LEGACY_POISON_KEYS    = new Set(['3clXvrUzSU', 'HhqiUAlDhY']);
     const cloudSyncBadge        = document.getElementById('cloud-sync-badge');
     const submitHighscoreFeedback = document.getElementById('submit-highscore-feedback');
     const ideaTicketBox         = document.getElementById('idea-ticket-box');
@@ -3132,7 +3130,7 @@
     let updateForcedAlready     = false;
     let prefetchedNewHtml       = '';
     let storedSnapKey           = localStorage.getItem('hoermann_cloud_snapshot_key_v3') || '';
-    if (!storedSnapKey || LEGACY_POISON_KEYS.has(storedSnapKey)) {
+    if (!storedSnapKey) {
       storedSnapKey = INITIAL_SNAPSHOT_KEY;
       try { localStorage.setItem('hoermann_cloud_snapshot_key_v3', INITIAL_SNAPSHOT_KEY); } catch (e) {}
     }
@@ -4071,7 +4069,7 @@
         });
         if (res.ok) {
           const j = await res.json();
-          if (j && j.key && !LEGACY_POISON_KEYS.has(j.key)) {
+          if (j && j.key) {
             newKey = j.key;
             currentSnapshotKey = newKey;
             localStorage.setItem('hoermann_cloud_snapshot_key_v3', newKey);
@@ -4163,7 +4161,7 @@
                 if (evt && evt.event === 'message' && evt.message) {
                   const payload = JSON.parse(evt.message);
                   if (!payload) return;
-                  if (payload.snapshotKey && !LEGACY_POISON_KEYS.has(payload.snapshotKey)) {
+                  if (payload.snapshotKey) {
                     latestDiscoveredKey = payload.snapshotKey;
                   }
                   parsedNtfyPayloads.push(payload);
@@ -4176,7 +4174,7 @@
 
         // 2. ZUERST die Bytebin-Snapshots laden (Master-Baseline + neuester entdeckter Key),
         // damit danach die Echtzeit-Events aus ntfy garantiert das letzte Wort haben!
-        const keysToFetch = Array.from(new Set([INITIAL_SNAPSHOT_KEY, latestDiscoveredKey].filter(k => k && !LEGACY_POISON_KEYS.has(k))));
+        const keysToFetch = Array.from(new Set([INITIAL_SNAPSHOT_KEY, latestDiscoveredKey].filter(k => k)));
         for (const snapKey of keysToFetch) {
           try {
             const resSnap = await fetch(`${BYTEBIN_BASE_URL}${snapKey}`, { cache: 'no-store' });
@@ -4194,26 +4192,6 @@
         parsedNtfyPayloads.forEach(payload => {
           processSingleNtfyPayload(payload, localMaster, chatState, ideasState, milestones);
         });
-
-        // 4. Auch Legacy ntfy Stream abfragen
-        try {
-          const resLeg = await fetch(`${NTFY_LEGACY_URL}/json?poll=1&since=48h`, { cache: 'no-store' });
-          if (resLeg.ok) {
-            const textL = await resLeg.text();
-            textL.split('\n').filter(Boolean).forEach(line => {
-              try {
-                const evt = JSON.parse(line);
-                if (evt && evt.event === 'message' && evt.message) {
-                  const p = JSON.parse(evt.message);
-                  if (p && p.cat && p.name && p.score) {
-                    mergeScoreMaps(localMaster, { [p.cat]: [p] });
-                    cloudDataLoaded = true;
-                  }
-                }
-              } catch (err) {}
-            });
-          }
-        } catch (e) {}
 
         hasCompletedInitialCloudSync = true;
 
@@ -4317,7 +4295,7 @@
             const payload = JSON.parse(evt.message);
             if (!payload) return;
 
-            if (payload.snapshotKey && !LEGACY_POISON_KEYS.has(payload.snapshotKey) && payload.snapshotKey !== currentSnapshotKey) {
+            if (payload.snapshotKey && payload.snapshotKey !== currentSnapshotKey) {
               snapshotToSync = payload.snapshotKey;
             }
             const resProc = processSingleNtfyPayload(payload, localMaster, chatState, ideasState, milestones);
@@ -4387,7 +4365,7 @@
             const ideasState  = loadIdeasState();
             const milestones  = loadPlayerMilestones();
 
-            if (item.snapshotKey && !LEGACY_POISON_KEYS.has(item.snapshotKey) && item.snapshotKey !== currentSnapshotKey) {
+            if (item.snapshotKey && item.snapshotKey !== currentSnapshotKey) {
               currentSnapshotKey = item.snapshotKey;
               localStorage.setItem('hoermann_cloud_snapshot_key_v3', item.snapshotKey);
             }
@@ -4397,7 +4375,7 @@
               return;
             }
 
-            if (item.type === 'SNAPSHOT' && item.snapshotKey && !LEGACY_POISON_KEYS.has(item.snapshotKey)) {
+            if (item.type === 'SNAPSHOT' && item.snapshotKey) {
               syncOnlineLeaderboards(false);
               return;
             }
