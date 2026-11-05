@@ -19,7 +19,13 @@ const root = path.resolve(__dirname, '..');
     await page.keyboard.press('Escape'); await page.waitForTimeout(300);
     s = await st(); assert.deepStrictEqual([s.phase, s.lb, s.dlg], ['paused', false, true], trigger + ': nach Schließen "Weiter spielen"');
     await page.click('#game-session-action'); await page.waitForTimeout(300);
-    assert.strictEqual((await st()).phase, 'playing', trigger + ': Spiel läuft weiter');
+    assert.strictEqual((await st()).phase, 'countdown', trigger + ': nach Weiter spielen erst Countdown');
+    await page.keyboard.press('p'); await page.waitForTimeout(200);
+    assert.strictEqual((await st()).phase, 'paused', trigger + ': Pause waehrend Countdown');
+    await page.click('#game-session-action'); await page.waitForTimeout(300);
+    assert.strictEqual((await st()).phase, 'countdown', trigger + ': wieder Countdown');
+    await page.waitForTimeout(4500);
+    assert.strictEqual((await st()).phase, 'playing', trigger + ': danach läuft das Spiel');
     await page.close();
   }
   await browser.close(); server.close(); console.log('leaderboard in game ok');
