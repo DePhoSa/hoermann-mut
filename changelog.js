@@ -13,12 +13,12 @@
       ]
     },
     {
-      version: '3.2.0', date: '',
+      version: '3.2.0', date: '2026-11-05',
       highlights: ['Neue Firebase-Cloud'],
       headlines: ['Neue Firebase-Cloud, dauerhafte Bestenlisten und Chat']
     },
     {
-      version: '3.1.8', date: '',
+      version: '3.1.8', date: '2026-10-26',
       highlights: ['Spielvorschauen', 'Mut-Effekte'],
       headlines: ['Spielvorschauen, Countdown im Spielfeld, Mut-Effekte']
     }
