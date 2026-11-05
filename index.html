@@ -542,6 +542,9 @@
       #forklift-view .fl-keyhint { display: none; }
       #forklift-view .game-instructions { display: none; }
     }
+
+    #parcoursCanvas { height: auto; }
+
     #forkliftCanvas, #towerCanvas, #pacmanCanvas, #slotsCanvas {
       image-rendering: pixelated;
       image-rendering: crisp-edges;
@@ -4425,7 +4428,7 @@
 
     // Prüft live, ob der eingegebene Name frei/gültig ist, ob bereits ein höherer Highscore vorliegt + ob ein Ideen-Ticket freigeschaltet wird
     function evaluatePersonalHighscoreCheck() {
-      const unit = (pendingSubmitGame === 'parcours') ? 'Tore' : 'Punkte';
+      const unit = (HoermannGameReleases.baseGame(pendingSubmitGame) === 'parcours') ? 'Tore' : 'Punkte';
       const lockedName = getLockedPlayerName();
       const typedName = lockedName || playerNameInput.value.trim();
 
@@ -6918,38 +6921,56 @@
     let parcoursGameOver = false;
 
     function updateParcoursHighscoreDisplay() {
-      const pList = getGameLeaderboard('parcours');
+      const pList = getGameLeaderboard('parcours_v02');
       const maxScore = pList.length > 0 ? Math.max(...pList.map(x => x.score)) : 0;
       parcoursHighscoreSpan.textContent = maxScore;
     }
 
+    const P_BASE_SPEED = 2.4, P_MAX_SPEED = 3.4, P_RAMP_GATES = 30;
+    const P_BASE_GAP = 176, P_MIN_GAP = 144, P_GATE_SPACING = 270, P_MAX_CENTER_STEP = 110;
     let pPlayer = {
       x: 90,
       y: 180,
       radius: 17,
+      hitRadius: 15,
       vy: 0,
       gravity: 0.36,
       jumpForce: -7.2,
       trail: []
     };
     let pGates = [];
-    let pSpeed = 2.6;
+    let pSpeed = P_BASE_SPEED;
+    let pReady = true;
+    let pTick = 0;
+    let pShake = 0;
+    let pOverAt = 0;
+    let pPopups = [];
+    let pLastCenter = 180;
+    let pBestBefore = 0;
+
+    function parcoursDifficulty() { return Math.min(1, parcoursScore / P_RAMP_GATES); }
 
     function startParcoursGame() {
       parcoursScore = 0;
       parcoursScoreSpan.textContent = '0';
-      pSpeed = 2.6;
+      pSpeed = P_BASE_SPEED;
       parcoursGameOver = false;
+      pReady = true;
+      pTick = 0;
+      pShake = 0;
+      pPopups = [];
       pPlayer.y = parcoursCanvas.height / 2;
       pPlayer.vy = 0;
       pPlayer.trail = [];
       pGates = [];
+      pLastCenter = parcoursCanvas.height / 2;
       updateParcoursHighscoreDisplay();
+      pBestBefore = parseInt(parcoursHighscoreSpan.textContent, 10) || 0;
       scoreSubmitDialog.classList.remove('show');
       highscoreCard.classList.remove('show');
 
-      spawnParcoursGate(parcoursCanvas.width + 100);
-      spawnParcoursGate(parcoursCanvas.width + 380);
+      spawnParcoursGate(parcoursCanvas.width + 120);
+      spawnParcoursGate(parcoursCanvas.width + 120 + P_GATE_SPACING);
 
       parcoursActive = true;
       if (parcoursLoopId) cancelAnimationFrame(parcoursLoopId);
@@ -6966,10 +6987,15 @@
     restartParcoursBtn.addEventListener('click', startParcoursGame);
 
     function spawnParcoursGate(posX) {
-      const gap = 160;
-      const minHeight = 40;
-      const maxHeight = parcoursCanvas.height - gap - minHeight;
-      const topHeight = Math.floor(Math.random() * (maxHeight - minHeight) + minHeight);
+      const gap = Math.round(P_BASE_GAP - (P_BASE_GAP - P_MIN_GAP) * parcoursDifficulty());
+      const margin = 34;
+      const H = parcoursCanvas.height;
+      // Neues Tor ist immer erreichbar: Lochmitte weicht nur begrenzt vom vorigen Tor ab.
+      const lo = Math.max(margin + gap / 2, pLastCenter - P_MAX_CENTER_STEP);
+      const hi = Math.min(H - margin - gap / 2, pLastCenter + P_MAX_CENTER_STEP);
+      const center = Math.round(lo + Math.random() * Math.max(0, hi - lo));
+      pLastCenter = center;
+      const topHeight = center - Math.round(gap / 2);
 
       pGates.push({
         x: posX,
@@ -6982,19 +7008,21 @@
 
     function parcoursJump() {
       if (parcoursGameOver) {
-        if (!scoreSubmitDialog.classList.contains('show')) {
+        if (!scoreSubmitDialog.classList.contains('show') && performance.now() - pOverAt > 600) {
           startParcoursGame();
         }
         return;
       }
+      if (pReady) pReady = false;
       pPlayer.vy = pPlayer.jumpForce;
       playSound('jump');
     }
 
     window.addEventListener('keydown', (e) => {
-      if (e.target.tagName === 'INPUT') return;
-      if (e.code === 'Space' && parcoursView.style.display !== 'none') {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if (e.code === 'Space' && getComputedStyle(parcoursView).display !== 'none' && !scoreSubmitDialog.classList.contains('show')) {
         e.preventDefault();
+        if (e.repeat) return;
         parcoursJump();
       }
     });
@@ -7004,46 +7032,60 @@
       parcoursJump();
     });
 
+    function parcoursHitsGate(g) {
+      const r = pPlayer.hitRadius, px = pPlayer.x, py = pPlayer.y;
+      const rects = [[g.x, -1000, g.width, g.topHeight + 1000], [g.x, g.bottomY, g.width, 1000]];
+      return rects.some(([rx, ry, rw, rh]) => {
+        const cx = Math.max(rx, Math.min(px, rx + rw));
+        const cy = Math.max(ry, Math.min(py, ry + rh));
+        return (px - cx) * (px - cx) + (py - cy) * (py - cy) < r * r;
+      });
+    }
+
     function parcoursLoop(frameTime) {
       if (!(parcoursActive)) return;
       HoermannGameClock.run("parcoursLoop", frameTime, () => {
       if (!parcoursActive) return;
+      pTick++;
+      if (pShake > 0) pShake--;
+      pPopups.forEach(p => { p.y -= 0.8; p.life--; });
+      pPopups = pPopups.filter(p => p.life > 0);
 
-      if (!parcoursGameOver) {
-        pPlayer.vy += pPlayer.gravity;
+      if (pReady) {
+        pPlayer.y = parcoursCanvas.height / 2 + Math.sin(pTick / 14) * 8;
+      } else if (!parcoursGameOver) {
+        pSpeed = P_BASE_SPEED + (P_MAX_SPEED - P_BASE_SPEED) * parcoursDifficulty();
+        pPlayer.vy = Math.min(9, pPlayer.vy + pPlayer.gravity);
         pPlayer.y += pPlayer.vy;
+        pPlayer.trail.push({ x: pPlayer.x, y: pPlayer.y });
+        if (pPlayer.trail.length > 14) pPlayer.trail.shift();
 
         if (pPlayer.y - pPlayer.radius < 0) {
           pPlayer.y = pPlayer.radius;
           pPlayer.vy = 0;
         }
         if (pPlayer.y + pPlayer.radius > parcoursCanvas.height) {
+          pPlayer.y = parcoursCanvas.height - pPlayer.radius;
           handleParcoursOver();
         }
 
+        pGates.forEach(g => { g.x -= pSpeed; });
         for (let i = pGates.length - 1; i >= 0; i--) {
           const g = pGates[i];
-          g.x -= pSpeed;
-
-          if (!g.passed && g.x + g.width < pPlayer.x) {
+          if (!parcoursGameOver && parcoursHitsGate(g)) handleParcoursOver();
+          if (!parcoursGameOver && !g.passed && g.x + g.width / 2 < pPlayer.x) {
             g.passed = true;
             parcoursScore++;
             parcoursScoreSpan.textContent = parcoursScore;
+            pPopups.push({ x: pPlayer.x + 26, y: pPlayer.y - 24, life: 40, text: '+1' });
             playSound('coin');
           }
-
-          if (pPlayer.x + pPlayer.radius > g.x && pPlayer.x - pPlayer.radius < g.x + g.width) {
-            if (pPlayer.y - pPlayer.radius < g.topHeight || pPlayer.y + pPlayer.radius > g.bottomY) {
-              handleParcoursOver();
-            }
-          }
-
           if (g.x + g.width < -10) pGates.splice(i, 1);
         }
 
         const lastGate = pGates[pGates.length - 1];
-        if (lastGate && lastGate.x < parcoursCanvas.width - 240) {
-          spawnParcoursGate(parcoursCanvas.width);
+        if (lastGate && lastGate.x <= parcoursCanvas.width + 120 - P_GATE_SPACING) {
+          spawnParcoursGate(lastGate.x + P_GATE_SPACING);
         }
       }
 
@@ -7053,59 +7095,96 @@
     }
 
     function drawParcoursScene() {
-      parcoursCtx.fillStyle = '#001a35';
-      parcoursCtx.fillRect(0, 0, parcoursCanvas.width, parcoursCanvas.height);
+      const c = parcoursCtx, W = parcoursCanvas.width, H = parcoursCanvas.height;
+      c.save();
+      if (pShake > 0) c.translate((Math.random() - 0.5) * pShake * 0.8, (Math.random() - 0.5) * pShake * 0.8);
+      c.fillStyle = '#001a35';
+      c.fillRect(-10, -10, W + 20, H + 20);
 
       pGates.forEach(g => {
-        parcoursCtx.fillStyle = '#002d62';
-        parcoursCtx.fillRect(g.x, 0, g.width, g.topHeight);
-        parcoursCtx.fillRect(g.x, g.bottomY, g.width, parcoursCanvas.height - g.bottomY);
+        c.fillStyle = '#0a4a94';
+        c.fillRect(g.x, 0, g.width, g.topHeight);
+        c.fillRect(g.x, g.bottomY, g.width, H - g.bottomY);
+        c.strokeStyle = '#6fb1ff';
+        c.lineWidth = 2;
+        c.strokeRect(g.x + 1, -2, g.width - 2, g.topHeight + 1);
+        c.strokeRect(g.x + 1, g.bottomY, g.width - 2, H - g.bottomY + 2);
 
-        parcoursCtx.fillStyle = '#f59c00';
-        parcoursCtx.fillRect(g.x + 3, g.topHeight - 5, g.width - 6, 5);
-        parcoursCtx.fillRect(g.x + 3, g.bottomY, g.width - 6, 5);
+        c.fillStyle = '#f59c00';
+        c.fillRect(g.x + 3, g.topHeight - 6, g.width - 6, 6);
+        c.fillRect(g.x + 3, g.bottomY, g.width - 6, 6);
       });
 
-      parcoursCtx.fillStyle = '#f59c00';
-      parcoursCtx.beginPath();
-      parcoursCtx.arc(pPlayer.x, pPlayer.y, pPlayer.radius, 0, Math.PI * 2);
-      parcoursCtx.fill();
-      parcoursCtx.strokeStyle = '#ffffff';
-      parcoursCtx.lineWidth = 2.5;
-      parcoursCtx.stroke();
+      pPlayer.trail.forEach((t, i) => {
+        c.fillStyle = `rgba(245, 156, 0, ${(i / pPlayer.trail.length) * 0.3})`;
+        c.beginPath();
+        c.arc(t.x - (pPlayer.trail.length - i) * pSpeed, t.y, pPlayer.radius * (0.4 + 0.5 * i / pPlayer.trail.length), 0, Math.PI * 2);
+        c.fill();
+      });
+
+      c.fillStyle = '#f59c00';
+      c.beginPath();
+      c.arc(pPlayer.x, pPlayer.y, pPlayer.radius, 0, Math.PI * 2);
+      c.fill();
+      c.strokeStyle = '#ffffff';
+      c.lineWidth = 2.5;
+      c.stroke();
+
+      c.textAlign = 'center';
+      c.font = '800 16px Inter, sans-serif';
+      pPopups.forEach(p => {
+        c.fillStyle = `rgba(255, 255, 255, ${Math.min(1, p.life / 20)})`;
+        c.fillText(p.text, p.x, p.y);
+      });
+
+      // Punktestand gross auf dem Spielfeld (auch auf dem Handy gut lesbar)
+      c.fillStyle = 'rgba(255, 255, 255, 0.85)';
+      c.font = '800 34px Inter, sans-serif';
+      c.fillText(String(parcoursScore), W / 2, 44);
+
+      if (pReady && !parcoursGameOver) {
+        c.fillStyle = 'rgba(0, 20, 45, 0.6)';
+        c.fillRect(W / 2 - 150, H - 72, 300, 40);
+        c.fillStyle = '#ffffff';
+        c.font = '800 16px Inter, sans-serif';
+        c.fillText('Tippen / Leertaste zum Starten', W / 2, H - 46);
+      }
+      c.restore();
 
       if (parcoursGameOver) {
-        parcoursCtx.fillStyle = 'rgba(0, 31, 59, 0.88)';
-        parcoursCtx.fillRect(0, 0, parcoursCanvas.width, parcoursCanvas.height);
+        c.fillStyle = 'rgba(0, 31, 59, 0.88)';
+        c.fillRect(0, 0, W, H);
 
-        parcoursCtx.fillStyle = '#f59c00';
-        parcoursCtx.font = '800 24px Inter, sans-serif';
-        parcoursCtx.textAlign = 'center';
-        parcoursCtx.fillText('PARCOURS BEENDET', parcoursCanvas.width / 2, 130);
+        c.textAlign = 'center';
+        c.fillStyle = '#f59c00';
+        c.font = '800 24px Inter, sans-serif';
+        c.fillText('PARCOURS BEENDET', W / 2, 130);
 
-        parcoursCtx.fillStyle = '#ffffff';
-        parcoursCtx.font = '700 18px Inter, sans-serif';
-        parcoursCtx.fillText(`Tore gemeistert: ${parcoursScore}`, parcoursCanvas.width / 2, 170);
+        c.fillStyle = '#ffffff';
+        c.font = '700 18px Inter, sans-serif';
+        c.fillText(`Tore gemeistert: ${parcoursScore}`, W / 2, 170);
 
-        parcoursCtx.fillStyle = '#f59c00';
-        parcoursCtx.beginPath();
-        parcoursCtx.roundRect(parcoursCanvas.width / 2 - 100, 210, 200, 42, 6);
-        parcoursCtx.fill();
+        c.fillStyle = '#f59c00';
+        c.beginPath();
+        c.roundRect(W / 2 - 100, 210, 200, 44, 6);
+        c.fill();
 
-        parcoursCtx.fillStyle = '#ffffff';
-        parcoursCtx.font = '800 14px Inter, sans-serif';
-        parcoursCtx.fillText('NOCHMAL ↺', parcoursCanvas.width / 2, 236);
+        c.fillStyle = '#ffffff';
+        c.font = '800 15px Inter, sans-serif';
+        c.fillText('NOCHMAL ↺', W / 2, 238);
       }
     }
 
     function handleParcoursOver() {
       if (parcoursGameOver) return;
       parcoursGameOver = true;
+      pOverAt = performance.now();
+      pShake = 14;
       playSound('hit');
-      triggerParticleEffect('confetti');
+      if (parcoursScore > pBestBefore) triggerParticleEffect('confetti');
 
       if (parcoursScore > 0) {
-        promptScoreSubmit(parcoursScore, 'parcours', 'Tor-Parcours');
+        promptScoreSubmit(parcoursScore, 'parcours_v02', 'Tor-Parcours 0.2');
       }
     }
 
