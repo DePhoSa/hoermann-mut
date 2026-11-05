@@ -528,6 +528,20 @@
       touch-action: none;
     }
 
+    /* Lagermeister Nico 0.2: grosse Touch-Steuerung */
+    #forklift-view .fl-pad .touch-btn { width: 52px; height: 46px; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+    #forklift-view .fl-controls .btn-card-start { touch-action: manipulation; }
+    @media (pointer: coarse), (max-width: 640px) {
+      #forklift-view { padding-left: 0.6rem; padding-right: 0.6rem; }
+      #forklift-view .fl-controls { flex-direction: column-reverse; align-items: stretch !important; gap: 10px !important; }
+      #forklift-view .fl-pad { justify-content: center; gap: 10px !important; }
+      #forklift-view .fl-pad .touch-btn { width: 72px; height: 62px; font-size: 1.5rem !important; }
+      #forklift-view .fl-actions { display: grid !important; grid-template-columns: 1fr 1fr; gap: 8px !important; }
+      #forklift-view .fl-actions .btn-card-start { min-height: 52px; padding: 0.4rem 0.5rem !important; font-size: 0.9rem !important; }
+      #forklift-view #fl-btn-action { grid-column: 1 / -1; min-height: 60px; }
+      #forklift-view .fl-keyhint { display: none; }
+      #forklift-view .game-instructions { display: none; }
+    }
     #forkliftCanvas, #towerCanvas, #pacmanCanvas, #slotsCanvas {
       image-rendering: pixelated;
       image-rendering: crisp-edges;
@@ -1687,22 +1701,22 @@
       <canvas id="forkliftCanvas" width="780" height="470"></canvas>
 
       <!-- Quick Action & Touch Controls Bar -->
-      <div style="display:flex; flex-wrap:wrap; gap:8px; width:100%; max-width:780px; justify-content:space-between; align-items:center; margin-top:0.65rem;">
-        <div style="display:flex; gap:6px; align-items:center;">
-          <button class="touch-btn" id="fl-btn-left" style="width:44px; height:40px; font-size:1.1rem;" title="Links lenken (A / ◀)">◀</button>
-          <button class="touch-btn" id="fl-btn-up" style="width:44px; height:40px; font-size:1.1rem;" title="Gas geben (W / ▲)">▲</button>
-          <button class="touch-btn" id="fl-btn-down" style="width:44px; height:40px; font-size:1.1rem;" title="Bremsen / Rückwärts (S / ▼)">▼</button>
-          <button class="touch-btn" id="fl-btn-right" style="width:44px; height:40px; font-size:1.1rem;" title="Rechts lenken (D / ▶)">▶</button>
+      <div class="fl-controls" style="display:flex; flex-wrap:wrap; gap:8px; width:100%; max-width:780px; justify-content:space-between; align-items:center; margin-top:0.65rem;">
+        <div class="fl-pad" style="display:flex; gap:6px; align-items:center;">
+          <button class="touch-btn" id="fl-btn-left" style="font-size:1.1rem;" title="Links lenken (A / ◀)">◀</button>
+          <button class="touch-btn" id="fl-btn-up" style="font-size:1.1rem;" title="Gas geben (W / ▲)">▲</button>
+          <button class="touch-btn" id="fl-btn-down" style="font-size:1.1rem;" title="Bremsen / Rückwärts (S / ▼)">▼</button>
+          <button class="touch-btn" id="fl-btn-right" style="font-size:1.1rem;" title="Rechts lenken (D / ▶)">▶</button>
         </div>
-        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <div class="fl-actions" style="display:flex; gap:8px; flex-wrap:wrap;">
           <button class="btn-card-start" id="fl-btn-action" style="background:var(--hoermann-orange); padding:0.5rem 0.95rem; font-size:0.85rem;">
-            📦 Gabel Aufnehmen / Absetzen (Leertaste)
+            📦 Aufnehmen / Absetzen<span class="fl-keyhint"> (Leertaste)</span>
           </button>
           <button class="btn-card-start" id="fl-btn-mast" style="background:var(--hoermann-blue); padding:0.5rem 0.95rem; font-size:0.85rem;">
-            ⬆️ Mast: Ebene 1 / Ebene 2 (E)
+            ⬆️ Mast hoch / runter<span class="fl-keyhint"> (E)</span>
           </button>
           <button class="btn-card-start" id="fl-btn-horn" style="background:#475569; padding:0.5rem 0.85rem; font-size:0.85rem;">
-            📯 Hupe (H)
+            📯 Hupe<span class="fl-keyhint"> (H)</span>
           </button>
           <button class="utility-link" id="restart-forklift-btn" style="margin-left:4px;">Neustart ↺</button>
         </div>
@@ -7158,6 +7172,7 @@
 
     function startForkliftGame() {
       initForkliftLevel();
+      flReleaseAllKeys();
       scoreSubmitDialog.classList.remove('show');
       highscoreCard.classList.remove('show');
       flActive = true;
@@ -7185,6 +7200,8 @@
     window.addEventListener('keydown', (e) => {
       if (e.target.tagName === 'INPUT') return;
       if (forkliftView.style.display === 'none') return;
+      const flOneShot = ['Space', 'KeyE', 'ShiftLeft', 'ShiftRight', 'KeyH'].includes(e.code);
+      if (flOneShot && e.repeat) { e.preventDefault(); return; } // Halten der Taste soll nicht dauernd umschalten
 
       if (e.code === 'KeyW' || e.code === 'ArrowUp') { flKeys.up = true; e.preventDefault(); }
       if (e.code === 'KeyS' || e.code === 'ArrowDown') { flKeys.down = true; e.preventDefault(); }
@@ -7212,7 +7229,17 @@
       if (e.code === 'KeyD' || e.code === 'ArrowRight') flKeys.right = false;
     });
 
+    function flReleaseAllKeys() { flKeys.up = flKeys.down = flKeys.left = flKeys.right = false; }
+    window.addEventListener('blur', flReleaseAllKeys);
+    document.addEventListener('visibilitychange', flReleaseAllKeys);
+
     // Touch / Button bindings for Forklift
+    ['fl-btn-left', 'fl-btn-right', 'fl-btn-up', 'fl-btn-down'].forEach(id => {
+      const el = document.getElementById(id);
+      el.addEventListener('pointerdown', (ev) => { try { el.setPointerCapture(ev.pointerId); } catch (_) {} });
+      el.addEventListener('lostpointercapture', flReleaseAllKeys);
+      el.addEventListener('contextmenu', (ev) => ev.preventDefault());
+    });
     bindTouch(document.getElementById('fl-btn-left'), () => { flKeys.left = true; }, () => { flKeys.left = false; });
     bindTouch(document.getElementById('fl-btn-right'), () => { flKeys.right = true; }, () => { flKeys.right = false; });
     bindTouch(document.getElementById('fl-btn-up'), () => { flKeys.up = true; }, () => { flKeys.up = false; });
@@ -7302,7 +7329,7 @@
           nico.cargo = {
             type: picked.type,
             condition: picked.condition,
-            pickupTime: performance.now()
+            pickupTime: flState.ticks || 0
           };
           playSound('hydraulic');
           flFloatingTexts.push({
@@ -7321,8 +7348,8 @@
       }
 
       // CASE 2: CARRYING CARGO -> TRY TO PLACE IN STORAGE BAY
-      if (nico.kmh > 5.0) {
-        showForkliftWarning('⚠️ Zum Absetzen fast stillstehen (< 5 km/h)!');
+      if (nico.kmh > 6.5) {
+        showForkliftWarning('⚠️ Zum Absetzen fast stillstehen (< 6 km/h)!');
         playSound('bump');
         return;
       }
@@ -7368,7 +7395,11 @@
           showForkliftWarning('⬇️ Fach ist leer (0/2)! Senke den Mast mit [E] auf Ebene 1 (Boden)!');
         }
         // Tiny hesitation penalty on condition so 100% requires knowing the mast level beforehand
-        nico.cargo.condition = Math.max(10, nico.cargo.condition - 0.8);
+        if (!nico.cargo.lastHesitation || (flState.ticks - nico.cargo.lastHesitation) > 90) {
+          nico.cargo.condition = Math.max(10, nico.cargo.condition - 0.8);
+          nico.cargo.lastHesitation = flState.ticks;
+          updateForkliftHUD();
+        }
         playSound('bump');
         return;
       }
@@ -7386,8 +7417,8 @@
       const placementPrecision = (posPrecision * 0.6 + angPrecision * 0.4);
 
       // Delivery duration factor (Optimal under 11.5 seconds)
-      const elapsedSec = (performance.now() - nico.cargo.pickupTime) / 1000;
-      const timeEfficiency = elapsedSec <= 10.5 ? 100 : Math.max(70, 100 - (elapsedSec - 10.5) * 1.4);
+      const elapsedSec = ((flState.ticks || 0) - nico.cargo.pickupTime) / 60; // Spielzeit, pausiert mit dem Spiel
+      const timeEfficiency = elapsedSec <= 14 ? 100 : Math.max(70, 100 - (elapsedSec - 14) * 1.2);
 
       const condPct = nico.cargo.condition;
       // Weighted total quality for this pallet (Max = 100.0%)
@@ -7451,8 +7482,8 @@
       HoermannGameSession.delay(() => {
         promptScoreSubmit(
           flState.score,
-          'forklift',
-          `Lagermeister Nico (${avgQ}% Präzision)`
+          'forklift_v02',
+          `Lagermeister Nico 0.2 (${avgQ}% Präzision)`
         );
       }, 1100);
     }
@@ -7470,6 +7501,7 @@
 
     function updateForkliftPhysics() {
       if (flState.shiftComplete) return;
+      flState.ticks = (flState.ticks || 0) + 1;
 
       // Smoothly animate fork height
       const targetZ = (nico.mastLevel === 2) ? 24 : 2;
@@ -7521,8 +7553,8 @@
         if (nico.speed > nico.maxFwdSpeed) nico.speed = nico.maxFwdSpeed;
       } else if (flKeys.down) {
         // Hard braking check when carrying cargo at high speed
-        if (nico.speed > 2.3 && nico.cargo) {
-          nico.cargo.condition = Math.max(0, nico.cargo.condition - 0.14);
+        if (nico.speed > 2.6 && nico.cargo) {
+          nico.cargo.condition = Math.max(0, nico.cargo.condition - 0.1);
           nico.wobbleAngle = (Math.random() - 0.5) * 0.35;
           showForkliftWarning('⚠️ VOLLBREMSUNG! Ladung verrutscht auf der Gabel!');
           updateForkliftHUD();
@@ -7680,10 +7712,11 @@
           alpha: 1.8
         });
         // Respawn replacement on LKW with penalty
+        const flFreeY = [186, 244, 302].find(y => !lkwPallets.some(q => Math.abs(q.y - y) < 20)) || 244;
         lkwPallets.push({
           slotIndex: 0,
           x: 136,
-          y: 244,
+          y: flFreeY,
           type: nico.cargo.type,
           condition: 85.0,
           pickupTime: 0
@@ -7946,7 +7979,7 @@
         let badgeColor = '#38bdf8';
 
         if (b.items.length === 1) {
-          statusText = '1/2 ⬆ HOCHSTAPELN [E]';
+          statusText = '1/2 ⬆ STAPELN [E]';
           badgeColor = '#f59c00';
         } else if (b.items.length >= 2) {
           statusText = '2/2 FACH VOLL!';
@@ -8227,7 +8260,7 @@
         flCtx.fillText('GABEL LEER — BEREIT ZUM AUFLADEN', 278, 424);
         flCtx.fillStyle = '#38bdf8';
         flCtx.font = '700 10.5px Inter, sans-serif';
-        flCtx.fillText('➔ Fahre links an den blauen Hörmann-LKW & drücke [Leertaste]', 278, 444);
+        flCtx.fillText(flState.truckPhase === 'DOCKED' ? '➔ Zum LKW fahren, dann Aufnehmen' : '⏳ LKW fährt – gleich geht es weiter', 278, 444);
       }
 
       // Right Panel: MAST HEIGHT & PERFECTION METER
