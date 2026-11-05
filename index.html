@@ -1468,7 +1468,7 @@
       <div class="top-divider"></div>
       <div class="brand-watermark">HÖRMANN</div>
       <div class="top-controls">
-        <button class="icon-btn" id="sound-toggle-btn" title="Ton an / ausschalten">
+        <button class="icon-btn" id="sound-toggle-btn" title="Ton an / ausschalten" aria-label="Ton an oder ausschalten">
           <svg id="sound-icon-on" viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
             <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
@@ -1478,7 +1478,7 @@
             <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
           </svg>
         </button>
-        <button class="icon-btn" id="reset-view-btn" title="Ansicht zurücksetzen">
+        <button class="icon-btn" id="reset-view-btn" title="Ansicht zurücksetzen" aria-label="Ansicht zurücksetzen">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <line x1="18" y1="6" x2="6" y2="18"></line>
             <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -1538,15 +1538,15 @@
       <div class="thoughts-section" id="thoughts-box">
         <div class="thought-input-group">
           <span class="thought-num">1</span>
-          <input type="text" id="thought-1" class="thought-input" placeholder="Erster Gedanke...">
+          <input type="text" id="thought-1" class="thought-input" aria-label="Erster Gedanke" placeholder="Erster Gedanke...">
         </div>
         <div class="thought-input-group">
           <span class="thought-num">2</span>
-          <input type="text" id="thought-2" class="thought-input" placeholder="Zweiter Gedanke...">
+          <input type="text" id="thought-2" class="thought-input" aria-label="Zweiter Gedanke" placeholder="Zweiter Gedanke...">
         </div>
         <div class="thought-input-group">
           <span class="thought-num">3</span>
-          <input type="text" id="thought-3" class="thought-input" placeholder="Dritter Gedanke...">
+          <input type="text" id="thought-3" class="thought-input" aria-label="Dritter Gedanke" placeholder="Dritter Gedanke...">
         </div>
         <button class="save-thoughts-btn" id="save-thoughts-btn">Speichern</button>
       </div>
@@ -1994,7 +1994,7 @@
             Falls du deinen Namen beim ersten Mal falsch geschrieben hast, kannst du hier deinen Wunschnamen beantragen. Sobald der Admin zustimmt, werden dein Name und deine Highscores automatisch umgestellt!
           </p>
           <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:2px;">
-            <input type="text" id="rename-request-input" class="chat-input-field" maxlength="20" placeholder="Dein gewünschter richtiger Name..." style="flex:1; min-width:160px;">
+            <input type="text" id="rename-request-input" aria-label="Gewünschter Name" class="chat-input-field" maxlength="20" placeholder="Dein gewünschter richtiger Name..." style="flex:1; min-width:160px;">
             <button type="button" id="send-rename-request-btn" class="chat-send-btn" style="padding:0.45rem 0.85rem; font-size:0.78rem;">Antrag absenden 📨</button>
             <button type="button" id="cancel-rename-request-btn" class="chat-tool-btn" style="padding:0.45rem 0.65rem; font-size:0.75rem;">Abbrechen</button>
           </div>
@@ -2002,7 +2002,7 @@
 
         <!-- Eingabefeld erscheint NUR beim allerersten Mal, wenn auf diesem Gerät noch kein Name festgelegt wurde -->
         <div id="first-time-name-row" style="display:flex; flex-direction:column; gap:4px; width:100%; max-width:460px;">
-          <input type="text" id="player-name-input" class="submit-input" maxlength="20" placeholder="Einmalig deinen festen Spielernamen wählen..." style="width:100%;">
+          <input type="text" id="player-name-input" aria-label="Spielername" autocomplete="nickname" class="submit-input" maxlength="20" placeholder="Einmalig deinen festen Spielernamen wählen..." style="width:100%;">
           <small style="font-size:0.75rem; color:#64748b;">🔒 Hinweis: Dein Name wird nach dem ersten Speichern fest mit deinem Gerät verknüpft (kein Überschreiben fremder Namen möglich).</small>
         </div>
         <button class="submit-btn" id="save-score-btn" style="width:100%; max-width:460px; justify-content:center;">⚡ Sofort in Bestenliste speichern 🏆</button>
@@ -2010,7 +2010,7 @@
     </div>
 
     <!-- GLOBAL LEADERBOARD CARD WITH TABS (For ALL 5 Games) -->
-    <div class="highscore-card" id="highscore-card" style="margin: 0 auto 1.5rem auto; max-width: 780px;">
+    <div class="highscore-card" id="highscore-card" role="region" aria-label="Bestenlisten" style="margin: 0 auto 1.5rem auto; max-width: 780px;">
       <div class="highscore-header" style="flex-wrap: wrap; gap: 8px;">
         <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
           <div class="highscore-title" id="global-lb-title">🏆 Hörmann Mut-Bestenliste</div>
@@ -2058,7 +2058,7 @@
         <span class="chat-online-dot"></span>
         <span>💬 Hörmann Live-Chat</span>
       </div>
-      <button class="chat-admin-toggle-btn" id="chat-admin-toggle-btn" title="Admin-Bereich für Moderation &amp; Spieler-Ideen">
+      <button class="chat-admin-toggle-btn" id="chat-admin-toggle-btn" aria-expanded="false" aria-controls="chat-admin-panel" title="Admin-Bereich für Moderation &amp; Spieler-Ideen">
         🔒 Admin
       </button>
     </div>
@@ -2066,7 +2066,7 @@
     <!-- Geschütztes Admin-Panel (Passwort-Login via SHA-256 Hash – kein Klartext im Code!) -->
     <div class="chat-admin-panel" id="chat-admin-panel">
       <div id="chat-admin-login-row" style="display:flex; gap:6px; align-items:center;">
-        <input type="password" id="chat-admin-pass-input" class="chat-input-field" placeholder="Admin-PIN / Passwort..." style="padding:4px 8px; font-size:0.78rem; background:#1e293b; color:#fff; border-color:#475569;">
+        <input type="password" id="chat-admin-pass-input" aria-label="Admin-Passwort" autocomplete="current-password" class="chat-input-field" placeholder="Admin-PIN / Passwort..." style="padding:4px 8px; font-size:0.78rem; background:#1e293b; color:#fff; border-color:#475569;">
         <button id="chat-admin-login-btn" class="chat-send-btn" style="padding:4px 10px; font-size:0.76rem;">Entsperren</button>
       </div>
       <div id="chat-admin-actions-row" style="display:none; flex-direction:column; gap:6px;">
@@ -2079,7 +2079,7 @@
           </div>
         </div>
         <div id="chat-admin-new-pw-box" style="display:none; gap:4px; align-items:center; margin-top:2px;">
-          <input type="password" id="chat-admin-new-pw-input" class="chat-input-field" placeholder="Neues Admin-Passwort..." style="padding:3px 6px; font-size:0.74rem; background:#1e293b; color:#fff; border-color:#475569;">
+          <input type="password" id="chat-admin-new-pw-input" aria-label="Neues Admin-Passwort" autocomplete="new-password" class="chat-input-field" placeholder="Neues Admin-Passwort..." style="padding:3px 6px; font-size:0.74rem; background:#1e293b; color:#fff; border-color:#475569;">
           <button id="chat-admin-save-pw-btn" class="chat-send-btn" style="padding:3px 8px; font-size:0.72rem;">Speichern</button>
         </div>
       </div>
@@ -2093,7 +2093,7 @@
     </div>
 
     <!-- Nachrichtenliste (Ungefilterter Echtzeit-Chat für alle Spieler) -->
-    <div class="chat-messages-list" id="chat-messages-list">
+    <div class="chat-messages-list" id="chat-messages-list" role="log" aria-live="polite" aria-label="Chat-Nachrichten">
       <div style="text-align:center; color:#64748b; font-size:0.8rem; padding:1rem 0.5rem;">
         Lade Online-Chatverlauf... 💬
       </div>
@@ -2119,7 +2119,7 @@
       <div class="chat-popover-tray" id="chat-emoji-tray">
         <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.73rem; font-weight:800; color:var(--hoermann-blue);">
           <span>😀 Smileys &amp; Reaktionen</span>
-          <button type="button" id="close-emoji-tray-btn" class="chat-tool-btn" style="padding:1px 6px; font-size:0.68rem;">✕</button>
+          <button type="button" id="close-emoji-tray-btn" aria-label="Smileys schließen" class="chat-tool-btn" style="padding:1px 6px; font-size:0.68rem;">✕</button>
         </div>
         <div class="emoji-grid" id="chat-emoji-grid"></div>
       </div>
@@ -2128,10 +2128,10 @@
       <div class="chat-popover-tray" id="chat-gif-tray">
         <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.73rem; font-weight:800; color:var(--hoermann-blue);">
           <span>🎬 GIF suchen oder Link/Grafik einfügen</span>
-          <button type="button" id="close-gif-tray-btn" class="chat-tool-btn" style="padding:1px 6px; font-size:0.68rem;">✕</button>
+          <button type="button" id="close-gif-tray-btn" aria-label="GIFs schließen" class="chat-tool-btn" style="padding:1px 6px; font-size:0.68rem;">✕</button>
         </div>
         <div style="display:flex; gap:4px;">
-          <input type="text" id="chat-gif-search-input" class="chat-input-field" placeholder="z.B. lachender typ, stapler, party..." style="padding:4px 7px; font-size:0.77rem;">
+          <input type="text" id="chat-gif-search-input" aria-label="GIF suchen" class="chat-input-field" placeholder="z.B. lachender typ, stapler, party..." style="padding:4px 7px; font-size:0.77rem;">
           <button type="button" id="chat-gif-search-btn" class="chat-send-btn" style="padding:4px 9px; font-size:0.75rem;">🔍 Suchen</button>
         </div>
         <div class="gif-quick-tags" id="gif-quick-tags">
@@ -2143,7 +2143,7 @@
         </div>
         <div class="gif-results-grid" id="chat-gif-results"></div>
         <div style="border-top:1px solid #e2e8f0; padding-top:4px; display:flex; gap:4px; align-items:center;">
-          <input type="text" id="chat-gif-url-input" class="chat-input-field" placeholder="Oder GIF-Link (https://...) / Strg+V Grafik..." style="padding:3px 6px; font-size:0.73rem;">
+          <input type="text" id="chat-gif-url-input" aria-label="GIF-Link" class="chat-input-field" placeholder="Oder GIF-Link (https://...) / Strg+V Grafik..." style="padding:3px 6px; font-size:0.73rem;">
           <button type="button" id="chat-gif-url-btn" class="chat-tool-btn" style="padding:3px 7px; font-size:0.72rem; white-space:nowrap;">➕ Einfügen</button>
         </div>
       </div>
@@ -2154,11 +2154,11 @@
           <img id="chat-pending-gif-img" src="" alt="GIF">
           <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">🎬 GIF angehängt</span>
         </div>
-        <button type="button" id="chat-remove-gif-btn" class="chat-delete-btn" title="GIF wieder entfernen">✕</button>
+        <button type="button" id="chat-remove-gif-btn" aria-label="GIF entfernen" class="chat-delete-btn" title="GIF wieder entfernen">✕</button>
       </div>
 
       <div style="display:flex; gap:4px; align-items:center;">
-        <input type="text" id="chat-sender-input" class="chat-input-field" maxlength="20" placeholder="Dein fester Name..." style="flex:1; padding:0.36rem 0.55rem; font-size:0.78rem;">
+        <input type="text" id="chat-sender-input" aria-label="Dein Name im Chat" autocomplete="nickname" class="chat-input-field" maxlength="20" placeholder="Dein fester Name..." style="flex:1; padding:0.36rem 0.55rem; font-size:0.78rem;">
         <button type="button" id="chat-rename-req-btn" class="chat-tool-btn" style="display:none; padding:4px 7px; font-size:0.7rem;" title="Falls du deinen Namen falsch gespeichert hast, hier einmalig Änderung beim Admin beantragen">
           ✏️ Name falsch?
         </button>
@@ -2173,7 +2173,7 @@
       </div>
 
       <div class="chat-input-row">
-        <input type="text" id="chat-text-input" class="chat-input-field" maxlength="300" placeholder="Nachricht, Emoji oder GIF-Link (Enter)...">
+        <input type="text" id="chat-text-input" aria-label="Chat-Nachricht" enterkeyhint="send" class="chat-input-field" maxlength="300" placeholder="Nachricht, Emoji oder GIF-Link (Enter)...">
         <button class="chat-send-btn" id="chat-send-btn">Senden ➤</button>
       </div>
     </div>
@@ -2188,16 +2188,16 @@
   </footer>
 
   <!-- DEZENTE HINWEIS-LEISTE FÜR UPDATES WÄHREND EINES AKTIVEN SPIELS (Wirft niemanden aus dem Spiel!) -->
-  <div id="deferred-update-bar" style="display:none; position:fixed; top:10px; left:50%; transform:translateX(-50%); background:linear-gradient(90deg, #002d62, #0d448a); color:#ffffff; border:2px solid #f59c00; border-radius:999px; padding:0.45rem 1rem; font-size:0.82rem; font-weight:800; z-index:9998; box-shadow:0 8px 25px rgba(0,0,0,0.45); align-items:center; gap:10px; white-space:nowrap;">
+  <div id="deferred-update-bar" role="status" style="display:none; position:fixed; top:10px; left:50%; transform:translateX(-50%); background:linear-gradient(90deg, #002d62, #0d448a); color:#ffffff; border:2px solid #f59c00; border-radius:999px; padding:0.45rem 1rem; font-size:0.82rem; font-weight:800; z-index:9998; box-shadow:0 8px 25px rgba(0,0,0,0.45); align-items:center; gap:10px; white-space:nowrap;">
     <span>🔄 Neues Update (<span id="deferred-update-ver">v2.9.0</span>) im Hintergrund geladen! Spiel deine Runde in Ruhe zu Ende.</span>
     <button id="deferred-update-apply-btn" style="background:#f59c00; color:#001830; border:none; border-radius:999px; padding:0.25rem 0.75rem; font-size:0.78rem; font-weight:900; cursor:pointer;">⚡ Jetzt laden</button>
   </div>
 
   <!-- UPDATE OVERLAY (Erscheint erst, wenn das Update zu 100% auf dem CDN fertig geladen ist & der Spieler NICHT mitten im Spiel ist!) -->
-  <div id="force-update-overlay" style="display:none; position:fixed; inset:0; background:rgba(0, 20, 45, 0.92); z-index:9999; align-items:center; justify-content:center; padding:1.5rem; backdrop-filter:blur(4px);">
+  <div id="force-update-overlay" role="dialog" aria-modal="true" aria-labelledby="force-update-title" style="display:none; position:fixed; inset:0; background:rgba(0, 20, 45, 0.92); z-index:9999; align-items:center; justify-content:center; padding:1.5rem; backdrop-filter:blur(4px);">
     <div style="background:#ffffff; border:4px solid var(--hoermann-orange); border-radius:10px; max-width:520px; width:100%; padding:2rem 1.8rem; text-align:center; box-shadow:0 25px 50px rgba(0,0,0,0.5);">
       <div style="font-size:3rem; margin-bottom:0.5rem;">🚀🔄</div>
-      <h2 style="color:var(--hoermann-blue); font-size:1.5rem; font-weight:900; margin-bottom:0.6rem;">
+      <h2 id="force-update-title" style="color:var(--hoermann-blue); font-size:1.5rem; font-weight:900; margin-bottom:0.6rem;">
         Neues Portal-Update komplett geladen!
       </h2>
       <p id="force-update-text" style="color:var(--text-muted); font-size:0.95rem; line-height:1.5; margin-bottom:1.1rem;">
@@ -2217,7 +2217,7 @@
     </div>
   </div>
 
-  <div id="toast">Gedanken gespeichert!</div>
+  <div id="toast" role="status" aria-live="polite">Gedanken gespeichert!</div>
 
   <script>
     /* ==========================================================
@@ -3734,6 +3734,7 @@
       }
       if (overlay) {
         overlay.style.display = 'flex';
+        if (nowBtn) nowBtn.focus({ preventScroll: true });
       }
       playSound('powerup');
 
@@ -3798,7 +3799,7 @@
         syncOnlineLeaderboards(false);
       }
     });
-    setInterval(checkServerAppVersion, 20000);
+    setInterval(() => { if (document.visibilityState === 'visible') checkServerAppVersion(); }, 20000);
     setTimeout(checkServerAppVersion, 1500);
 
     function setCloudBadgeState(status, text) {
@@ -5279,6 +5280,7 @@
     if (chatAdminToggleBtn) {
       chatAdminToggleBtn.addEventListener('click', () => {
         chatAdminPanel.classList.toggle('show');
+        chatAdminToggleBtn.setAttribute('aria-expanded', String(chatAdminPanel.classList.contains('show')));
         if (chatAdminPanel.classList.contains('show') && !isAdminUnlocked && chatAdminPassInput) {
           chatAdminPassInput.focus();
         }
@@ -5409,6 +5411,12 @@
       const chatState = loadChatState();
       const myName = (getLockedPlayerName() || (chatSenderInput ? chatSenderInput.value.trim() : '') || (localStorage.getItem('hoermann_player_name') || '')).trim().toLowerCase();
 
+      // Unveränderte Liste nicht neu aufbauen (verhindert GIF-Neuladen, Flackern und Scroll-Sprünge)
+      const renderSig = [myName, isAdminUnlocked ? 1 : 0, chatState.messages.length, chatState.messages.map(m => m.id + '|' + (m.text || '') + '|' + (m.gifUrl || '')).join('~')].join('#');
+      if (chatMessagesList.dataset.renderSig === renderSig) return;
+      chatMessagesList.dataset.renderSig = renderSig;
+      const wasAtBottom = chatMessagesList.scrollHeight - chatMessagesList.scrollTop - chatMessagesList.clientHeight < 80 || !chatMessagesList.childElementCount;
+
       chatMessagesList.innerHTML = '';
       if (!chatState.messages.length) {
         chatMessagesList.innerHTML = `
@@ -5419,7 +5427,8 @@
         return;
       }
 
-      chatState.messages.forEach(msg => {
+      // Nur die letzten 60 Nachrichten zeichnen (Daten bleiben unverändert gespeichert)
+      chatState.messages.slice(-60).forEach(msg => {
         const div = document.createElement('div');
         const isOwn = myName && msg.sender && msg.sender.trim().toLowerCase() === myName;
         div.className = 'chat-msg-item' + (isOwn ? ' own-msg' : '');
@@ -5474,8 +5483,9 @@
           mediaImg.src = displayGifUrl;
           mediaImg.alt = 'Chat GIF';
           mediaImg.loading = 'lazy';
+          mediaImg.decoding = 'async';
           mediaImg.addEventListener('load', () => {
-            chatMessagesList.scrollTop = chatMessagesList.scrollHeight;
+            if (wasAtBottom) chatMessagesList.scrollTop = chatMessagesList.scrollHeight;
           });
           div.appendChild(mediaImg);
         }
@@ -5483,7 +5493,7 @@
         chatMessagesList.appendChild(div);
       });
 
-      chatMessagesList.scrollTop = chatMessagesList.scrollHeight;
+      if (wasAtBottom) chatMessagesList.scrollTop = chatMessagesList.scrollHeight;
     }
 
     function renderAdminIdeasList() {

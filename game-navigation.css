@@ -56,3 +56,55 @@
 .game-countdown-label { font-size: 1rem; font-weight: 600; }
 #game-countdown strong { font-size: clamp(3.5rem, 12vw, 6rem); font-weight: 900; line-height: 1; color: #ffd269; font-variant-numeric: tabular-nums; }
 @media(max-width:600px) { #game-session-dialog { padding: 24px; } }
+
+/* ===== Portal-Politur 0.2: Mobil, Bedienbarkeit, Barrierefreiheit ===== */
+:where(button, a, input, textarea, [tabindex]):focus-visible { outline: 3px solid #a65c00; outline-offset: 2px; }
+.game-choice-card .game-state-label { color: #26364a; }
+.game-open-action { background: #004481; color: #fff; }
+.game-open-action:disabled { background: #e7edf5; color: #34465a; }
+.game-unavailable { opacity: .92; }
+#chat-messages-list { overscroll-behavior: contain; }
+.chat-media-img { max-width: 100%; height: auto; max-height: 220px; object-fit: contain; }
+@media (max-width: 980px) {
+  #online-side-chat { height: min(520px, 78dvh) !important; }
+}
+@media (max-width: 640px) {
+  /* 16px verhindert das automatische Hineinzoomen auf iPhones; 44px = gut treffbar */
+  input, textarea, .chat-input-field, .submit-input, .thought-input { font-size: 16px !important; }
+  .chat-input-field, .submit-input, .thought-input { min-height: 44px; box-sizing: border-box; }
+  .icon-btn { min-width: 44px; min-height: 44px; }
+  .utility-link, .chat-tool-btn, .chat-send-btn, .chat-admin-toggle-btn, .chat-admin-tab-btn, .lb-tab-btn, .save-thoughts-btn, .submit-btn, .gif-tag-chip, .chat-delete-btn { min-height: 44px; }
+  .chat-delete-btn { min-width: 44px; }
+  .emoji-item-btn { min-height: 44px; }
+  .gif-thumb-btn { height: 88px; }
+  .chat-toolbar-row span { display: none; }
+  .highscore-table { font-size: .9rem; }
+  .highscore-header { align-items: flex-start; }
+  #cloud-sync-badge { font-size: .78rem; }
+  footer { padding-bottom: 1rem; }
+
+  /* Kompakte Spielkarten: Titel/Beschreibung, darunter zwei Buttons nebeneinander */
+  .games-grid { gap: 12px; grid-auto-rows: auto; }
+  .game-choice-card { padding: 14px !important; gap: 8px !important; display: grid !important; grid-template-columns: 56px minmax(0, 1fr); column-gap: 12px !important; align-items: start !important; }
+  .game-choice-card > div, .game-choice-card > p, .game-choice-card > strong, .game-choice-card > h3 { grid-column: 2; }
+  .game-choice-card > .game-card-preview { grid-column: 1; grid-row: 1 / span 3; height: 56px; width: 56px; font-size: 2.2rem; }
+  .game-choice-card .game-card-title { min-height: 0; font-size: 1.1rem; }
+  .game-choice-card .game-card-desc { font-size: .9rem; line-height: 1.45; }
+  .game-rank-ribbon { position: static; transform: none; width: auto; min-height: 44px; padding: 8px 12px; box-shadow: none; border-radius: 5px; grid-column: 1 / -1; text-align: center; font-size: 14px; }
+  .game-choice-card .game-open-action, .game-choice-card .game-version-button { grid-column: 1 / -1; }
+  .game-choice-card .game-version-button { min-height: 44px; font-size: .9rem; }
+  .game-choice-card .game-state-label { width: fit-content; }
+  #game-launch-view { min-height: 0; }
+}
+@media (max-width: 380px) {
+  .game-choice-card { grid-template-columns: 44px minmax(0, 1fr); }
+  .game-choice-card > .game-card-preview { width: 44px; height: 44px; font-size: 1.8rem; }
+  .card-content { padding-left: .75rem !important; padding-right: .75rem !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+  #fx-canvas { display: none; }
+}
+@media (max-width: 640px) {
+  .game-choice-card:not(.game-unavailable) .game-state-label { display: none; }
+}
