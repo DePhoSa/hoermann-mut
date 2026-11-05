@@ -42,9 +42,23 @@
 ## Portal-Versionen
 - Portal-Version (z. B. 3.3.0) und Spiel-Version (z. B. 0.2) sind getrennt. Ein Changelog auf der Seite zeigt nur Überschriften.
 
-## Offene Fragen an den Nutzer
-1. Stimmen die Spielrollen und Ziel-Versionen in der Tabelle? Was ändern?
-2. Mut-Automat: behalten, umbauen oder streichen?
-3. Tower of Mut und Mut-Man: nach 1.0 der anderen Spiele angehen, oder früher?
-4. Wie groß soll ein "Maximum an Features" pro Spiel sein (z. B. ein Zusatzmodus)?
-5. Soll es später einen Tages- oder Wochen-Wettbewerb über alle Quickies geben (Mehrkampf)?
+## Entscheidungen des Nutzers (2026-11-05)
+1. Spielrollen und Ziel-Versionen aus der Tabelle: bestätigt.
+2. **Mut-Automat wird gestrichen** (Entfernung in der nächsten Welle nach Release 3.3.0, inklusive Bestenliste-Archiv-Frage).
+3. **Tower of Mut und Mut-Man werden früher angegangen**, mit der nächsten Update-Welle.
+4. Feature-Umfang pro Spiel: individuell festlegen und testen. Überladen ist schlecht.
+5. **Mehrkampf/Wettbewerb über Quickies: ja**, später.
+
+## Rhythmus und Ziele
+- **Kurzfristig:** Spiele schnell auf 1.0 bringen (Mut-Probe, Tor-Parcours, Buster zuerst).
+- **Danach Wochenrhythmus:** pro Woche ein Update-Paket, innerhalb der Woche nur kleine notwendige Fixes. Spiele werden so aufgefrischt, bis sie ersetzt oder eingestellt werden.
+- **Dezember:** neues Motto der Seite, Planung erst danach.
+
+## Spielstatistiken (später, für Analyse)
+Ziel: erkennen, ob ein Spiel verbessert, erneuert, ersetzt oder eingestellt werden soll.
+- Kennzahlen je Spiel: Anzahl Runden, Spieldauer pro Runde, Neustarts pro Sitzung, Abbruchzeitpunkt (Game over, Menü, Fenster zu), Punkteverteilung, Rückkehrer pro Woche.
+- Umsetzung (Entwurf): kleine zusammengefasste Zähler pro Spiel und Tag in Firestore statt vieler Einzelereignisse, damit das kostenlose Kontingent (Spark) reicht. Keine Daten außer Gerät-ID und Spielname, nur intern einsehbar (Admin).
+- Vor dem Bau klären: Datenschutz-Hinweis auf der Seite, Auswertung als Admin-Ansicht.
+
+## Weiter offen
+- Wie groß ist ein sinnvolles Feature-Maximum pro Spiel? Wird pro Spiel entschieden.
