@@ -107,3 +107,21 @@
 @media (max-width: 640px) {
   .game-choice-card:not(.game-unavailable) .game-state-label { display: none; }
 }
+
+/* Kompakte Spielkacheln auf allen Bildschirmen (3 Spalten am PC, 2 am Tablet, 1 am Handy) */
+.games-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; grid-auto-rows: auto; }
+@media (max-width: 1000px) { .games-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .games-grid { grid-template-columns: minmax(0, 1fr); } }
+.game-choice-card { padding: 14px !important; gap: 6px !important; display: grid !important; grid-template-columns: 56px minmax(0, 1fr); column-gap: 12px !important; align-items: start !important; }
+.game-choice-card > div, .game-choice-card > p, .game-choice-card > strong, .game-choice-card > h3 { grid-column: 2; }
+.game-choice-card > .game-card-preview { grid-column: 1; grid-row: 1 / span 3; height: 56px; width: 56px; font-size: 2.2rem; }
+.game-choice-card .game-card-title { min-height: 0; font-size: 1.05rem; }
+.game-choice-card .game-card-desc { font-size: .88rem; line-height: 1.4; }
+.game-rank-ribbon { position: static; transform: none; width: auto; box-shadow: none; border-radius: 5px; grid-column: 1 / -1; text-align: center; padding: 6px 10px; font-size: .85rem; }
+.game-choice-card .game-open-action { grid-column: 1 / -1; }
+.game-choice-card .game-version-button { grid-column: 1 / -1; background: none; border: 0; color: #0b4f9c; text-decoration: underline; font-weight: 700; font-size: .85rem; min-height: 44px; cursor: pointer; }
+.game-choice-card .game-state-label { width: fit-content; }
+/* Bei Skalierung wie 125 %/150 % (häufig bei Laptops) nicht kantig hochziehen, sondern glatt */
+@media (min-resolution: 1.1dppx) {
+  #forkliftCanvas, #towerCanvas, #pacmanCanvas, #slotsCanvas { image-rendering: auto !important; }
+}

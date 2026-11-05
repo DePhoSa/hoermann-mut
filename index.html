@@ -2211,8 +2211,8 @@
       <div class="admin-dialog-head"><span id="admin-dialog-title">🛡️ Admin-Bereich</span><button type="button" id="admin-dialog-close" aria-label="Admin-Bereich schließen">✕</button></div>
       <div class="chat-admin-panel" id="chat-admin-panel" style="display:none"></div>
       <div class="admin-login" id="chat-admin-login-row">
-        <input type="password" id="chat-admin-pass-input" aria-label="Admin-Passwort" autocomplete="current-password" class="chat-input-field" placeholder="Admin-PIN / Passwort...">
-        <button type="button" id="chat-admin-login-btn" class="chat-send-btn">Entsperren</button>
+        <span style="flex:1;min-width:160px;font-size:.9rem;color:#475569">Anmeldung über die Admin-Liste in der Cloud (kein Passwort).</span>
+        <button type="button" id="chat-admin-login-btn" class="chat-send-btn">Als Admin anmelden</button>
       </div>
       <div class="admin-bar" id="chat-admin-actions-row">
         <span>🛡️ Admin-Modus aktiv</span>
@@ -5393,21 +5393,19 @@
       });
     }
 
+    // Admin-Anmeldung ohne Passwort: Entscheidend ist die serverseitige Liste config/admins in Firestore.
     async function attemptAdminLogin() {
-      const rawPw = chatAdminPassInput ? chatAdminPassInput.value.trim() : '';
-      if (!rawPw) return;
-      const hash = await computeSha256Hex(rawPw);
-      const customHash = localStorage.getItem(CUSTOM_ADMIN_HASH_KEY) || '';
-      if (DEFAULT_ADMIN_HASHES.has(hash) || (customHash && hash === customHash)) {
+      let ok = false;
+      try { ok = await HoermannCloud.isAdmin(); } catch (e) {}
+      if (ok) {
         isAdminUnlocked = true;
         sessionStorage.setItem('hoermann_admin_unlocked', '1');
-        chatAdminPassInput.value = '';
         updateAdminUiState();
         playSound('powerup');
         showToast('🛡️ Admin-Rechte aktiv: Chat moderieren, Ideen lesen & Namensanträge prüfen.');
       } else {
         playSound('alarm');
-        showToast('❌ Falsches Admin-Passwort!');
+        showToast('❌ Dieses Gerät ist nicht als Admin eingetragen. Geräte-ID: ' + (HoermannCloud.uid || 'unbekannt'));
       }
     }
 

@@ -13,3 +13,8 @@
 - Feste Admin-Anmeldung (z. B. Google) statt anonymer ID.
 - Alte Browser-Tests laufen nur mit Edge, auf Chromium umstellen.
 - Index.html (11.500 Zeilen) in Module je Spiel aufteilen.
+
+## Ideen aus dem Test (3.3.0)
+- Spielkacheln: später Vorschau-Video oder kurze Animation statt Emoji-Vorschau (Wunsch des Nutzers, nicht dringend). Kacheln bewusst klein halten.
+- Spielfelder (Stapler, Tower, Mut-Man, Automat) sind feste 780er-Zeichenflächen. Bei Windows-Skalierung 125/150 % wirkt die Schrift weich. Saubere Lösung: Zeichenfläche in doppelter Auflösung rendern (HiDPI), je Spiel prüfen.
+- Stapler: Titelzeile oben wird von den Regalpfosten überdeckt (alt, kosmetisch).

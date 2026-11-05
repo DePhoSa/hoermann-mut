@@ -9,7 +9,7 @@ const root = path.resolve(__dirname, '..'); const shots = process.env.SHOTS || '
     const ctx = await browser.newContext({ viewport: { width: vp.width, height: vp.height }, hasTouch: vp.m, isMobile: vp.m }); const page = await ctx.newPage(); const errors = [];
     page.on('pageerror', e => errors.push(e.message));
     await page.route(u => !u.href.startsWith(origin), r => r.abort());
-    await page.route('**/firebase-sync.js*', r => r.fulfill({ contentType: 'text/javascript', body: `window.__pub=[];window.HoermannCloud={uid:'u1',async publish(p){window.__pub.push(p)},async start(f,b){b('online');f([]);}};` }));
+    await page.route('**/firebase-sync.js*', r => r.fulfill({ contentType: 'text/javascript', body: `window.__pub=[];window.HoermannCloud={uid:'u1',async isAdmin(){return !!window.__isAdmin},async publish(p){window.__pub.push(p)},async start(f,b){b('online');f([]);}};` }));
     await page.goto(origin + '/index.html'); await page.waitForTimeout(500);
     const tag = vp.width + 'x' + vp.height;
     const noOverflow = async l => assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), tag + ' ' + l + ': Ueberlauf');
@@ -33,10 +33,10 @@ const root = path.resolve(__dirname, '..'); const shots = process.env.SHOTS || '
     await page.click('#chat-close-btn'); assert.ok(await page.isHidden('#online-side-chat'));
     assert.ok(await page.isHidden('#admin-dialog')); await big('#chat-admin-toggle-btn', 'Admin-Link');
     await page.click('#chat-admin-toggle-btn'); assert.ok(await page.isVisible('#admin-dialog'));
-    assert.ok(await page.isVisible('#chat-admin-pass-input')); assert.ok(await page.isHidden('#admin-tab-ideas-btn'), 'Tabs vor Login sichtbar'); assert.ok(await page.isHidden('#admin-chat-pane'));
+    assert.ok(await page.isHidden('#chat-admin-pass-input'), 'kein Passwortfeld mehr'); assert.ok(await page.isHidden('#admin-tab-ideas-btn'), 'Tabs vor Login sichtbar'); assert.ok(await page.isHidden('#admin-chat-pane'));
     await big('#chat-admin-login-btn', 'Login'); await big('#admin-dialog-close', 'Admin schliessen'); await noOverflow('Admin');
-    await page.fill('#chat-admin-pass-input', 'falsch'); await page.click('#chat-admin-login-btn'); await page.waitForTimeout(200);
-    assert.ok(await page.isHidden('#admin-tab-ideas-btn'), 'falsches Passwort darf nicht entsperren');
+    await page.click('#chat-admin-login-btn'); await page.waitForTimeout(200);
+    assert.ok(await page.isHidden('#admin-tab-ideas-btn'), 'Nicht-Admin darf nicht entsperren');
     if (shots) await page.screenshot({ path: `${shots}/${tag}-admin-login.png` });
     await page.keyboard.press('Escape'); assert.ok(await page.isHidden('#admin-dialog'));
     await page.evaluate(() => { isAdminUnlocked = true; updateAdminUiState(); });
