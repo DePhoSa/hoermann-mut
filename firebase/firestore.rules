@@ -1,0 +1,55 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{db}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function isAdmin() {
+      return signedIn()
+        && exists(/databases/$(db)/documents/config/admins)
+        && request.auth.uid in get(/databases/$(db)/documents/config/admins).data.uids;
+    }
+
+    // Bestenliste: Dokument-ID = "<spiel>__<name klein>". Der Ersteller besitzt den Namen,
+    // nur er darf ihn erhöhen (nie senken). Fremde Namen sind damit serverseitig geschützt.
+    match /scores/{id} {
+      allow read: if true;
+      allow create: if signedIn()
+        && request.resource.data.owner == request.auth.uid
+        && request.resource.data.score is number
+        && request.resource.data.score > 0
+        && request.resource.data.score < 100000000
+        && request.resource.data.name is string
+        && request.resource.data.name.size() <= 24
+        && request.resource.data.cat is string
+        && id == request.resource.data.cat + '__' + request.resource.data.name.lower();
+      allow update: if signedIn()
+        && resource.data.owner == request.auth.uid
+        && request.resource.data.owner == resource.data.owner
+        && request.resource.data.name == resource.data.name
+        && request.resource.data.cat == resource.data.cat
+        && request.resource.data.score is number
+        && request.resource.data.score > resource.data.score;
+      allow delete: if isAdmin();
+    }
+
+    // Chat, Ideen, Namensanträge und Admin-Aktionen als unveränderliche Ereignisse.
+    match /events/{id} {
+      allow read: if true;
+      allow create: if signedIn()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.type is string
+        && request.resource.data.keys().hasOnly(['type','uid','ts','msg','idea','renameReq','msgId','ideaId','reqId','approvedRename','clearedBefore'])
+        && (
+          request.resource.data.type in ['CHAT_MSG','IDEA_ADD','RENAME_REQ']
+          || isAdmin()
+        );
+      allow update: if false;
+      allow delete: if isAdmin();
+    }
+
+    match /config/{doc} {
+      allow read: if signedIn();
+      allow write: if false;   // nur in der Firebase-Konsole pflegen
+    }
+  }
+}

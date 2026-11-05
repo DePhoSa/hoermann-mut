@@ -1452,6 +1452,7 @@
     }
   </style>
   <script defer src="mut-effects.js?v=3.1.8"></script>
+  <script src="firebase-sync.js?v=3.1.8"></script>
   <script src="game-releases.js?v=3.1.8"></script>
   <script src="game-clock.js?v=3.1.8"></script>
   <link rel="stylesheet" href="game-navigation.css?v=3.1.8">
@@ -3106,10 +3107,6 @@
        7b. GLOBAL ONLINE CLOUD HUB (HIGHSCORES, IDEEN-BOX, LIVE-CHAT & ZWANGSUPDATE)
        ========================================================== */
     const APP_VERSION           = '3.1.8';
-    const NTFY_HUB_URL          = 'https://ntfy.sh/hoermann_mut_dephosa_hub_v3';
-    const BYTEBIN_POST_URL      = 'https://bytebin.lucko.me/post';
-    const BYTEBIN_BASE_URL      = 'https://bytebin.lucko.me/';
-    const INITIAL_SNAPSHOT_KEY  = 'DzIXl4IwhT';
     const cloudSyncBadge        = document.getElementById('cloud-sync-badge');
     const submitHighscoreFeedback = document.getElementById('submit-highscore-feedback');
     const ideaTicketBox         = document.getElementById('idea-ticket-box');
@@ -3129,12 +3126,6 @@
     let pendingGameDisplayName  = '';
     let updateForcedAlready     = false;
     let prefetchedNewHtml       = '';
-    let storedSnapKey           = localStorage.getItem('hoermann_cloud_snapshot_key_v3') || '';
-    if (!storedSnapKey) {
-      storedSnapKey = INITIAL_SNAPSHOT_KEY;
-      try { localStorage.setItem('hoermann_cloud_snapshot_key_v3', INITIAL_SNAPSHOT_KEY); } catch (e) {}
-    }
-    let currentSnapshotKey      = storedSnapKey;
     let hasCompletedInitialCloudSync = false;
     let currentIdeaEligibility  = { eligible: false, reason: '', badge: '', oldRank: null, newRank: null, rule: 'NONE' };
 
@@ -4005,95 +3996,32 @@
       return changed;
     }
 
-    // Speichert einen kompletten Cloud-Snapshot auf Bytebin und verteilt Echtzeit-Events sofort über ntfy
-    async function publishCloudSnapshot(extraEventPayload = null) {
-      // 1. ECHTZEIT-SOFORTVERSAND: Wenn ein direktes Event (CHAT_MSG, SCORE, IDEA_ADD, RENAME_REQ etc.) vorliegt,
-      // SOFORT und OHNE Wartezeit an ntfy senden (ohne altes snapshotKey-Feld, damit kein alter Snapshot andere PCs überschreibt!)
-      if (extraEventPayload) {
-        try {
-          fetch(NTFY_HUB_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
-            body: JSON.stringify(extraEventPayload)
-          }).then(r => {
-            if (r && r.ok) setCloudBadgeState('online');
-          }).catch(() => {});
-        } catch (e) {}
-      }
-
-      // 2. Falls dieser PC noch keinen ersten Cloud-Sync abgeschlossen hat, zuerst im Hintergrund synchronisieren,
-      // bevor ein Komplett-Snapshot auf Bytebin geschrieben wird!
-      if (!hasCompletedInitialCloudSync) {
-        await syncOnlineLeaderboards(false);
-      }
-
-      const localMaster = loadMasterUserScores();
-      const chatState   = loadChatState();
-      const ideasState  = loadIdeasState();
-      const milestones  = loadPlayerMilestones();
-      const nameOwners  = loadNameOwnersMap();
-      const renameState = loadRenameState();
-      const customHash  = localStorage.getItem(CUSTOM_ADMIN_HASH_KEY) || '';
-
-      const snapshotObj = {
-        version: APP_VERSION,
-        scores: {
-          forklift: deduplicateKeepBestPerName(localMaster.forklift || []),
-          tower: deduplicateKeepBestPerName(localMaster.tower || []),
-          pacman: deduplicateKeepBestPerName(localMaster.pacman || []),
-          slots: deduplicateKeepBestPerName(localMaster.slots || []),
-          mario: deduplicateKeepBestPerName(localMaster.mario || []),
-          buster: deduplicateKeepBestPerName(localMaster.buster || []),
-          nerve: deduplicateKeepBestPerName(localMaster.nerve || []),
-          parcours: deduplicateKeepBestPerName(localMaster.parcours || [])
-        },
-        chat: chatState.messages.slice(-80),
-        deletedChatIds: chatState.deletedIds.slice(-150),
-        clearedBefore: chatState.clearedBefore || 0,
-        ideas: ideasState.ideas.slice(0, 100),
-        deletedIdeaIds: ideasState.deletedIdeaIds.slice(-150),
-        milestones: milestones,
-        nameOwners: nameOwners,
-        renameRequests: renameState.requests.slice(0, 50),
-        approvedRenames: renameState.approvedRenames.slice(-100),
-        rejectedRenameIds: renameState.rejectedIds.slice(-100),
-        customAdminHash: customHash
-      };
-
-      let newKey = '';
+    // Schreibt ein Ereignis (Score, Chat, Idee ...) in die Firebase-Cloud (Firestore).
+    // Ohne Payload: überträgt die eigenen lokalen Bestwerte einmalig in die Cloud (Migration).
+    async function publishCloudSnapshot(payload = null) {
       try {
-        const res = await fetch(BYTEBIN_POST_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(snapshotObj)
-        });
-        if (res.ok) {
-          const j = await res.json();
-          if (j && j.key) {
-            newKey = j.key;
-            currentSnapshotKey = newKey;
-            localStorage.setItem('hoermann_cloud_snapshot_key_v3', newKey);
+        if (payload) {
+          await HoermannCloud.publish(payload);
+        } else {
+          const me = getLockedPlayerName().toLowerCase();
+          const master = loadMasterUserScores();
+          if (me) {
+            for (const cat of HoermannGameReleases.categories) {
+              for (const e of (master[cat] || [])) {
+                if (e && e.name && e.name.trim().toLowerCase() === me) {
+                  await HoermannCloud.publish({ type: 'SCORE', cat, name: e.name, score: e.score, date: e.date });
+                }
+              }
+            }
           }
         }
-      } catch (e) {}
-
-      // Nur wenn tatsächlich ein frischer Bytebin-Snapshot-Key erzeugt wurde, diesen als SNAPSHOT-Event bekanntgeben!
-      if (newKey) {
-        try {
-          await fetch(NTFY_HUB_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
-            body: JSON.stringify({ type: 'SNAPSHOT', snapshotKey: newKey, ts: Date.now() })
-          });
-          setCloudBadgeState('online');
-        } catch (e) {}
-      }
+        setCloudBadgeState('online');
+      } catch (e) { setCloudBadgeState('offline'); }
     }
 
     // Verhindert überlappende Cloud-Sync-Läufe, damit niemals ein alter Sync-Stand eine gerade geschriebene Chat-Nachricht überschreibt!
-    let isSyncOnlineInProgress = false;
 
-    // Hilfsfunktion: Verarbeitet ein einzelnes ntfy-Payload-Objekt in die übergebenen Status-Objekte
+    // Hilfsfunktion: Verarbeitet ein einzelnes Cloud-Ereignis in die übergebenen Status-Objekte
     function processSingleNtfyPayload(payload, localMaster, chatState, ideasState, milestones) {
       if (!payload || typeof payload !== 'object') return { changed: false, scoreToast: null };
       let changed = false;
@@ -4133,289 +4061,60 @@
       return { changed, scoreToast };
     }
 
-    // Lädt alle Online-Highscores, Chat-Nachrichten & Ideen vom Cloud-Hub
-    async function syncOnlineLeaderboards(pushIfLocalHasMore = false) {
-      if (isSyncOnlineInProgress) return;
-      isSyncOnlineInProgress = true;
-      setCloudBadgeState('syncing');
-
+    // Verarbeitet Daten aus der Cloud (Start: alles Bestehende, danach live Änderungen).
+    function applyLiveItems(items) {
       try {
-        // Lokale Arbeitskopien für den Netzwerk-Abruf (wird am Ende nochmals mit den brandaktuellen lokalen Nachrichten zusammengeführt!)
         const localMaster = loadMasterUserScores();
         const chatState   = loadChatState();
         const ideasState  = loadIdeasState();
         const milestones  = loadPlayerMilestones();
-        let cloudDataLoaded = false;
-        let latestDiscoveredKey = currentSnapshotKey;
-        const parsedNtfyPayloads = [];
-
-        // 1. Echtzeit-Event-Historie aus ntfy Hub abrufen & neuesten gültigen Snapshot-Key ermitteln
-        try {
-          const resN = await fetch(`${NTFY_HUB_URL}/json?poll=1&since=48h&_t=${Date.now()}`, { cache: 'no-store' });
-          if (resN.ok) {
-            const text = await resN.text();
-            const lines = text.split('\n').filter(Boolean);
-            lines.forEach(line => {
-              try {
-                const evt = JSON.parse(line);
-                if (evt && evt.event === 'message' && evt.message) {
-                  const payload = JSON.parse(evt.message);
-                  if (!payload) return;
-                  if (payload.snapshotKey) {
-                    latestDiscoveredKey = payload.snapshotKey;
-                  }
-                  parsedNtfyPayloads.push(payload);
-                  cloudDataLoaded = true;
-                }
-              } catch (err) {}
-            });
+        let anyChanged = false, toast = null;
+        items.forEach(item => {
+          if (item && item.type === 'FORCE_UPDATE' && item.version && isNewerSemver(item.version, APP_VERSION)) {
+            triggerForcedUpdateModal(item.version, item.notes);
+            return;
           }
-        } catch (e) {}
-
-        // 2. ZUERST die Bytebin-Snapshots laden (Master-Baseline + neuester entdeckter Key),
-        // damit danach die Echtzeit-Events aus ntfy garantiert das letzte Wort haben!
-        const keysToFetch = Array.from(new Set([INITIAL_SNAPSHOT_KEY, latestDiscoveredKey].filter(k => k)));
-        for (const snapKey of keysToFetch) {
-          try {
-            const resSnap = await fetch(`${BYTEBIN_BASE_URL}${snapKey}`, { cache: 'no-store' });
-            if (resSnap.ok) {
-              const snapData = await resSnap.json();
-              applyIncomingCloudData(snapData, localMaster, chatState, ideasState, milestones);
-              currentSnapshotKey = snapKey;
-              localStorage.setItem('hoermann_cloud_snapshot_key_v3', snapKey);
-              cloudDataLoaded = true;
-            }
-          } catch (e) {}
-        }
-
-        // 3. JETZT alle Echtzeit-Events aus dem 48h ntfy-Stream darüberlegen (dadurch gehen niemals Scores/Chats verloren, selbst wenn Bytebin auf einem PC blockiert war!)
-        parsedNtfyPayloads.forEach(payload => {
-          processSingleNtfyPayload(payload, localMaster, chatState, ideasState, milestones);
+          const r = processSingleNtfyPayload(item, localMaster, chatState, ideasState, milestones);
+          if (r.changed) anyChanged = true;
+          if (r.scoreToast) toast = r.scoreToast;
         });
-
         hasCompletedInitialCloudSync = true;
-
-        // WICHTIG GEGEN RACE-CONDITIONS: Falls der Spieler WÄHREND des Netzwerk-Abrufs eine neue Chat-Nachricht oder einen Highscore abgeschickt hat,
-        // holen wir uns jetzt den allerneuesten lokalen Stand und führen ihn zusammen, damit NIEMALS eine gerade geschriebene Nachricht verschwindet!
-        const freshestMaster = loadMasterUserScores();
-        mergeScoreMaps(localMaster, freshestMaster);
-
-        const freshestChat = loadChatState();
-        const combinedDeletedChat = Array.from(new Set([...chatState.deletedIds, ...freshestChat.deletedIds]));
-        const combinedClearedBefore = Math.max(chatState.clearedBefore || 0, freshestChat.clearedBefore || 0);
-        chatState.deletedIds = combinedDeletedChat;
-        chatState.clearedBefore = combinedClearedBefore;
-        chatState.messages = deduplicateAndSortChatMessages(
-          [...chatState.messages, ...freshestChat.messages],
-          combinedDeletedChat,
-          combinedClearedBefore
-        );
-
-        const freshestIdeas = loadIdeasState();
-        applyIncomingCloudData({ ideas: freshestIdeas.ideas, deletedIdeaIds: freshestIdeas.deletedIdeaIds }, localMaster, chatState, ideasState, milestones);
-
-        // Alles lokal persistieren
+        if (!anyChanged) return;
         saveMasterUserScores(localMaster);
         saveChatState(chatState);
         saveIdeasState(ideasState);
         savePlayerMilestones(milestones);
-
         HoermannGameReleases.categories.forEach(cat => {
           const combined = deduplicateKeepBestPerName([...(localMaster[cat] || []), ...(defaultLeaderboards[cat] || [])]);
-          try {
-            localStorage.setItem(`hoermann_lb_${cat}`, JSON.stringify(combined));
-          } catch (e) {}
+          try { localStorage.setItem(`hoermann_lb_${cat}`, JSON.stringify(combined)); } catch (e) {}
         });
-
-        if (pushIfLocalHasMore) {
-          await publishCloudSnapshot();
-        }
-
         if (typeof renderChatMessages === 'function') renderChatMessages();
         if (typeof renderAdminIdeasList === 'function') renderAdminIdeasList();
         if (typeof renderAdminRenamesList === 'function') renderAdminRenamesList();
-
         if (highscoreCard.classList.contains('show')) {
-          switchLeaderboardTab(activeGameCategory, playerNameInput.value.trim());
+          switchLeaderboardTab(activeGameCategory, (toast && toast.name) || getLockedPlayerName());
         }
-        if (scoreSubmitDialog.classList.contains('show')) {
-          evaluatePersonalHighscoreCheck();
+        if (scoreSubmitDialog.classList.contains('show')) evaluatePersonalHighscoreCheck();
+        if (typeof updateParcoursHighscoreDisplay === 'function') updateParcoursHighscoreDisplay();
+        if (toast && hasCompletedInitialCloudSync && toast.name !== getLockedPlayerName()) {
+          showToast(`🌐 Neuer Bestwert: ${toast.name} hat ${toast.score} Pkt erreicht! 🏆`);
         }
-        if (typeof updateParcoursHighscoreDisplay === 'function') {
-          updateParcoursHighscoreDisplay();
-        }
-
-        setCloudBadgeState(cloudDataLoaded ? 'online' : 'offline');
-      } finally {
-        isSyncOnlineInProgress = false;
-      }
+      } catch (e) {}
     }
+
+    // Verbindet mit der Cloud (einmalig, Firestore hält die Live-Verbindung selbst).
+    async function syncOnlineLeaderboards(pushIfLocalHasMore = false) {
+      setCloudBadgeState('syncing');
+      try {
+        await HoermannCloud.start(applyLiveItems, setCloudBadgeState);
+        if (pushIfLocalHasMore) await publishCloudSnapshot();
+      } catch (e) { setCloudBadgeState('offline'); }
+    }
+
+    function startLiveScoreStream() { syncOnlineLeaderboards(false); }
 
     async function broadcastSingleScoreLive(category, entryObj) {
-      await publishCloudSnapshot({
-        type: 'SCORE',
-        cat: category,
-        name: entryObj.name,
-        score: entryObj.score,
-        date: entryObj.date,
-        deviceToken: MY_DEVICE_TOKEN,
-        ts: Date.now()
-      });
-    }
-
-    // Schneller 4-Sekunden-Echtzeit-Poller für neue Chat-Nachrichten & Highscores (garantiert Live-Empfang OHNE Seiten-Refresh, selbst wenn SSE durch Firewall/Proxy getrennt wird!)
-    let isFastPollInProgress = false;
-    const processedLiveNtfyEventIds = new Set();
-
-    async function pollRecentLiveEvents() {
-      if (isFastPollInProgress || isSyncOnlineInProgress) return;
-      isFastPollInProgress = true;
-      try {
-        const res = await fetch(`${NTFY_HUB_URL}/json?poll=1&since=5m&_t=${Date.now()}`, { cache: 'no-store' });
-        if (!res.ok) return;
-        const text = await res.text();
-        const lines = text.split('\n').filter(Boolean);
-        if (!lines.length) return;
-
-        const localMaster = loadMasterUserScores();
-        const chatState   = loadChatState();
-        const ideasState  = loadIdeasState();
-        const milestones  = loadPlayerMilestones();
-        let anyChanged    = false;
-        let lastToastInfo = null;
-        let snapshotToSync = '';
-
-        lines.forEach(line => {
-          try {
-            const evt = JSON.parse(line);
-            if (!evt || evt.event !== 'message' || !evt.message) return;
-            if (evt.id && processedLiveNtfyEventIds.has(evt.id)) return;
-            if (evt.id) processedLiveNtfyEventIds.add(evt.id);
-
-            const payload = JSON.parse(evt.message);
-            if (!payload) return;
-
-            if (payload.snapshotKey && payload.snapshotKey !== currentSnapshotKey) {
-              snapshotToSync = payload.snapshotKey;
-            }
-            const resProc = processSingleNtfyPayload(payload, localMaster, chatState, ideasState, milestones);
-            if (resProc.changed) anyChanged = true;
-            if (resProc.scoreToast) lastToastInfo = resProc.scoreToast;
-          } catch (e) {}
-        });
-
-        if (anyChanged) {
-          saveMasterUserScores(localMaster);
-          saveChatState(chatState);
-          saveIdeasState(ideasState);
-          savePlayerMilestones(milestones);
-
-          HoermannGameReleases.categories.forEach(cat => {
-            const combined = deduplicateKeepBestPerName([...(localMaster[cat] || []), ...(defaultLeaderboards[cat] || [])]);
-            try {
-              localStorage.setItem(`hoermann_lb_${cat}`, JSON.stringify(combined));
-            } catch (e) {}
-          });
-
-          if (typeof renderChatMessages === 'function') renderChatMessages();
-          if (typeof renderAdminIdeasList === 'function') renderAdminIdeasList();
-          if (typeof renderAdminRenamesList === 'function') renderAdminRenamesList();
-
-          if (highscoreCard.classList.contains('show')) {
-            switchLeaderboardTab(activeGameCategory, (lastToastInfo && lastToastInfo.name) || playerNameInput.value.trim());
-          }
-          if (scoreSubmitDialog.classList.contains('show')) {
-            evaluatePersonalHighscoreCheck();
-          }
-          if (lastToastInfo) {
-            showToast(`🌐 Neuer Bestwert: ${lastToastInfo.name} hat ${lastToastInfo.score} Pkt erreicht! 🏆`);
-          }
-          setCloudBadgeState('online');
-        }
-
-        if (snapshotToSync) {
-          syncOnlineLeaderboards(false);
-        }
-      } catch (e) {} finally {
-        isFastPollInProgress = false;
-      }
-    }
-
-    // Echtzeit-Empfänger (SSE) mit automatischem Reconnect bei Verbindungsabbruch
-    let liveEventSourceInstance = null;
-    function startLiveScoreStream() {
-      if (typeof EventSource === 'undefined') return;
-      try {
-        if (liveEventSourceInstance) {
-          try { liveEventSourceInstance.close(); } catch (e) {}
-        }
-        const es = new EventSource(`${NTFY_HUB_URL}/sse`);
-        liveEventSourceInstance = es;
-
-        es.onmessage = async (evt) => {
-          try {
-            const data = JSON.parse(evt.data);
-            if (!data || !data.message) return;
-            if (data.id) processedLiveNtfyEventIds.add(data.id);
-            const item = JSON.parse(data.message);
-            if (!item) return;
-
-            const localMaster = loadMasterUserScores();
-            const chatState   = loadChatState();
-            const ideasState  = loadIdeasState();
-            const milestones  = loadPlayerMilestones();
-
-            if (item.snapshotKey && item.snapshotKey !== currentSnapshotKey) {
-              currentSnapshotKey = item.snapshotKey;
-              localStorage.setItem('hoermann_cloud_snapshot_key_v3', item.snapshotKey);
-            }
-
-            if (item.type === 'FORCE_UPDATE' && item.version && isNewerSemver(item.version, APP_VERSION)) {
-              triggerForcedUpdateModal(item.version, item.notes);
-              return;
-            }
-
-            if (item.type === 'SNAPSHOT' && item.snapshotKey) {
-              syncOnlineLeaderboards(false);
-              return;
-            }
-
-            const resProc = processSingleNtfyPayload(item, localMaster, chatState, ideasState, milestones);
-            if (resProc.changed) {
-              saveMasterUserScores(localMaster);
-              saveChatState(chatState);
-              saveIdeasState(ideasState);
-              savePlayerMilestones(milestones);
-
-              HoermannGameReleases.categories.forEach(cat => {
-                const combined = deduplicateKeepBestPerName([...(localMaster[cat] || []), ...(defaultLeaderboards[cat] || [])]);
-                try {
-                  localStorage.setItem(`hoermann_lb_${cat}`, JSON.stringify(combined));
-                } catch (e) {}
-              });
-
-              if (typeof renderChatMessages === 'function') renderChatMessages();
-              if (typeof renderAdminIdeasList === 'function') renderAdminIdeasList();
-              if (typeof renderAdminRenamesList === 'function') renderAdminRenamesList();
-
-              if (highscoreCard.classList.contains('show')) {
-                switchLeaderboardTab(activeGameCategory, (resProc.scoreToast && resProc.scoreToast.name) || getLockedPlayerName());
-              }
-              if (scoreSubmitDialog.classList.contains('show')) {
-                evaluatePersonalHighscoreCheck();
-              }
-              if (resProc.scoreToast) {
-                showToast(`🌐 Neuer Bestwert: ${resProc.scoreToast.name} hat ${resProc.scoreToast.score} Pkt erreicht! 🏆`);
-              }
-            }
-          } catch (e) {}
-        };
-
-        es.onerror = () => {
-          try { es.close(); } catch (e) {}
-          setTimeout(startLiveScoreStream, 6000);
-        };
-      } catch (e) {}
+      await publishCloudSnapshot({ type: 'SCORE', cat: category, name: entryObj.name, score: entryObj.score, date: entryObj.date, ts: Date.now() });
     }
 
     const refreshLbBtn = document.getElementById('refresh-leaderboard-btn');
@@ -5922,10 +5621,7 @@
     // Initiales Rendering & Online-Stream + 3,5-Sekunden-Live-Polling starten (damit Chat & Scores IMMER ohne Refresh erscheinen!)
     refreshLockedNameUi();
     updateAdminUiState();
-    syncOnlineLeaderboards(false);
-    startLiveScoreStream();
-    setInterval(pollRecentLiveEvents, 3500);
-    setInterval(() => { syncOnlineLeaderboards(false); }, 25000);
+    syncOnlineLeaderboards(true);
 
     /* ==========================================================
        8. GAME 0: SUPER DENNIS (OPTIMIERTE MARIO-PHYSIK & LEVELDESIGN)
