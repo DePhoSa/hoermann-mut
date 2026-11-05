@@ -55,7 +55,7 @@
     const release=HoermannGameReleases.release(category), name=getLockedPlayerName();
     const key='hoermann_game_update_seen_v1:'+encodeURIComponent(name)+':'+category+':'+release.version;
     const seen=memorySeen.has(key)||(()=>{try{return localStorage.getItem(key)==='seen';}catch{return false;}})();
-    const scoreCategories=category==='buster'?['buster','buster_v02']:[release.scoreCategory];
+    const scoreCategories=release.scoreCategory!==category?[category,release.scoreCategory]:[category];
     const played=name && scoreCategories.some(score=>{const best=findExistingPlayerBest(score,name);return best?.isUser && best.score>0;});
     if(automatic && (!played || seen || release.version==='0.1')){done?.();return;}
     phase='update';
