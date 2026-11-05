@@ -1,4 +1,4 @@
 {
-  "version": "3.1.8",
-  "notes": "Spielvorschauen wieder sichtbar, lesbare Updatehinweise, Countdown direkt im Spielfeld und zeitbasierte optimierte Mut-Effekte."
+  "version": "3.2.0",
+  "notes": "Neue stabile Cloud: Bestenlisten und Chat werden jetzt dauerhaft gespeichert und gehen nicht mehr verloren. Deine bisherigen Bestwerte werden automatisch übernommen."
 }
