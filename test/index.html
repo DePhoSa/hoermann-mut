@@ -1524,6 +1524,7 @@
   <script defer src="mut-effects.js?v=3.3.0"></script>
   <script src="firebase-sync.js?v=3.3.0"></script>
   <script src="game-releases.js?v=3.3.0"></script>
+  <script src="changelog.js?v=3.3.0"></script>
   <script src="game-clock.js?v=3.3.0"></script>
   <link rel="stylesheet" href="game-navigation.css?v=3.3.0">
 </head>
@@ -1538,6 +1539,7 @@
       <div class="top-divider"></div>
       <div class="brand-watermark">HÖRMANN</div>
       <div class="top-controls">
+        <button type="button" class="header-lb-btn" id="header-leaderboard-btn" aria-haspopup="dialog">🏆 Bestenlisten</button>
         <button class="icon-btn" id="sound-toggle-btn" title="Ton an / ausschalten" aria-label="Ton an oder ausschalten">
           <svg id="sound-icon-on" viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
@@ -2080,7 +2082,7 @@
     </div>
 
     <!-- GLOBAL LEADERBOARD CARD WITH TABS (For ALL 5 Games) -->
-    <div class="highscore-card" id="highscore-card" role="region" aria-label="Bestenlisten" style="margin: 0 auto 1.5rem auto; max-width: 780px;">
+    <div class="highscore-card" id="highscore-card" role="dialog" aria-modal="true" aria-labelledby="global-lb-title" tabindex="-1">
       <div class="highscore-header" style="flex-wrap: wrap; gap: 8px;">
         <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
           <div class="highscore-title" id="global-lb-title">🏆 Hörmann Mut-Bestenliste</div>
@@ -2243,7 +2245,8 @@
     Hörmann Mut-Portal &bull; Sektionaltore &bull; Schwingtore &bull; Türen &bull; Stahlzargen &bull; Lagermeister Nico &amp; Dennis Ressemann Edition
     <div><button type="button" class="chat-admin-toggle-btn" id="chat-admin-toggle-btn" aria-haspopup="dialog" aria-expanded="false" title="Admin-Bereich">🔒 Admin</button></div>
     <div style="margin-top:4px; font-size:0.74rem; color:rgba(255,255,255,0.5);">
-      <span id="app-version-badge">Version 3.3.0 · Update 0.2 für vier Spiele</span>
+      <span id="app-version-badge"><button type="button" class="version-btn" id="version-changelog-btn" aria-haspopup="dialog">Version 3.3.0</button></span>
+      <div id="version-highlights" class="version-highlights"></div>
     </div>
   </footer>
 

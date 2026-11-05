@@ -134,3 +134,71 @@
 .game-choice-card.game-unavailable .game-state-label { background: #dfe3e9; color: #4b5563; }
 .game-choice-card.game-unavailable .game-open-action { background: #cfd5dd; color: #5b6573; border-color: #cfd5dd; cursor: not-allowed; }
 .game-choice-card.game-unavailable:hover { transform: none; box-shadow: none; }
+
+/* ===== Portal 0.3: einheitliche Spielkacheln ===== */
+.games-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; grid-auto-rows: 1fr; align-items: stretch; }
+@media (max-width: 1000px) { .games-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .games-grid { grid-template-columns: minmax(0, 1fr); grid-auto-rows: auto; } }
+.games-grid .game-choice-card { display: flex !important; flex-direction: column !important; align-items: stretch !important; justify-content: flex-start !important; gap: 12px !important; padding: 16px !important; text-align: left !important; min-width: 0; height: 100%; box-sizing: border-box; }
+.games-grid .game-choice-card > * { min-width: 0; }
+.game-card-head { display: flex; align-items: center; gap: 12px; width: 100%; }
+.games-grid .game-choice-card .game-card-preview { width: 52px; height: 52px; flex: none; font-size: 2rem; display: flex; align-items: center; justify-content: center; margin: 0; }
+.games-grid .game-choice-card .game-card-title { margin: 0; font-size: 1.1rem; line-height: 1.25; min-height: 0; overflow-wrap: anywhere; }
+.games-grid .game-choice-card .game-card-desc { margin: 0; flex: none !important; font-size: .9rem; line-height: 1.45; min-height: 4.35em; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden; }
+.game-card-foot { margin-top: auto; display: flex; flex-direction: column; align-items: stretch; gap: 6px; width: 100%; }
+.game-card-foot .game-rank-ribbon { position: static; transform: none; width: auto; align-self: flex-start; min-height: 44px; padding: 0; margin: 0; border: 0; background: none; box-shadow: none; display: inline-flex; align-items: center; cursor: pointer; font: inherit; color: inherit; }
+.game-rank-chip { display: inline-block; padding: 4px 12px; border-radius: 999px; background: #e7edf5; color: #234261; font-size: .85rem; font-weight: 800; line-height: 1.4; border: 1px solid #c9d5e3; }
+.game-rank-ribbon.rank-1 .game-rank-chip { background: #ffd269; color: #473000; border-color: #e6b94c; }
+.game-rank-ribbon.rank-2 .game-rank-chip { background: #d9e1eb; color: #26364a; }
+.game-rank-ribbon.rank-3 .game-rank-chip { background: #d7a37c; color: #40250f; }
+.game-rank-ribbon:hover .game-rank-chip { text-decoration: underline; }
+.game-card-foot .game-open-action { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 44px; height: 44px; padding: 0 16px; margin: 0; border-radius: 6px; font-size: 1rem; font-weight: 700; line-height: 1; }
+.game-card-foot .game-version-button { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 44px; padding: 0 8px; margin: 0; border: 0; background: none; color: #0b4f9c; font: inherit; font-size: .85rem; font-weight: 700; text-decoration: underline; cursor: pointer; text-align: center; }
+.game-choice-card.game-unavailable .game-rank-chip { background: #dfe3e9; color: #4b5563; border-color: #cfd5dd; }
+.game-choice-card.game-unavailable .game-rank-ribbon { cursor: pointer; }
+
+/* ===== Bestenlisten-Overlay ===== */
+.header-lb-btn { min-height: 44px; padding: 0 14px; border: 2px solid var(--hoermann-orange); border-radius: 6px; background: var(--hoermann-orange); color: #001830; font: inherit; font-size: .9rem; font-weight: 800; cursor: pointer; white-space: nowrap; }
+.header-lb-btn:hover { filter: brightness(1.08); }
+.top-bar { height: auto; min-height: 52px; }
+#highscore-card.show { display: flex; flex-direction: column; position: fixed; inset: 0; margin: auto; z-index: 1200; width: min(920px, calc(100vw - 48px)); max-width: none; height: fit-content; max-height: min(88dvh, 860px); overflow: auto; overscroll-behavior: contain; box-sizing: border-box; padding: 0 1.6rem 1.4rem; border-radius: 12px; animation: none; box-shadow: 0 0 0 100vmax rgba(0, 21, 43, .62), 0 24px 60px #0007; }
+#highscore-card .highscore-header { position: sticky; top: 0; z-index: 2; background: #f8fafc; margin: 0 0 .9rem; padding: 1rem 0 .6rem; }
+#highscore-card #refresh-leaderboard-btn, #highscore-card #close-leaderboard-btn { min-height: 44px; padding: 0 12px; }
+#highscore-card .lb-tab-btn { min-height: 44px; }
+#highscore-card .highscore-table td:nth-child(2) { overflow-wrap: anywhere; }
+#highscore-card #leaderboard-game-link { width: 100%; max-width: none; margin: 0 0 12px; text-align: center; justify-content: center; }
+#highscore-card #leaderboard-game-link.is-paused { background: #cfd5dd; color: #5b6573; border-color: #cfd5dd; cursor: not-allowed; box-shadow: none; }
+#highscore-card #buster-history-button { min-height: 44px; margin-bottom: 8px; }
+html.lb-overlay-open { overflow: hidden; }
+@media (max-width: 640px) {
+  .top-bar { flex-wrap: wrap; padding: 6px 1rem; gap: .5rem; }
+  .top-divider, .brand-watermark { display: none; }
+  .week-label { flex: 1; min-width: 0; white-space: normal; font-size: .8rem; }
+  .top-controls { gap: .4rem; }
+  #highscore-card.show { width: 100vw; height: 100dvh; max-height: none; border-radius: 0; border: 0; padding: 0 1rem 1rem; box-shadow: none; }
+  #highscore-card .leaderboard-tabs { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; scroll-snap-type: x proximity; }
+  #highscore-card .lb-tab-btn { flex: none; min-width: 0; padding: 0 14px; white-space: nowrap; }
+  #highscore-card .highscore-header { flex-wrap: wrap; }
+}
+
+/* ===== Version und Änderungsverlauf ===== */
+.version-btn { min-height: 44px; padding: 0 14px; border: 1px solid rgba(255, 255, 255, .6); border-radius: 6px; background: transparent; color: #fff; font: inherit; font-size: .85rem; font-weight: 700; cursor: pointer; text-decoration: underline; }
+.version-highlights { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 4px; }
+.version-chip { padding: 3px 10px; border-radius: 999px; background: rgba(255, 255, 255, .14); color: #fff; font-size: .74rem; font-weight: 600; }
+#changelog-dialog { position: fixed; inset: 0; margin: auto; width: min(520px, calc(100vw - 32px)); max-height: calc(100dvh - 40px); overflow: auto; box-sizing: border-box; border: 0; border-radius: 8px; padding: 26px; background: #fff; color: #122b46; font-family: inherit; box-shadow: 0 16px 40px #0005; }
+#changelog-dialog::backdrop { background: #00152b99; }
+#changelog-dialog h2 { margin: 0 0 14px; font-size: 1.4rem; }
+#changelog-dialog h3 { margin: 16px 0 6px; font-size: 1rem; color: #002d62; }
+#changelog-dialog ul { margin: 0; padding-left: 22px; display: grid; gap: 6px; line-height: 1.5; }
+#changelog-close { margin-top: 20px; width: 100%; min-height: 48px; }
+
+/* Feinschliff */
+.games-grid .game-choice-card .game-card-preview { width: auto; min-width: 52px; height: 52px; font-size: 1.7rem; white-space: nowrap; letter-spacing: -.05em; line-height: 1; }
+#highscore-card .leaderboard-tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+#highscore-card .lb-tab-btn { min-width: 0; padding: 0 6px; display: flex; align-items: center; justify-content: center; text-align: center; }
+@media (max-width: 640px) {
+  #highscore-card .leaderboard-tabs { display: flex; flex-direction: row; flex-shrink: 0; }
+  .week-label { flex: 1 1 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .72rem; }
+  .header-lb-btn { padding: 0 10px; font-size: .85rem; }
+  .games-grid .game-choice-card .game-card-preview { font-size: 1.5rem; }
+}

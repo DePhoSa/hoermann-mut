@@ -48,8 +48,9 @@
       if(remaining>0){remaining--;delay(step,1000);}else delay(beginPlaying,350);}; step();
   }
   function enter(category, origin) {
-    stop(); game=category; phase=origin==='menu'?'countdown':'preview';
-    if(origin==='menu')countdown();else modal('Bereit für die nächste Runde?','Dein Spiel wartet im Hintergrund. Es läuft erst nach deinem Start.','Jetzt spielen',beginPlaying);
+    /* Immer zuerst Bereitschaftszustand; der Countdown startet erst nach „Jetzt spielen“. */
+    stop(); game=category; phase='preview';
+    modal('Bereit für die nächste Runde?','Dein Spiel wartet im Hintergrund. Es läuft erst nach deinem Start.','Jetzt spielen',()=>{if(phase==='preview'){close();countdown();}});
   }
   function update(category, automatic, done) {
     const release=HoermannGameReleases.release(category), name=getLockedPlayerName();
@@ -69,7 +70,7 @@
   }
   window.addEventListener('keydown',event=>{
     const typing=event.target.closest?.('input,textarea,select,[contenteditable="true"]');
-    if(typing || event.repeat || (!game && !dialog.open))return;
+    if(typing || event.repeat || (!game && !dialog.open) || document.querySelector('#highscore-card.show'))return;
     if(event.key==='Escape'||event.key.toLowerCase()==='p'){
       event.preventDefault();event.stopImmediatePropagation();
       if(phase==='paused' && !document.hidden)resume();else pause();return;
