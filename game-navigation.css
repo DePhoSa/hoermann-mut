@@ -65,9 +65,8 @@
 .game-unavailable { opacity: .92; }
 #chat-messages-list { overscroll-behavior: contain; }
 .chat-media-img { max-width: 100%; height: auto; max-height: 220px; object-fit: contain; }
-@media (max-width: 980px) {
-  #online-side-chat { height: min(520px, 78dvh) !important; }
-}
+#online-side-chat .chat-send-btn, #online-side-chat .chat-tool-btn, #online-side-chat .chat-input-field, #online-side-chat .chat-delete-btn { min-height: 44px; box-sizing: border-box; }
+#online-side-chat .chat-delete-btn { min-width: 44px; }
 @media (max-width: 640px) {
   /* 16px verhindert das automatische Hineinzoomen auf iPhones; 44px = gut treffbar */
   input, textarea, .chat-input-field, .submit-input, .thought-input { font-size: 16px !important; }

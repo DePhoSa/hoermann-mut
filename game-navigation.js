@@ -14,7 +14,7 @@ let selectedLaunchGame = null;
 const launchView = document.createElement('section');
 launchView.id = 'game-launch-view'; launchView.className = 'card-content';
 launchView.style.display = 'none';
-launchView.innerHTML = '<h2 id="game-launch-title" tabindex="-1"></h2><p id="game-launch-description"></p><div class="game-launch-actions"><button type="button" class="submit-btn" id="game-launch-play">Jetzt spielen</button><button type="button" class="utility-link" id="game-launch-ranks">Bestenliste ansehen</button><button type="button" class="utility-link" id="game-launch-menu">Zur Spieleübersicht</button></div>';
+launchView.innerHTML = '<h2 id="game-launch-title" tabindex="-1"></h2><p id="game-launch-description"></p><div class="game-launch-actions"><button type="button" class="submit-btn" id="game-launch-play">Jetzt spielen</button><button type="button" class="utility-link" id="game-launch-ranks">Bestenliste ansehen</button><button type="button" class="utility-link" id="game-launch-update">Update</button><button type="button" class="utility-link" id="game-launch-menu">Zur Spieleübersicht</button></div>';
 gamesMenuView.insertAdjacentElement('afterend', launchView);
 
 function openGamePreview(category, origin = 'leaderboard') {
@@ -46,6 +46,9 @@ function openGamePreview(category, origin = 'leaderboard') {
     : 'Bereit für die nächste Runde? Dein Spiel beginnt erst, wenn du „Jetzt spielen“ auswählst.';
   const play = document.getElementById('game-launch-play');
   play.disabled = Boolean(game.status); play.textContent = game.status || 'Jetzt spielen';
+  const upd = document.getElementById('game-launch-update');
+  upd.hidden = !HoermannGameReleases.isVersioned(category);
+  if (!upd.hidden) upd.textContent = 'Update ' + HoermannGameReleases.release(category).version;
   document.getElementById('game-launch-title').focus({ preventScroll: true });
   launchView.scrollIntoView({ behavior: 'auto', block: 'start' });
 }
@@ -56,6 +59,7 @@ document.getElementById('game-launch-play').addEventListener('click', () => {
   document.getElementById(selectedLaunchGame + '-view').style.display = 'flex';
   game.start();
 });
+document.getElementById('game-launch-update').addEventListener('click', () => { const g = HoermannGameReleases.baseGame(selectedLaunchGame); if (g) HoermannGameSession.update(g, false); });
 document.getElementById('game-launch-ranks').addEventListener('click', () => openGlobalLeaderboard(selectedLaunchGame === 'bomber' ? 'forklift' : selectedLaunchGame));
 document.getElementById('game-launch-menu').addEventListener('click', showGamesMenu);
 
@@ -120,11 +124,8 @@ for (const [category, game] of Object.entries(portalGameNavigation)) {
   action.textContent = game.status ? game.status : 'Spielen'; action.disabled = Boolean(game.status);
   action.addEventListener('click', event => { event.stopPropagation(); openGamePreview(category, 'menu'); });
   card.append(action);
-  const version=document.createElement('button');version.type='button';version.className='game-version-button';
-  version.textContent='Update '+HoermannGameReleases.release(category).version;
-  version.addEventListener('click',event=>{event.stopPropagation();HoermannGameSession.update(category,false);});card.append(version);
   card.addEventListener('click', event => { if (!game.status && !event.target.closest('button')) openGamePreview(category, 'menu'); });
-  if(!game.status){const pause=document.createElement('button');pause.type='button';pause.className='utility-link game-pause-button';pause.textContent='Pause · P / Esc';pause.addEventListener('click',()=>HoermannGameSession.pause());document.querySelector('#'+category+'-view .game-actions-bar').append(pause);}
+  if(!game.status){const pause=document.createElement('button');pause.type='button';pause.className='utility-link game-pause-button';pause.textContent='Pause · P / Esc';pause.addEventListener('click',()=>HoermannGameSession.pause());const bar=document.querySelector('#'+category+'-view .game-actions-bar');bar.append(pause);const upd=document.createElement('button');upd.type='button';upd.className='utility-link game-update-button';upd.textContent='Update '+HoermannGameReleases.release(category).version;upd.addEventListener('click',()=>HoermannGameSession.update(category,false));bar.append(upd);}
 }
 const leaderboardGameLink = document.createElement('button');
 leaderboardGameLink.type = 'button'; leaderboardGameLink.id = 'leaderboard-game-link'; leaderboardGameLink.className = 'submit-btn';
