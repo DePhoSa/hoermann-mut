@@ -130,15 +130,15 @@ const leaderboardGameLink = document.createElement('button');
 leaderboardGameLink.type = 'button'; leaderboardGameLink.id = 'leaderboard-game-link'; leaderboardGameLink.className = 'submit-btn';
 highscoreCard.querySelector('.leaderboard-tabs').insertAdjacentElement('beforebegin', leaderboardGameLink);
 function updateLeaderboardGameLink() {
-  const game = portalGameNavigation[activeGameCategory === 'buster_v02' ? 'buster' : activeGameCategory];
+  const game = portalGameNavigation[HoermannGameReleases.baseGame(activeGameCategory)];
   if (!game) return;
   leaderboardGameLink.textContent = game.status ? game.title + ' · ' + game.status : 'Zum Spiel: ' + game.title;
   leaderboardGameLink.disabled = false;
 }
-leaderboardGameLink.addEventListener('click', () => openGamePreview(activeGameCategory === 'buster_v02' ? 'buster' : activeGameCategory));
+leaderboardGameLink.addEventListener('click', () => openGamePreview(HoermannGameReleases.baseGame(activeGameCategory)));
 const busterHistoryButton=document.createElement('button');busterHistoryButton.type='button';busterHistoryButton.hidden=true;busterHistoryButton.className='utility-link';busterHistoryButton.id='buster-history-button';leaderboardGameLink.after(busterHistoryButton);
-busterHistoryButton.addEventListener('click',()=>switchLeaderboardTab(activeGameCategory==='buster'?'buster_v02':'buster'));
-function refreshLeaderboardNavigation(){const visible=['buster','buster_v02'].includes(activeGameCategory);busterHistoryButton.hidden=!visible;busterHistoryButton.textContent=activeGameCategory==='buster'?'Zur aktuellen Bestenliste 0.2':'Bisherige Bestenliste 0.1 ansehen';updateLeaderboardGameLink();refreshGameRibbons();}
+busterHistoryButton.addEventListener('click',()=>{const base=HoermannGameReleases.baseGame(activeGameCategory);switchLeaderboardTab(activeGameCategory===base?HoermannGameReleases.release(base).scoreCategory:base);});
+function refreshLeaderboardNavigation(){const visible=HoermannGameReleases.isVersioned(activeGameCategory);busterHistoryButton.hidden=!visible;busterHistoryButton.textContent=activeGameCategory===HoermannGameReleases.baseGame(activeGameCategory)?'Zur aktuellen Bestenliste 0.2':'Bisherige Bestenliste 0.1 ansehen';updateLeaderboardGameLink();refreshGameRibbons();}
 window.addEventListener('portal-leaderboard-change',refreshLeaderboardNavigation);
 window.addEventListener('storage', refreshGameRibbons);
 refreshGameRibbons(); updateLeaderboardGameLink();

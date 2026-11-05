@@ -4258,28 +4258,32 @@
 
     function switchLeaderboardTab(category, highlightName = "") {
       activeGameCategory = category;
-      tabForkliftBtn.classList.toggle('active', category === 'forklift');
+      tabForkliftBtn.classList.toggle('active', HoermannGameReleases.baseGame(category) === 'forklift');
       if (tabTowerBtn) tabTowerBtn.classList.toggle('active', category === 'tower');
       if (tabPacmanBtn) tabPacmanBtn.classList.toggle('active', category === 'pacman');
       if (tabSlotsBtn) tabSlotsBtn.classList.toggle('active', category === 'slots');
-      tabMarioBtn.classList.toggle('active', category === 'mario');
-      tabBusterBtn.classList.toggle('active', ['buster','buster_v02'].includes(category));
-      tabNerveBtn.classList.toggle('active', category === 'nerve');
-      tabParcoursBtn.classList.toggle('active', category === 'parcours');
+      tabMarioBtn.classList.toggle('active', HoermannGameReleases.baseGame(category) === 'mario');
+      tabBusterBtn.classList.toggle('active', HoermannGameReleases.baseGame(category) === 'buster');
+      tabNerveBtn.classList.toggle('active', HoermannGameReleases.baseGame(category) === 'nerve');
+      tabParcoursBtn.classList.toggle('active', HoermannGameReleases.baseGame(category) === 'parcours');
 
       const titles = {
-        forklift: "🏆 Bestenliste: 🚜 Lagermeister Nico malocht (Max: 10.000 Pkt = 100%)",
+        forklift: "🏆 Lagermeister Nico · 0.1 (bisherige Rekorde)",
         tower: "🏆 Bestenliste: 🏰 Tower of Mut (Resse im Schicksalsturm • Tutorial + 5 Level)",
         pacman: "🏆 Bestenliste: 🟡 Hörmann Mut-Man (Labyrinth, Zweifel-Geister & Power-Tore)",
         slots: "🏆 Bestenliste: 🎰 Der Hörmann Mut-Automat (Walzen & Risiko-Jackpot)",
-        mario: "🏆 Bestenliste: 🍄 Super Dennis (Mut-Welt)",
+        mario: "🏆 Super Dennis · 0.1 (bisherige Rekorde)",
         buster: "🏆 Zweifel-Buster · 0.1 (bisherige Rekorde)",
         buster_v02: "🏆 Zweifel-Buster · Update 0.2",
-        nerve: "🏆 Bestenliste: 🎲 Die Mut-Probe",
-        parcours: "🏆 Bestenliste: 🕹️ Tor-Parcours"
+        forklift_v02: "🏆 Lagermeister Nico · Update 0.2 (Max: 10.000 Pkt = 100%)",
+        mario_v02: "🏆 Super Dennis · Update 0.2",
+        nerve_v02: "🏆 Die Mut-Probe · Update 0.2",
+        parcours_v02: "🏆 Tor-Parcours · Update 0.2",
+        nerve: "🏆 Die Mut-Probe · 0.1 (bisherige Rekorde)",
+        parcours: "🏆 Tor-Parcours · 0.1 (bisherige Rekorde)"
       };
       globalLbTitle.textContent = titles[category] || titles.forklift;
-      lbScoreColHeader.textContent = (category === 'parcours') ? 'Tore' : 'Punkte';
+      lbScoreColHeader.textContent = (HoermannGameReleases.baseGame(category) === 'parcours') ? 'Tore' : 'Punkte';
 
       const list = getGameLeaderboard(category);
       const top10 = list.slice(0, 10);
@@ -4296,7 +4300,7 @@
         if (idx === 1) rankBadge = '🥈 2.';
         if (idx === 2) rankBadge = '🥉 3.';
 
-        const scoreLabel = (category === 'forklift')
+        const scoreLabel = (HoermannGameReleases.baseGame(category) === 'forklift')
           ? `${entry.score} <small style="color:#64748b; font-weight:600; font-size:0.75rem;">(${(entry.score / 100).toFixed(1)}%)</small>`
           : entry.score;
 
@@ -4325,14 +4329,14 @@
       return div.innerHTML;
     }
 
-    tabForkliftBtn.addEventListener('click', () => switchLeaderboardTab('forklift'));
+    tabForkliftBtn.addEventListener('click', () => switchLeaderboardTab(HoermannGameReleases.release('forklift').scoreCategory));
     if (tabTowerBtn) tabTowerBtn.addEventListener('click', () => switchLeaderboardTab('tower'));
     if (tabPacmanBtn) tabPacmanBtn.addEventListener('click', () => switchLeaderboardTab('pacman'));
     if (tabSlotsBtn) tabSlotsBtn.addEventListener('click', () => switchLeaderboardTab('slots'));
-    tabMarioBtn.addEventListener('click', () => switchLeaderboardTab('mario'));
+    tabMarioBtn.addEventListener('click', () => switchLeaderboardTab(HoermannGameReleases.release('mario').scoreCategory));
     tabBusterBtn.addEventListener('click', () => switchLeaderboardTab('buster_v02'));
-    tabNerveBtn.addEventListener('click', () => switchLeaderboardTab('nerve'));
-    tabParcoursBtn.addEventListener('click', () => switchLeaderboardTab('parcours'));
+    tabNerveBtn.addEventListener('click', () => switchLeaderboardTab(HoermannGameReleases.release('nerve').scoreCategory));
+    tabParcoursBtn.addEventListener('click', () => switchLeaderboardTab(HoermannGameReleases.release('parcours').scoreCategory));
 
     function openGlobalLeaderboard(category = 'forklift', highlightName = "") {
       switchLeaderboardTab(category, highlightName);
@@ -4348,17 +4352,17 @@
       const lastPlayedCat = localStorage.getItem('hoermann_last_lb_cat') || 'forklift';
       openGlobalLeaderboard(lastPlayedCat);
     });
-    document.getElementById('forklift-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('forklift'));
+    document.getElementById('forklift-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('forklift_v02'));
     const towerLbBtn = document.getElementById('tower-leaderboard-btn');
     if (towerLbBtn) towerLbBtn.addEventListener('click', () => openGlobalLeaderboard('tower'));
     const pacmanLbBtn = document.getElementById('pacman-leaderboard-btn');
     if (pacmanLbBtn) pacmanLbBtn.addEventListener('click', () => openGlobalLeaderboard('pacman'));
     const slotsLbBtn = document.getElementById('slots-leaderboard-btn');
     if (slotsLbBtn) slotsLbBtn.addEventListener('click', () => openGlobalLeaderboard('slots'));
-    document.getElementById('mario-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('mario'));
+    document.getElementById('mario-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('mario_v02'));
     document.getElementById('buster-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('buster_v02'));
-    document.getElementById('nerve-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('nerve'));
-    document.getElementById('parcours-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('parcours'));
+    document.getElementById('nerve-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('nerve_v02'));
+    document.getElementById('parcours-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('parcours_v02'));
 
     // Prüft live, ob der eingegebene Name frei/gültig ist, ob bereits ein höherer Highscore vorliegt + ob ein Ideen-Ticket freigeschaltet wird
     function evaluatePersonalHighscoreCheck() {
