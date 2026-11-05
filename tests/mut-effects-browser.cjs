@@ -2,7 +2,7 @@ const {chromium}=require('playwright');const http=require('node:http');const fs=
 (async()=>{
   const root=path.resolve(__dirname,'..');const server=http.createServer((req,res)=>{const file=path.resolve(root,'.'+new URL(req.url,'http://localhost').pathname.replace(/\/$/,'/index.html'));if(!file.startsWith(root+path.sep)||!fs.existsSync(file)){res.writeHead(404).end();return;}res.setHeader('Content-Type',file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':'text/html');res.end(fs.readFileSync(file));});await new Promise(r=>server.listen(0,'127.0.0.1',r));let instance;
   try{
-    instance=await chromium.launchServer({headless:true,channel:'msedge'});const browser=await chromium.connect(instance.wsEndpoint());const page=await browser.newPage({viewport:{width:1360,height:900}});const origin='http://127.0.0.1:'+server.address().port;
+    instance=await chromium.launchServer({headless:true,channel:process.env.PLAYWRIGHT_CHANNEL||'msedge'});const browser=await chromium.connect(instance.wsEndpoint());const page=await browser.newPage({viewport:{width:1360,height:900}});const origin='http://127.0.0.1:'+server.address().port;
     await page.route('**/*',r=>{const url=r.request().url();if(url.startsWith(origin+'/'))return r.continue();if(url.startsWith('https://ntfy.sh/'))return r.fulfill({contentType:'application/x-ndjson',body:''});if(url.startsWith('https://bytebin.lucko.me/'))return r.fulfill({json:{scores:{},chat:[]}});return r.abort();});
     const errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto(origin);await page.waitForFunction(()=>globalThis.HoermannMutEffects);
     const cdp=await page.context().newCDPSession(page);await cdp.send('Emulation.setCPUThrottlingRate',{rate:4});
