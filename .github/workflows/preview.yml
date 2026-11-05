@@ -1,0 +1,30 @@
+# Veröffentlicht den Stand des Branches "test" unter /test/ (Vorschau), ohne die Live-Seite zu ändern.
+name: Vorschau aus test-Branch
+on:
+  push:
+    branches: [test]
+permissions:
+  contents: write
+concurrency: preview
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: test, path: src }
+      - uses: actions/checkout@v4
+        with: { ref: main, path: site }
+      - name: Vorschau kopieren
+        run: |
+          rm -rf site/test && mkdir site/test
+          cd src
+          cp -r $(ls | grep -vE '^(tests|docs|firebase|README.md|RELEASE-.*|bomber-arena-README.md)$') ../site/test/
+      - name: Auf main committen
+        run: |
+          cd site
+          git config user.name "github-actions"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A test
+          git diff --cached --quiet && exit 0
+          git commit -m "Vorschau aktualisiert (aus test-Branch ${GITHUB_SHA::7})"
+          git push origin HEAD:main

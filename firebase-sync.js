@@ -10,6 +10,8 @@
     appId: '1:204649341366:web:3a6b32e69f9b23f76ba117'
   };
   const SDK = 'https://www.gstatic.com/firebasejs/10.14.1/';
+  // Vorschau unter /test/ nutzt getrennte Sammlungen, damit echte Daten unberührt bleiben.
+  const PRE = (root.location && /\/test\//.test(root.location.pathname)) ? 'test_' : '';
   const scoreId = (cat, name) => cat + '__' + String(name).trim().toLowerCase();
   const ADMIN_TYPES = new Set(['CHAT_DELETE','CHAT_CLEAR','IDEA_DELETE','RENAME_APPROVE','RENAME_REJECT','FORCE_UPDATE']);
   let ready = null, started = false, api = null;
@@ -42,7 +44,7 @@
     async publish(p) {
       const { fs, db, au } = await init();
       if (p.type === 'SCORE') {
-        const ref = fs.doc(db, 'scores', scoreId(p.cat, p.name));
+        const ref = fs.doc(db, PRE + 'scores', scoreId(p.cat, p.name));
         const data = { cat: p.cat, name: String(p.name).trim().slice(0, 24), score: Number(p.score), date: p.date || 'Heute', owner: au.currentUser.uid, ts: Date.now() };
         const snap = await fs.getDoc(ref);
         if (snap.exists() && Number(snap.data().score) >= data.score) return;
@@ -52,7 +54,7 @@
       if (p.type === 'ADMIN_HASH') return; // Admin läuft jetzt über config/admins
       const ev = Object.assign({}, p, { uid: au.currentUser.uid, ts: p.ts || Date.now() });
       delete ev.deviceToken;
-      await fs.addDoc(fs.collection(db, 'events'), ev);
+      await fs.addDoc(fs.collection(db, PRE + 'events'), ev);
     },
     // onItems(payloads[]) bekommt alle neuen/geänderten Daten, setBadge(status) den Verbindungsstatus.
     async start(onItems, setBadge) {
@@ -61,13 +63,13 @@
       try {
         const { fs, db } = await init();
         const seen = new Set();
-        fs.onSnapshot(fs.collection(db, 'scores'), snap => {
+        fs.onSnapshot(fs.collection(db, PRE + 'scores'), snap => {
           const items = [];
           snap.docChanges().forEach(c => { if (c.type !== 'removed') items.push(toScorePayload(c.doc.data())); });
           if (items.length) onItems(items);
           setBadge && setBadge('online');
         }, () => setBadge && setBadge('offline'));
-        const q = fs.query(fs.collection(db, 'events'), fs.orderBy('ts', 'desc'), fs.limit(400));
+        const q = fs.query(fs.collection(db, PRE + 'events'), fs.orderBy('ts', 'desc'), fs.limit(400));
         fs.onSnapshot(q, snap => {
           const items = [];
           snap.docChanges().forEach(c => {
