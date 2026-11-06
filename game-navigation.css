@@ -256,3 +256,6 @@ body:has(#score-submit-dialog.show) #game-end-lb { display: none; }
 
 /* Unauffälliger Admin-Einstieg im Änderungsverlauf */
 .changelog-admin-link { display: block; margin: 14px auto 0; background: none; border: 0; color: #8a97a8; font-size: .78rem; text-decoration: underline dotted; min-height: 44px; padding: 8px 14px; cursor: pointer; }
+
+/* Touch: die kurze Pause-Taste bleibt mindestens 44px breit */
+.game-pause-button { min-width: 44px; }
