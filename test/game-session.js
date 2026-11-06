@@ -6,6 +6,7 @@
   countdownElement.innerHTML='<span class=game-countdown-label>Mach dich bereit</span><strong></strong>';
   function showCountdown(){const view=document.getElementById(game+'-view');const field=view.querySelector('canvas,.doors-arena');let stage=field.parentElement;if(!stage.classList.contains('game-stage')){stage=document.createElement('div');stage.className='game-stage';field.before(stage);stage.append(field);}stage.append(countdownElement);countdownElement.querySelector('strong').textContent=countdownValue;countdownElement.hidden=false;}
   const timers = new Set(), memorySeen = new Set();
+  let cdTimer = null;
   let held = new Set(), holdStart = 0; // Spiel-Zeitgeber, die beim Fortsetzen bis "Los!" eingefroren bleiben
   const dialog = document.createElement('dialog'); dialog.id = 'game-session-dialog';
   dialog.setAttribute('aria-labelledby','game-session-title');
@@ -32,9 +33,12 @@
     if(phase!=='paused') return;
     const pausedMs=performance.now()-pauseAt;
     if(game==='forklift' && nico?.cargo) nico.cargo.pickupTime += pausedMs;
-    if(beforePause==='playing') {
-      /* Fortsetzen: erst wieder 3-2-1-Los, die Spielzeit bleibt bis dahin eingefroren. */
-      close(); held=new Set(timers); timers.clear(); holdStart=performance.now(); countdown(); return;
+    if(beforePause==='playing' || beforePause==='countdown') {
+      /* Fortsetzen: immer wieder volles 3-2-1-Los von vorn, die Spielzeit bleibt bis dahin eingefroren. */
+      close();
+      if(beforePause==='playing') { held=new Set(timers); timers.clear(); holdStart=performance.now(); }
+      else if(cdTimer) { clearTimeout(cdTimer.id); timers.delete(cdTimer); }
+      cdTimer=null; countdown(); return;
     }
     phase=beforePause; close(); for(const timer of timers) arm(timer);
     if(phase==='countdown') showCountdown();
@@ -58,7 +62,7 @@
   function beginPlaying(){phase='playing';close();releaseHeld();}
   function countdown(){phase='countdown';let remaining=3;
     const step=()=>{countdownValue=remaining>0?String(remaining):'Los!';showCountdown();
-      if(remaining>0){remaining--;delay(step,1000);}else delay(beginPlaying,350);}; step();
+      if(remaining>0){remaining--;cdTimer=delay(step,1000);}else cdTimer=delay(beginPlaying,350);}; step();
   }
   function enter(category, origin) {
     /* Immer zuerst Bereitschaftszustand; der Countdown startet erst nach „Jetzt spielen“. */

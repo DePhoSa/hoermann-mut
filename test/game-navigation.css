@@ -210,3 +210,13 @@ footer .version-btn:hover, footer .version-btn:focus-visible { color: #fff; text
 #changelog-highlights { margin: 0 0 14px; }
 #changelog-highlights .version-highlights { justify-content: flex-start; }
 #changelog-highlights .version-chip { background: #e7edf5; color: #002d62; }
+
+/* Bestenliste ist universell über den Knopf oben rechts erreichbar: Links in den Spielleisten entfallen */
+#forklift-leaderboard-btn, #mario-leaderboard-btn, #buster-leaderboard-btn, #nerve-leaderboard-btn, #parcours-leaderboard-btn,
+#tower-leaderboard-btn, #pacman-leaderboard-btn, #slots-leaderboard-btn { display: none !important; }
+/* Ergebnis-Dialog: zwei ruhige Zusatzaktionen unter dem Hauptknopf */
+.score-dialog-actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; width: 100%; max-width: 460px; }
+.score-dialog-actions button { min-height: 44px; }
+
+/* "✕ Menü" in den Spielleisten entfällt (Rückweg: ✕ oben rechts, Pausen-Dialog, Spielende) */
+#exit-forklift-btn, #exit-slots-btn, #exit-tower-btn, #exit-pacman-btn, #exit-mario-btn, #exit-buster-btn, #exit-nerve-btn, #exit-parcours-btn { display: none !important; }
