@@ -6912,6 +6912,7 @@
 
       if (isAlarm) {
         nerveOver = true;
+        HoermannGameSession.ended(0, 1800);
         const lost = nerveCurrentStake;
         playSound('alarm');
         nerveTitle.textContent = lost > 0
@@ -7245,6 +7246,7 @@
       playSound('hit');
       if (parcoursScore > pBestBefore) triggerParticleEffect('confetti');
 
+      HoermannGameSession.ended(parcoursScore, 900);
       if (parcoursScore > 0) {
         promptScoreSubmit(parcoursScore, 'parcours_v02', 'Tor-Parcours 0.2');
       }
