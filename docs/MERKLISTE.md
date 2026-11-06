@@ -10,8 +10,6 @@
 - Vorher klären: Ist die alte Realtime Database im Projekt aktiv? Falls ja, Regeln dort prüfen (keine offenen Regeln).
 
 ## Weitere offene Punkte
-- Feste Admin-Anmeldung (z. B. Google) statt anonymer ID.
-- Alte Browser-Tests laufen nur mit Edge, auf Chromium umstellen.
 - Index.html (11.500 Zeilen) in Module je Spiel aufteilen.
 
 ## Ideen aus dem Test (3.3.0)

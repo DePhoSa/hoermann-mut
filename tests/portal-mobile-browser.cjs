@@ -20,7 +20,7 @@ const root = path.resolve(__dirname, '..');
     await noOverflow('Spielmenü');
     await small('.game-open-action, .game-version-button, .game-rank-ribbon', 'Spielkarten');
     assert.ok(await page.locator('.game-choice-card').count() >= 8);
-    await page.click('#menu-view-leaderboard-btn'); await page.waitForTimeout(300);
+    await page.click('#header-leaderboard-btn'); await page.waitForTimeout(300);
     await noOverflow('Bestenliste'); await page.keyboard.press('Escape');
     await page.click('#chat-fab'); await page.waitForTimeout(150);
     await page.fill('#chat-sender-input', 'Tester'); await page.fill('#chat-text-input', 'Hallo mobil');

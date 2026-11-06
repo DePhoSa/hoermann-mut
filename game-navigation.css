@@ -202,3 +202,11 @@ html.lb-overlay-open { overflow: hidden; }
   .header-lb-btn { padding: 0 10px; font-size: .85rem; }
   .games-grid .game-choice-card .game-card-preview { font-size: 1.5rem; }
 }
+
+/* Schlanker Footer: eine ruhige Zeile, Version als schlichter Link, Admin-Zugang unsichtbar */
+footer { padding: 1.2rem 1rem 5rem; text-align: center; font-size: .8rem; color: rgba(255, 255, 255, .6); }
+footer .version-btn { background: none; border: 0; border-radius: 4px; color: inherit; font: inherit; text-decoration: underline dotted; text-underline-offset: 3px; padding: 12px 8px; min-height: 44px; cursor: pointer; }
+footer .version-btn:hover, footer .version-btn:focus-visible { color: #fff; text-decoration-style: solid; }
+#changelog-highlights { margin: 0 0 14px; }
+#changelog-highlights .version-highlights { justify-content: flex-start; }
+#changelog-highlights .version-chip { background: #e7edf5; color: #002d62; }

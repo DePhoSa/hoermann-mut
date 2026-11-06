@@ -10,10 +10,10 @@ node tests/portal-03-browser.cjs
 node tests/v02-leaderboards-browser.cjs
 node tests/chat-admin-browser.cjs
 node tests/lb-in-game-browser.cjs
-PLAYWRIGHT_CHANNEL=chromium node tests/game-session-browser.cjs
-PLAYWRIGHT_CHANNEL=chromium node tests/mut-effects-browser.cjs
+node tests/game-session-browser.cjs
+node tests/mut-effects-browser.cjs
 ```
 
-Ohne `PLAYWRIGHT_CHANNEL` verwenden die zwei letzten Tests den Browser Edge (`msedge`).
+Alle Browser-Tests laufen mit Chromium. Mit `PLAYWRIGHT_CHANNEL=msedge` lassen sich die zwei Tests `game-session-browser` und `mut-effects-browser` auch mit Edge ausführen.
 Der frühere Test `live-game-navigation.cjs` wurde entfernt: Er prüfte das alte Menü und wird von
 `portal-03-browser.cjs` und `game-session-browser.cjs` abgedeckt.
