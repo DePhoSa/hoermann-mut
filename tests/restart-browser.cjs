@@ -32,10 +32,9 @@ const GAMES = {
     };
     const afterEnd = async savesScore => {
       if (!savesScore) return;
-      await page.locator('#highscore-card.show').waitFor();
-      assert.equal(await page.locator('#game-end-card').isVisible(), false, 'Karte darf Bestenlisten-Overlay nicht ueberdecken');
-      assert.equal(await page.evaluate(() => document.getElementById('score-submit-dialog').classList.contains('show')), true);
-      await page.locator('#close-leaderboard-btn').click();
+      // Erstspieler ohne festen Namen: Ergebnis-Dialog liegt unter dem Spiel (Bestenliste oeffnet nicht automatisch), Karte bleibt bedienbar.
+      await page.locator('#score-submit-dialog.show').waitFor();
+      await page.locator('#score-dialog-close-btn').click();
     };
     for (const [game, cfg] of Object.entries(GAMES)) {
       await page.locator('#menu-btn').click();
