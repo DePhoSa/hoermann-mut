@@ -72,6 +72,9 @@ body:has(#online-side-chat.open) #chat-fab { visibility: hidden; }
 .chat-media-img { max-width: 100%; height: auto; max-height: 220px; object-fit: contain; }
 #online-side-chat .chat-send-btn, #online-side-chat .chat-tool-btn, #online-side-chat .chat-input-field, #online-side-chat .chat-delete-btn { min-height: 44px; box-sizing: border-box; }
 #online-side-chat .chat-delete-btn { min-width: 44px; }
+/* Touch: Schliessen-Kreuze der Fächer und Emoji-Tasten mindestens 44px */
+#online-side-chat #close-gif-tray-btn, #online-side-chat #close-emoji-tray-btn { min-width: 44px; min-height: 44px; }
+@media (max-width: 640px) { #online-side-chat .emoji-grid { grid-template-columns: repeat(auto-fill, minmax(44px, 1fr)); } #online-side-chat .emoji-item-btn { min-height: 44px; } }
 @media (max-width: 640px) {
   /* 16px verhindert das automatische Hineinzoomen auf iPhones; 44px = gut treffbar */
   input, textarea, .chat-input-field, .submit-input, .thought-input { font-size: 16px !important; }
