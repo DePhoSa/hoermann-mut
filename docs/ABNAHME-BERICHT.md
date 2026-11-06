@@ -29,6 +29,17 @@ Als in Ordnung bestätigt (die Suite prüft es jetzt bei jedem Lauf): Mut-Probe 
 8. **Niedrig – Chat-Knopf unten rechts** verdeckt auf dem Handy teils Inhalt (z. B. Rand der „Spielen“-Knöpfe, `B-phone390-01-menue`). Die Suite prüft nur den Mittelpunkt eines Elements, solche Randverdeckung meldet sie nicht. Empfehlung: unten Abstand lassen (Platz für den Knopf).
 9. **Hinweis (kein Fehler der Seite):** Der Chat zeigt Altnachrichten mit kaputten GIF-Bildern. In der Abnahme sind externe Adressen blockiert, daher fehlen die Bilder dort zwangsläufig.
 
+## Nachtrag `dev/ux-0.4`: offene Punkte 1 bis 8 umgesetzt
+
+1. Ergebnis-Dialog ist ein kompaktes Blatt am unteren Rand (Ergebniszeile, Namensfeld nur beim ersten Mal, ein Knopf „Speichern“, klein „Schließen“); „Idee hinterlassen“ steht eingeklappt dahinter, kein Bestenlisten-Knopf mehr, die Endkarte bleibt sichtbar (die Suite prüft es).
+2. Nach dem Speichern (auch automatisch) keine Vollbild-Liste: Zeile „🎉 Neuer Rekord · Platz N“ auf der Endkarte plus Kurzmeldung; „Bestenliste“ der Endkarte öffnet die Liste mit dem Spieler markiert.
+3. Bestenliste: ein Hauptknopf („Weiter spielen“ bei pausierter Runde, sonst „Zum Spiel“), „Online-Abgleich“ und „0.1 ansehen“ als kleine Textlinks, Schließen nur noch „✕“, Reiter mit Pfeil/Auslauf-Hinweis.
+4. Spiele-Menü: Rang-Chip nur mit Rang, ein gemeinsamer Hinweis „Update 0.2 · Was ist neu? ›“ (öffnet die Update-Notizen); Notizen je Spiel weiter über „Update 0.2“ im Spiel.
+5. Mut-Probe-Endkarte: Überschrift ausgeblendet, Karte deckend.
+6. Touch (`pointer: coarse`): „Tippen“ statt Leertaste/WASD/P/Esc.
+7. Handy: mehr Platz unter dem Footer; die Suite meldet jetzt auch teilweise Verdeckung durch den Chat-Knopf (Regel `covered-by-chat`, am Seitenende).
+8. Offen bleibt nur Punkt 9 (kaputte Chat-GIFs, kein Seitenfehler).
+
 ## Was die Suite nicht sieht
 
 Echte Geräte und Software-Tastatur (nur über kleinere Fensterhöhe nachgestellt), Spielgefühl und Balance, Ton, Farbwirkung, echte Cloud. Siehe `docs/ABNAHME.md`.

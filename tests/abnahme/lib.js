@@ -55,7 +55,7 @@ function inPageChecks(opts) {
       let sc = false; for (let p = e.parentElement; p; p = p.parentElement) if (/(auto|scroll)/.test(getComputedStyle(p).overflowX)) { sc = true; break; } if (sc || !visible(e)) continue; n++; add('overflow-x', e, 'ragt aus dem Bildschirm: ' + Math.round(r.left) + '..' + Math.round(r.right) + ' von ' + vw); } }
 
   // Overlay-Ebenen: ein modales Fenster darf nie zusammen mit einem zweiten offen sein.
-  const blocking = [...document.querySelectorAll('dialog[open], #highscore-card.show, #admin-dialog-backdrop.show')].filter(e => visible(e));
+  const blocking = [...document.querySelectorAll('dialog[open], #highscore-card.show, #admin-dialog-backdrop.show, #score-submit-dialog.show')].filter(e => visible(e));
   const chatEl = document.querySelector('#online-side-chat.open'); if (chatEl && visible(chatEl) && chatEl.getBoundingClientRect().width >= vw * 0.9) blocking.push(chatEl); /* Handy: Chat ist ein Vollbild-Blatt */
   const topDialog = blocking.filter(e => e.tagName === 'DIALOG').pop();
   const layer = topDialog || blocking.find(e => e.id === 'admin-dialog-backdrop') || blocking.find(e => e.id === 'online-side-chat') || blocking[0] || null;
@@ -74,6 +74,14 @@ function inPageChecks(opts) {
     const top = document.elementFromPoint(cx, cy);
     if (top && !(top === e || e.contains(top) || top.contains(e) || (e.labels && [...e.labels].some(l => l.contains(top))))) add('covered', e, 'verdeckt von ' + desc(top));
   }
+
+  // 2b. Der feste Chat-Knopf darf kein Bedienelement teilweise verdecken (nicht nur den Mittelpunkt, sondern das ganze Rechteck),
+  //     soweit es sich am Seitenende nicht mehr wegscrollen laesst.
+  { const fab = document.getElementById('chat-fab'); const atEnd = scrollY + vh >= document.documentElement.scrollHeight - 2; /* nur dort ist ein Element nicht mehr wegscrollbar */
+    const fr = fab && scope === document.body && atEnd && visible(fab) ? fab.getBoundingClientRect() : null;
+    if (fr) for (const e of ctl) { if (e === fab || fab.contains(e)) continue; const v = clipRect(e); if (!v) continue;
+      const ix = Math.min(v.R, fr.right) - Math.max(v.L, fr.left), iy = Math.min(v.B, fr.bottom) - Math.max(v.T, fr.top);
+      if (ix >= 8 && iy >= 8) add('covered-by-chat', e, 'Chat-Knopf liegt ueber ' + Math.round(ix) + 'x' + Math.round(iy) + 'px des Elements'); } }
 
   // 3. Abgeschnittener Text
   const textEls = [...scope.querySelectorAll('button,a,label,h1,h2,h3,h4,p,span,div,li,strong,small,td,th,summary')].filter(e => [...e.childNodes].some(n => n.nodeType === 3 && n.textContent.trim()) && visible(e));

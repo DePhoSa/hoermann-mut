@@ -122,9 +122,11 @@ const root = path.resolve(__dirname, '..');
     assert.equal(await page.evaluate(() => HoermannGameSession.state().phase), 'countdown');
     await page.evaluate(()=>document.getElementById('exit-mario-btn').click());
 
-    // Score speichern -> Overlay mit Hervorhebung
+    // Score speichern -> keine Vollbild-Liste ueber dem Spiel; Kopf-Bestenliste zeigt den eigenen Namen hervorgehoben
     await page.evaluate(() => { promptScoreSubmit(777, 'mario_v02', 'Super Dennis 0.2'); });
     await page.evaluate(() => { saveScoreBtn.click(); });
+    assert.equal(await page.locator('#highscore-card.show').count(), 0, 'Speichern oeffnet keine Bestenliste');
+    await page.evaluate(() => openGlobalLeaderboard('mario_v02', getLockedPlayerName()));
     await page.locator('#highscore-card.show').waitFor();
     assert.ok(await page.locator('#leaderboard-body tr.highlight').count() >= 1, L + 'eigener Name nicht hervorgehoben');
     await noOverflow('Overlay nach Speichern');

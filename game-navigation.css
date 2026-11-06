@@ -259,3 +259,49 @@ body:has(#score-submit-dialog.show) #game-end-lb { display: none; }
 
 /* Touch: die kurze Pause-Taste bleibt mindestens 44px breit */
 .game-pause-button { min-width: 44px; }
+
+/* ===== UX 0.4 (Abnahme): kompaktes Ergebnisblatt, Rekordzeile auf der Endkarte ===== */
+/* Ergebnis-Dialog als schmales Blatt am unteren Rand: kein Sprung weg vom Spielfeld, Endkarte bleibt sichtbar. */
+#score-submit-dialog.show { position: fixed; left: 50%; bottom: 8px; transform: translateX(-50%); z-index: 1150; width: min(460px, calc(100vw - 16px)); max-width: none !important; max-height: calc(100dvh - 16px); overflow: auto; box-sizing: border-box; margin: 0 !important; padding: 12px 14px 8px; border-width: 2px; animation: none; }
+#score-submit-dialog .submit-title { margin: 0 0 6px; font-size: 1.15rem; }
+#score-submit-dialog #submit-dialog-subtitle { display: none !important; }
+#score-submit-dialog #submit-highscore-feedback { margin: 0 auto 4px !important; padding: 5px 10px !important; font-size: .85rem !important; }
+#score-submit-dialog .submit-form { margin-top: 6px; gap: .4rem !important; }
+#score-submit-dialog .score-dialog-actions { gap: 4px; }
+#score-submit-dialog .score-dialog-actions .utility-link { text-decoration: none; font-weight: 700; padding: 0 12px; }
+#score-submit-dialog #idea-ticket-toggle { display: none; }
+#score-submit-dialog:has(.idea-ticket-box.show) #idea-ticket-toggle { display: inline-flex; align-items: center; }
+.idea-ticket-box, .idea-ticket-box.show { margin: 0; padding: 0; border: 0; box-shadow: none; background: none; width: 100%; max-width: 460px; animation: none; }
+.idea-ticket-box:not(.show.open) { display: none; }
+.idea-ticket-reason { font-size: .8rem; font-weight: 700; color: #92400e; line-height: 1.35; }
+.idea-ticket-box .idea-ticket-textarea { margin-top: 6px; min-height: 64px; }
+/* Rekordzeile auf der Endkarte */
+.game-end-record { font-weight: 800; color: #ffd269; font-size: 1rem; }
+.game-end-record[hidden] { display: none; }
+
+/* ===== UX 0.4: Bestenliste ruhiger ===== */
+#highscore-card #close-leaderboard-btn { min-width: 44px; padding: 0; font-size: 1.2rem; justify-content: center; }
+#highscore-card .lb-secondary-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 8px; margin-top: 8px; }
+#highscore-card .lb-secondary-links .utility-link { min-height: 44px; padding: 0 10px; font-size: .8rem !important; font-weight: 600 !important; text-decoration: underline !important; color: #234261; }
+#highscore-card .lb-secondary-links [hidden] { display: none; }
+#highscore-card #buster-history-button { margin: 0; }
+.lb-tabs-wrap { position: relative; }
+.lb-tabs-wrap::after { content: '›'; position: absolute; top: 0; right: 0; bottom: 4px; width: 38px; display: none; align-items: center; justify-content: flex-end; padding-right: 8px; box-sizing: border-box; font-size: 1.6rem; font-weight: 800; color: #004481; background: linear-gradient(90deg, #f8fafc00, #f8fafc 70%); pointer-events: none; }
+.lb-tabs-wrap.has-more::after { display: flex; }
+@media (max-width: 640px) { #highscore-card .leaderboard-tabs { scrollbar-width: none; } #highscore-card .leaderboard-tabs::-webkit-scrollbar { display: none; } }
+body:has(#score-submit-dialog.show) #chat-fab { visibility: hidden; }
+
+/* ===== UX 0.4: Spiele-Menue, Mut-Probe-Endkarte, Chat-Abstand ===== */
+.game-card-foot .game-rank-ribbon[hidden] { display: none; }
+.games-update-notice { display: flex; align-items: center; min-height: 44px; margin: 0 0 6px; padding: 0 4px; background: none; border: 0; color: #0b4f9c; font: inherit; font-size: .9rem; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.games-update-notice:hover { color: #002d62; }
+/* Mut-Probe: nach dem Ende sagt die Endkarte alles; keine zweite Ueberschrift, Karte deckend (Tore schimmern nicht durch). */
+#nerve-view:has(#game-end-card:not([hidden])) #nerve-title, #nerve-view:has(#game-end-card:not([hidden])) #nerve-hint { display: none; }
+#nerve-view #game-end-card { background: #00264d; }
+/* Handy: unten Platz fuer den schwebenden Chat-Knopf (56px + Rand) */
+@media (max-width: 640px) { footer { padding-bottom: 6rem; } }
+.idea-ticket-badge[hidden] { display: none; }
+#highscore-card .highscore-header { flex-wrap: nowrap !important; align-items: flex-start; }
+#highscore-card .highscore-header > div:first-child { flex: 1 1 auto; min-width: 0; }
+#highscore-card .highscore-header > div:last-child { margin-left: auto; flex: none; }
+@media (max-width: 640px) { #toast { bottom: 5.5rem; max-width: calc(100vw - 24px); } }

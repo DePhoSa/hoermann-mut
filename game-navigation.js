@@ -73,7 +73,8 @@ function refreshGameRibbons() {
     const best = category === 'bomber' || !name ? null : findExistingPlayerBest(HoermannGameReleases.release(category).scoreCategory, name);
     const rank = best && best.isUser && best.score > 0 ? best.rank : null;
     ribbon.className = 'game-rank-ribbon' + (rank && rank <= 3 ? ' rank-' + rank : rank ? ' rank-listed' : ' rank-empty');
-    ribbon.firstElementChild.textContent = rank ? 'Platz ' + rank : 'Noch kein Rang';
+    ribbon.firstElementChild.textContent = rank ? 'Platz ' + rank : '';
+    ribbon.hidden = !rank; /* Rang-Chip nur, wenn es einen Rang gibt */
     ribbon.setAttribute('aria-label', game.title + ': ' + (rank ? 'dein Platz ' + rank : 'noch kein eigener Rang') + ' – Bestenliste öffnen');
     const card = ribbon.closest('[data-game]');
     cards.push({card, unavailable: Boolean(game.status), rank: rank || 0, index: Object.keys(portalGameNavigation).indexOf(category)});
@@ -130,7 +131,6 @@ for (const [category, game] of Object.entries(portalGameNavigation)) {
   action.textContent = game.status ? game.status : 'Spielen'; action.disabled = Boolean(game.status);
   action.addEventListener('click', event => { event.stopPropagation(); openGamePreview(category, 'menu'); });
   foot.append(action);
-  if(HoermannGameReleases.isVersioned(category)){const news=document.createElement('button');news.type='button';news.className='game-version-button';news.textContent='Neu in Update '+HoermannGameReleases.release(category).version+' – lesen ›';news.addEventListener('click',event=>{event.stopPropagation();HoermannGameSession.update(category,false);});foot.append(news);}
   card.append(foot);
   card.addEventListener('click', event => { if (!game.status && !event.target.closest('button')) openGamePreview(category, 'menu'); });
   if(!game.status){const pause=document.createElement('button');pause.type='button';pause.className='utility-link game-pause-button';pause.textContent=matchMedia('(pointer: coarse)').matches?'Pause':'Pause · P / Esc';pause.addEventListener('click',()=>HoermannGameSession.pause());const bar=document.querySelector('#'+category+'-view .game-actions-bar');bar.append(pause);const upd=document.createElement('button');upd.type='button';upd.className='utility-link game-update-button';upd.textContent='Update '+HoermannGameReleases.release(category).version;upd.addEventListener('click',()=>HoermannGameSession.update(category,false));bar.append(upd);}
@@ -141,12 +141,14 @@ highscoreCard.querySelector('.leaderboard-tabs').insertAdjacentElement('beforebe
 function updateLeaderboardGameLink() {
   const game = portalGameNavigation[HoermannGameReleases.baseGame(activeGameCategory)];
   if (!game) return;
-  leaderboardGameLink.textContent = game.status ? game.title + ' · ' + game.status : 'Zum Spiel: ' + game.title;
+  const resumable = HoermannGameSession.state().phase === 'paused'; /* laufende Runde wartet: ein Knopf bringt sie zurueck */
+  const blocked = Boolean(game.status) && !resumable;
+  leaderboardGameLink.textContent = resumable ? 'Weiter spielen' : game.status ? game.title + ' · ' + game.status : 'Zum Spiel';
   leaderboardGameLink.disabled = false;
-  leaderboardGameLink.classList.toggle('is-paused', Boolean(game.status));
-  leaderboardGameLink.setAttribute('aria-disabled', game.status ? 'true' : 'false');
+  leaderboardGameLink.classList.toggle('is-paused', blocked);
+  leaderboardGameLink.setAttribute('aria-disabled', blocked ? 'true' : 'false');
 }
-leaderboardGameLink.addEventListener('click', () => { const base = HoermannGameReleases.baseGame(activeGameCategory); if (portalGameNavigation[base]?.status) return; openGamePreview(base); });
+leaderboardGameLink.addEventListener('click', () => { if (HoermannGameSession.state().phase === 'paused') { closeLeaderboardOverlay(); HoermannGameSession.resume(); return; } const base = HoermannGameReleases.baseGame(activeGameCategory); if (portalGameNavigation[base]?.status) return; openGamePreview(base); });
 const busterHistoryButton=document.createElement('button');busterHistoryButton.type='button';busterHistoryButton.hidden=true;busterHistoryButton.className='utility-link';busterHistoryButton.id='buster-history-button';leaderboardGameLink.after(busterHistoryButton);
 busterHistoryButton.addEventListener('click',()=>{const base=HoermannGameReleases.baseGame(activeGameCategory);switchLeaderboardTab(activeGameCategory===base?HoermannGameReleases.release(base).scoreCategory:base);});
 function refreshLeaderboardNavigation(){const visible=HoermannGameReleases.isVersioned(activeGameCategory);busterHistoryButton.hidden=!visible;busterHistoryButton.textContent=activeGameCategory===HoermannGameReleases.baseGame(activeGameCategory)?'Zur aktuellen Bestenliste 0.2':'Bisherige Bestenliste 0.1 ansehen';updateLeaderboardGameLink();refreshGameRibbons();}
@@ -163,6 +165,7 @@ openGlobalLeaderboard = function (...args) {
   return openGlobalLeaderboardOriginal.apply(this, args);
 };
 document.body.append(highscoreCard);
+document.body.append(scoreSubmitDialog); /* Ergebnisblatt liegt fest am Bildschirmrand, unabhaengig vom Seitenaufbau */
 const lbOverlay = { opener: null };
 const lbOpen = () => highscoreCard.classList.contains('show');
 const lbFocusables = () => [...highscoreCard.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')].filter(el => !el.disabled && !el.hidden && el.getClientRects().length);
@@ -171,8 +174,9 @@ new MutationObserver(() => {
   if (lbOpen()) {
     if (!lbOverlay.opener || !lbOverlay.opener.isConnected) lbOverlay.opener = document.activeElement !== document.body ? document.activeElement : null;
     document.documentElement.classList.add('lb-overlay-open');
-    closeLeaderboardBtn.textContent = '✕ Schließen'; closeLeaderboardBtn.setAttribute('aria-label', 'Bestenlisten schließen');
+    closeLeaderboardBtn.textContent = '✕'; closeLeaderboardBtn.setAttribute('aria-label', 'Bestenlisten schließen');
     highscoreCard.scrollTop = 0;
+    updateLeaderboardGameLink();
     (highscoreCard.querySelector('.lb-tab-btn.active') || closeLeaderboardBtn).focus({preventScroll: true});
   } else {
     document.documentElement.classList.remove('lb-overlay-open');
@@ -245,3 +249,33 @@ document.getElementById('header-leaderboard-btn').addEventListener('click', even
   const set = (id, text) => { const el = document.getElementById(id); if (el) el.placeholder = text; };
   set('chat-text-input', 'Nachricht schreiben …'); set('chat-gif-search-input', 'z. B. Stapler, Party'); set('chat-gif-url-input', 'GIF-Link einfügen'); set('player-name-input', 'Dein fester Spielername');
 })();
+
+/* ===== Bestenliste: eine Hauptaktion; Online-Abgleich und 0.1 als kleine Textlinks; Reiter mit Auslauf-Hinweis ===== */
+(function () {
+  const tabs = highscoreCard.querySelector('.leaderboard-tabs');
+  const wrap = document.createElement('div'); wrap.className = 'lb-tabs-wrap'; tabs.before(wrap); wrap.append(tabs);
+  const hint = () => wrap.classList.toggle('has-more', tabs.scrollWidth > tabs.clientWidth + 1 && tabs.scrollLeft + tabs.clientWidth < tabs.scrollWidth - 4);
+  tabs.addEventListener('scroll', hint, { passive: true }); addEventListener('resize', hint);
+  new MutationObserver(() => { if (lbOpen()) { const a = tabs.querySelector('.active'); if (a && tabs.scrollWidth > tabs.clientWidth) tabs.scrollLeft = Math.max(0, a.offsetLeft - 24); hint(); } }).observe(highscoreCard, { attributes: true, attributeFilter: ['class'] });
+  const links = document.createElement('div'); links.className = 'lb-secondary-links';
+  links.append(busterHistoryButton, document.getElementById('refresh-leaderboard-btn'));
+  highscoreCard.append(links);
+  closeLeaderboardBtn.setAttribute('aria-label', 'Bestenlisten schließen');
+})();
+
+/* ===== Spiele-Menue: EIN gemeinsamer Update-Hinweis statt Wiederholung auf jeder Kachel ===== */
+(function () {
+  const grid = gamesMenuView.querySelector('.games-grid');
+  const notice = document.createElement('button'); notice.type = 'button'; notice.id = 'games-update-notice'; notice.className = 'games-update-notice';
+  notice.textContent = 'Update ' + HoermannGameReleases.release('mario').version + ' · Was ist neu? ›';
+  notice.addEventListener('click', () => document.getElementById('version-changelog-btn').click());
+  grid.before(notice);
+})();
+
+/* ===== Touch-Geraete: Tippen statt Tastatur-Anleitungen (Leertaste, WASD, P/Esc) ===== */
+if (matchMedia('(pointer: coarse)').matches) {
+  const set = (sel, html) => { const el = document.querySelector(sel); if (el) el.innerHTML = html; };
+  set('#mario-view .game-instructions > span', 'Steuerung: Tasten unten · Sprungtaste gedrückt halten = höherer Sprung');
+  set('#parcours-view .game-instructions > span', 'Steuerung: <strong>Tippen</strong> zum Heben');
+  set('#buster-view .game-instructions > span', '<strong>Tippe</strong> auf Zweifel &amp; Ängste! Sammle Hörmann-Logos für Bonus-Power!');
+}

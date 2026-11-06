@@ -12,6 +12,15 @@ const countdownText = s => s.page.evaluate(() => { const e = document.getElement
 
 async function untilPhase(s, want, maxMs, stepMs = 100) { const list = [].concat(want); for (let t = 0; t <= maxMs; t += stepMs) { if (list.includes(await phase(s))) return t; await T(s)(stepMs); } return -1; }
 
+// Touch-Geraete: keine Tastatur-Anleitungen (Leertaste, WASD, P / Esc) im sichtbaren Text des Spiels.
+async function noKeyboardHints(s, g) {
+  if (!s.vp.touch) return;
+  const hits = await s.page.evaluate(g => { const v = document.getElementById(g + '-view'); const out = []; const rx = /Leertaste|WASD|W A S D|P \/ Esc|Escape/;
+    for (const e of v.querySelectorAll('*')) { if (!e.getClientRects().length || getComputedStyle(e).visibility === 'hidden') continue; const own = [...e.childNodes].filter(n => n.nodeType === 3).map(n => n.textContent).join(' '); if (rx.test(own)) out.push(own.trim().slice(0, 50)); }
+    const d = document.getElementById('game-session-dialog'); if (d.open && rx.test(d.innerText)) out.push('Dialog: ' + d.innerText.slice(0, 50)); return out; }, g);
+  s.expect(!hits.length, `${g}: Touch-Geraet zeigt Tastatur-Anleitung: ${hits.join(' | ')}`);
+}
+
 // Menue -> Kachel -> "Bereit"-Dialog (ohne "Jetzt spielen" zu druecken)
 async function openGame(s, g, inp) {
   await s.page.locator('#menu-btn').click(); await s.page.locator('.games-grid').first().waitFor();
@@ -22,7 +31,7 @@ async function openGame(s, g, inp) {
   const label = (await s.page.locator('#game-session-action').textContent()).trim();
   s.expect(/Jetzt spielen/.test(label), `${g}: Bereit-Dialog hat statt "Jetzt spielen" den Knopf "${label}"`);
   s.expect(!(await visible(s, '#game-session-restart')), `${g}: Bereit-Dialog zeigt "Neu starten" (nichts zum Neustarten)`);
-  await s.step(g + '-bereit');
+  await s.step(g + '-bereit'); await noKeyboardHints(s, g);
 }
 
 // 3 - 2 - 1 - Los! pruefen: Text laufend abfragen (die Uhr laeuft auch waehrend Screenshots weiter), dann "playing"
@@ -60,31 +69,56 @@ async function endCard(s, g, label, maxMs = 3500) {
   await s.step(`${g}-${label}-endkarte`); return true;
 }
 
+// Endkarten-Knopf "Nochmal spielen" muss ganz im Bild und nicht vom Ergebnisblatt verdeckt sein.
+const againInView = s => s.page.evaluate(() => { const b = document.getElementById('game-end-again'); if (!b || !b.getClientRects().length) return 'nicht sichtbar'; const r = b.getBoundingClientRect(); if (r.top < 0 || r.bottom > innerHeight) return 'ausserhalb des Bildes (' + Math.round(r.top) + '..' + Math.round(r.bottom) + ' von ' + innerHeight + ')';
+  const d = document.getElementById('score-submit-dialog'); if (d && d.classList.contains('show') && r.bottom > d.getBoundingClientRect().top + 1) return 'vom Ergebnisblatt verdeckt'; return ''; });
+// Rekordzeile auf der Endkarte ("Neuer Rekord - Platz N") und Bestenliste-Knopf der Endkarte oeffnet die Liste mit dem Spieler markiert.
+async function recordOnEndCard(s, g) {
+  await s.page.locator('#game-end-card').waitFor({ state: 'visible', timeout: 4000 }).catch(() => s.fail(g + ': Endkarte fehlt nach dem Speichern'));
+  const line = (await s.page.locator('#game-end-card .game-end-record').innerText().catch(() => '')).trim();
+  s.expect(/Neuer Rekord · Platz \d+/.test(line), `${g}: Endkarte zeigt keine Rekordzeile (steht: "${line}")`);
+  s.expect(!(await s.page.locator('#highscore-card.show').count()), g + ': Nach dem Speichern oeffnet sich die Bestenliste ueber der Endkarte');
+  s.expect(!(await s.page.locator('#score-submit-dialog.show').count()), g + ': Ergebnisblatt bleibt nach dem Speichern offen');
+  await s.step(`${g}-rekord-auf-endkarte`);
+  await s.page.locator('#game-end-lb').scrollIntoViewIfNeeded(); await s.page.locator('#game-end-lb').click();
+  await s.page.locator('#highscore-card.show').waitFor({ timeout: 3000 }).catch(() => s.fail(g + ': Bestenliste-Knopf der Endkarte oeffnet nichts'));
+  await T(s)(300); s.expect((await s.page.locator('#leaderboard-body tr.highlight').count()) >= 1, g + ': Bestenliste von der Endkarte hebt den Spieler nicht hervor');
+  await s.step(`${g}-endkarte-bestenliste-markiert`);
+  await s.page.locator('#close-leaderboard-btn').click(); await T(s)(300);
+}
+
 // Ergebnis-Dialog nach dem Ende: Erstspieler (Name), bekannter Name (automatisch), niedrigeres Ergebnis (Kurzmeldung)
 async function scoreDialog(s, g, mode) {
-  const dlg = s.page.locator('#score-submit-dialog.show'); const lb = s.page.locator('#highscore-card.show');
+  const dlg = s.page.locator('#score-submit-dialog.show');
   if (mode === 'name') {
     await dlg.waitFor({ timeout: 4000 }).catch(() => s.fail(g + ': Erstspieler bekommt keinen Namens-Dialog'));
     await T(s)(300); await s.step(`${g}-name-dialog`);
     s.expect(await visible(s, '#player-name-input'), g + ': Namensfeld fehlt');
-    await s.page.locator('#player-name-input').fill('Abnahme'); await s.page.locator('#save-score-btn').scrollIntoViewIfNeeded();
-    s.expect(await visible(s, '#save-score-btn'), g + ': Speichern-Knopf nicht sichtbar'); await s.step(`${g}-name-eingegeben`);
+    const hint = await againInView(s); s.expect(hint === '', `${g}: Endkarte "Nochmal spielen" bei offenem Ergebnisblatt ${hint}`);
+    s.expect(!(await s.page.locator('#score-dialog-board-btn').count()), g + ': Ergebnisblatt hat noch eine Bestenliste-Taste');
+    s.expect((await s.page.locator('#save-score-btn').textContent()).trim() === 'Speichern', g + ': Hauptknopf heisst nicht "Speichern"');
+    s.expect(!(await visible(s, '#player-idea-input')), g + ': Ideenfeld ist nicht eingeklappt');
+    if (await visible(s, '#idea-ticket-toggle')) { // Idee optional hinter kleinem Schalter nach dem Hauptknopf
+      const order = await s.page.evaluate(() => { const a = document.getElementById('save-score-btn'), b = document.getElementById('idea-ticket-toggle'); return !!(a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING); });
+      s.expect(order, g + ': Idee-Schalter steht nicht nach dem Speichern-Knopf');
+      await s.page.locator('#idea-ticket-toggle').click(); await T(s)(200); s.expect(await visible(s, '#player-idea-input'), g + ': Idee-Schalter klappt nichts auf');
+      const h2 = await againInView(s); s.expect(h2 === '', `${g}: Endkarte bei aufgeklappter Idee ${h2}`); await s.step(`${g}-idee-offen`);
+    }
+    await s.page.locator('#player-name-input').fill('Abnahme'); await s.step(`${g}-name-eingegeben`);
     await (s.vp.touch ? s.page.locator('#save-score-btn').tap() : s.page.locator('#save-score-btn').click());
-    await lb.waitFor({ timeout: 4000 }).catch(() => s.fail(g + ': Nach Speichern erscheint die Bestenliste nicht'));
-    await T(s)(400); await s.step(`${g}-gespeichert`);
-    s.expect((await s.page.locator('#highscore-card').innerText()).includes('Abnahme'), g + ': Gespeicherter Name steht nicht in der Bestenliste');
+    await T(s)(400); await recordOnEndCard(s, g);
+    s.expect((await s.page.evaluate(() => document.getElementById('leaderboard-body').innerText)).includes('Abnahme'), g + ': Gespeicherter Name steht nicht in der Bestenliste');
   } else if (mode === 'auto') {
-    await lb.waitFor({ timeout: 4000 }).catch(() => s.fail(g + ': Bekannter Name: Ergebnis wurde nicht automatisch gespeichert'));
+    await T(s)(400); await recordOnEndCard(s, g);
     s.expect(!(await dlg.count()), g + ': Bekannter Name: Dialog erscheint trotz automatischer Speicherung');
-    await T(s)(400); await s.step(`${g}-auto-gespeichert`);
   } else if (mode === 'lower') {
     await dlg.waitFor({ timeout: 4000 }).catch(() => s.fail(g + ': Niedrigeres Ergebnis zeigt keine Meldung'));
     await T(s)(300); const msg = (await s.page.locator('#submit-highscore-feedback').innerText()).trim();
     s.expect(/Bestwert bleibt/.test(msg), `${g}: Meldung bei niedrigerem Ergebnis ist "${msg}"`); await s.step(`${g}-niedriger`);
-    await s.page.locator('#score-dialog-close-btn').scrollIntoViewIfNeeded(); await s.page.locator('#score-dialog-close-btn').click();
+    await s.page.locator('#score-dialog-close-btn').click();
     await s.step(`${g}-niedriger-zu`);
   } else if (mode === 'close') { // beliebiger Dialog (z. B. Erstspieler mit Punkten ohne Namens-Test): schliessen
-    if (await dlg.count()) { await T(s)(300); await s.step(`${g}-ergebnis-dialog`); await s.page.locator('#score-dialog-close-btn').scrollIntoViewIfNeeded(); await s.page.locator('#score-dialog-close-btn').click(); }
+    if (await dlg.count()) { await T(s)(300); await s.step(`${g}-ergebnis-dialog`); const hint = await againInView(s); s.expect(hint === '', `${g}: Endkarte "Nochmal spielen" bei offenem Ergebnisblatt ${hint}`); await s.page.locator('#score-dialog-close-btn').click(); }
   }
   if (await s.page.locator('#highscore-card.show').count()) { await s.page.locator('#close-leaderboard-btn').click(); await T(s)(300); }
   await s.page.locator('#game-end-card').waitFor({ state: 'visible' }).catch(() => s.fail(g + ': Endkarte nach dem Ergebnis-Dialog nicht mehr sichtbar'));
@@ -105,15 +139,24 @@ async function again(s, g, inp, tag) {
   }
 }
 
-// Kopf-Bestenliste waehrend des Spiels: pausiert, danach "Weiter spielen" + Countdown
+// Kopf-Bestenliste waehrend des Spiels: pausiert; EINE Hauptaktion "Weiter spielen" (-> Countdown), Rest sind kleine Textlinks.
 async function headerLeaderboardInPlay(s, g, inp) {
   await T(s)(600);
   await inp.press('#header-leaderboard-btn'); await s.page.locator('#highscore-card.show').waitFor().catch(() => s.fail(g + ': Kopf-Bestenliste oeffnet sich im Spiel nicht'));
   await T(s)(300); s.expect((await phase(s)) === 'paused', g + ': Spiel pausiert nicht bei geoeffneter Bestenliste (' + await phase(s) + ')'); await s.step(`${g}-kopf-bestenliste-im-spiel`);
-  await s.page.locator('#close-leaderboard-btn').click(); await T(s)(300);
+  const prim = await s.page.evaluate(() => [...document.querySelectorAll('#highscore-card button')].filter(b => b.getClientRects().length && getComputedStyle(b).backgroundColor === 'rgb(245, 156, 0)').map(b => b.id || b.textContent.trim()));
+  s.expect(prim.length === 1 && prim[0] === 'leaderboard-game-link', `${g}: Bestenliste hat ${prim.length} Hauptknoepfe (${prim.join(', ')}) statt genau einem`);
+  s.expect(/^Weiter spielen$/.test((await s.page.locator('#leaderboard-game-link').textContent()).trim()), g + ': Hauptknopf der Bestenliste im pausierten Spiel heisst nicht "Weiter spielen"');
+  s.expect(!(await s.page.locator('#close-leaderboard-btn').innerText()).includes('Schließen'), g + ': Schliessen steht als zweiter Textknopf neben dem Hauptknopf');
+  const fsz = await s.page.locator('#refresh-leaderboard-btn').evaluate(e => parseFloat(getComputedStyle(e).fontSize)); s.expect(fsz <= 13.5, `${g}: Online-Abgleich ist kein kleiner Zweitlink (${fsz}px)`);
+  await s.page.locator('#leaderboard-game-link').click(); await T(s)(200);
+  s.expect((await s.page.locator('#highscore-card.show').count()) === 0, g + ': "Weiter spielen" schliesst die Bestenliste nicht');
+  s.expect((await countdownText(s)) === '3', g + ': Nach der Bestenliste kein Countdown 3'); await checkCountdown(s, g, 'nach-bestenliste');
+  // Zweiter Weg: Schliessen-Kreuz fuehrt zum Pause-Dialog mit "Weiter spielen"
+  await T(s)(300); await inp.press('#header-leaderboard-btn'); await s.page.locator('#highscore-card.show').waitFor(); await s.page.locator('#close-leaderboard-btn').click(); await T(s)(300);
   const open = await visible(s, '#game-session-dialog[open] #game-session-action') && /Weiter spielen/.test(await s.page.locator('#game-session-action').textContent());
   s.expect(open, g + ': Nach Schliessen der Bestenliste fehlt "Weiter spielen"'); await s.step(`${g}-nach-bestenliste-weiter`);
-  if (open) { await s.page.locator('#game-session-action').click(); s.expect((await countdownText(s)) === '3', g + ': Nach der Bestenliste kein Countdown 3'); await checkCountdown(s, g, 'nach-bestenliste'); }
+  if (open) { await s.page.locator('#game-session-action').click(); s.expect((await countdownText(s)) === '3', g + ': Nach der Bestenliste kein Countdown 3'); await checkCountdown(s, g, 'nach-bestenliste2'); }
 }
 
 // ---- Spieler-Roboter (nur echte Eingaben; Zustand wird nur gelesen) ----
@@ -159,6 +202,7 @@ async function genericGame(s, g, inp) {
   await openGame(s, g, inp);
   await inp.press('#game-session-action');
   s.expect(NO_COUNTDOWN[g] ? (await countdownText(s)) === null : (await countdownText(s)) === '3', `${g}: nach "Jetzt spielen" ${NO_COUNTDOWN[g] ? 'darf kein Countdown laufen' : 'startet der Countdown nicht bei 3'} (${await countdownText(s)})`);
+  await noKeyboardHints(s, g);
   if (!NO_COUNTDOWN[g]) { await pauseCheck(s, g, inp, 'im-countdown'); await checkCountdown(s, g, 'start'); }
   else { await s.step(g + '-bereit-zum-tippen'); s.expect((await phase(s)) === 'playing', g + ': Tor-Parcours wartet nicht im Spielzustand auf Tippen'); }
   if (!(await playToEnd(s, g, inp))) return;
