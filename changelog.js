@@ -2,6 +2,18 @@
 (function (root) {
   const versions = [
     {
+      version: '3.4.0', date: '2026-11-06',
+      highlights: ['Neustart direkt im Spiel', 'Rekorde speichern automatisch', 'Aufgeräumte Oberfläche'],
+      headlines: [
+        'Nochmal spielen direkt am Spielende',
+        'Rekorde werden automatisch gespeichert',
+        'Bestenliste: Hauptaktion klarer, kompaktes Ergebnisblatt',
+        'Countdown nach Pause jedes Mal ab 3',
+        'Schlanker Footer, Admin-Zugang mit Google-Anmeldung',
+        'Viele Handy-Verbesserungen (Mut-Probe, Chat, Beschriftungen)'
+      ]
+    },
+    {
       version: '3.3.0', date: '2026-11-05',
       highlights: ['Update 0.2 für vier Spiele', 'Neue Cloud-Bestenlisten', 'Chat hinter Knopf'],
       headlines: [

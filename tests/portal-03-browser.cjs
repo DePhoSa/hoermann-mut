@@ -25,7 +25,7 @@ const root = path.resolve(__dirname, '..');
     // Kein Leaderboard mehr am Seitenende
     assert.equal(await page.locator('#highscore-card').isVisible(), false);
     // Footer: Version als Knopf + Highlights, Änderungsverlauf-Dialog
-    assert.equal(await page.locator('#version-changelog-btn').textContent(), 'Version 3.3.0');
+    assert.equal(await page.locator('#version-changelog-btn').textContent(), 'Version ' + await page.evaluate(() => HoermannChangelog.latest().version));
     assert.ok(await page.locator('.version-chip').count() >= 2);
     await noOverflow('Start');
     await page.locator('#version-changelog-btn').scrollIntoViewIfNeeded(); await shot('footer');
