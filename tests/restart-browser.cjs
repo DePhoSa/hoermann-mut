@@ -1,4 +1,4 @@
-// Rundenende-Karte + "Nochmal spielen" (Neustart mit 3-2-1-Los) fuer alle fuenf Spiele.
+// Rundenende-Karte + "Nochmal spielen" (Neustart mit 3-2-1-Los, ausser Tor-Parcours: kein Countdown) fuer alle fuenf Spiele.
 // Kein Netz, keine echten Daten (Cloud als Attrappe, externe Anfragen blockiert).
 const { chromium } = require('playwright'); const http = require('http'); const fs = require('fs'); const path = require('path'); const os = require('os'); const assert = require('assert');
 const root = path.resolve(__dirname, '..');
@@ -41,7 +41,8 @@ const GAMES = {
       await page.locator(`[data-game="${game}"] .game-open-action`).click();
       if (/Verstanden/.test(await page.locator('#game-session-action').textContent())) await page.locator('#game-session-action').click();
       await page.locator('#game-session-action').click();
-      assert.equal(await phase(), 'countdown');
+      /* Tor-Parcours hat bewusst keinen Countdown (eigener Tipp-zum-Starten-Zustand). */
+      assert.equal(await phase(), game === 'parcours' ? 'playing' : 'countdown');
       assert.equal(await page.locator(`#restart-${game}-btn`).evaluate(el => { const r = el.getBoundingClientRect(); return (r.width <= 1 && r.height <= 1) || getComputedStyle(el).display === 'none'; }), true, 'altes Neustart-Element sichtbar: ' + game);
       await page.waitForFunction(() => HoermannGameSession.state().phase === 'playing', null, { timeout: 6000 });
       let n = 0;
@@ -60,9 +61,9 @@ const GAMES = {
           await page.locator('#close-leaderboard-btn').click(); await page.locator('#game-end-card').waitFor({ state: 'visible' });
         }
         if (n === 1 && !vp.isMobile && !savesScore) await page.keyboard.press(game === 'parcours' ? ' ' : 'Enter'); else await page.locator('#game-end-again').click();
-        assert.equal(await phase(), 'countdown', 'Countdown nach Nochmal spielen ' + tag);
+        assert.equal(await phase(), game === 'parcours' ? 'playing' : 'countdown', 'Zustand nach Nochmal spielen ' + tag);
         assert.equal(await page.locator('#game-end-card').isVisible(), false);
-        assert.equal(await page.locator('#game-countdown').isVisible(), true);
+        assert.equal(await page.locator('#game-countdown').isVisible(), game !== 'parcours', 'Countdown sichtbar? ' + tag);
         await page.keyboard.press('Escape'); assert.equal(await phase(), 'paused');
         assert.equal(await page.locator('#game-session-restart').isVisible(), true, 'Neu starten im Pausendialog');
         await page.keyboard.press('Escape'); assert.equal(await phase(), 'countdown');
