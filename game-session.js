@@ -99,7 +99,7 @@
   function enter(category, origin) {
     /* Immer zuerst Bereitschaftszustand; der Countdown startet erst nach „Jetzt spielen“. */
     stop(); game=category; phase='preview';
-    modal('Bereit für die nächste Runde?','Dein Spiel wartet im Hintergrund. Es läuft erst nach deinem Start.','Jetzt spielen',()=>{if(phase==='preview'){close();countdown();}});
+    modal('Bereit für die nächste Runde?','Dein Spiel wartet im Hintergrund. Es läuft erst nach deinem Start.','Jetzt spielen',()=>{if(phase==='preview'){close();if(NO_COUNTDOWN[game])phase='playing';else countdown();}});
   }
   function update(category, automatic, done) {
     const release=HoermannGameReleases.release(category), name=getLockedPlayerName();
