@@ -7,6 +7,7 @@
   function stageOf(){const view=document.getElementById(game+'-view');const field=view.querySelector('canvas,.doors-arena');let stage=field.parentElement;if(!stage.classList.contains('game-stage')){stage=document.createElement('div');stage.className='game-stage';field.before(stage);stage.append(field);}return stage;}
   function showCountdown(){const stage=stageOf();stage.append(countdownElement);countdownElement.querySelector('strong').textContent=countdownValue;countdownElement.hidden=false;}
   /* Rundenende-Karte: Nochmal spielen / Bestenliste / Menue, im Spielfeld (.game-stage). */
+  const NO_COUNTDOWN={parcours:true};
   const END_GAMES={mario:'Punkte',buster:'Mut-Punkte',forklift:'Punkte',nerve:'Punkte',parcours:'Tore'};
   const endCard=document.createElement('div');endCard.id='game-end-card';endCard.hidden=true;endCard.setAttribute('role','group');endCard.setAttribute('aria-label','Runde beendet');
   endCard.innerHTML='<div class=game-end-panel><span class=game-end-kicker>Runde beendet</span><strong class=game-end-score></strong><button type=button id=game-end-again class=game-end-primary>🔁 Nochmal spielen</button><div class=game-end-row><button type=button id=game-end-lb class=game-end-secondary>🏆 Bestenliste</button><button type=button id=game-end-menu class=game-end-text>✕ Menü</button></div></div>';
@@ -26,6 +27,7 @@
   function restartWithCountdown(){
     if(!game||!END_GAMES[game])return;const btn=document.getElementById('restart-'+game+'-btn');if(!btn)return;
     hideEnd();btn.click(); /* Capture-Listener setzt phase=playing; danach Zeitgeber einfrieren wie in resume() */
+    if(NO_COUNTDOWN[game])return; /* Tor-Parcours hat einen eigenen Wartezustand (Tippen zum Starten) */
     for(const timer of timers)clearTimeout(timer.id);held=new Set(timers);timers.clear();holdStart=performance.now();countdown();
   }
   endCard.querySelector('#game-end-again').addEventListener('click',restartWithCountdown);

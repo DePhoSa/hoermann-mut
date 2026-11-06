@@ -243,3 +243,6 @@ footer .version-btn:hover, footer .version-btn:focus-visible { color: #fff; text
 @keyframes game-end-in { from { opacity: 0; transform: scale(.97); } to { opacity: 1; transform: none; } }
 @keyframes game-end-pulse { 50% { box-shadow: 0 6px 22px #f59c00aa, inset 0 1px 0 #ffffff55; } }
 @media (prefers-reduced-motion: reduce) { #game-end-card, .game-end-primary { animation: none; } }
+
+/* Unauffälliger Admin-Einstieg im Änderungsverlauf */
+.changelog-admin-link { display: block; margin: 14px auto 0; background: none; border: 0; color: #8a97a8; font-size: .78rem; text-decoration: underline dotted; min-height: 44px; padding: 8px 14px; cursor: pointer; }

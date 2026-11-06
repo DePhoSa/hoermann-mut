@@ -6912,7 +6912,7 @@
 
       if (isAlarm) {
         nerveOver = true;
-        HoermannGameSession.ended(0, 1800);
+        HoermannGameSession.ended(0, 900);
         const lost = nerveCurrentStake;
         playSound('alarm');
         nerveTitle.textContent = lost > 0
@@ -7218,23 +7218,7 @@
         c.fillStyle = 'rgba(0, 31, 59, 0.88)';
         c.fillRect(0, 0, W, H);
 
-        c.textAlign = 'center';
-        c.fillStyle = '#f59c00';
-        c.font = '800 24px Inter, sans-serif';
-        c.fillText('PARCOURS BEENDET', W / 2, 130);
-
-        c.fillStyle = '#ffffff';
-        c.font = '700 18px Inter, sans-serif';
-        c.fillText(`Tore gemeistert: ${parcoursScore}`, W / 2, 170);
-
-        c.fillStyle = '#f59c00';
-        c.beginPath();
-        c.roundRect(W / 2 - 100, 210, 200, 44, 6);
-        c.fill();
-
-        c.fillStyle = '#ffffff';
-        c.font = '800 15px Inter, sans-serif';
-        c.fillText('NOCHMAL ↺', W / 2, 238);
+        // Ergebnis und Neustart zeigt die gemeinsame Rundenende-Karte (HTML), hier nur Abdunkelung.
       }
     }
 
