@@ -15,7 +15,7 @@ const refs = [
   ...[...html.matchAll(/<link\b[^>]*\bhref="([^"]+)"[^>]*\brel="stylesheet"/g)].map(m => m[1]),
 ].filter(u => !/^(https?:)?\/\//.test(u));
 
-test('es gibt lokale Skripte/Styles', () => { assert.ok(refs.length >= 20, 'nur ' + refs.length + ' lokale Verweise gefunden'); });
+test('es gibt lokale Skripte/Styles', () => { assert.ok(refs.length >= 19, 'nur ' + refs.length + ' lokale Verweise gefunden'); });
 
 test('jeder lokale Verweis hat ?v=<version.json>', () => {
   const bad = refs.filter(u => { const m = u.match(/\?v=([^&#]+)$/); return !m || m[1] !== version; });

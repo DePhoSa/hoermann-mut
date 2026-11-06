@@ -84,7 +84,7 @@ const root = path.resolve(__dirname, '..');
     assert.equal(await page.evaluate(() => activeGameCategory), 'forklift_v02');
     await page.keyboard.press('Escape');
     // Pausierte Spiele: Knopf aus, keine Navigation
-    for (const g of ['tower', 'pacman', 'slots', 'bomber']) {
+    for (const g of ['tower', 'pacman', 'bomber']) {
       assert.equal(await page.locator(`[data-game="${g}"] .game-open-action`).isDisabled(), true);
       await page.locator(`[data-game="${g}"] .game-card-title`).click();
       assert.equal(await page.locator('#games-menu-view').isVisible(), true, L + g + ' hat Übersicht verlassen');

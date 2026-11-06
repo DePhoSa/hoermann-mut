@@ -16,7 +16,6 @@
 | Lagermeister Nico | Größer, Richtung Simulation | 10-15 min | 0.2 | scharfe Schrift (HiDPI), Wertung austesten, 1.0 |
 | Tower of Mut | Mittellang, pausiert | 5-10 min | pausiert | später prüfen |
 | Mut-Man | Arcade, pausiert (Coming soon) | 5-10 min | pausiert | später prüfen |
-| Mut-Automat | Glück, Mut-Bezug schwach, pausiert | 1-2 min | pausiert | Entscheidung nötig: behalten, umbauen, streichen |
 | Bomber-Arena | Multiplayer, eigenes Projekt | 5 min | Platzhalter | braucht neues Backend, siehe Merkliste |
 
 ## Regeln der Update-Kette
@@ -44,7 +43,7 @@
 
 ## Entscheidungen des Nutzers (2026-11-05)
 1. Spielrollen und Ziel-Versionen aus der Tabelle: bestätigt.
-2. **Mut-Automat wird gestrichen** (Entfernung in der nächsten Welle nach Release 3.3.0, inklusive Bestenliste-Archiv-Frage).
+2. **Mut-Automat wird gestrichen** – **umgesetzt** (Branch `dev/remove-slots`): Kachel, Ansicht, `js/games/slots.js`, Bestenliste-Tab, Kategorie `slots` und zugehörige Tests entfernt. Gespeicherte Bestenlisten-Daten des Mut-Automaten (Firestore, localStorage `hoermann_lb_slots`) wurden bewusst NICHT gelöscht oder verändert; sie werden nur nicht mehr angezeigt und beim Laden/Empfangen ignoriert. Bestenliste-Archiv-Frage damit entschieden: Daten bleiben als Archiv liegen.
 3. **Tower of Mut und Mut-Man werden früher angegangen**, mit der nächsten Update-Welle.
 4. Feature-Umfang pro Spiel: individuell festlegen und testen. Überladen ist schlecht.
 5. **Mehrkampf/Wettbewerb über Quickies: ja**, später.

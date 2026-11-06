@@ -6,7 +6,7 @@ Live: https://dephosa.github.io/hoermann-mut/
 
 ## Spiele (je eigene Bestenliste)
 
-Stapler (Lagermeister Nico), Tower of Mut, Mut-Man, Mut-Automat, Super Dennis, Zweifel-Buster (0.2), Mut-Probe, Tor-Parcours. Bomber-Arena ist als „Coming soon“ vorgesehen.
+Stapler (Lagermeister Nico), Tower of Mut, Mut-Man, Super Dennis, Zweifel-Buster (0.2), Mut-Probe, Tor-Parcours. Bomber-Arena ist als „Coming soon“ vorgesehen.
 
 ## Aufbau
 

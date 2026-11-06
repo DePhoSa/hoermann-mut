@@ -14,5 +14,8 @@
 
 ## Ideen aus dem Test (3.3.0)
 - Spielkacheln: später Vorschau-Video oder kurze Animation statt Emoji-Vorschau (Wunsch des Nutzers, nicht dringend). Kacheln bewusst klein halten.
-- Spielfelder (Stapler, Tower, Mut-Man, Automat) sind feste 780er-Zeichenflächen. Bei Windows-Skalierung 125/150 % wirkt die Schrift weich. Saubere Lösung: Zeichenfläche in doppelter Auflösung rendern (HiDPI), je Spiel prüfen.
+- Spielfelder (Stapler, Tower, Mut-Man) sind feste 780er-Zeichenflächen. Bei Windows-Skalierung 125/150 % wirkt die Schrift weich. Saubere Lösung: Zeichenfläche in doppelter Auflösung rendern (HiDPI), je Spiel prüfen.
 - Stapler: Titelzeile oben wird von den Regalpfosten überdeckt (alt, kosmetisch).
+
+## Mut-Automat (entfernt)
+- Das Spiel ist gelöscht. Die gespeicherten Punkte (Firestore, `localStorage` `hoermann_lb_slots`) wurden bewusst nicht angefasst. Offen: ob sie irgendwann in der Cloud aufgeräumt werden sollen (nur auf ausdrückliche Entscheidung, nie automatisch).

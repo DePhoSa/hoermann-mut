@@ -46,7 +46,7 @@
     ]
   };
   Object.keys(notes02).forEach(game => { releases[game] = { version: '0.2', scoreCategory: game + '_v02', notes: notes02[game] }; });
-  const categories = Object.freeze(['forklift','tower','pacman','slots','mario','buster','nerve','parcours','buster_v02','forklift_v02','mario_v02','nerve_v02','parcours_v02']);
+  const categories = Object.freeze(['forklift','tower','pacman','mario','buster','nerve','parcours','buster_v02','forklift_v02','mario_v02','nerve_v02','parcours_v02']);
   const baseGame = category => String(category).replace(/_v02$/, '');
   const isVersioned = category => Boolean(releases[baseGame(category)]);
   function release(game) { return releases[game] || { version: '0.1', scoreCategory: game, notes: ['Erstveröffentlichung 0.1.'] }; }

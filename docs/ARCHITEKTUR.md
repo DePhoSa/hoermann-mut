@@ -1,6 +1,6 @@
 # Architektur (für Nicht-Entwickler)
 
-Die Seite ist weiterhin eine reine Website ohne Build-Schritt (GitHub Pages). Seit Version 0.5 der Code-Struktur steckt der Programmcode nicht mehr in einer einzigen 11.500 Zeilen langen `index.html`, sondern in einzelnen Dateien. Das Verhalten ist unverändert (Beweis: `node tests/split-equivalence.cjs`).
+Die Seite ist weiterhin eine reine Website ohne Build-Schritt (GitHub Pages). Seit Version 0.5 der Code-Struktur steckt der Programmcode nicht mehr in einer einzigen 11.500 Zeilen langen `index.html`, sondern in einzelnen Dateien. Das Verhalten ist unverändert (damals per Äquivalenztest gegen den Stand 3.4.0 bewiesen; der Test wurde mit der Entfernung des Mut-Automaten ausgemustert, siehe `tests/README.md`).
 
 ## Ordner-Karte
 
@@ -16,7 +16,6 @@ Die Seite ist weiterhin eine reine Website ohne Build-Schritt (GitHub Pages). Se
 | `js/games/nerve.js` | Die Mut-Probe |
 | `js/games/parcours.js` | Tor-Parcours |
 | `js/games/forklift.js` | Lagermeister Nico (Stapler) |
-| `js/games/slots.js` | Mut-Automat |
 | `js/games/tower.js` | Tower of Mut |
 | `js/games/pacman.js` | Mut-Man |
 | `mut-effects.js`, `firebase-sync.js`, `game-releases.js`, `changelog.js`, `game-clock.js`, `game-session.js`, `game-navigation.js/.css` | bestehende gemeinsame Bausteine (unverändert, liegen im Hauptordner) |
@@ -29,9 +28,9 @@ Ein Spiel ändern oder ersetzen: nur seine Datei in `js/games/` anfassen. Gemein
 
 Die Dateien sind normale Skripte (keine Module) und teilen sich einen gemeinsamen globalen Bereich, genau wie vorher das eine große Skript. Die Reihenfolge in `index.html` ist daher Teil des Programms:
 
-`mut-effects.js` → `firebase-sync.js` → `game-releases.js` → `changelog.js` → `game-clock.js` → `game-navigation.css` → **`js/core/01…04`** → **`js/games/mario, buster, nerve, parcours, forklift, slots, tower, pacman`** → `game-session.js` → `game-navigation.js`
+`mut-effects.js` → `firebase-sync.js` → `game-releases.js` → `changelog.js` → `game-clock.js` → `game-navigation.css` → **`js/core/01…04`** → **`js/games/mario, buster, nerve, parcours, forklift, tower, pacman`** → `game-session.js` → `game-navigation.js`
 
-Nicht umsortieren. Hintergrund: Eine Funktion ist nur innerhalb ihrer eigenen Datei "vorab bekannt". Code, der beim Laden sofort läuft, darf deshalb nur Dinge benutzen, die in der gleichen oder einer früheren Datei stehen. Aus diesem Grund sind Ansichtswechsel und Seitenkopf in `01-ui-navigation.js` zusammen geblieben. Ob alles passt, zeigt `node tests/split-equivalence.cjs`.
+Nicht umsortieren. Hintergrund: Eine Funktion ist nur innerhalb ihrer eigenen Datei "vorab bekannt". Code, der beim Laden sofort läuft, darf deshalb nur Dinge benutzen, die in der gleichen oder einer früheren Datei stehen. Aus diesem Grund sind Ansichtswechsel und Seitenkopf in `01-ui-navigation.js` zusammen geblieben. Ob alles passt, zeigen `node tests/version-consistency.test.cjs` (alle Dateien eingebunden, `?v=` stimmt) und die Browser-Tests.
 
 ## Neues Spiel hinzufügen
 
@@ -57,3 +56,6 @@ Ablauf des Zwangsupdates: Offene Seiten holen regelmäßig `version.json`. Ist s
 ## Vorschau (`/test/`)
 
 Der Workflow `.github/workflows/preview.yml` kopiert alles außer `tests`, `docs`, `firebase` und den `*.md`-Dateien. Die Ordner `js/` und `css/` werden also automatisch mitkopiert.
+
+## Entfernte Spiele
+- **Mut-Automat (`slots`)** ist gelöscht (Datei, Kachel, Ansicht, Tab, Kategorie). Gespeicherte Punkte in Firestore und `localStorage` (`hoermann_lb_slots`) bleiben unangetastet liegen, werden aber nicht mehr geladen oder angezeigt. Alle Schleifen laufen über `HoermannGameReleases.categories`; fremde Cloud-Einträge mit Kategorie `slots` fallen dadurch still weg.

@@ -1,12 +1,12 @@
 // B. Spiele-Menue: gleich hohe Kacheln, kein abgeschnittener Text, pausierte Spiele grau und nicht anwaehlbar, Kopf-Bestenlisten
-const PAUSED = ['tower', 'pacman', 'slots', 'bomber'], PLAYABLE = ['forklift', 'mario', 'buster', 'nerve', 'parcours'];
+const PAUSED = ['tower', 'pacman', 'bomber'], PLAYABLE = ['forklift', 'mario', 'buster', 'nerve', 'parcours'];
 exports.run = async ({ open }) => {
   const s = await open('B');
   try {
     await s.goto(); await s.page.locator('#menu-btn').click(); await s.page.locator('.games-grid').first().waitFor();
     await s.step('menue');
     const tiles = await s.page.evaluate(() => [...document.querySelectorAll('.games-grid > [data-game]')].map(c => { const r = c.getBoundingClientRect(); return { g: c.dataset.game, top: Math.round(r.top + scrollY), h: Math.round(r.height), cls: c.className }; }));
-    s.expect(tiles.length === 9, 'Erwartet 9 Kacheln, gefunden ' + tiles.length);
+    s.expect(tiles.length === 8, 'Erwartet 8 Kacheln, gefunden ' + tiles.length);
     const rows = {}; for (const t of tiles) (rows[t.top] = rows[t.top] || []).push(t);
     for (const row of Object.values(rows)) { const hs = new Set(row.map(t => t.h)); s.expect(hs.size === 1, 'Kacheln einer Reihe sind unterschiedlich hoch: ' + row.map(t => t.g + '=' + t.h).join(', '), 'Kachelreihe'); }
     for (const g of PAUSED) { const t = tiles.find(t => t.g === g); s.expect(t && /game-unavailable/.test(t.cls), 'Pausiertes Spiel nicht ausgegraut: ' + g, g); }

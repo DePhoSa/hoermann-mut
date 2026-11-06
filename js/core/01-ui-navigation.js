@@ -195,43 +195,6 @@
           gain.connect(ctx.destination);
           osc.start(nowTime);
           osc.stop(nowTime + 0.23);
-        } else if (type === 'slotTick') {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          osc.type = 'triangle';
-          osc.frequency.setValueAtTime(740, nowTime);
-          osc.frequency.exponentialRampToValueAtTime(320, nowTime + 0.028);
-          gain.gain.setValueAtTime(0.055, nowTime);
-          gain.gain.exponentialRampToValueAtTime(0.001, nowTime + 0.03);
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.start(nowTime);
-          osc.stop(nowTime + 0.032);
-        } else if (type === 'reelStop') {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          osc.type = 'square';
-          osc.frequency.setValueAtTime(190, nowTime);
-          osc.frequency.exponentialRampToValueAtTime(85, nowTime + 0.09);
-          gain.gain.setValueAtTime(0.18, nowTime);
-          gain.gain.exponentialRampToValueAtTime(0.001, nowTime + 0.1);
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.start(nowTime);
-          osc.stop(nowTime + 0.11);
-        } else if (type === 'leverPull') {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(320, nowTime);
-          osc.frequency.linearRampToValueAtTime(140, nowTime + 0.12);
-          osc.frequency.linearRampToValueAtTime(480, nowTime + 0.22);
-          gain.gain.setValueAtTime(0.14, nowTime);
-          gain.gain.exponentialRampToValueAtTime(0.001, nowTime + 0.25);
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.start(nowTime);
-          osc.stop(nowTime + 0.26);
         } else if (type === 'jackpot') {
           const fanfare = [523.25, 659.25, 783.99, 1046.5, 783.99, 1046.5, 1318.5, 1567.98];
           fanfare.forEach((f, idx) => {
@@ -477,7 +440,6 @@
     const forkliftView = document.getElementById('forklift-view');
     const towerView = document.getElementById('tower-view');
     const pacmanView = document.getElementById('pacman-view');
-    const slotsView = document.getElementById('slots-view');
     const marioView = document.getElementById('mario-view');
     const busterView = document.getElementById('buster-view');
     const nerveView = document.getElementById('nerve-view');
@@ -493,7 +455,6 @@
       forkliftView.style.display = 'none';
       if (towerView) towerView.style.display = 'none';
       if (pacmanView) pacmanView.style.display = 'none';
-      if (slotsView) slotsView.style.display = 'none';
       marioView.style.display = 'none';
       busterView.style.display = 'none';
       nerveView.style.display = 'none';
@@ -503,7 +464,6 @@
       if (typeof stopForkliftGame === 'function') stopForkliftGame();
       if (typeof stopTowerGame === 'function') stopTowerGame();
       if (typeof stopPacmanGame === 'function') stopPacmanGame();
-      if (typeof stopSlotsGame === 'function') stopSlotsGame();
       stopMarioGame();
       stopBusterGame();
       stopParcoursGame();
@@ -541,8 +501,6 @@
     if (exitTowerBtn) exitTowerBtn.addEventListener('click', showGamesMenu);
     const exitPacmanBtn = document.getElementById('exit-pacman-btn');
     if (exitPacmanBtn) exitPacmanBtn.addEventListener('click', showGamesMenu);
-    const exitSlotsBtn = document.getElementById('exit-slots-btn');
-    if (exitSlotsBtn) exitSlotsBtn.addEventListener('click', showGamesMenu);
     document.getElementById('exit-mario-btn').addEventListener('click', showGamesMenu);
     document.getElementById('exit-buster-btn').addEventListener('click', showGamesMenu);
     document.getElementById('exit-nerve-btn').addEventListener('click', showGamesMenu);

@@ -511,7 +511,7 @@
     /* ==========================================================
        GAMES COMMON VIEWS
        ========================================================== */
-    #forklift-view, #tower-view, #pacman-view, #slots-view, #mario-view, #buster-view, #nerve-view, #parcours-view {
+    #forklift-view, #tower-view, #pacman-view, #mario-view, #buster-view, #nerve-view, #parcours-view {
       display: none;
       width: 100%;
       flex-direction: column;
@@ -519,7 +519,7 @@
       padding: 1.25rem 1.25rem 1.8rem 1.25rem;
     }
 
-    #forkliftCanvas, #towerCanvas, #pacmanCanvas, #slotsCanvas, #marioCanvas, #busterCanvas, #parcoursCanvas {
+    #forkliftCanvas, #towerCanvas, #pacmanCanvas, #marioCanvas, #busterCanvas, #parcoursCanvas {
       background: #001830;
       border: 3px solid var(--hoermann-blue);
       border-radius: 6px;
@@ -545,7 +545,7 @@
 
     #parcoursCanvas { height: auto; }
 
-    #forkliftCanvas, #towerCanvas, #pacmanCanvas, #slotsCanvas {
+    #forkliftCanvas, #towerCanvas, #pacmanCanvas {
       image-rendering: pixelated;
       image-rendering: crisp-edges;
       background: #1e293b;
@@ -555,12 +555,6 @@
       background: #030712;
       border: 3px solid #38bdf8;
       box-shadow: 0 12px 35px rgba(56, 189, 248, 0.25), 0 0 0 2px #002d62;
-    }
-
-    #slotsCanvas {
-      border: 3px solid var(--hoermann-orange);
-      box-shadow: 0 12px 35px rgba(245, 156, 0, 0.28), 0 0 0 2px #002d62;
-      cursor: pointer;
     }
 
     #busterCanvas {
@@ -1661,19 +1655,6 @@
           <button class="btn-card-start" style="background:var(--hoermann-orange); color:#ffffff; padding: 0.85rem 1.4rem; font-size: 1rem; white-space: nowrap; box-shadow: 0 4px 14px rgba(245,156,0,0.45);">Turm erklimmen 🏰</button>
         </div>
 
-        <!-- Game NEW 2: Hörmann Mut-Automat (Arcade Slot Machine) -->
-        <div class="game-choice-card" id="choose-slots-btn" style="grid-column: 1 / -1; border-color: #f59c00; background: linear-gradient(135deg, #001f44 0%, #002d62 55%, #1e3a8a 100%); color: #ffffff; flex-direction: row; align-items: center; text-align: left; gap: 1.25rem; flex-wrap: wrap; box-shadow: 0 10px 25px rgba(0, 45, 98, 0.25);">
-          <div class="card-badge-rec" style="background: linear-gradient(90deg, #f59c00, #fbbf24); color: #001830;">🎰 NEU &bull; ARCADE SLOT-MASCHINE (10 SPINS &bull; ~2 MIN.)</div>
-          <div style="font-size: 3.1rem; line-height: 1; padding: 0.2rem 0.5rem;">🎰💎</div>
-          <div style="flex: 1; min-width: 240px;">
-            <div class="game-card-title" style="font-size: 1.3rem; color: #fbbf24;">Der Hörmann Mut-Automat: 10 Spins zum Jackpot!</div>
-            <div class="game-card-desc" style="margin-bottom: 0; color: #e2e8f0;">
-              Zieh am goldenen <strong>BiSecur-Hebel</strong> für genau <strong>10 spannende Spins</strong>! Erdrehe <strong>goldene Sektionaltore, Nicos blauen Stapler, Dennis' Meisterhelm, Torantriebe &amp; das Hörmann-Wappen (WILD)</strong>. Halte starke Walzen per <strong>🔒 HOLD</strong> fest und wage nach einem Treffer das <strong>🔥 Mut-Risiko (Doppelt oder Nichts!)</strong>!
-            </div>
-          </div>
-          <button class="btn-card-start" style="background:var(--hoermann-orange); color:#ffffff; padding: 0.85rem 1.4rem; font-size: 1rem; white-space: nowrap; box-shadow: 0 4px 14px rgba(245,156,0,0.45);">10 Spins starten 🎰</button>
-        </div>
-
         <!-- Game NEW: Lagermeister Nico malocht (Isometric Forklift Game) -->
         <div class="game-choice-card" id="choose-forklift-btn" style="grid-column: 1 / -1; border-color: #f59c00; background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%); flex-direction: row; align-items: center; text-align: left; gap: 1.25rem; flex-wrap: wrap;">
           <div class="card-badge-rec" style="background: #f59c00;">🚜 NEU &bull; FÜR DIE LAGERJUNGS (ISO-PIXELART)</div>
@@ -1774,47 +1755,6 @@
 
       <div class="game-instructions" style="max-width:780px; margin-top:0.55rem; font-size:0.8rem;">
         <span><span class="key-badge">W A S D</span> / <span class="key-badge">▲ ◀ ▼ ▶</span> Stapler fahren &bull; <span class="key-badge">Leertaste</span> Palette am LKW aufnehmen / im Ziel-Regal absetzen &bull; <span class="key-badge">E</span> oder <span class="key-badge">Shift</span> Hubmast hoch/runter (für <strong>1/2 belegte Fächer = Ebene 2 Hochstapeln!</strong>) &bull; <span class="key-badge">H</span> Meister-Hupe</span>
-      </div>
-    </section>
-
-    <!-- 3b. SPIEL NEU: HÖRMANN MUT-AUTOMAT (ARCADE SLOT MACHINE - 10 SPINS EDITION) -->
-    <section class="card-content" id="slots-view">
-      <div class="game-ui-header" style="max-width: 780px;">
-        <div class="game-stat">Runde: <span id="slot-spins-stat">1 / 10</span></div>
-        <div class="game-stat">Letzter Gewinn: <span id="slot-lastwin-stat">0</span></div>
-        <div class="game-stat">Mut-Konto: <span id="slot-score-stat">0</span></div>
-        <div class="game-actions-bar">
-          <button class="utility-link" id="slot-cashout-btn" style="text-decoration:none; font-weight:800; color:#10b981;" title="Aktuellen Kontostand sofort in die Online-Bestenliste eintragen">💰 Punkte sichern</button>
-          <button class="utility-link" id="slots-leaderboard-btn" style="text-decoration:none; font-weight:700;">🏆 Bestenliste</button>
-          <button class="utility-link" id="exit-slots-btn" style="text-decoration:none; font-weight:800;">✕ Menü</button>
-        </div>
-      </div>
-
-      <canvas id="slotsCanvas" width="780" height="440"></canvas>
-
-      <!-- Aufgeräumte Arcade-Steuerleiste -->
-      <div style="display:flex; flex-wrap:wrap; gap:8px; width:100%; max-width:780px; justify-content:space-between; align-items:center; margin-top:0.65rem;">
-        <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
-          <button class="btn-card-start" id="slot-hold-0-btn" style="background:#1e293b; border:2px solid #475569; padding:0.45rem 0.8rem; font-size:0.82rem;" title="Walze 1 für den nächsten Dreh festhalten (Taste 1)">🔓 Walze 1 halten (1)</button>
-          <button class="btn-card-start" id="slot-hold-1-btn" style="background:#1e293b; border:2px solid #475569; padding:0.45rem 0.8rem; font-size:0.82rem;" title="Walze 2 für den nächsten Dreh festhalten (Taste 2)">🔓 Walze 2 halten (2)</button>
-          <button class="btn-card-start" id="slot-hold-2-btn" style="background:#1e293b; border:2px solid #475569; padding:0.45rem 0.8rem; font-size:0.82rem;" title="Walze 3 für den nächsten Dreh festhalten (Taste 3)">🔓 Walze 3 halten (3)</button>
-        </div>
-        <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
-          <button class="btn-card-start" id="slot-gamble-btn" style="display:none; background:#dc2626; padding:0.5rem 0.95rem; font-size:0.86rem; font-weight:900;">
-            🔥 Mut-Risiko: Verdoppeln (R)
-          </button>
-          <button class="btn-card-start" id="slot-collect-btn" style="display:none; background:#16a34a; padding:0.5rem 0.95rem; font-size:0.86rem; font-weight:900;">
-            💰 Punkte sichern (Enter)
-          </button>
-          <button class="btn-card-start" id="slot-spin-btn" style="background:var(--hoermann-orange); padding:0.55rem 1.3rem; font-size:0.95rem; font-weight:900; box-shadow:0 4px 12px rgba(245,156,0,0.4);">
-            🎰 HEBEL ZIEHEN (Leertaste)
-          </button>
-          <button class="utility-link" id="restart-slots-btn" style="margin-left:4px;">Neustart ↺</button>
-        </div>
-      </div>
-
-      <div class="game-instructions" style="max-width:780px; margin-top:0.55rem; font-size:0.8rem;">
-        <span><strong>10 Spins pro Spiel (~2 Min.)</strong> &bull; <span class="key-badge">Leertaste</span> Hebel ziehen / Walze stoppen &bull; <span class="key-badge">1</span> <span class="key-badge">2</span> <span class="key-badge">3</span> Walzen halten (HOLD) &bull; <span class="key-badge">R</span> Mut-Risiko (Gewinn verdoppeln!) &bull; <span class="key-badge">Enter</span> Gewinn sichern &bull; 🛡️ <strong>Hörmann-Wappen = WILD-Joker!</strong></span>
       </div>
     </section>
 
@@ -2089,7 +2029,6 @@
         <button class="lb-tab-btn active" id="tab-forklift-btn">🚜 Lagermeister Nico</button>
         <button class="lb-tab-btn" id="tab-tower-btn">🏰 Tower of Mut</button>
         <button class="lb-tab-btn" id="tab-pacman-btn">🟡 Mut-Man</button>
-        <button class="lb-tab-btn" id="tab-slots-btn">🎰 Mut-Automat</button>
         <button class="lb-tab-btn" id="tab-mario-btn">🍄 Super Dennis</button>
         <button class="lb-tab-btn" id="tab-buster-btn">🔨 Zweifel-Buster</button>
         <button class="lb-tab-btn" id="tab-nerve-btn">🎲 Die Mut-Probe</button>
@@ -2276,7 +2215,6 @@
   <script src="js/games/nerve.js?v=3.4.0"></script>
   <script src="js/games/parcours.js?v=3.4.0"></script>
   <script src="js/games/forklift.js?v=3.4.0"></script>
-  <script src="js/games/slots.js?v=3.4.0"></script>
   <script src="js/games/tower.js?v=3.4.0"></script>
   <script src="js/games/pacman.js?v=3.4.0"></script>
   <script src="game-session.js?v=3.4.0"></script>

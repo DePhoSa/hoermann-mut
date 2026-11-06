@@ -11,9 +11,14 @@ const root = path.resolve(__dirname, '..');
     await page.route(u => !u.href.startsWith(origin), r => { external.push(r.request().url()); r.abort(); });
     await page.route('**/firebase-sync.js*', r => r.fulfill({ contentType: 'text/javascript', body: `
       window.__pub=[]; let cb=null;
-      window.HoermannCloud={uid:'u1',async publish(p){window.__pub.push(p); if(cb) cb([p]);},async start(f,b){cb=f;b('online');f([{type:'SCORE',cat:'buster_v02',name:'Testerin',score:777,date:'Heute'},{type:'CHAT_MSG',msg:{id:'m1',sender:'Gast',text:'Hallo aus der Cloud',ts:Date.now()}}]);}};` }));
+      window.HoermannCloud={uid:'u1',async publish(p){window.__pub.push(p); if(cb) cb([p]);},async start(f,b){cb=f;b('online');f([{type:'SCORE',cat:'slots',name:'Altlast',score:999,date:'Heute'},{type:'STATE',scores:{slots:[{name:'Altlast',score:999,date:'Heute'}]}},{type:'SCORE',cat:'buster_v02',name:'Testerin',score:777,date:'Heute'},{type:'CHAT_MSG',msg:{id:'m1',sender:'Gast',text:'Hallo aus der Cloud',ts:Date.now()}}]);}};` }));
+    // Altdaten des entfernten Spiels 'slots' (Mut-Automat) im Browser: bleiben unangetastet, werden ignoriert, kein Fehler
+    await page.addInitScript(() => { if (!localStorage.getItem('hoermann_lb_slots')) localStorage.setItem('hoermann_lb_slots', JSON.stringify([{ name: 'Altlast', score: 123, date: 'x', isUser: true }])); });
     await page.goto(origin + '/index.html'); await page.waitForTimeout(800);
     assert.deepStrictEqual(errors, []);
+    assert.strictEqual(await page.evaluate(() => JSON.parse(localStorage.getItem('hoermann_lb_slots')).length), 1, 'Altdaten slots wurden veraendert');
+    assert.strictEqual(await page.locator('#tab-slots-btn, #choose-slots-btn, #slots-view').count(), 0);
+    assert.strictEqual(await page.evaluate(() => HoermannGameReleases.categories.includes('slots')), false);
     const state = await page.evaluate(() => ({ lb: JSON.parse(localStorage.getItem('hoermann_lb_buster_v02')).some(e => e.name === 'Testerin' && e.score === 777), chat: JSON.parse(localStorage.getItem('hoermann_mut_live_chat_v3')).messages.some(m => m.id === 'm1'), badge: document.getElementById('cloud-sync-badge').textContent }));
     assert.ok(state.lb, 'Cloud-Score kam nicht an'); assert.ok(state.chat, 'Cloud-Chat kam nicht an');
     await page.evaluate(() => broadcastSingleScoreLive('buster_v02', { name: 'Ich', score: 5, date: 'Heute' }));
