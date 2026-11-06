@@ -50,6 +50,8 @@
 #game-session-action { margin-top: 24px; }
 .game-stage { position: relative; width: max-content; max-width: 100%; isolation: isolate; }
 #nerve-view .game-stage { width: 100%; max-width: 660px; }
+/* Handy: Tore in einer Spalte brauchen feste Hoehe (flex:1 liess sie auf 24px zusammenfallen). */
+@media (max-width: 640px) { #nerve-view .doors-arena .mystery-door { flex: 0 0 auto; height: 120px; } }
 .game-stage > canvas { display: block; margin: 0 auto; max-width: 100%; height: auto; }
 #game-countdown { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; background: #001830bf; color: #fff; border-radius: 6px; pointer-events: none; }
 #game-countdown[hidden] { display: none; }
