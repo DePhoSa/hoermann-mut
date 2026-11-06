@@ -210,3 +210,26 @@ footer .version-btn:hover, footer .version-btn:focus-visible { color: #fff; text
 #changelog-highlights { margin: 0 0 14px; }
 #changelog-highlights .version-highlights { justify-content: flex-start; }
 #changelog-highlights .version-chip { background: #e7edf5; color: #002d62; }
+
+/* ===== Rundenende-Karte & Neustart im Spiel (statt kleinem "Neustart"-Link) ===== */
+#restart-mario-btn, #restart-buster-btn, #restart-forklift-btn, #restart-nerve-btn, #restart-parcours-btn {
+  position: absolute !important; min-height: 0 !important; min-width: 0 !important; width: 1px !important; height: 1px !important; margin: -1px !important; padding: 0 !important;
+  overflow: hidden !important; clip: rect(0 0 0 0) !important; white-space: nowrap !important; border: 0 !important; opacity: 0 !important; pointer-events: none !important;
+}
+#game-end-card { position: absolute; inset: 0; z-index: 3; display: flex; padding: 8px; box-sizing: border-box; overflow: auto; background: radial-gradient(circle at 50% 40%, #0a3d73d9, #001830eb); border-radius: 6px; color: #fff; animation: game-end-in .35s ease-out; }
+#game-end-card[hidden], body:has(#highscore-card.show) #game-end-card { display: none; }
+.game-end-panel { margin: auto; width: min(100%, 360px); display: flex; flex-direction: column; align-items: stretch; gap: 8px; text-align: center; }
+.game-end-kicker { font-size: .8rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #ffd269; }
+.game-end-score { font-size: clamp(1.25rem, 5vw, 1.9rem); font-weight: 900; line-height: 1.15; }
+.game-end-primary { min-height: 52px; border: 0; border-radius: 6px; padding: 10px 18px; font: inherit; font-size: 1.15rem; font-weight: 800; color: #1b1200; cursor: pointer; background: linear-gradient(180deg, #ffb52e 0%, var(--hoermann-orange, #f59c00) 100%); box-shadow: 0 6px 16px #f59c0066, inset 0 1px 0 #ffffff55; animation: game-end-pulse 1.8s ease-in-out infinite; }
+.game-end-primary:hover { filter: brightness(1.07); }
+.game-end-row { display: flex; gap: 8px; }
+.game-end-secondary, .game-end-text { min-height: 44px; border-radius: 6px; font: inherit; font-weight: 700; cursor: pointer; color: #fff; }
+.game-end-secondary { flex: 1 1 auto; padding: 8px 14px; background: #ffffff1f; border: 1px solid #ffffff66; }
+.game-end-text { flex: 0 0 auto; padding: 8px 14px; background: none; border: 0; text-decoration: underline; text-underline-offset: 3px; color: #dbe8f6; }
+#game-end-card button:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+#game-session-dialog .game-session-secondary { display: block; width: 100%; min-height: 44px; margin-top: 10px; border: 1px solid #94a3b8; border-radius: 6px; background: #fff; color: #004481; font: inherit; font-weight: 700; cursor: pointer; }
+#game-session-dialog .game-session-secondary[hidden] { display: none; }
+@keyframes game-end-in { from { opacity: 0; transform: scale(.97); } to { opacity: 1; transform: none; } }
+@keyframes game-end-pulse { 50% { box-shadow: 0 6px 22px #f59c00aa, inset 0 1px 0 #ffffff55; } }
+@media (prefers-reduced-motion: reduce) { #game-end-card, .game-end-primary { animation: none; } }

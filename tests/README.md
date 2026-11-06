@@ -11,6 +11,7 @@ node tests/v02-leaderboards-browser.cjs
 node tests/chat-admin-browser.cjs
 node tests/lb-in-game-browser.cjs
 node tests/game-session-browser.cjs
+node tests/restart-browser.cjs
 node tests/mut-effects-browser.cjs
 ```
 
