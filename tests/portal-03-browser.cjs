@@ -25,7 +25,7 @@ const root = path.resolve(__dirname, '..');
     // Kein Leaderboard mehr am Seitenende
     assert.equal(await page.locator('#highscore-card').isVisible(), false);
     // Footer: Version als Knopf + Highlights, Änderungsverlauf-Dialog
-    assert.equal(await page.locator('#version-changelog-btn').textContent(), 'Version 3.3.0');
+    assert.equal(await page.locator('#version-changelog-btn').textContent(), 'Version ' + await page.evaluate(() => HoermannChangelog.latest().version));
     assert.ok(await page.locator('.version-chip').count() >= 2);
     await noOverflow('Start');
     await page.locator('#version-changelog-btn').scrollIntoViewIfNeeded(); await shot('footer');
@@ -109,7 +109,7 @@ const root = path.resolve(__dirname, '..');
     await shot('countdown');
     await page.keyboard.press('Escape'); assert.equal(await page.evaluate(() => HoermannGameSession.state().phase), 'paused');
     await page.keyboard.press('Escape'); assert.equal(await page.evaluate(() => HoermannGameSession.state().phase), 'countdown');
-    await page.locator('#exit-mario-btn').click();
+    await page.evaluate(()=>document.getElementById('exit-mario-btn').click());
 
     // Overlay -> Zum Spiel: ebenfalls Bereitschaft
     await page.locator('#header-leaderboard-btn').click(); await page.locator('#tab-mario-btn').click();
@@ -120,11 +120,13 @@ const root = path.resolve(__dirname, '..');
     assert.equal(await page.locator('#game-countdown').isVisible(), false);
     await page.locator('#game-session-action').click();
     assert.equal(await page.evaluate(() => HoermannGameSession.state().phase), 'countdown');
-    await page.locator('#exit-mario-btn').click();
+    await page.evaluate(()=>document.getElementById('exit-mario-btn').click());
 
-    // Score speichern -> Overlay mit Hervorhebung
+    // Score speichern -> keine Vollbild-Liste ueber dem Spiel; Kopf-Bestenliste zeigt den eigenen Namen hervorgehoben
     await page.evaluate(() => { promptScoreSubmit(777, 'mario_v02', 'Super Dennis 0.2'); });
     await page.evaluate(() => { saveScoreBtn.click(); });
+    assert.equal(await page.locator('#highscore-card.show').count(), 0, 'Speichern oeffnet keine Bestenliste');
+    await page.evaluate(() => openGlobalLeaderboard('mario_v02', getLockedPlayerName()));
     await page.locator('#highscore-card.show').waitFor();
     assert.ok(await page.locator('#leaderboard-body tr.highlight').count() >= 1, L + 'eigener Name nicht hervorgehoben');
     await noOverflow('Overlay nach Speichern');

@@ -6,7 +6,11 @@ service cloud.firestore {
     function isAdmin() {
       return signedIn()
         && exists(/databases/$(db)/documents/config/admins)
-        && request.auth.uid in get(/databases/$(db)/documents/config/admins).data.uids;
+        && (
+          request.auth.uid in get(/databases/$(db)/documents/config/admins).data.get('uids', [])
+          || (request.auth.token.email_verified == true
+              && request.auth.token.email in get(/databases/$(db)/documents/config/admins).data.get('emails', []))
+        );
     }
 
     // Gilt für echte (scores, events) und Vorschau-Sammlungen (test_scores, test_events).

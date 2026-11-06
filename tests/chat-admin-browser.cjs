@@ -9,7 +9,7 @@ const root = path.resolve(__dirname, '..'); const shots = process.env.SHOTS || '
     const ctx = await browser.newContext({ viewport: { width: vp.width, height: vp.height }, hasTouch: vp.m, isMobile: vp.m }); const page = await ctx.newPage(); const errors = [];
     page.on('pageerror', e => errors.push(e.message));
     await page.route(u => !u.href.startsWith(origin), r => r.abort());
-    await page.route('**/firebase-sync.js*', r => r.fulfill({ contentType: 'text/javascript', body: `window.__pub=[];window.HoermannCloud={uid:'u1',async isAdmin(){return !!window.__isAdmin},async publish(p){window.__pub.push(p)},async start(f,b){b('online');f([]);}};` }));
+    await page.route('**/firebase-sync.js*', r => r.fulfill({ contentType: 'text/javascript', body: `window.__pub=[];window.HoermannCloud={uid:'u1',async isAdmin(){return !!window.__isAdmin},async adminSignIn(){window.__signIns=(window.__signIns||0)+1;if(window.__signInError)throw {code:window.__signInError};if(window.__googleAdmin)window.__isAdmin=true;},async publish(p){window.__pub.push(p)},async start(f,b){b('online');f([]);}};` }));
     await page.goto(origin + '/index.html'); await page.waitForTimeout(500);
     const tag = vp.width + 'x' + vp.height;
     const noOverflow = async l => assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), tag + ' ' + l + ': Ueberlauf');
@@ -31,16 +31,20 @@ const root = path.resolve(__dirname, '..'); const shots = process.env.SHOTS || '
     await page.click('#toggle-gif-tray-btn'); await noOverflow('GIF'); await page.click('#toggle-gif-tray-btn');
     if (shots) await page.screenshot({ path: `${shots}/${tag}-chat.png` });
     await page.click('#chat-close-btn'); assert.ok(await page.isHidden('#online-side-chat'));
-    assert.ok(await page.isHidden('#admin-dialog')); await big('#chat-admin-toggle-btn', 'Admin-Link');
-    await page.click('#chat-admin-toggle-btn'); assert.ok(await page.isVisible('#admin-dialog'));
+    assert.ok(await page.isHidden('#admin-dialog')); assert.ok(await page.isHidden('#chat-admin-toggle-btn'), 'Admin-Knopf muss unsichtbar sein');
+    await page.evaluate(() => { location.hash = '#admin'; }); await page.waitForTimeout(300); assert.ok(await page.isVisible('#admin-dialog'));
     assert.ok(await page.isHidden('#chat-admin-pass-input'), 'kein Passwortfeld mehr'); assert.ok(await page.isHidden('#admin-tab-ideas-btn'), 'Tabs vor Login sichtbar'); assert.ok(await page.isHidden('#admin-chat-pane'));
     await big('#chat-admin-login-btn', 'Login'); await big('#admin-dialog-close', 'Admin schliessen'); await noOverflow('Admin');
     await page.click('#chat-admin-login-btn'); await page.waitForTimeout(200);
     assert.ok(await page.isHidden('#admin-tab-ideas-btn'), 'Nicht-Admin darf nicht entsperren');
     if (shots) await page.screenshot({ path: `${shots}/${tag}-admin-login.png` });
+    assert.ok(await page.evaluate(() => window.__signIns >= 1), 'Google-Anmeldung wurde nicht angestossen');
+    await page.evaluate(() => { window.__signInError = 'auth/popup-closed-by-user'; }); await page.click('#chat-admin-login-btn'); await page.waitForTimeout(200);
+    assert.ok(await page.isHidden('#admin-tab-ideas-btn'), 'Abbruch darf nicht entsperren');
+    await page.evaluate(() => { window.__signInError = ''; window.__googleAdmin = true; }); await page.click('#chat-admin-login-btn'); await page.waitForTimeout(300);
+    assert.ok(await page.isVisible('#admin-tab-ideas-btn'), 'Google-Admin muss entsperren');
     await page.keyboard.press('Escape'); assert.ok(await page.isHidden('#admin-dialog'));
-    await page.evaluate(() => { isAdminUnlocked = true; updateAdminUiState(); });
-    await page.click('#chat-admin-toggle-btn');
+    await page.evaluate(() => { location.hash = ''; for (let i = 0; i < 5; i++) document.getElementById('footer-brand').click(); }); await page.waitForTimeout(300); assert.ok(await page.isVisible('#admin-dialog'), 'fuenf Taps oeffnen Admin');
     for (const id of ['admin-tab-chat-btn', 'admin-tab-ideas-btn', 'admin-tab-renames-btn', 'chat-admin-change-pw-btn']) { assert.ok(await page.isVisible('#' + id), id); await big('#' + id, id); }
     assert.ok(await page.isVisible('#admin-chat-mod-list .chat-delete-btn')); await big('#admin-chat-mod-list .chat-delete-btn', 'Loeschen');
     await page.click('#admin-tab-ideas-btn'); assert.ok(await page.isVisible('#admin-ideas-list'));

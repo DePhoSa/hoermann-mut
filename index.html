@@ -1521,12 +1521,12 @@
       }
     }
   </style>
-  <script defer src="mut-effects.js?v=3.3.0"></script>
-  <script src="firebase-sync.js?v=3.3.0"></script>
-  <script src="game-releases.js?v=3.3.0"></script>
-  <script src="changelog.js?v=3.3.0"></script>
-  <script src="game-clock.js?v=3.3.0"></script>
-  <link rel="stylesheet" href="game-navigation.css?v=3.3.0">
+  <script defer src="mut-effects.js?v=3.4.0"></script>
+  <script src="firebase-sync.js?v=3.4.0"></script>
+  <script src="game-releases.js?v=3.4.0"></script>
+  <script src="changelog.js?v=3.4.0"></script>
+  <script src="game-clock.js?v=3.4.0"></script>
+  <link rel="stylesheet" href="game-navigation.css?v=3.4.0">
 </head>
 <body>
 
@@ -1732,14 +1732,6 @@
         </div>
       </div>
 
-      <div style="margin-top:2rem; display:flex; gap:1.5rem; align-items:center;">
-        <button class="utility-link" id="menu-view-leaderboard-btn" style="text-decoration:none; font-weight:800; font-size:1rem; color:var(--hoermann-orange);">
-          🏆 Alle Bestenlisten ansehen
-        </button>
-        <button class="utility-link" id="back-to-portal-btn" style="text-decoration:none; font-weight:700;">
-          ← Zurück zum Mut-Portal
-        </button>
-      </div>
     </section>
 
     <!-- 3. SPIEL NEU: LAGERMEISTER NICO MALOCHT (ISOMETRIC FORKLIFT) -->
@@ -2031,22 +2023,8 @@
     <!-- GLOBAL HIGHSCORE SUBMISSION MODAL (Available for ALL 5 Games) -->
     <div id="score-submit-dialog" style="margin: 0 auto 1.5rem auto; max-width: 780px;">
       <div class="submit-title" id="submit-dialog-title">Neuer Mut-Rekord!</div>
-      <p id="submit-dialog-subtitle" style="font-size:0.95rem; color:var(--text-muted);">
-        Trage deinen Namen in die Hörmann Mut-Bestenliste ein:
-      </p>
-      <div id="submit-highscore-feedback" style="margin: 0.75rem auto 0.25rem auto; padding: 0.65rem 1rem; border-radius: 6px; font-size: 0.9rem; font-weight: 700; display: none; max-width: 640px; line-height: 1.4;"></div>
-
-      <!-- SPIELER-IDEEN-TICKET BOX (Wird bei Erstplatzierung, Top-3-Einzug, Top-3-Comeback oder Top-3-Verbesserung freigeschaltet) -->
-      <div class="idea-ticket-box" id="idea-ticket-box">
-        <div class="idea-ticket-badge" id="idea-ticket-badge">💡 BONUS FREIGESCHALTET: DEINE SPIEL-IDEE</div>
-        <div id="idea-ticket-reason" style="font-size:0.92rem; font-weight:800; color:#92400e; margin-bottom:3px;">
-          Du hast dir ein Ideen-Ticket erspielt!
-        </div>
-        <p style="font-size:0.82rem; color:#78350f; line-height:1.4; margin:0;">
-          Als Belohnung darfst du einmalig eine oder mehrere lustige oder mutige Ideen hinterlassen, die wir ins Spiel einbauen können (optional – landet direkt im geschützten Admin-Postfach):
-        </p>
-        <textarea id="player-idea-input" class="idea-ticket-textarea" maxlength="500" placeholder="Deine Idee(n) fürs Spiel (optional) – z.B. neues Hindernis, lustiger Spruch, geheimes Extra..."></textarea>
-      </div>
+      <p id="submit-dialog-subtitle" style="font-size:0.95rem; color:var(--text-muted);"></p>
+      <div id="submit-highscore-feedback" style="margin: 0.5rem auto 0.25rem auto; padding: 0.65rem 1rem; border-radius: 6px; font-size: 0.9rem; font-weight: 700; display: none; max-width: 640px; line-height: 1.4;"></div>
 
       <div class="submit-form" style="flex-direction:column; align-items:center; gap:0.65rem;">
         <!-- Ansicht, wenn der Spieler auf diesem Gerät bereits seinen festen Namen hat (GESPERRT gegen Namens-Klau & Doppel-Eintrag!) -->
@@ -2074,10 +2052,20 @@
 
         <!-- Eingabefeld erscheint NUR beim allerersten Mal, wenn auf diesem Gerät noch kein Name festgelegt wurde -->
         <div id="first-time-name-row" style="display:flex; flex-direction:column; gap:4px; width:100%; max-width:460px;">
-          <input type="text" id="player-name-input" aria-label="Spielername" autocomplete="nickname" class="submit-input" maxlength="20" placeholder="Einmalig deinen festen Spielernamen wählen..." style="width:100%;">
-          <small style="font-size:0.75rem; color:#64748b;">🔒 Hinweis: Dein Name wird nach dem ersten Speichern fest mit deinem Gerät verknüpft (kein Überschreiben fremder Namen möglich).</small>
+          <input type="text" id="player-name-input" aria-label="Spielername" autocomplete="nickname" class="submit-input" maxlength="20" placeholder="Spielername (einmalig)" style="width:100%;">
+          <small style="font-size:0.75rem; color:#64748b;">🔒 Wird fest mit diesem Gerät verknüpft.</small>
         </div>
-        <button class="submit-btn" id="save-score-btn" style="width:100%; max-width:460px; justify-content:center;">⚡ Sofort in Bestenliste speichern 🏆</button>
+        <button class="submit-btn" id="save-score-btn" style="width:100%; max-width:460px; justify-content:center;">Speichern</button>
+        <div class="score-dialog-actions">
+          <button type="button" class="utility-link" id="idea-ticket-toggle" aria-expanded="false" aria-controls="idea-ticket-box">💡 Idee hinterlassen</button>
+          <button type="button" class="utility-link" id="score-dialog-close-btn">Schließen</button>
+        </div>
+        <!-- Optionale Spiel-Idee (nur wenn freigeschaltet), eingeklappt hinter "Idee hinterlassen" -->
+        <div class="idea-ticket-box" id="idea-ticket-box">
+          <div class="idea-ticket-badge" id="idea-ticket-badge" hidden></div>
+          <div id="idea-ticket-reason" class="idea-ticket-reason"></div>
+          <textarea id="player-idea-input" class="idea-ticket-textarea" maxlength="500" aria-label="Deine Idee fürs Spiel" placeholder="Deine Idee fürs Spiel (optional)"></textarea>
+        </div>
       </div>
     </div>
 
@@ -2213,8 +2201,8 @@
       <div class="admin-dialog-head"><span id="admin-dialog-title">🛡️ Admin-Bereich</span><button type="button" id="admin-dialog-close" aria-label="Admin-Bereich schließen">✕</button></div>
       <div class="chat-admin-panel" id="chat-admin-panel" style="display:none"></div>
       <div class="admin-login" id="chat-admin-login-row">
-        <span style="flex:1;min-width:160px;font-size:.9rem;color:#475569">Anmeldung über die Admin-Liste in der Cloud (kein Passwort).</span>
-        <button type="button" id="chat-admin-login-btn" class="chat-send-btn">Als Admin anmelden</button>
+        <span style="flex:1;min-width:160px;font-size:.9rem;color:#475569">Feste Anmeldung mit Google. Nur Konten aus der Admin-Liste erhalten Rechte.</span>
+        <button type="button" id="chat-admin-login-btn" class="chat-send-btn">Mit Google anmelden</button>
       </div>
       <div class="admin-bar" id="chat-admin-actions-row">
         <span>🛡️ Admin-Modus aktiv</span>
@@ -2242,12 +2230,9 @@
   </div>
 
   <footer>
-    Hörmann Mut-Portal &bull; Sektionaltore &bull; Schwingtore &bull; Türen &bull; Stahlzargen &bull; Lagermeister Nico &amp; Dennis Ressemann Edition
-    <div><button type="button" class="chat-admin-toggle-btn" id="chat-admin-toggle-btn" aria-haspopup="dialog" aria-expanded="false" title="Admin-Bereich">🔒 Admin</button></div>
-    <div style="margin-top:4px; font-size:0.74rem; color:rgba(255,255,255,0.5);">
-      <span id="app-version-badge"><button type="button" class="version-btn" id="version-changelog-btn" aria-haspopup="dialog">Version 3.3.0</button></span>
-      <div id="version-highlights" class="version-highlights"></div>
-    </div>
+    <span id="footer-brand">Hörmann Mut-Portal</span><span aria-hidden="true"> &middot; </span><span id="app-version-badge"><button type="button" class="version-btn" id="version-changelog-btn" aria-haspopup="dialog">Version 3.4.0</button></span>
+    <button type="button" class="chat-admin-toggle-btn" id="chat-admin-toggle-btn" aria-haspopup="dialog" aria-expanded="false" title="Admin-Bereich" hidden tabindex="-1">Admin</button>
+    <div id="version-highlights" class="version-highlights" hidden></div>
   </footer>
 
   <!-- DEZENTE HINWEIS-LEISTE FÜR UPDATES WÄHREND EINES AKTIVEN SPIELS (Wirft niemanden aus dem Spiel!) -->
@@ -2818,7 +2803,6 @@
     }
 
     document.getElementById('menu-btn').addEventListener('click', showGamesMenu);
-    document.getElementById('back-to-portal-btn').addEventListener('click', showPortalView);
 
     // Game selection is coordinated by game-navigation.js.
 
@@ -3169,7 +3153,7 @@
     /* ==========================================================
        7b. GLOBAL ONLINE CLOUD HUB (HIGHSCORES, IDEEN-BOX, LIVE-CHAT & ZWANGSUPDATE)
        ========================================================== */
-    const APP_VERSION           = '3.3.0';
+    const APP_VERSION           = '3.4.0';
     const cloudSyncBadge        = document.getElementById('cloud-sync-badge');
     const submitHighscoreFeedback = document.getElementById('submit-highscore-feedback');
     const ideaTicketBox         = document.getElementById('idea-ticket-box');
@@ -4412,10 +4396,6 @@
       highscoreCard.classList.remove('show');
     });
 
-    document.getElementById('menu-view-leaderboard-btn').addEventListener('click', () => {
-      const lastPlayedCat = localStorage.getItem('hoermann_last_lb_cat') || 'forklift';
-      openGlobalLeaderboard(lastPlayedCat);
-    });
     document.getElementById('forklift-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('forklift_v02'));
     const towerLbBtn = document.getElementById('tower-leaderboard-btn');
     if (towerLbBtn) towerLbBtn.addEventListener('click', () => openGlobalLeaderboard('tower'));
@@ -4429,65 +4409,60 @@
     document.getElementById('parcours-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('parcours_v02'));
 
     // Prüft live, ob der eingegebene Name frei/gültig ist, ob bereits ein höherer Highscore vorliegt + ob ein Ideen-Ticket freigeschaltet wird
+    // Kompakter Ergebnis-Dialog: kurze Texte, ein klarer Hauptknopf. Rekorde unter einem festen Namen werden automatisch gespeichert (siehe promptScoreSubmit).
+    function setSubmitFeedback(kind, html) {
+      const palette = {
+        ok:   ['#ecfdf5', '#047857', '1px solid #6ee7b7'],
+        info: ['#eff6ff', '#1e40af', '1px solid #93c5fd'],
+        warn: ['#fef2f2', '#b91c1c', '1px solid #fca5a5']
+      }[kind];
+      submitHighscoreFeedback.style.background = palette[0];
+      submitHighscoreFeedback.style.color = palette[1];
+      submitHighscoreFeedback.style.border = palette[2];
+      submitHighscoreFeedback.style.display = html ? 'block' : 'none';
+      submitHighscoreFeedback.innerHTML = html;
+    }
+    function setSaveButton(enabled, label) {
+      saveScoreBtn.disabled = !enabled;
+      saveScoreBtn.style.opacity = enabled ? '1' : '0.5';
+      saveScoreBtn.style.cursor = enabled ? 'pointer' : 'not-allowed';
+      saveScoreBtn.textContent = label;
+    }
+
     function evaluatePersonalHighscoreCheck() {
       const unit = (HoermannGameReleases.baseGame(pendingSubmitGame) === 'parcours') ? 'Tore' : 'Punkte';
       const lockedName = getLockedPlayerName();
       const typedName = lockedName || playerNameInput.value.trim();
+      submitDialogSubtitle.textContent = '';
+      submitDialogSubtitle.style.display = 'none';
 
-      submitHighscoreFeedback.style.display = 'block';
-
-      // 1. Falls dieses Gerät noch KEINEN festen Namen hat, prüfen ob der eingegebene Name schon einem anderen Spieler gehört!
+      // 1. Noch kein fester Name auf diesem Gerät: Gehört der eingegebene Name schon jemand anderem?
       if (!lockedName && typedName) {
         const ownershipCheck = isNameTakenByAnotherPlayer(typedName);
         if (ownershipCheck.taken) {
-          submitDialogTitle.textContent = `🔒 Name bereits vergeben!`;
-          submitDialogSubtitle.textContent = `Namensschutz der Online-Bestenliste:`;
-          submitHighscoreFeedback.style.background = '#fef2f2';
-          submitHighscoreFeedback.style.color = '#b91c1c';
-          submitHighscoreFeedback.style.border = '2px solid #fca5a5';
-          submitHighscoreFeedback.innerHTML =
-            `🚫 <strong>${escapeHtml(ownershipCheck.reason)}</strong><br>` +
-            `Damit sich niemand unter fremden Namen einträgt, hat jeder Spieler seinen eigenen festen Namen.`;
-
+          submitDialogTitle.textContent = '🔒 Name bereits vergeben';
+          setSubmitFeedback('warn', escapeHtml(ownershipCheck.reason));
           if (ideaTicketBox) ideaTicketBox.classList.remove('show');
           currentIdeaEligibility = { eligible: false, reason: '', badge: '', oldRank: null, newRank: null, rule: 'NONE' };
-
-          saveScoreBtn.disabled = true;
-          saveScoreBtn.style.opacity = '0.5';
-          saveScoreBtn.style.cursor = 'not-allowed';
-          saveScoreBtn.textContent = `🚫 Name „${typedName}“ ist schon vergeben`;
+          setSaveButton(false, 'Anderen Namen wählen');
           return false;
         }
       }
 
       const existingBest = findExistingPlayerBest(pendingSubmitGame, typedName);
 
+      // 2. Unter oder gleich dem eigenen Bestwert: nichts zu speichern.
       if (existingBest && pendingScoreToSave <= existingBest.score) {
-        // UNTER ODER GLEICH DEM PERSÖNLICHEN HIGHSCORE -> EINTRAGEN GESPERRT!
-        submitDialogTitle.textContent = `📊 Unter deinem Highscore geblieben! (${pendingScoreToSave} ${unit})`;
-        submitDialogSubtitle.textContent = `Abgleich mit der Online-Bestenliste für „${pendingGameDisplayName}“:`;
-        submitHighscoreFeedback.style.background = '#fef2f2';
-        submitHighscoreFeedback.style.color = '#b91c1c';
-        submitHighscoreFeedback.style.border = '2px solid #fca5a5';
-        submitHighscoreFeedback.innerHTML =
-          `⚠️ <strong>Du bist unter deinem Highscore!</strong><br>` +
-          `Für deinen festen Spielernamen <strong>„${escapeHtml(existingBest.name)}“</strong> steht bereits ein besserer Wert von <strong>${existingBest.score} ${unit}</strong> (Platz ${existingBest.rank}) in der Bestenliste (Aktuell: <strong>${pendingScoreToSave} ${unit}</strong>).<br>` +
-          `Da in der Liste immer nur dein bester Wert gespeichert wird, kannst du diesen kleineren Wert nicht eintragen.`;
-
+        submitDialogTitle.textContent = `📊 ${pendingScoreToSave} ${unit}`;
+        setSubmitFeedback('warn', `Dein Bestwert bleibt <strong>${existingBest.score} ${unit}</strong> (Platz ${existingBest.rank}).`);
         if (ideaTicketBox) ideaTicketBox.classList.remove('show');
         currentIdeaEligibility = { eligible: false, reason: '', badge: '', oldRank: existingBest.rank, newRank: existingBest.rank, rule: 'NONE' };
-
-        saveScoreBtn.disabled = true;
-        saveScoreBtn.style.opacity = '0.5';
-        saveScoreBtn.style.cursor = 'not-allowed';
-        saveScoreBtn.textContent = `🚫 Unter deinem Rekord (${existingBest.score} ${unit})`;
-        if (highscoreCard.classList.contains('show')) {
-          switchLeaderboardTab(pendingSubmitGame, existingBest.name);
-        }
+        setSaveButton(false, `Unter deinem Rekord (${existingBest.score})`);
+        if (highscoreCard.classList.contains('show')) switchLeaderboardTab(pendingSubmitGame, existingBest.name);
         return false;
       }
 
-      // Gültiger neuer Highscore (entweder neuer persönlicher Rekord oder Ersteintrag) -> Ideen-Ticket prüfen!
+      // 3. Gültiges Ergebnis (neuer Rekord oder Ersteintrag): Ideen-Ticket prüfen.
       currentIdeaEligibility = evaluateIdeaTicketEligibility(pendingSubmitGame, typedName, pendingScoreToSave, existingBest);
       if (ideaTicketBox) {
         if (currentIdeaEligibility.eligible) {
@@ -4499,43 +4474,16 @@
         }
       }
 
-      if (existingBest && pendingScoreToSave > existingBest.score) {
-        // NEUER PERSÖNLICHER REKORD -> ALTER WERT WIRD ERSETZT!
-        submitDialogTitle.textContent = `🎉 Neuer persönlicher Rekord: ${pendingScoreToSave} ${unit}!`;
-        submitDialogSubtitle.textContent = `Abgleich mit der Online-Bestenliste für „${pendingGameDisplayName}“:`;
-        submitHighscoreFeedback.style.background = '#ecfdf5';
-        submitHighscoreFeedback.style.color = '#047857';
-        submitHighscoreFeedback.style.border = '2px solid #6ee7b7';
-        submitHighscoreFeedback.innerHTML =
-          `🚀 <strong>Neuer persönlicher Bestwert für „${escapeHtml(existingBest.name)}“ (Platz ${currentIdeaEligibility.newRank})!</strong><br>` +
-          `Du hast deinen bisherigen Highscore von <strong>${existingBest.score} ${unit}</strong> (Platz ${existingBest.rank}) geschlagen! Mit 1 Klick (oder Enter) wird dein Rekord sofort aktualisiert.`;
-
-        saveScoreBtn.disabled = false;
-        saveScoreBtn.style.opacity = '1';
-        saveScoreBtn.style.cursor = 'pointer';
-        saveScoreBtn.textContent = `⚡ Sofort auf ${pendingScoreToSave} ${unit} aktualisieren! 🏆`;
-        return true;
+      if (existingBest) {
+        submitDialogTitle.textContent = `🎉 Neuer Rekord: ${pendingScoreToSave} ${unit}`;
+        setSubmitFeedback('ok', `Bisher ${existingBest.score} (Platz ${existingBest.rank}) – jetzt Platz ${currentIdeaEligibility.newRank}.`);
+        setSaveButton(true, 'Speichern');
       } else {
-        // NOCH KEIN EINTRAG UNTER DIESEM NAMEN IN DIESEM SPIEL
-        submitDialogTitle.textContent = `🎉 Klasse Leistung: ${pendingScoreToSave} ${unit}!`;
-        submitDialogSubtitle.textContent = lockedName
-          ? `Speichere deinen Rekord für „${pendingGameDisplayName}“ mit 1 Klick:`
-          : `Wähle einmalig deinen festen Spielernamen für alle Hörmann Mut-Spiele:`;
-        submitHighscoreFeedback.style.background = '#eff6ff';
-        submitHighscoreFeedback.style.color = '#1e40af';
-        submitHighscoreFeedback.style.border = '1px solid #93c5fd';
-        submitHighscoreFeedback.innerHTML = typedName
-          ? `✨ Mit <strong>${pendingScoreToSave} ${unit}</strong> landest du als <strong>„${escapeHtml(typedName)}“</strong> direkt auf <strong>Platz ${currentIdeaEligibility.newRank}</strong>!`
-          : `💡 Wähle einmalig deinen festen Spielernamen. Danach musst du ihn nie wieder tippen!`;
-
-        saveScoreBtn.disabled = false;
-        saveScoreBtn.style.opacity = '1';
-        saveScoreBtn.style.cursor = 'pointer';
-        saveScoreBtn.textContent = lockedName
-          ? `⚡ Jetzt sofort als „${lockedName}“ speichern 🏆`
-          : `⚡ Namen festlegen & sofort speichern 🏆`;
-        return true;
+        submitDialogTitle.textContent = `🎉 ${pendingScoreToSave} ${unit}`;
+        setSubmitFeedback('info', typedName ? `Das bringt dich auf <strong>Platz ${currentIdeaEligibility.newRank}</strong>.` : '');
+        setSaveButton(true, 'Speichern');
       }
+      return true;
     }
 
     playerNameInput.addEventListener('input', evaluatePersonalHighscoreCheck);
@@ -4547,20 +4495,24 @@
       pendingGameDisplayName = gameDisplayName;
 
       if (playerIdeaInput) playerIdeaInput.value = '';
+      resetIdeaToggle();
 
       refreshLockedNameUi();
       const currentName = getLockedPlayerName() || playerNameInput.value.trim();
 
+      // Mit festem Namen wird ein neuer Rekord sofort automatisch gespeichert (kein Klick nötig).
+      const valid = evaluatePersonalHighscoreCheck();
+      if (getLockedPlayerName() && valid && !currentIdeaEligibility.eligible) { executeScoreSubmit(); return; }
+
       scoreSubmitDialog.classList.add('show');
-      openGlobalLeaderboard(category, currentName);
-      evaluatePersonalHighscoreCheck();
+      keepEndCardInView();
 
       // Fokus sofort setzen: Wenn Name schon fest ist -> direkt auf den Speichern-Button (1x Enter reicht!), sonst ins Namensfeld
       setTimeout(() => {
         if (getLockedPlayerName()) {
-          if (!saveScoreBtn.disabled) saveScoreBtn.focus();
+          if (!saveScoreBtn.disabled) saveScoreBtn.focus({ preventScroll: true });
         } else if (playerNameInput) {
-          playerNameInput.focus();
+          playerNameInput.focus({ preventScroll: true });
         }
       }, 60);
 
@@ -4573,6 +4525,29 @@
     }
 
     saveScoreBtn.addEventListener('click', executeScoreSubmit);
+    document.getElementById('score-dialog-close-btn').addEventListener('click', () => scoreSubmitDialog.classList.remove('show'));
+    // Optionale Idee: eingeklappt hinter "Idee hinterlassen"
+    const ideaToggleBtn = document.getElementById('idea-ticket-toggle');
+    function resetIdeaToggle() {
+      if (ideaTicketBox) ideaTicketBox.classList.remove('open');
+      ideaToggleBtn.setAttribute('aria-expanded', 'false');
+    }
+    ideaToggleBtn.addEventListener('click', () => {
+      const open = ideaTicketBox.classList.toggle('open');
+      ideaToggleBtn.setAttribute('aria-expanded', String(open));
+      if (open) { playerIdeaInput.focus({ preventScroll: true }); keepEndCardInView(); }
+    });
+    // Das Ergebnisblatt liegt fest am unteren Rand: die Endkarte mit "Nochmal spielen" bleibt darueber sichtbar.
+    function keepEndCardInView() {
+      requestAnimationFrame(() => {
+        const again = document.getElementById('game-end-again');
+        if (!again || again.getClientRects().length === 0) return;
+        const sheetTop = scoreSubmitDialog.getBoundingClientRect().top;
+        const panel = document.querySelector('#game-end-card .game-end-panel');
+        const bottom = (panel || again).getBoundingClientRect().bottom;
+        if (bottom > sheetTop - 8) window.scrollBy(0, bottom - sheetTop + 12);
+      });
+    }
     playerNameInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') executeScoreSubmit();
     });
@@ -4646,14 +4621,15 @@
 
       if (playerIdeaInput) playerIdeaInput.value = '';
       scoreSubmitDialog.classList.remove('show');
+      // Keine Vollbild-Liste ueber der Endkarte: Platz steht auf der Endkarte, die Liste oeffnet der Bestenliste-Knopf dort.
       switchLeaderboardTab(pendingSubmitGame, name);
-      highscoreCard.classList.add('show');
+      globalThis.HoermannGameSession?.recordNote('🎉 Neuer Rekord · Platz ' + projectedRank, name);
       playSound('victory');
       triggerParticleEffect('confetti');
       showToast(
         createdIdeaObj
-          ? `⚡ Rekord (${pendingScoreToSave}) & deine Spiel-Idee sofort gespeichert! 💡🏅`
-          : `⚡ Rekord für ${name} (${pendingScoreToSave}) sofort gespeichert! 🏅`
+          ? `⚡ Rekord (${pendingScoreToSave}) & deine Spiel-Idee gespeichert! 💡`
+          : `⚡ Rekord (${pendingScoreToSave}) gespeichert! 🏅`
       );
 
       // Falls eine Idee eingegeben wurde, im Hintergrund in die Cloud pushen
@@ -5396,10 +5372,28 @@
       });
     }
 
-    // Admin-Anmeldung ohne Passwort: Entscheidend ist die serverseitige Liste config/admins in Firestore.
+    // Admin-Anmeldung: feste Google-Anmeldung. Entscheidend ist die serverseitige Liste config/admins in Firestore.
+    function adminErrorText(e) {
+      const c = (e && e.code) || '';
+      if (c === 'auth/popup-closed-by-user' || c === 'auth/cancelled-popup-request') return 'Anmeldung abgebrochen.';
+      if (c === 'auth/popup-blocked') return 'Das Anmelde-Fenster wurde blockiert. Bitte Pop-ups für diese Seite erlauben.';
+      if (c === 'auth/unauthorized-domain') return 'Diese Domain ist in Firebase noch nicht für die Anmeldung freigegeben.';
+      if (c === 'auth/operation-not-allowed') return 'Google-Anmeldung ist in Firebase noch nicht aktiviert.';
+      return 'Anmeldung fehlgeschlagen' + (c ? ' (' + c + ')' : '') + '.';
+    }
     async function attemptAdminLogin() {
       let ok = false;
       try { ok = await HoermannCloud.isAdmin(); } catch (e) {}
+      if (!ok) {
+        try {
+          await HoermannCloud.adminSignIn();
+          ok = await HoermannCloud.isAdmin();
+        } catch (e) {
+          playSound('alarm');
+          showToast('❌ ' + adminErrorText(e));
+          return;
+        }
+      }
       if (ok) {
         isAdminUnlocked = true;
         sessionStorage.setItem('hoermann_admin_unlocked', '1');
@@ -5408,7 +5402,7 @@
         showToast('🛡️ Admin-Rechte aktiv: Chat moderieren, Ideen lesen & Namensanträge prüfen.');
       } else {
         playSound('alarm');
-        showToast('❌ Dieses Gerät ist nicht als Admin eingetragen. Geräte-ID: ' + (HoermannCloud.uid || 'unbekannt'));
+        showToast('❌ Dieses Google-Konto ist kein Admin. Geräte-ID: ' + (HoermannCloud.uid || 'unbekannt'));
       }
     }
 
@@ -6929,6 +6923,7 @@
 
       if (isAlarm) {
         nerveOver = true;
+        HoermannGameSession.ended(0, 900);
         const lost = nerveCurrentStake;
         playSound('alarm');
         nerveTitle.textContent = lost > 0
@@ -7226,7 +7221,7 @@
         c.fillRect(W / 2 - 150, H - 72, 300, 40);
         c.fillStyle = '#ffffff';
         c.font = '800 16px Inter, sans-serif';
-        c.fillText('Tippen / Leertaste zum Starten', W / 2, H - 46);
+        c.fillText(matchMedia('(pointer: coarse)').matches ? 'Tippen zum Starten' : 'Tippen / Leertaste zum Starten', W / 2, H - 46);
       }
       c.restore();
 
@@ -7234,23 +7229,7 @@
         c.fillStyle = 'rgba(0, 31, 59, 0.88)';
         c.fillRect(0, 0, W, H);
 
-        c.textAlign = 'center';
-        c.fillStyle = '#f59c00';
-        c.font = '800 24px Inter, sans-serif';
-        c.fillText('PARCOURS BEENDET', W / 2, 130);
-
-        c.fillStyle = '#ffffff';
-        c.font = '700 18px Inter, sans-serif';
-        c.fillText(`Tore gemeistert: ${parcoursScore}`, W / 2, 170);
-
-        c.fillStyle = '#f59c00';
-        c.beginPath();
-        c.roundRect(W / 2 - 100, 210, 200, 44, 6);
-        c.fill();
-
-        c.fillStyle = '#ffffff';
-        c.font = '800 15px Inter, sans-serif';
-        c.fillText('NOCHMAL ↺', W / 2, 238);
+        // Ergebnis und Neustart zeigt die gemeinsame Rundenende-Karte (HTML), hier nur Abdunkelung.
       }
     }
 
@@ -7262,6 +7241,7 @@
       playSound('hit');
       if (parcoursScore > pBestBefore) triggerParticleEffect('confetti');
 
+      HoermannGameSession.ended(parcoursScore, 900);
       if (parcoursScore > 0) {
         promptScoreSubmit(parcoursScore, 'parcours_v02', 'Tor-Parcours 0.2');
       }
@@ -11584,7 +11564,7 @@
     });
 
   </script>
-  <script src="game-session.js?v=3.3.0"></script>
-  <script src="game-navigation.js?v=3.3.0"></script>
+  <script src="game-session.js?v=3.4.0"></script>
+  <script src="game-navigation.js?v=3.4.0"></script>
 </body>
 </html>
