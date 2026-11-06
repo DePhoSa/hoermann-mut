@@ -228,6 +228,8 @@ footer .version-btn:hover, footer .version-btn:focus-visible { color: #fff; text
 }
 #game-end-card { position: absolute; inset: 0; z-index: 3; display: flex; padding: 8px; box-sizing: border-box; overflow: auto; background: radial-gradient(circle at 50% 40%, #0a3d73d9, #001830eb); border-radius: 6px; color: #fff; animation: game-end-in .35s ease-out; }
 #game-end-card[hidden], body:has(#highscore-card.show) #game-end-card { display: none; }
+/* Solange der Ergebnis-Dialog offen ist, hat dieser die Bestenliste: keine zweite Bestenlisten-Taste auf der Endkarte. */
+body:has(#score-submit-dialog.show) #game-end-lb { display: none; }
 .game-end-panel { margin: auto; width: min(100%, 360px); display: flex; flex-direction: column; align-items: stretch; gap: 8px; text-align: center; }
 .game-end-kicker { font-size: .8rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #ffd269; }
 .game-end-score { font-size: clamp(1.25rem, 5vw, 1.9rem); font-weight: 900; line-height: 1.15; }
