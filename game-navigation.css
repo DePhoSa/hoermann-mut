@@ -305,3 +305,7 @@ body:has(#score-submit-dialog.show) #chat-fab { visibility: hidden; }
 #highscore-card .highscore-header > div:first-child { flex: 1 1 auto; min-width: 0; }
 #highscore-card .highscore-header > div:last-child { margin-left: auto; flex: none; }
 @media (max-width: 640px) { #toast { bottom: 5.5rem; max-width: calc(100vw - 24px); } }
+
+/* Update-Hinweis je Kachel: ruhiger Textlink zwischen Beschreibung und Knopf */
+.game-choice-card .game-update-link { align-self: flex-start; display: inline-flex; align-items: center; min-height: 44px; margin: -6px 0 0; padding: 0 2px; background: none; border: 0; color: #0b4f9c; font: inherit; font-size: .85rem; font-weight: 700; text-decoration: underline; cursor: pointer; }
+.game-choice-card .game-update-link:hover { color: #002d62; }

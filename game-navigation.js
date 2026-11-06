@@ -118,6 +118,12 @@ for (const [category, game] of Object.entries(portalGameNavigation)) {
   card.append(head);
   card.append(Object.assign(document.createElement('p'), {className:'game-card-desc',textContent:descriptions[category]}));
   if (game.status) card.classList.add('game-unavailable');
+  if (!game.status && HoermannGameReleases.isVersioned(category)) {
+    const note = document.createElement('button'); note.type = 'button'; note.className = 'game-update-link';
+    note.textContent = 'Update ' + HoermannGameReleases.release(category).version + ' · Was ist neu? ›';
+    note.addEventListener('click', event => { event.stopPropagation(); HoermannGameSession.update(category, false); });
+    card.append(note);
+  }
   const foot = document.createElement('div'); foot.className = 'game-card-foot';
   if (category !== 'bomber') {
     const ribbon = document.createElement('button');
@@ -261,15 +267,6 @@ document.getElementById('header-leaderboard-btn').addEventListener('click', even
   links.append(busterHistoryButton, document.getElementById('refresh-leaderboard-btn'));
   highscoreCard.append(links);
   closeLeaderboardBtn.setAttribute('aria-label', 'Bestenlisten schließen');
-})();
-
-/* ===== Spiele-Menue: EIN gemeinsamer Update-Hinweis statt Wiederholung auf jeder Kachel ===== */
-(function () {
-  const grid = gamesMenuView.querySelector('.games-grid');
-  const notice = document.createElement('button'); notice.type = 'button'; notice.id = 'games-update-notice'; notice.className = 'games-update-notice';
-  notice.textContent = 'Update ' + HoermannGameReleases.release('mario').version + ' · Was ist neu? ›';
-  notice.addEventListener('click', () => document.getElementById('version-changelog-btn').click());
-  grid.before(notice);
 })();
 
 /* ===== Touch-Geraete: Tippen statt Tastatur-Anleitungen (Leertaste, WASD, P/Esc) ===== */
