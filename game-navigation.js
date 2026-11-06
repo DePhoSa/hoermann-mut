@@ -238,3 +238,10 @@ document.getElementById('header-leaderboard-btn').addEventListener('click', even
   const brand = document.getElementById('footer-brand');
   if (brand) brand.addEventListener('click', () => { const now = Date.now(); taps = taps.filter(t => now - t < 3000); taps.push(now); if (taps.length >= 5) { taps = []; open(); } });
 })();
+
+/* ===== Handy: kurze Platzhalter im Chat, damit nichts abgeschnitten wird ===== */
+(function () {
+  if (!matchMedia('(max-width: 640px)').matches) return;
+  const set = (id, text) => { const el = document.getElementById(id); if (el) el.placeholder = text; };
+  set('chat-text-input', 'Nachricht schreiben …'); set('chat-gif-search-input', 'z. B. Stapler, Party'); set('chat-gif-url-input', 'GIF-Link einfügen');
+})();
