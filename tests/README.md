@@ -10,6 +10,7 @@ node tests/portal-03-browser.cjs
 node tests/v02-leaderboards-browser.cjs
 node tests/chat-admin-browser.cjs
 node tests/lb-in-game-browser.cjs
+node tests/score-dialog-browser.cjs
 node tests/game-session-browser.cjs
 node tests/mut-effects-browser.cjs
 ```

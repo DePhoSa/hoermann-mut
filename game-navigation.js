@@ -194,7 +194,12 @@ document.addEventListener('keydown', event => {
 document.addEventListener('pointerdown', event => { if (lbOpen() && !highscoreCard.contains(event.target) && !event.target.closest('#game-session-dialog, #toast')) { lbOverlay.opener = null; closeLeaderboardOverlay(); } }, true);
 document.getElementById('header-leaderboard-btn').addEventListener('click', event => {
   lbOverlay.opener = event.currentTarget;
-  openGlobalLeaderboard(localStorage.getItem('hoermann_last_lb_cat') || 'forklift_v02', getLockedPlayerName());
+  // Im Spiel: Bestenliste des laufenden Spiels, sonst die zuletzt angesehene.
+  const activeGame = HoermannGameSession.state().game;
+  const category = activeGame && HoermannGameReleases.categories.includes(HoermannGameReleases.release(activeGame).scoreCategory)
+    ? HoermannGameReleases.release(activeGame).scoreCategory
+    : (localStorage.getItem('hoermann_last_lb_cat') || 'forklift_v02');
+  openGlobalLeaderboard(category, getLockedPlayerName());
 });
 
 /* ===== Version und Änderungsverlauf ===== */

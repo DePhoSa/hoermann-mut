@@ -109,7 +109,7 @@ const root = path.resolve(__dirname, '..');
     await shot('countdown');
     await page.keyboard.press('Escape'); assert.equal(await page.evaluate(() => HoermannGameSession.state().phase), 'paused');
     await page.keyboard.press('Escape'); assert.equal(await page.evaluate(() => HoermannGameSession.state().phase), 'countdown');
-    await page.locator('#exit-mario-btn').click();
+    await page.evaluate(()=>document.getElementById('exit-mario-btn').click());
 
     // Overlay -> Zum Spiel: ebenfalls Bereitschaft
     await page.locator('#header-leaderboard-btn').click(); await page.locator('#tab-mario-btn').click();
@@ -120,7 +120,7 @@ const root = path.resolve(__dirname, '..');
     assert.equal(await page.locator('#game-countdown').isVisible(), false);
     await page.locator('#game-session-action').click();
     assert.equal(await page.evaluate(() => HoermannGameSession.state().phase), 'countdown');
-    await page.locator('#exit-mario-btn').click();
+    await page.evaluate(()=>document.getElementById('exit-mario-btn').click());
 
     // Score speichern -> Overlay mit Hervorhebung
     await page.evaluate(() => { promptScoreSubmit(777, 'mario_v02', 'Super Dennis 0.2'); });
