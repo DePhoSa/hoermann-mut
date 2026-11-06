@@ -10,7 +10,7 @@
 - Vorher klären: Ist die alte Realtime Database im Projekt aktiv? Falls ja, Regeln dort prüfen (keine offenen Regeln).
 
 ## Weitere offene Punkte
-- Index.html (11.500 Zeilen) in Module je Spiel aufteilen.
+- Stil-Block (ca. 1.500 Zeilen) aus `index.html` in `css/` auslagern: erst zusammen mit einer Anpassung der Zwangsupdate-Vorab-Prüfung (`verifyAndPrefetchNewHtml` verlangt > 50.000 Zeichen in `index.html`), siehe `docs/ARCHITEKTUR.md`.
 
 ## Ideen aus dem Test (3.3.0)
 - Spielkacheln: später Vorschau-Video oder kurze Animation statt Emoji-Vorschau (Wunsch des Nutzers, nicht dringend). Kacheln bewusst klein halten.
