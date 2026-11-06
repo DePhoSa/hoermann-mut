@@ -1732,14 +1732,6 @@
         </div>
       </div>
 
-      <div style="margin-top:2rem; display:flex; gap:1.5rem; align-items:center;">
-        <button class="utility-link" id="menu-view-leaderboard-btn" style="text-decoration:none; font-weight:800; font-size:1rem; color:var(--hoermann-orange);">
-          🏆 Alle Bestenlisten ansehen
-        </button>
-        <button class="utility-link" id="back-to-portal-btn" style="text-decoration:none; font-weight:700;">
-          ← Zurück zum Mut-Portal
-        </button>
-      </div>
     </section>
 
     <!-- 3. SPIEL NEU: LAGERMEISTER NICO MALOCHT (ISOMETRIC FORKLIFT) -->
@@ -2213,8 +2205,8 @@
       <div class="admin-dialog-head"><span id="admin-dialog-title">🛡️ Admin-Bereich</span><button type="button" id="admin-dialog-close" aria-label="Admin-Bereich schließen">✕</button></div>
       <div class="chat-admin-panel" id="chat-admin-panel" style="display:none"></div>
       <div class="admin-login" id="chat-admin-login-row">
-        <span style="flex:1;min-width:160px;font-size:.9rem;color:#475569">Anmeldung über die Admin-Liste in der Cloud (kein Passwort).</span>
-        <button type="button" id="chat-admin-login-btn" class="chat-send-btn">Als Admin anmelden</button>
+        <span style="flex:1;min-width:160px;font-size:.9rem;color:#475569">Feste Anmeldung mit Google. Nur Konten aus der Admin-Liste erhalten Rechte.</span>
+        <button type="button" id="chat-admin-login-btn" class="chat-send-btn">Mit Google anmelden</button>
       </div>
       <div class="admin-bar" id="chat-admin-actions-row">
         <span>🛡️ Admin-Modus aktiv</span>
@@ -2242,12 +2234,9 @@
   </div>
 
   <footer>
-    Hörmann Mut-Portal &bull; Sektionaltore &bull; Schwingtore &bull; Türen &bull; Stahlzargen &bull; Lagermeister Nico &amp; Dennis Ressemann Edition
-    <div><button type="button" class="chat-admin-toggle-btn" id="chat-admin-toggle-btn" aria-haspopup="dialog" aria-expanded="false" title="Admin-Bereich">🔒 Admin</button></div>
-    <div style="margin-top:4px; font-size:0.74rem; color:rgba(255,255,255,0.5);">
-      <span id="app-version-badge"><button type="button" class="version-btn" id="version-changelog-btn" aria-haspopup="dialog">Version 3.3.0</button></span>
-      <div id="version-highlights" class="version-highlights"></div>
-    </div>
+    <span id="footer-brand">Hörmann Mut-Portal</span><span aria-hidden="true"> &middot; </span><span id="app-version-badge"><button type="button" class="version-btn" id="version-changelog-btn" aria-haspopup="dialog">Version 3.3.0</button></span>
+    <button type="button" class="chat-admin-toggle-btn" id="chat-admin-toggle-btn" aria-haspopup="dialog" aria-expanded="false" title="Admin-Bereich" hidden tabindex="-1">Admin</button>
+    <div id="version-highlights" class="version-highlights" hidden></div>
   </footer>
 
   <!-- DEZENTE HINWEIS-LEISTE FÜR UPDATES WÄHREND EINES AKTIVEN SPIELS (Wirft niemanden aus dem Spiel!) -->
@@ -2818,7 +2807,6 @@
     }
 
     document.getElementById('menu-btn').addEventListener('click', showGamesMenu);
-    document.getElementById('back-to-portal-btn').addEventListener('click', showPortalView);
 
     // Game selection is coordinated by game-navigation.js.
 
@@ -4412,10 +4400,6 @@
       highscoreCard.classList.remove('show');
     });
 
-    document.getElementById('menu-view-leaderboard-btn').addEventListener('click', () => {
-      const lastPlayedCat = localStorage.getItem('hoermann_last_lb_cat') || 'forklift';
-      openGlobalLeaderboard(lastPlayedCat);
-    });
     document.getElementById('forklift-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('forklift_v02'));
     const towerLbBtn = document.getElementById('tower-leaderboard-btn');
     if (towerLbBtn) towerLbBtn.addEventListener('click', () => openGlobalLeaderboard('tower'));
@@ -5396,10 +5380,28 @@
       });
     }
 
-    // Admin-Anmeldung ohne Passwort: Entscheidend ist die serverseitige Liste config/admins in Firestore.
+    // Admin-Anmeldung: feste Google-Anmeldung. Entscheidend ist die serverseitige Liste config/admins in Firestore.
+    function adminErrorText(e) {
+      const c = (e && e.code) || '';
+      if (c === 'auth/popup-closed-by-user' || c === 'auth/cancelled-popup-request') return 'Anmeldung abgebrochen.';
+      if (c === 'auth/popup-blocked') return 'Das Anmelde-Fenster wurde blockiert. Bitte Pop-ups für diese Seite erlauben.';
+      if (c === 'auth/unauthorized-domain') return 'Diese Domain ist in Firebase noch nicht für die Anmeldung freigegeben.';
+      if (c === 'auth/operation-not-allowed') return 'Google-Anmeldung ist in Firebase noch nicht aktiviert.';
+      return 'Anmeldung fehlgeschlagen' + (c ? ' (' + c + ')' : '') + '.';
+    }
     async function attemptAdminLogin() {
       let ok = false;
       try { ok = await HoermannCloud.isAdmin(); } catch (e) {}
+      if (!ok) {
+        try {
+          await HoermannCloud.adminSignIn();
+          ok = await HoermannCloud.isAdmin();
+        } catch (e) {
+          playSound('alarm');
+          showToast('❌ ' + adminErrorText(e));
+          return;
+        }
+      }
       if (ok) {
         isAdminUnlocked = true;
         sessionStorage.setItem('hoermann_admin_unlocked', '1');
@@ -5408,7 +5410,7 @@
         showToast('🛡️ Admin-Rechte aktiv: Chat moderieren, Ideen lesen & Namensanträge prüfen.');
       } else {
         playSound('alarm');
-        showToast('❌ Dieses Gerät ist nicht als Admin eingetragen. Geräte-ID: ' + (HoermannCloud.uid || 'unbekannt'));
+        showToast('❌ Dieses Google-Konto ist kein Admin. Geräte-ID: ' + (HoermannCloud.uid || 'unbekannt'));
       }
     }
 

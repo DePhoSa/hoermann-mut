@@ -203,12 +203,13 @@ document.getElementById('header-leaderboard-btn').addEventListener('click', even
   const latest = log.latest();
   const versionBtn = document.getElementById('version-changelog-btn');
   versionBtn.textContent = 'Version ' + latest.version;
-  const chips = document.getElementById('version-highlights');
+  const chips = document.createElement('div'); chips.id = 'version-highlights'; chips.className = 'version-highlights';
   for (const text of latest.highlights.slice(0, 4)) chips.append(Object.assign(document.createElement('span'), {className: 'version-chip', textContent: text}));
   const dialog = document.createElement('dialog'); dialog.id = 'changelog-dialog'; dialog.setAttribute('aria-labelledby', 'changelog-title');
-  dialog.innerHTML = '<h2 id="changelog-title">Was ist neu?</h2><div id="changelog-body"></div><button type="button" class="submit-btn" id="changelog-close">Schließen</button>';
+  dialog.innerHTML = '<h2 id="changelog-title">Was ist neu?</h2><div id="changelog-highlights"></div><div id="changelog-body"></div><button type="button" class="submit-btn" id="changelog-close">Schließen</button>';
   document.body.append(dialog);
   const body = dialog.querySelector('#changelog-body');
+  dialog.querySelector('#changelog-highlights').append(chips);
   for (const v of log.versions) {
     const section = document.createElement('section');
     const h = document.createElement('h3'); h.textContent = 'Version ' + v.version + (v.date ? ' · ' + new Date(v.date + 'T12:00:00').toLocaleDateString('de-DE') : '');
@@ -220,4 +221,14 @@ document.getElementById('header-leaderboard-btn').addEventListener('click', even
   dialog.querySelector('#changelog-close').addEventListener('click', () => dialog.close());
   dialog.addEventListener('click', event => { if (event.target === dialog) dialog.close(); });
   dialog.addEventListener('close', () => versionBtn.focus());
+})();
+
+/* ===== Versteckter Admin-Zugang: Adresse mit #admin oder fünfmal schnell auf "Hörmann Mut-Portal" im Footer tippen ===== */
+(function () {
+  const open = () => { const button = document.getElementById('chat-admin-toggle-btn'); if (button) button.click(); };
+  if (location.hash === '#admin') setTimeout(open, 800);
+  window.addEventListener('hashchange', () => { if (location.hash === '#admin') open(); });
+  let taps = [];
+  const brand = document.getElementById('footer-brand');
+  if (brand) brand.addEventListener('click', () => { const now = Date.now(); taps = taps.filter(t => now - t < 3000); taps.push(now); if (taps.length >= 5) { taps = []; open(); } });
 })();
