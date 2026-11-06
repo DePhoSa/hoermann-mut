@@ -1521,12 +1521,12 @@
       }
     }
   </style>
-  <script defer src="mut-effects.js?v=3.3.0"></script>
-  <script src="firebase-sync.js?v=3.3.0"></script>
-  <script src="game-releases.js?v=3.3.0"></script>
-  <script src="changelog.js?v=3.3.0"></script>
-  <script src="game-clock.js?v=3.3.0"></script>
-  <link rel="stylesheet" href="game-navigation.css?v=3.3.0">
+  <script defer src="mut-effects.js?v=3.4.0"></script>
+  <script src="firebase-sync.js?v=3.4.0"></script>
+  <script src="game-releases.js?v=3.4.0"></script>
+  <script src="changelog.js?v=3.4.0"></script>
+  <script src="game-clock.js?v=3.4.0"></script>
+  <link rel="stylesheet" href="game-navigation.css?v=3.4.0">
 </head>
 <body>
 
@@ -2026,18 +2026,6 @@
       <p id="submit-dialog-subtitle" style="font-size:0.95rem; color:var(--text-muted);"></p>
       <div id="submit-highscore-feedback" style="margin: 0.5rem auto 0.25rem auto; padding: 0.65rem 1rem; border-radius: 6px; font-size: 0.9rem; font-weight: 700; display: none; max-width: 640px; line-height: 1.4;"></div>
 
-      <!-- SPIELER-IDEEN-TICKET BOX (Wird bei Erstplatzierung, Top-3-Einzug, Top-3-Comeback oder Top-3-Verbesserung freigeschaltet) -->
-      <div class="idea-ticket-box" id="idea-ticket-box">
-        <div class="idea-ticket-badge" id="idea-ticket-badge">💡 BONUS FREIGESCHALTET: DEINE SPIEL-IDEE</div>
-        <div id="idea-ticket-reason" style="font-size:0.92rem; font-weight:800; color:#92400e; margin-bottom:3px;">
-          Du hast dir ein Ideen-Ticket erspielt!
-        </div>
-        <p style="font-size:0.82rem; color:#78350f; line-height:1.4; margin:0;">
-          Hinterlasse einmalig eine Idee fürs Spiel (optional):
-        </p>
-        <textarea id="player-idea-input" class="idea-ticket-textarea" maxlength="500" placeholder="Deine Idee(n) fürs Spiel (optional) – z.B. neues Hindernis, lustiger Spruch, geheimes Extra..."></textarea>
-      </div>
-
       <div class="submit-form" style="flex-direction:column; align-items:center; gap:0.65rem;">
         <!-- Ansicht, wenn der Spieler auf diesem Gerät bereits seinen festen Namen hat (GESPERRT gegen Namens-Klau & Doppel-Eintrag!) -->
         <div id="locked-player-badge" style="display:none; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.55rem; background:#f8fafc; border:2px solid var(--hoermann-blue); border-radius:6px; padding:0.6rem 1rem; font-size:0.92rem; color:var(--hoermann-blue); font-weight:800; width:100%; max-width:520px;">
@@ -2064,13 +2052,19 @@
 
         <!-- Eingabefeld erscheint NUR beim allerersten Mal, wenn auf diesem Gerät noch kein Name festgelegt wurde -->
         <div id="first-time-name-row" style="display:flex; flex-direction:column; gap:4px; width:100%; max-width:460px;">
-          <input type="text" id="player-name-input" aria-label="Spielername" autocomplete="nickname" class="submit-input" maxlength="20" placeholder="Einmalig deinen festen Spielernamen wählen..." style="width:100%;">
-          <small style="font-size:0.75rem; color:#64748b;">🔒 Der Name wird fest mit diesem Gerät verknüpft.</small>
+          <input type="text" id="player-name-input" aria-label="Spielername" autocomplete="nickname" class="submit-input" maxlength="20" placeholder="Spielername (einmalig)" style="width:100%;">
+          <small style="font-size:0.75rem; color:#64748b;">🔒 Wird fest mit diesem Gerät verknüpft.</small>
         </div>
         <button class="submit-btn" id="save-score-btn" style="width:100%; max-width:460px; justify-content:center;">Speichern</button>
         <div class="score-dialog-actions">
-          <button type="button" class="utility-link" id="score-dialog-board-btn" style="text-decoration:none; font-weight:700;">🏆 Bestenliste</button>
-          <button type="button" class="utility-link" id="score-dialog-close-btn" style="text-decoration:none; font-weight:700;">Schließen</button>
+          <button type="button" class="utility-link" id="idea-ticket-toggle" aria-expanded="false" aria-controls="idea-ticket-box">💡 Idee hinterlassen</button>
+          <button type="button" class="utility-link" id="score-dialog-close-btn">Schließen</button>
+        </div>
+        <!-- Optionale Spiel-Idee (nur wenn freigeschaltet), eingeklappt hinter "Idee hinterlassen" -->
+        <div class="idea-ticket-box" id="idea-ticket-box">
+          <div class="idea-ticket-badge" id="idea-ticket-badge" hidden></div>
+          <div id="idea-ticket-reason" class="idea-ticket-reason"></div>
+          <textarea id="player-idea-input" class="idea-ticket-textarea" maxlength="500" aria-label="Deine Idee fürs Spiel" placeholder="Deine Idee fürs Spiel (optional)"></textarea>
         </div>
       </div>
     </div>
@@ -2236,7 +2230,7 @@
   </div>
 
   <footer>
-    <span id="footer-brand">Hörmann Mut-Portal</span><span aria-hidden="true"> &middot; </span><span id="app-version-badge"><button type="button" class="version-btn" id="version-changelog-btn" aria-haspopup="dialog">Version 3.3.0</button></span>
+    <span id="footer-brand">Hörmann Mut-Portal</span><span aria-hidden="true"> &middot; </span><span id="app-version-badge"><button type="button" class="version-btn" id="version-changelog-btn" aria-haspopup="dialog">Version 3.4.0</button></span>
     <button type="button" class="chat-admin-toggle-btn" id="chat-admin-toggle-btn" aria-haspopup="dialog" aria-expanded="false" title="Admin-Bereich" hidden tabindex="-1">Admin</button>
     <div id="version-highlights" class="version-highlights" hidden></div>
   </footer>
@@ -3159,7 +3153,7 @@
     /* ==========================================================
        7b. GLOBAL ONLINE CLOUD HUB (HIGHSCORES, IDEEN-BOX, LIVE-CHAT & ZWANGSUPDATE)
        ========================================================== */
-    const APP_VERSION           = '3.3.0';
+    const APP_VERSION           = '3.4.0';
     const cloudSyncBadge        = document.getElementById('cloud-sync-badge');
     const submitHighscoreFeedback = document.getElementById('submit-highscore-feedback');
     const ideaTicketBox         = document.getElementById('idea-ticket-box');
@@ -4486,12 +4480,8 @@
         setSaveButton(true, 'Speichern');
       } else {
         submitDialogTitle.textContent = `🎉 ${pendingScoreToSave} ${unit}`;
-        if (!lockedName) {
-          submitDialogSubtitle.textContent = 'Wähle einmalig deinen festen Spielernamen:';
-          submitDialogSubtitle.style.display = '';
-        }
         setSubmitFeedback('info', typedName ? `Das bringt dich auf <strong>Platz ${currentIdeaEligibility.newRank}</strong>.` : '');
-        setSaveButton(true, lockedName ? 'Speichern' : 'Namen festlegen & speichern');
+        setSaveButton(true, 'Speichern');
       }
       return true;
     }
@@ -4505,6 +4495,7 @@
       pendingGameDisplayName = gameDisplayName;
 
       if (playerIdeaInput) playerIdeaInput.value = '';
+      resetIdeaToggle();
 
       refreshLockedNameUi();
       const currentName = getLockedPlayerName() || playerNameInput.value.trim();
@@ -4514,13 +4505,14 @@
       if (getLockedPlayerName() && valid && !currentIdeaEligibility.eligible) { executeScoreSubmit(); return; }
 
       scoreSubmitDialog.classList.add('show');
+      keepEndCardInView();
 
       // Fokus sofort setzen: Wenn Name schon fest ist -> direkt auf den Speichern-Button (1x Enter reicht!), sonst ins Namensfeld
       setTimeout(() => {
         if (getLockedPlayerName()) {
-          if (!saveScoreBtn.disabled) saveScoreBtn.focus();
+          if (!saveScoreBtn.disabled) saveScoreBtn.focus({ preventScroll: true });
         } else if (playerNameInput) {
-          playerNameInput.focus();
+          playerNameInput.focus({ preventScroll: true });
         }
       }, 60);
 
@@ -4534,10 +4526,28 @@
 
     saveScoreBtn.addEventListener('click', executeScoreSubmit);
     document.getElementById('score-dialog-close-btn').addEventListener('click', () => scoreSubmitDialog.classList.remove('show'));
-    document.getElementById('score-dialog-board-btn').addEventListener('click', () => {
-      scoreSubmitDialog.classList.remove('show');
-      openGlobalLeaderboard(pendingSubmitGame, getLockedPlayerName() || playerNameInput.value.trim());
+    // Optionale Idee: eingeklappt hinter "Idee hinterlassen"
+    const ideaToggleBtn = document.getElementById('idea-ticket-toggle');
+    function resetIdeaToggle() {
+      if (ideaTicketBox) ideaTicketBox.classList.remove('open');
+      ideaToggleBtn.setAttribute('aria-expanded', 'false');
+    }
+    ideaToggleBtn.addEventListener('click', () => {
+      const open = ideaTicketBox.classList.toggle('open');
+      ideaToggleBtn.setAttribute('aria-expanded', String(open));
+      if (open) { playerIdeaInput.focus({ preventScroll: true }); keepEndCardInView(); }
     });
+    // Das Ergebnisblatt liegt fest am unteren Rand: die Endkarte mit "Nochmal spielen" bleibt darueber sichtbar.
+    function keepEndCardInView() {
+      requestAnimationFrame(() => {
+        const again = document.getElementById('game-end-again');
+        if (!again || again.getClientRects().length === 0) return;
+        const sheetTop = scoreSubmitDialog.getBoundingClientRect().top;
+        const panel = document.querySelector('#game-end-card .game-end-panel');
+        const bottom = (panel || again).getBoundingClientRect().bottom;
+        if (bottom > sheetTop - 8) window.scrollBy(0, bottom - sheetTop + 12);
+      });
+    }
     playerNameInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') executeScoreSubmit();
     });
@@ -4611,14 +4621,15 @@
 
       if (playerIdeaInput) playerIdeaInput.value = '';
       scoreSubmitDialog.classList.remove('show');
+      // Keine Vollbild-Liste ueber der Endkarte: Platz steht auf der Endkarte, die Liste oeffnet der Bestenliste-Knopf dort.
       switchLeaderboardTab(pendingSubmitGame, name);
-      highscoreCard.classList.add('show');
+      globalThis.HoermannGameSession?.recordNote('🎉 Neuer Rekord · Platz ' + projectedRank, name);
       playSound('victory');
       triggerParticleEffect('confetti');
       showToast(
         createdIdeaObj
-          ? `⚡ Rekord (${pendingScoreToSave}) & deine Spiel-Idee sofort gespeichert! 💡🏅`
-          : `⚡ Rekord für ${name} (${pendingScoreToSave}) sofort gespeichert! 🏅`
+          ? `⚡ Rekord (${pendingScoreToSave}) & deine Spiel-Idee gespeichert! 💡`
+          : `⚡ Rekord (${pendingScoreToSave}) gespeichert! 🏅`
       );
 
       // Falls eine Idee eingegeben wurde, im Hintergrund in die Cloud pushen
@@ -6912,7 +6923,7 @@
 
       if (isAlarm) {
         nerveOver = true;
-        HoermannGameSession.ended(0, 1800);
+        HoermannGameSession.ended(0, 900);
         const lost = nerveCurrentStake;
         playSound('alarm');
         nerveTitle.textContent = lost > 0
@@ -7210,7 +7221,7 @@
         c.fillRect(W / 2 - 150, H - 72, 300, 40);
         c.fillStyle = '#ffffff';
         c.font = '800 16px Inter, sans-serif';
-        c.fillText('Tippen / Leertaste zum Starten', W / 2, H - 46);
+        c.fillText(matchMedia('(pointer: coarse)').matches ? 'Tippen zum Starten' : 'Tippen / Leertaste zum Starten', W / 2, H - 46);
       }
       c.restore();
 
@@ -7218,23 +7229,7 @@
         c.fillStyle = 'rgba(0, 31, 59, 0.88)';
         c.fillRect(0, 0, W, H);
 
-        c.textAlign = 'center';
-        c.fillStyle = '#f59c00';
-        c.font = '800 24px Inter, sans-serif';
-        c.fillText('PARCOURS BEENDET', W / 2, 130);
-
-        c.fillStyle = '#ffffff';
-        c.font = '700 18px Inter, sans-serif';
-        c.fillText(`Tore gemeistert: ${parcoursScore}`, W / 2, 170);
-
-        c.fillStyle = '#f59c00';
-        c.beginPath();
-        c.roundRect(W / 2 - 100, 210, 200, 44, 6);
-        c.fill();
-
-        c.fillStyle = '#ffffff';
-        c.font = '800 15px Inter, sans-serif';
-        c.fillText('NOCHMAL ↺', W / 2, 238);
+        // Ergebnis und Neustart zeigt die gemeinsame Rundenende-Karte (HTML), hier nur Abdunkelung.
       }
     }
 
@@ -11569,7 +11564,7 @@
     });
 
   </script>
-  <script src="game-session.js?v=3.3.0"></script>
-  <script src="game-navigation.js?v=3.3.0"></script>
+  <script src="game-session.js?v=3.4.0"></script>
+  <script src="game-navigation.js?v=3.4.0"></script>
 </body>
 </html>
