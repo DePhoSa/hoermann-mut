@@ -680,6 +680,13 @@
       box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.4), 0 12px 28px rgba(0, 0, 0, 0.3);
     }
 
+    .door-content .door-icon { font-size: 2rem; line-height: 1.1; }
+    .door-content .door-label { font-size: 1.1rem; margin-top: 4px; }
+    .door-content .door-label-safe { color: var(--hoermann-orange); }
+    .door-content .door-label-alarm { color: #ff6b6b; }
+    .door-content small { color: #cbd5e1; font-size: 0.78rem; }
+    .doors-arena { flex-wrap: nowrap; }
+    #nerve-view .mystery-door { min-width: 0; }
     #bank-nerve-btn:disabled {
       opacity: 0.45;
       cursor: not-allowed;
@@ -1953,10 +1960,10 @@
       </div>
 
       <h3 style="font-size:1.4rem; color:var(--hoermann-blue); margin-top:0.5rem; font-weight:800;" id="nerve-title">
-        Runde <span id="nerve-round">1</span>: Welches Tor wagst du zu öffnen?
+        Runde <span id="nerve-round">1</span>: Welches Tor wagst du?
       </h3>
       <p style="font-size:0.95rem; color:var(--text-muted); margin-bottom:0.5rem;" id="nerve-hint" aria-live="polite">
-        Hinter 2 Toren wartet gewaltiger Mut &ndash; hinter 1 Tor ein Zweifel-Alarm!
+        Hinter 2 Toren wartet Mut, hinter 1 ein Zweifel-Alarm. Das erste sichere Tor bringt 100.
       </p>
 
       <div class="doors-arena">
@@ -1990,13 +1997,13 @@
 
       <div class="btn-row">
         <button class="btn-primary" id="bank-nerve-btn" disabled style="padding:0.8rem 1.8rem; font-size:1.05rem;">
-          💰 Punkte sichern &amp; einsacken!
+          💰 Sichern
         </button>
         <button class="btn-game" id="next-nerve-round-btn" style="display:none; padding:0.8rem 1.8rem; font-size:1.05rem;">
-          Nächste Mut-Stufe ➔
+          Weiter wagen ➔
         </button>
         <button class="btn-game" id="restart-nerve-btn" style="display:none; padding:0.8rem 1.8rem; font-size:1.05rem;">
-          Neuer Durchgang ↺
+          Nochmal ↺
         </button>
       </div>
     </section>
