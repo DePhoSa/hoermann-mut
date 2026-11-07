@@ -52,6 +52,55 @@ service cloud.firestore {
       allow delete: if (isScores(col) || isEvents(col)) && isAdmin();
     }
 
+    // Anonyme Spielstatistik: ein Zähler-Dokument je Spiel und Tag ("<YYYY-MM-DD>__<spiel>") und
+    // ein Marker je Spieler (stats/<tag>__<spiel>/players/<uid>). Gilt auch für test_stats (Vorschau).
+    function isStats(col) { return col in ['stats','test_stats']; }
+    function sNew(k, cap) {
+      return request.resource.data.get(k, 0) is int
+        && request.resource.data.get(k, 0) >= 0
+        && request.resource.data.get(k, 0) <= cap;
+    }
+    function sInc(k, cap) {
+      return request.resource.data.get(k, 0) is int
+        && request.resource.data.get(k, 0) - resource.data.get(k, 0) >= 0
+        && request.resource.data.get(k, 0) - resource.data.get(k, 0) <= cap;
+    }
+    // "players" darf nur wachsen, wenn im selben Schreibvorgang der eigene Marker neu angelegt wird.
+    function sMarkerNew(col, id) {
+      return existsAfter(/databases/$(db)/documents/$(col)/$(id)/players/$(request.auth.uid))
+        && !exists(/databases/$(db)/documents/$(col)/$(id)/players/$(request.auth.uid));
+    }
+
+    match /{statsCol}/{statsId} {
+      allow read: if isStats(statsCol) && isAdmin();
+
+      allow create: if signedIn() && isStats(statsCol)
+        && request.resource.data.keys().hasOnly(['day','game','rounds','finished','secs','restarts','aborts','players'])
+        && request.resource.data.day is string
+        && request.resource.data.day.size() == 10
+        && request.resource.data.game in ['forklift','mario','buster','nerve','parcours']
+        && statsId == request.resource.data.day + '__' + request.resource.data.game
+        && sNew('rounds', 100) && sNew('finished', 100) && sNew('restarts', 100) && sNew('aborts', 100)
+        && sNew('secs', 7200) && sNew('players', 1)
+        && (request.resource.data.get('players', 0) == 0 || sMarkerNew(statsCol, statsId));
+
+      allow update: if signedIn() && isStats(statsCol)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['rounds','finished','secs','restarts','aborts','players'])
+        && sInc('rounds', 100) && sInc('finished', 100) && sInc('restarts', 100) && sInc('aborts', 100)
+        && sInc('secs', 7200) && sInc('players', 1)
+        && (request.resource.data.get('players', 0) == resource.data.get('players', 0) || sMarkerNew(statsCol, statsId));
+
+      // kein delete: ohne passende allow-Regel verboten
+    }
+
+    match /{statsCol}/{statsId}/players/{pid} {
+      allow read: if isStats(statsCol) && isAdmin();
+      allow create: if signedIn() && isStats(statsCol)
+        && pid == request.auth.uid
+        && request.resource.data.keys().hasOnly(['ts']);
+      // kein update, kein delete
+    }
+
     match /config/{doc} {
       allow read: if signedIn();
       allow write: if false;   // nur in der Firebase-Konsole pflegen

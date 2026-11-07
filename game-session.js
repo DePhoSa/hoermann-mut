@@ -13,7 +13,7 @@
   const END_LAYOUT={nerve:'bar'};
   const endCard=document.createElement('div');endCard.id='game-end-card';endCard.hidden=true;endCard.setAttribute('role','group');endCard.setAttribute('aria-label','Runde beendet');
   endCard.innerHTML='<div class=game-end-panel><span class=game-end-kicker>Runde beendet</span><strong class=game-end-score></strong><span class=game-end-record hidden></span><span class=game-end-detail hidden></span><span class=game-end-quote hidden></span><button type=button id=game-end-again class=game-end-primary>🔁 Nochmal spielen</button><div class=game-end-row><button type=button id=game-end-lb class=game-end-secondary>🏆 Bestenliste</button><button type=button id=game-end-menu class=game-end-text>✕ Menü</button></div></div>';
-  let endTimer=0,endScore=null,endNote='',endName='',endExtra=null;
+  let viaCountdown=false,endTimer=0,endScore=null,endNote='',endName='',endExtra=null;
   const noteEl=endCard.querySelector('.game-end-record');
   function paintNote(){noteEl.textContent=endNote;noteEl.hidden=!endNote;if(!endCard.hidden){fitBar();requestAnimationFrame(fitBar);}}
   /* Neuer Rekord/Platz direkt auf der Endkarte (statt Vollbild-Bestenliste). */
@@ -46,10 +46,10 @@
     if(keyReady())endCard.querySelector('#game-end-again').focus({preventScroll:true});
   }
   function showEnd(score,ms){if(!END_GAMES[game])return;endScore=Number.isFinite(score)?score:null;clearTimeout(endTimer);endTimer=setTimeout(revealEnd,ms??700);}
-  function ended(score,ms){if(!game||!END_GAMES[game]||!['playing','finished'].includes(phase))return;clearTimers();close();phase='finished';showEnd(score,ms);}
+  function ended(score,ms){if(!game||!END_GAMES[game]||!['playing','finished'].includes(phase))return;clearTimers();close();phase='finished';root.HoermannStats?.finish();showEnd(score,ms);}
   function restartWithCountdown(){
     if(!game||!END_GAMES[game])return;const btn=document.getElementById('restart-'+game+'-btn');if(!btn)return;
-    hideEnd();btn.click(); /* Capture-Listener setzt phase=playing; danach Zeitgeber einfrieren wie in resume() */
+    hideEnd();viaCountdown=true;btn.click();viaCountdown=false; /* Capture-Listener setzt phase=playing; danach Zeitgeber einfrieren wie in resume() */
     if(NO_COUNTDOWN[game])return; /* Tor-Parcours hat einen eigenen Wartezustand (Tippen zum Starten) */
     for(const timer of timers)clearTimeout(timer.id);held=new Set(timers);timers.clear();holdStart=performance.now();countdown();
   }
@@ -84,7 +84,7 @@
   function clearTimers() { for(const timer of timers) clearTimeout(timer.id); timers.clear(); held.clear(); }
   function blocked() { return ['preview','countdown','paused','update'].includes(phase); }
   function close() { if(dialog.open) dialog.close();countdownElement.hidden=true; }
-  function stop() { hideEnd(); clearTimers(); close(); phase='idle'; game=null; next=null; }
+  function stop() { root.HoermannStats?.abort(); hideEnd(); clearTimers(); close(); phase='idle'; game=null; next=null; }
   function resume() {
     if(phase!=='paused') return;
     const pausedMs=performance.now()-pauseAt;
@@ -108,14 +108,14 @@
   }
   function pause(silent) {
     if(!game || !['playing','countdown'].includes(phase)) return;
-    beforePause=phase;phase='paused';pauseAt=performance.now();
+    beforePause=phase;phase='paused';pauseAt=performance.now();root.HoermannStats?.pause();
     for(const timer of timers){clearTimeout(timer.id);timer.remaining=Math.max(0,timer.remaining-(pauseAt-timer.started));}
     if(typeof mKeys!=='undefined'){mKeys.left=false;mKeys.right=false;mKeys.up=false;mKeys.jumpPressed=false;}
     if(typeof flKeys!=='undefined') for(const key of Object.keys(flKeys)) flKeys[key]=false;
     if(silent!==true) modal('Spiel pausiert',pauseCopy(),'Weiter spielen',resume,true);
   }
   function reopenPause() { if(phase==='paused' && game) modal('Spiel pausiert',pauseCopy(),'Weiter spielen',resume,true); }
-  function beginPlaying(){phase='playing';close();releaseHeld();}
+  function beginPlaying(){phase='playing';close();releaseHeld();root.HoermannStats?.begin(game);}
   function countdown(){phase='countdown';let remaining=3;
     const step=()=>{countdownValue=remaining>0?String(remaining):'Los!';showCountdown();
       if(remaining>0){remaining--;cdTimer=delay(step,1000);}else cdTimer=delay(beginPlaying,350);}; step();
@@ -123,7 +123,7 @@
   function enter(category, origin) {
     /* Immer zuerst Bereitschaftszustand; der Countdown startet erst nach „Jetzt spielen“. */
     stop(); game=category; phase='preview';
-    modal('Bereit für die nächste Runde?','Dein Spiel wartet im Hintergrund. Es läuft erst nach deinem Start.','Jetzt spielen',()=>{if(phase==='preview'){close();if(NO_COUNTDOWN[game])phase='playing';else countdown();}});
+    modal('Bereit für die nächste Runde?','Dein Spiel wartet im Hintergrund. Es läuft erst nach deinem Start.','Jetzt spielen',()=>{if(phase==='preview'){close();if(NO_COUNTDOWN[game]){phase='playing';root.HoermannStats?.begin(game);}else countdown();}});
   }
   function update(category, automatic, done) {
     const release=HoermannGameReleases.release(category), name=getLockedPlayerName();
@@ -157,8 +157,8 @@
     if(blocked()&&!event.target.closest('#game-session-dialog')&&!(phase==='countdown'&&event.target.closest('.game-actions-bar'))){event.preventDefault();event.stopImmediatePropagation();}
   },true);
   document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();});
-  document.addEventListener('click',event=>{if(event.target.closest('[id^="restart-"]') && game){hideEnd();clearTimers();phase='playing';close();}},true);
-  root.HoermannGameSession=Object.freeze({delay,blocked,stop,enter,update,pause,reopenPause,resume,state:()=>({game,phase}),ended,endText,recordNote,restartWithCountdown,finish:()=>{clearTimers();phase='finished';close();showEnd(null);},restart:()=>{hideEnd();clearTimers();phase='playing';close();}});
+  document.addEventListener('click',event=>{if(event.target.closest('[id^="restart-"]') && game){hideEnd();clearTimers();phase='playing';close();root.HoermannStats?.restart(game,!viaCountdown||!!NO_COUNTDOWN[game]);}},true);
+  root.HoermannGameSession=Object.freeze({delay,blocked,stop,enter,update,pause,reopenPause,resume,state:()=>({game,phase}),ended,endText,recordNote,restartWithCountdown,finish:()=>{clearTimers();phase='finished';close();root.HoermannStats?.finish();showEnd(null);},restart:()=>{hideEnd();clearTimers();phase='playing';close();}});
 })(globalThis);
 
 

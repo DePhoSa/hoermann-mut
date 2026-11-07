@@ -331,3 +331,4 @@ body:has(#score-submit-dialog.show) #nerve-view:has(#game-end-card.is-bar:not([h
 /* Update-Hinweis je Kachel: ruhiger Textlink zwischen Beschreibung und Knopf */
 .game-choice-card .game-update-link { align-self: flex-start; display: inline-flex; align-items: center; min-height: 44px; margin: -6px 0 0; padding: 0 2px; background: none; border: 0; color: #0b4f9c; font: inherit; font-size: .85rem; font-weight: 700; text-decoration: underline; cursor: pointer; }
 .game-choice-card .game-update-link:hover { color: #002d62; }
+.changelog-privacy { margin: 12px 0 0; font-size: .78rem; line-height: 1.35; color: #5b6778; }

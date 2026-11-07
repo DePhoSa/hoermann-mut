@@ -659,15 +659,36 @@
 
     function switchAdminViewTab(tab) {
       activeAdminTab = tab;
-      const panes = { chat: 'admin-chat-pane', ideas: 'admin-ideas-list', renames: 'admin-renames-list', pw: 'admin-pw-pane' };
-      const btns = { chat: adminTabChatBtn, ideas: adminTabIdeasBtn, renames: adminTabRenamesBtn, pw: chatAdminChangePwBtn };
+      const panes = { chat: 'admin-chat-pane', ideas: 'admin-ideas-list', renames: 'admin-renames-list', stats: 'admin-stats-pane', pw: 'admin-pw-pane' };
+      const btns = { chat: adminTabChatBtn, ideas: adminTabIdeasBtn, renames: adminTabRenamesBtn, stats: document.getElementById('admin-tab-stats-btn'), pw: chatAdminChangePwBtn };
       Object.keys(panes).forEach(k => {
         const el = document.getElementById(panes[k]);
         const on = isAdminUnlocked && k === tab;
         if (el) el.classList.toggle('show', on);
         if (btns[k]) { btns[k].classList.toggle('active', on); btns[k].setAttribute('aria-selected', String(on)); }
       });
+      if (isAdminUnlocked && tab === 'stats') loadAdminStats();
     }
+
+    // Statistik-Reiter: Zähler der letzten 7 Tage je Spiel (nur Admin darf sie lesen, siehe firestore.rules)
+    const STAT_TITLES = { forklift: 'Stapler', mario: 'Dennis', buster: 'Buster', nerve: 'Nerven', parcours: 'Parcours' };
+    async function loadAdminStats() {
+      const body = document.getElementById('admin-stats-body'), S = globalThis.HoermannStats;
+      if (!body || !S) return;
+      body.textContent = 'Lade …';
+      try {
+        const days = S.lastDays(7, Date.now());
+        const docs = await HoermannCloud.statsRead(days[days.length - 1]);
+        const pct = v => v === null ? '–' : Math.round(v * 100) + ' %';
+        const dur = v => v === null ? '–' : v >= 60 ? Math.floor(v / 60) + ':' + String(Math.round(v % 60)).padStart(2, '0') : Math.round(v) + ' s';
+        const rows = S.perGame(docs, days).map(g => '<tr><td>' + STAT_TITLES[g.game] + '</td><td>' + g.rounds + '</td><td>' + pct(g.finishRate) + '</td><td>' + dur(g.avgSecs) + '</td><td>' + (g.restartsPerRound === null ? '–' : g.restartsPerRound.toFixed(1).replace('.', ',')) + '</td><td>' + pct(g.abortRate) + '</td><td>' + g.players + '</td></tr><tr><td colspan="7" class="stat-verdict">' + g.verdict + '</td></tr>').join('');
+        body.innerHTML = '<p class="stat-note">Letzte 7 Tage, anonym. Rd. = Runden, Fertig = Runden bis zum Ende, Neustarts pro Runde, Abbruch = Menü/Schließen vor dem Ende, Spieler = Summe der täglich verschiedenen Spieler.</p><table><thead><tr><th>Spiel</th><th>Rd.</th><th>Fertig</th><th>Ø Zeit</th><th>Neu&shy;starts</th><th>Abbruch</th><th>Spieler</th></tr></thead><tbody>' + rows + '</tbody></table>';
+      } catch (e) { body.textContent = 'Statistik nicht verfügbar (Regeln noch nicht veröffentlicht oder offline).'; }
+    }
+    const statsReload = document.getElementById('admin-stats-reload');
+    if (statsReload) statsReload.addEventListener('click', loadAdminStats);
+    const statsTabBtn = document.getElementById('admin-tab-stats-btn');
+    if (statsTabBtn) statsTabBtn.addEventListener('click', () => switchAdminViewTab('stats'));
 
     if (adminTabChatBtn) adminTabChatBtn.addEventListener('click', () => switchAdminViewTab('chat'));
     if (adminTabIdeasBtn) adminTabIdeasBtn.addEventListener('click', () => switchAdminViewTab('ideas'));

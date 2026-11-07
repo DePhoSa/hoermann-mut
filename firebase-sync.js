@@ -56,6 +56,27 @@
       delete ev.deviceToken;
       await fs.addDoc(fs.collection(db, PRE + 'events'), ev);
     },
+    // Anonyme Spielstatistik (docs/STATISTIK.md): ein Zähler-Dokument je Spiel und Tag, nur increment().
+    async statsAdd(day, game, d) {
+      const { fs, db } = await init();
+      const data = { day, game };
+      for (const k of Object.keys(d)) data[k] = fs.increment(d[k]);
+      await fs.setDoc(fs.doc(db, PRE + 'stats', day + '__' + game), data, { merge: true });
+    },
+    // Ein Marker je Spieler/Spiel/Tag (zählt Spieler genau einmal): Marker neu anlegen + players um 1 erhöhen, atomar.
+    async statsPlayer(day, game) {
+      const { fs, db, au } = await init();
+      const id = day + '__' + game, batch = fs.writeBatch(db);
+      batch.set(fs.doc(db, PRE + 'stats', id, 'players', au.currentUser.uid), { ts: Date.now() });
+      batch.set(fs.doc(db, PRE + 'stats', id), { day, game, players: fs.increment(1) }, { merge: true });
+      await batch.commit();
+    },
+    // Nur Admin: alle Tageszähler ab einem Tag (liest nur vorhandene Dokumente).
+    async statsRead(sinceDay) {
+      const { fs, db } = await init();
+      const snap = await fs.getDocs(fs.query(fs.collection(db, PRE + 'stats'), fs.where('day', '>=', sinceDay)));
+      return snap.docs.map(x => x.data());
+    },
     // Admin = diese anonyme Geräte-ID steht in Firestore unter config/admins (Feld uids).
     async isAdmin() {
       const { fs, db, au } = await init();
