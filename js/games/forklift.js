@@ -3,6 +3,38 @@
        ========================================================== */
     const flCanvas = document.getElementById('forkliftCanvas');
     const flCtx = flCanvas.getContext('2d');
+
+    /* Scharfe Darstellung (0.3): Die Spiel-Koordinaten bleiben 780 x 470 ("logische Groesse"). Die Leinwand hat
+       intern mehr Pixel (Geraete-Pixeldichte, hoechstens 2), der Kontext wird vor jedem Bild entsprechend skaliert.
+       Die CSS-Groesse aendert sich nicht. */
+    const FL_W = 780, FL_H = 470;
+    let flDpr = 1;       // Pixel pro logischer Einheit (Backing-Aufloesung)
+    let flCssScale = 1;  // angezeigte CSS-Breite / 780 (Handy: ca. 0,45)
+    let flCompact = false; // schmale Anzeige: Texte groesser und kuerzer
+    function flFitCanvas() {
+      const dpr = Math.min(2, Math.max(1, window.devicePixelRatio || 1));
+      const w = Math.round(FL_W * dpr), h = Math.round(FL_H * dpr);
+      if (flCanvas.width !== w || flCanvas.height !== h) { flCanvas.width = w; flCanvas.height = h; }
+      flDpr = w / FL_W;
+      flCssScale = (flCanvas.clientWidth || FL_W) / FL_W;
+      flCompact = flCssScale < 0.8;
+    }
+    // Schriftgroesse in logischen Einheiten: auf schmalen Anzeigen so vergroessert, dass der Text mindestens ca. 11 CSS-Pixel hoch ist.
+    function flFs(px, cap) {
+      if (!flCompact) return px;
+      return px * Math.min(cap || 2.6, Math.max(1, 11 / (px * flCssScale)));
+    }
+    function flFont(weight, px, family, cap) { return weight + ' ' + flFs(px, cap) + 'px ' + family; }
+    // Text mit Hoechstbreite (nur schmale Anzeige staucht, sonst unveraendert)
+    function flFill(text, x, y, maxW) {
+      if (flCompact && maxW) flCtx.fillText(text, x, y, maxW); else flCtx.fillText(text, x, y);
+    }
+    // Zeilenumbruch fuer laengere Meldungen (nur schmale Anzeige): liefert Zeilen mit Hoechstbreite
+    function flWrap(text, maxW) {
+      const words = String(text).split(' '); const lines = []; let cur = '';
+      for (const w of words) { const test = cur ? cur + ' ' + w : w; if (cur && flCtx.measureText(test).width > maxW) { lines.push(cur); cur = w; } else cur = test; }
+      if (cur) lines.push(cur); return lines;
+    }
     const flTruckStat = document.getElementById('fl-truck-stat');
     const flPalletStat = document.getElementById('fl-pallet-stat');
     const flQualityStat = document.getElementById('fl-quality-stat');
@@ -316,7 +348,6 @@
     ['fl-btn-left', 'fl-btn-right', 'fl-btn-up', 'fl-btn-down'].forEach(id => {
       const el = document.getElementById(id);
       el.addEventListener('pointerdown', (ev) => { try { el.setPointerCapture(ev.pointerId); } catch (_) {} });
-      el.addEventListener('lostpointercapture', flReleaseAllKeys);
       el.addEventListener('contextmenu', (ev) => ev.preventDefault());
     });
     bindTouch(document.getElementById('fl-btn-left'), () => { flKeys.left = true; }, () => { flKeys.left = false; });
@@ -942,6 +973,8 @@
     }
 
     function drawForkliftScene() {
+      flFitCanvas();
+      flCtx.setTransform(flDpr, 0, 0, flDpr, 0, 0);
       flCtx.save();
 
       // Screen shake on collision
@@ -954,12 +987,12 @@
 
       // 1. WAREHOUSE CONCRETE FLOOR (Pixel-Art Industrial Tile Grid)
       flCtx.fillStyle = '#334155';
-      flCtx.fillRect(0, 0, flCanvas.width, 392);
+      flCtx.fillRect(0, 0, FL_W, 392);
 
       // Concrete tile seams
       flCtx.strokeStyle = 'rgba(15, 23, 42, 0.35)';
       flCtx.lineWidth = 1;
-      for (let gx = 0; gx < flCanvas.width; gx += 40) {
+      for (let gx = 0; gx < FL_W; gx += 40) {
         flCtx.beginPath();
         flCtx.moveTo(gx, 32);
         flCtx.lineTo(gx, 392);
@@ -968,7 +1001,7 @@
       for (let gy = 32; gy < 392; gy += 40) {
         flCtx.beginPath();
         flCtx.moveTo(0, gy);
-        flCtx.lineTo(flCanvas.width, gy);
+        flCtx.lineTo(FL_W, gy);
         flCtx.stroke();
       }
 
@@ -999,17 +1032,17 @@
         flCtx.globalAlpha = 1;
 
         flCtx.fillStyle = '#cbd5e1';
-        flCtx.font = 'bold 9px Inter, sans-serif';
+        flCtx.font = flFont('bold', 9, 'Inter, sans-serif');
         flCtx.textAlign = 'center';
-        flCtx.fillText('🛢️ Ölfleck ([H] Hupen!)', oilSpill.x, oilSpill.y + 24);
+        flFill(flCompact ? '🛢️ Ölfleck: Hupe!' : '🛢️ Ölfleck ([H] Hupen!)', oilSpill.x, oilSpill.y + 24, 200);
       }
 
       // 2. WAREHOUSE PERIMETER WALLS & HEADER BANNER
-      drawIsoBox(flCtx, 0, 0, flCanvas.width, 32, 0, 14, '#002d62', '#001f3b', '#001830');
+      drawIsoBox(flCtx, 0, 0, FL_W, 32, 0, 14, '#002d62', '#001f3b', '#001830');
       flCtx.fillStyle = '#f59c00';
-      flCtx.font = '900 11px Inter, sans-serif';
+      flCtx.font = flFont('900', 11, 'Inter, sans-serif');
       flCtx.textAlign = 'center';
-      flCtx.fillText('HÖRMANN LOGISTIK-HALLE 1 // LAGERMEISTER NICO MALOCHT: MIT MUT AM MAST', flCanvas.width / 2, 16);
+      if (!flCompact) flCtx.fillText('HÖRMANN LOGISTIK-HALLE 1 // LAGERMEISTER NICO MALOCHT: MIT MUT AM MAST', FL_W / 2, 16); // schmale Anzeige: reine Zierschrift weglassen
 
       // 3. STORAGE BAYS (ZONES A, B, C) WITH 2 STACK LEVELS (BODEN & HOCHREGAL)
       const activeTargetZone = nico.cargo ? CARGO_TYPES[nico.cargo.type].zone : null;
@@ -1065,21 +1098,24 @@
           badgeColor = '#ef4444';
         }
 
+        if (flCompact) { // schmale Anzeige: kurzer Text, hoeheres Schild
+          statusText = b.items.length >= 2 ? 'VOLL' : (b.items.length === 1 ? '1/2 [E]' : 'FREI');
+        }
         flCtx.fillStyle = badgeBg;
-        flCtx.fillRect(b.x + 4, b.y + b.h - 17, b.w - 8, 15);
+        if (flCompact) flCtx.fillRect(b.x + 4, b.y + b.h - 27, b.w - 8, 25); else flCtx.fillRect(b.x + 4, b.y + b.h - 17, b.w - 8, 15);
         flCtx.fillStyle = badgeColor;
-        flCtx.font = '800 9px Inter, sans-serif';
+        flCtx.font = flFont('800', 9, 'Inter, sans-serif');
         flCtx.textAlign = 'center';
-        flCtx.fillText(`${b.id}: ${statusText}`, b.x + b.w / 2, b.y + b.h - 6);
+        flFill(`${b.id}: ${statusText}`, b.x + b.w / 2, b.y + b.h - (flCompact ? 9 : 6), b.w - 10);
       });
 
       // Zone Header Signs
       flCtx.fillStyle = '#ffffff';
-      flCtx.font = '900 10px Inter, sans-serif';
+      flCtx.font = flFont('900', 10, 'Inter, sans-serif');
       flCtx.textAlign = 'center';
-      flCtx.fillText('ZONE A: SCHWING- & SEKTIONALTORE', 352, 36);
-      flCtx.fillText('ZONE B: ANTRIEBE & SCHIENEN', 672, 54);
-      flCtx.fillText('ZONE C: STAHLTÜREN (HOCH)', 672, 232);
+      flFill(flCompact ? 'ZONE A: TORE' : 'ZONE A: SCHWING- & SEKTIONALTORE', 352, 36, 260);
+      flFill(flCompact ? 'ZONE B: ANTRIEBE' : 'ZONE B: ANTRIEBE & SCHIENEN', 672, 54, 140);
+      flFill(flCompact ? 'ZONE C: TÜREN' : 'ZONE C: STAHLTÜREN (HOCH)', 672, 232, 140);
 
       // 4. BLUE HÖRMANN LKW AT THE LOADING DOCK (Left Side)
       const tx = Math.round(flState.truckSlideX);
@@ -1109,12 +1145,12 @@
 
       // Hörmann Branding on LKW Roof/Side
       flCtx.fillStyle = '#f59c00';
-      flCtx.font = '900 13px Inter, sans-serif';
+      flCtx.font = flFont('900', 13, 'Inter, sans-serif');
       flCtx.textAlign = 'center';
       flCtx.save();
       flCtx.translate(76, 250);
       flCtx.rotate(-Math.PI / 2);
-      flCtx.fillText(`HÖRMANN LKW #${flState.truckNumber}`, 0, 0);
+      flFill(`HÖRMANN LKW #${flState.truckNumber}`, 0, 0, 180);
       flCtx.restore();
 
       // Draw Remaining Pallets on the LKW
@@ -1123,11 +1159,11 @@
         // Small label under pallet on truck
         const info = CARGO_TYPES[p.type];
         flCtx.fillStyle = 'rgba(0, 20, 45, 0.85)';
-        flCtx.fillRect(p.x - 36, p.y + 15, 72, 12);
+        if (flCompact) flCtx.fillRect(p.x - 40, p.y + 15, 80, 24); else flCtx.fillRect(p.x - 36, p.y + 15, 72, 12);
         flCtx.fillStyle = '#ffaa1d';
-        flCtx.font = 'bold 8px Inter, sans-serif';
+        flCtx.font = flFont('bold', 8, 'Inter, sans-serif');
         flCtx.textAlign = 'center';
-        flCtx.fillText(info.shortName, p.x, p.y + 24);
+        flFill(flCompact ? info.shortName.replace(/^6er /, '').replace('Sektionaltor-Pack', 'Sektional') : info.shortName, p.x, p.y + (flCompact ? 32 : 24), 76);
       });
 
       flCtx.restore();
@@ -1219,14 +1255,15 @@
 
       // Nameplate above Nico
       flCtx.fillStyle = 'rgba(0, 31, 59, 0.82)';
-      flCtx.fillRect(nico.x - 44, nico.y - 34 - nico.forkZ * 0.4, 88, 13);
+      if (flCompact) flCtx.fillRect(nico.x - 44, nico.y - 48 - nico.forkZ * 0.4, 88, 27); else flCtx.fillRect(nico.x - 44, nico.y - 34 - nico.forkZ * 0.4, 88, 13);
       flCtx.fillStyle = nico.mastLevel === 2 ? '#38bdf8' : '#ffffff';
-      flCtx.font = '800 8.5px Inter, sans-serif';
+      flCtx.font = flFont('800', 8.5, 'Inter, sans-serif');
       flCtx.textAlign = 'center';
-      flCtx.fillText(
-        `NICO • EBENE ${nico.mastLevel} ${nico.mastLevel === 2 ? '⬆️' : '⬇️'}`,
+      flFill(
+        flCompact ? `EBENE ${nico.mastLevel} ${nico.mastLevel === 2 ? '⬆️' : '⬇️'}` : `NICO • EBENE ${nico.mastLevel} ${nico.mastLevel === 2 ? '⬆️' : '⬇️'}`,
         nico.x,
-        nico.y - 25 - nico.forkZ * 0.4
+        nico.y - (flCompact ? 28 : 25) - nico.forkZ * 0.4,
+        84
       );
 
       // 6. PARTICLES & FLOATING TEXTS
@@ -1249,31 +1286,37 @@
         flCtx.save();
         flCtx.fillStyle = ft.color;
         flCtx.globalAlpha = Math.max(0, Math.min(1, ft.alpha));
-        flCtx.font = '900 11.5px Inter, sans-serif';
+        flCtx.font = flFont('900', 11.5, 'Inter, sans-serif', 2.3);
         flCtx.textAlign = 'center';
-        flCtx.fillText(ft.text, ft.x, ft.y);
+        if (flCompact) { // schmale Anzeige: umbrechen und im Bild halten
+          const lines = flWrap(ft.text, 330); const lh = flFs(11.5, 2.3) * 1.15;
+          lines.forEach((ln, i) => flCtx.fillText(ln, Math.min(FL_W - 170, Math.max(170, ft.x)), ft.y + (i - (lines.length - 1)) * lh));
+        } else flCtx.fillText(ft.text, ft.x, ft.y);
         flCtx.restore();
         if (ft.alpha <= 0) flFloatingTexts.splice(i, 1);
       }
 
       // Live Warning Banner (Overspeed Curve / Mast Warning)
       if (flState.warningTimer > 0 && flState.warningBanner) {
+        flCtx.font = flFont('800', 11.5, 'Inter, sans-serif', 2.3);
+        const bnLines = flCompact ? flWrap(flState.warningBanner, 430) : [flState.warningBanner];
+        const bnLh = flCompact ? flFs(11.5, 2.3) * 1.15 : 0; const bnH = flCompact ? bnLines.length * bnLh + 10 : 28; const bnY = 384 - bnH;
         flCtx.fillStyle = 'rgba(15, 23, 42, 0.92)';
-        flCtx.fillRect(160, 356, 460, 28);
+        flCtx.fillRect(160, bnY, 460, bnH);
         flCtx.strokeStyle = '#f59c00';
         flCtx.lineWidth = 2;
-        flCtx.strokeRect(160, 356, 460, 28);
+        flCtx.strokeRect(160, bnY, 460, bnH);
         flCtx.fillStyle = '#ffaa1d';
-        flCtx.font = '800 11.5px Inter, sans-serif';
         flCtx.textAlign = 'center';
-        flCtx.fillText(flState.warningBanner, 390, 374);
+        if (flCompact) bnLines.forEach((ln, i) => flCtx.fillText(ln, 390, bnY + 5 + (i + 0.8) * bnLh));
+        else flCtx.fillText(flState.warningBanner, 390, 374);
       }
 
       // 7. BOTTOM COCKPIT DASHBOARD (km/h TACHO, MAST INDICATOR & CARGO MONITOR)
       flCtx.fillStyle = '#0f172a';
-      flCtx.fillRect(0, 392, flCanvas.width, 78);
+      flCtx.fillRect(0, 392, FL_W, 78);
       flCtx.fillStyle = '#f59c00';
-      flCtx.fillRect(0, 392, flCanvas.width, 3);
+      flCtx.fillRect(0, 392, FL_W, 3);
 
       // Left Panel: KM/H SPEEDOMETER (TACHO)
       flCtx.fillStyle = '#1e293b';
@@ -1288,17 +1331,22 @@
       const isTooFastForCurve = nico.kmh > currentSafeLimit;
 
       flCtx.fillStyle = isTooFastForCurve ? '#ef4444' : '#38bdf8';
-      flCtx.font = '900 22px monospace';
+      flCtx.font = flFont('900', 22, 'monospace');
       flCtx.textAlign = 'left';
-      flCtx.fillText(`${nico.kmh.toFixed(1)} km/h`, 24, 427);
+      flFill(flCompact ? nico.kmh.toFixed(1) : `${nico.kmh.toFixed(1)} km/h`, 24, 427, 120);
 
       flCtx.fillStyle = isTooFastForCurve ? '#fca5a5' : '#94a3b8';
-      flCtx.font = '700 9.5px Inter, sans-serif';
-      flCtx.fillText(
-        isTooFastForCurve ? '⚠️ ZU SCHNELL FÜR KURVEN!' : `Max. Kurve: ${currentSafeLimit.toFixed(0)} km/h`,
-        142,
-        423
+      flCtx.font = flFont('700', 9.5, 'Inter, sans-serif');
+      if (flCompact) { flCtx.textAlign = 'right'; }
+      flFill(
+        flCompact
+          ? (isTooFastForCurve ? '⚠️ ZU SCHNELL!' : `km/h · Kurve max ${currentSafeLimit.toFixed(0)}`)
+          : (isTooFastForCurve ? '⚠️ ZU SCHNELL FÜR KURVEN!' : `Max. Kurve: ${currentSafeLimit.toFixed(0)} km/h`),
+        flCompact ? 248 : 142,
+        flCompact ? 427 : 423,
+        flCompact ? 160 : 0
       );
+      flCtx.textAlign = 'left';
 
       // Speedometer Bar (0 to 24 km/h)
       flCtx.fillStyle = '#0f172a';
@@ -1321,25 +1369,26 @@
       if (nico.cargo) {
         const cInfo = CARGO_TYPES[nico.cargo.type];
         flCtx.fillStyle = '#f59c00';
-        flCtx.font = '800 11.5px Inter, sans-serif';
-        flCtx.fillText(`LADUNG: ${cInfo.name}`, 278, 420);
+        flCtx.font = flFont('800', 11.5, 'Inter, sans-serif');
+        flFill(flCompact ? cInfo.name : `LADUNG: ${cInfo.name}`, 278, flCompact ? 421 : 420, 266);
 
         flCtx.fillStyle = '#ffffff';
-        flCtx.font = '700 10.5px Inter, sans-serif';
-        flCtx.fillText(`Ziel: ${cInfo.zoneName}  |  Zustand: ${nico.cargo.condition.toFixed(1)}%`, 278, 437);
+        flCtx.font = flFont('700', 10.5, 'Inter, sans-serif');
+        flFill(flCompact ? `${cInfo.zoneName.split(' (')[0]} · ${nico.cargo.condition.toFixed(0)}%` : `Ziel: ${cInfo.zoneName}  |  Zustand: ${nico.cargo.condition.toFixed(1)}%`, 278, flCompact ? 446 : 437, 266);
 
         // Cargo Integrity Bar
         flCtx.fillStyle = '#0f172a';
-        flCtx.fillRect(278, 444, 264, 9);
+        const flBarY = flCompact ? 451 : 444, flBarH = flCompact ? 6 : 9;
+        flCtx.fillRect(278, flBarY, 264, flBarH);
         flCtx.fillStyle = nico.cargo.condition > 85 ? '#10b981' : (nico.cargo.condition > 55 ? '#f59c00' : '#ef4444');
-        flCtx.fillRect(278, 444, 264 * (nico.cargo.condition / 100), 9);
+        flCtx.fillRect(278, flBarY, 264 * (nico.cargo.condition / 100), flBarH);
       } else {
         flCtx.fillStyle = '#94a3b8';
-        flCtx.font = '800 12px Inter, sans-serif';
-        flCtx.fillText('GABEL LEER — BEREIT ZUM AUFLADEN', 278, 424);
+        flCtx.font = flFont('800', 12, 'Inter, sans-serif');
+        flFill(flCompact ? 'GABEL LEER' : 'GABEL LEER — BEREIT ZUM AUFLADEN', 278, flCompact ? 428 : 424, 266);
         flCtx.fillStyle = '#38bdf8';
-        flCtx.font = '700 10.5px Inter, sans-serif';
-        flCtx.fillText(flState.truckPhase === 'DOCKED' ? '➔ Zum LKW fahren, dann Aufnehmen' : '⏳ LKW fährt – gleich geht es weiter', 278, 444);
+        flCtx.font = flFont('700', 10.5, 'Inter, sans-serif');
+        flFill(flState.truckPhase === 'DOCKED' ? (flCompact ? '➔ Zum LKW fahren' : '➔ Zum LKW fahren, dann Aufnehmen') : (flCompact ? '⏳ LKW fährt …' : '⏳ LKW fährt – gleich geht es weiter'), 278, flCompact ? 454 : 444, 266);
       }
 
       // Right Panel: MAST HEIGHT & PERFECTION METER
@@ -1349,40 +1398,43 @@
       flCtx.strokeRect(568, 401, 198, 60);
 
       flCtx.fillStyle = nico.mastLevel === 2 ? '#38bdf8' : '#10b981';
-      flCtx.font = '900 12px Inter, sans-serif';
-      flCtx.fillText(
-        nico.mastLevel === 2 ? '⬆️ MAST: EBENE 2 (HOCH)' : '⬇️ MAST: EBENE 1 (BODEN)',
+      flCtx.font = flFont('900', 12, 'Inter, sans-serif');
+      flFill(
+        flCompact
+          ? (nico.mastLevel === 2 ? '⬆️ MAST: EBENE 2' : '⬇️ MAST: EBENE 1')
+          : (nico.mastLevel === 2 ? '⬆️ MAST: EBENE 2 (HOCH)' : '⬇️ MAST: EBENE 1 (BODEN)'),
         580,
-        422
+        flCompact ? 428 : 422,
+        176
       );
       flCtx.fillStyle = '#cbd5e1';
-      flCtx.font = '700 9.5px Inter, sans-serif';
-      flCtx.fillText('Taste [E]: Heben / Senken', 580, 438);
+      flCtx.font = flFont('700', 9.5, 'Inter, sans-serif');
+      if (!flCompact) flCtx.fillText('Taste [E]: Heben / Senken', 580, 438);
       flCtx.fillStyle = '#f59c00';
-      flCtx.fillText('100% = 10.000 Pkt (Millimeterarbeit!)', 580, 453);
+      flFill(flCompact ? '100% = 10.000 Pkt' : '100% = 10.000 Pkt (Millimeterarbeit!)', 580, flCompact ? 454 : 453, 176);
 
       // 8. SHIFT COMPLETE OVERLAY
       if (flState.shiftComplete) {
         flCtx.fillStyle = 'rgba(0, 24, 48, 0.9)';
-        flCtx.fillRect(0, 0, flCanvas.width, flCanvas.height);
+        flCtx.fillRect(0, 0, FL_W, FL_H);
 
         const avgQ = flState.qualityHistory.length > 0
           ? (flState.qualityHistory.reduce((a, b) => a + b, 0) / flState.qualityHistory.length).toFixed(2)
           : '0.00';
 
         flCtx.fillStyle = '#f59c00';
-        flCtx.font = '900 28px Inter, sans-serif';
+        flCtx.font = flFont('900', 28, 'Inter, sans-serif');
         flCtx.textAlign = 'center';
-        flCtx.fillText('🚜 SCHICHT ERFOLGREICH ABGERECHNET!', flCanvas.width / 2, 145);
+        flFill('🚜 SCHICHT ERFOLGREICH ABGERECHNET!', FL_W / 2, 145, 740);
 
         flCtx.fillStyle = '#ffffff';
-        flCtx.font = '700 18px Inter, sans-serif';
-        flCtx.fillText(`Lagermeister Nico hat ${flState.palletsDelivered} Paletten eingelagert!`, flCanvas.width / 2, 190);
-        flCtx.fillText(`Durchschnittliche Präzision & Warenqualität: ${avgQ}%`, flCanvas.width / 2, 225);
+        flCtx.font = flFont('700', 18, 'Inter, sans-serif');
+        flFill(`Lagermeister Nico hat ${flState.palletsDelivered} Paletten eingelagert!`, FL_W / 2, 190, 740);
+        flFill(`Durchschnittliche Präzision & Warenqualität: ${avgQ}%`, FL_W / 2, 225, 740);
 
         flCtx.fillStyle = '#10b981';
-        flCtx.font = '900 24px Inter, sans-serif';
-        flCtx.fillText(`Gesamtpunkte: ${flState.score} / 10.000 Pkt`, flCanvas.width / 2, 270);
+        flCtx.font = flFont('900', 24, 'Inter, sans-serif');
+        flFill(`Gesamtpunkte: ${flState.score} / 10.000 Pkt`, FL_W / 2, 270, 740);
       }
 
       flCtx.restore();
