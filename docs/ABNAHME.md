@@ -17,6 +17,7 @@ Wird ein Defekt gefunden, kommt zuerst ein Fix (oder ein bewusster Eintrag in `t
 node tests/abnahme/run.js                          # alles, ca. 5 Minuten
 node tests/abnahme/selftest.js                     # Prüft die Prüfungen selbst (10 s)
 ABNAHME_ONLY=C ABNAHME_VP=phone390 node tests/abnahme/run.js   # Auswahl zum Entwickeln
+ABNAHME_ONLY=P node tests/abnahme/run.js           # Diagnose der pausierten Spiele Tower/Mut-Man (nicht Teil des Normallaufs, siehe docs/DIAGNOSE-TOWER-PACMAN.md)
 ```
 
 `ABNAHME_ONLY`: A (Startseite, Admin), B (Spiele-Menü), C (fünf Spiele), D (Chat). `ABNAHME_VP`: `desktop`, `laptop15`, `phone390`, `phone360`.

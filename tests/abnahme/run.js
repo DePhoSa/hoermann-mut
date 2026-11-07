@@ -5,7 +5,7 @@
 //         ABNAHME_ONLY=A,B ABNAHME_VP=phone390 node tests/abnahme/run.js   (Auswahl, zum Entwickeln)
 const fs = require('fs'); const path = require('path');
 const { chromium, VIEWPORTS, startServer, Run, openSession } = require('./lib');
-const SCENARIOS = { A: require('./scenarios/a-portal'), B: require('./scenarios/b-menu'), C: require('./scenarios/c-games'), D: require('./scenarios/d-chat') };
+const SCENARIOS = { A: require('./scenarios/a-portal'), B: require('./scenarios/b-menu'), C: require('./scenarios/c-games'), D: require('./scenarios/d-chat'), P: require('./scenarios/c2-paused-games') }; /* P = Diagnose pausierter Spiele, nur mit ABNAHME_ONLY=P */
 
 (async () => {
   const t0 = Date.now();
