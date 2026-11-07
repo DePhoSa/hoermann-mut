@@ -11,6 +11,7 @@ Die Seite ist weiterhin eine reine Website ohne Build-Schritt (GitHub Pages). Se
 | `js/core/02-leaderboard.js` | Bestenlisten und Punkte-Speicher |
 | `js/core/03-cloud-hub.js` | Cloud-Anbindung (Bestenlisten, Ideen-Box, Zwangsupdate, `APP_VERSION`) |
 | `js/core/04-chat-admin.js` | Live-Chat, Smileys, GIFs, Namensantrag, Admin |
+| `js/core/05-stats.js` | Anonyme Spielstatistik (Zähler je Spiel/Tag), siehe `docs/STATISTIK.md` |
 | `js/games/mario.js` | Super Dennis |
 | `js/games/buster.js` | Zweifel-Buster |
 | `js/games/nerve.js` | Die Mut-Probe |
