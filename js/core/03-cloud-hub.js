@@ -1,7 +1,7 @@
     /* ==========================================================
        7b. GLOBAL ONLINE CLOUD HUB (HIGHSCORES, IDEEN-BOX, LIVE-CHAT & ZWANGSUPDATE)
        ========================================================== */
-    const APP_VERSION           = '3.4.0';
+    const APP_VERSION           = '3.5.0';
     const cloudSyncBadge        = document.getElementById('cloud-sync-badge');
     const submitHighscoreFeedback = document.getElementById('submit-highscore-feedback');
     const ideaTicketBox         = document.getElementById('idea-ticket-box');

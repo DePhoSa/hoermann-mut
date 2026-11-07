@@ -2,6 +2,17 @@
 (function (root) {
   const versions = [
     {
+      version: '3.5.0', date: '2026-11-07',
+      highlights: ['Neue Updates für vier Spiele', 'Anonyme Spielstatistik', 'Mut-Automat entfällt'],
+      headlines: [
+        'Lagermeister Nico 0.3: schärferes Spielfeld, bessere Handy-Steuerung',
+        'Die Mut-Probe 0.9 und Tor-Parcours 0.9: Release-Kandidaten für 1.0',
+        'Zweifel-Buster 0.3: größere Trefferflächen, Zeitleiste und Combo-Anzeige',
+        'Der Hörmann Mut-Automat wurde entfernt, gespeicherte Punkte bleiben erhalten',
+        'Anonyme Spielstatistik (ohne Namen) für bessere Spiele'
+      ]
+    },
+    {
       version: '3.4.0', date: '2026-11-06',
       highlights: ['Neustart direkt im Spiel', 'Rekorde speichern automatisch', 'Aufgeräumte Oberfläche'],
       headlines: [
