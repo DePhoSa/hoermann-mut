@@ -19,6 +19,13 @@
 
     // Fairer Topf: 2 von 3 Toren sind sicher, Topf waechst um x1.5 (= Break-even bei 2/3 Trefferchance).
     // Weiterspielen lohnt sich also nie "automatisch" - es ist eine echte Risiko-Entscheidung.
+    //
+    // Erwartungswert (Simulation, 1 Mio. Durchgaenge je Strategie "sichere nach n sicheren Toren"):
+    //   Topf nach n Toren: 100, 150, 230, 350, 530, 800, 1200, 1800 ...   Ueberleben: (2/3)^n
+    //   n=1: 66,7   n=2: 66,6   n=3: 68,0   n=4: 68,9   n=5: 69,8   n=6..10: ca. 70   (Muenzwurf-Strategie: 67)
+    //   Der Erwartungswert ist flach (max. +5 % durch Runden auf 10er): keine Strategie schlaegt die anderen deutlich.
+    //   Nur die Streuung unterscheidet sich (n=1: 67 % fuer 100; n=6: nur 8,8 % fuer 1200). Faire Risiko-Entscheidung,
+    //   daher UNVERAENDERT. Die Wertung (Punkte = gesicherter Topf, 0 bei Alarm) bleibt gleich: Kategorie nerve_v02.
     function nervePotAfterSafe(pot) {
       return pot <= 0 ? 100 : Math.round(pot * 1.5 / 10) * 10;
     }
@@ -26,8 +33,12 @@
     function updateNerveHint() {
       const next = nervePotAfterSafe(nerveCurrentStake);
       nerveHint.textContent = nerveCurrentStake > 0
-        ? `Im Topf: ${nerveCurrentStake}. Ein sicheres Tor (2 von 3) macht daraus ${next} – ein Alarm (1 von 3) kostet alles im Topf.`
-        : 'Hinter 2 Toren wartet gewaltiger Mut – hinter 1 Tor ein Zweifel-Alarm! Erster Treffer bringt 100.';
+        ? `Nächstes Tor: sicher (2 von 3) = Topf ${next}, Alarm (1 von 3) = alles weg.`
+        : 'Hinter 2 Toren wartet Mut, hinter 1 ein Zweifel-Alarm. Das erste sichere Tor bringt 100.';
+    }
+
+    function setBankLabel() {
+      bankNerveBtn.textContent = nerveCurrentStake > 0 ? `💰 Sichern (${nerveCurrentStake})` : '💰 Sichern';
     }
 
     function startNerveGame() {
@@ -39,9 +50,10 @@
       nerveCanClick = true;
       nerveCurrentSpan.textContent = '0';
       nerveBankedSpan.textContent = '0';
-      nerveTitle.innerHTML = 'Runde <span id="nerve-round">1</span>: Welches Tor wagst du zu öffnen?';
+      nerveTitle.innerHTML = 'Runde <span id="nerve-round">1</span>: Welches Tor wagst du?';
       bankNerveBtn.style.display = 'inline-flex';
       bankNerveBtn.disabled = true;
+      setBankLabel();
       nextNerveRoundBtn.style.display = 'none';
       restartNerveBtn.style.display = 'none';
       scoreSubmitDialog.classList.remove('show');
@@ -81,6 +93,26 @@
       if (e.key >= '1' && e.key <= '3') openMysteryDoor(Number(e.key));
     });
 
+    // Mut-Spruch nach dem Sichern (OPTIONALES Feature, getrennt abschaltbar: NERVE_QUOTE = false).
+    // Nutzt die vorhandene Liste mutSpruche (js/core/01-ui-navigation.js), nur kurze Sprueche (bis 120 Zeichen).
+    const NERVE_QUOTE = true;
+    let nerveLastQuote = -1;
+    function nerveQuoteText() {
+      if (!NERVE_QUOTE || typeof mutSpruche === 'undefined') return '';
+      const pool = mutSpruche.map((q, i) => i).filter(i => mutSpruche[i].quote.length <= 120 && i !== nerveLastQuote);
+      if (!pool.length) return '';
+      nerveLastQuote = pool[Math.floor(Math.random() * pool.length)];
+      const q = mutSpruche[nerveLastQuote];
+      return `„${q.quote}“ – ${q.author}`;
+    }
+
+    function doorHtml(kind, mine) {
+      const own = mine ? '<small>Dein Tor</small>' : '';
+      return kind === 'alarm'
+        ? `<span class="door-icon">⚠️</span><strong class="door-label door-label-alarm">Alarm</strong>${own}`
+        : `<span class="door-icon">🌟</span><strong class="door-label door-label-safe">Sicher</strong>${own}`;
+    }
+
     function openMysteryDoor(chosenIndex) {
       if (!nerveCanClick) return;
       nerveCanClick = false;
@@ -95,46 +127,34 @@
         d.classList.add('opened');
         d.setAttribute('aria-disabled', 'true');
         if (i === chosenIndex) d.classList.add('chosen');
-        const content = document.getElementById(`door-content-${i}`);
-
-        if (i === alarmDoorIndex) {
-          if (i === chosenIndex) d.classList.add('alarm');
-          content.innerHTML = `
-            <span style="font-size:2rem;">⚠️</span>
-            <strong style="color:#ef4444; font-size:1.1rem; margin-top:4px;">ZWEIFEL-ALARM!</strong>
-            <small style="color:#cbd5e1; font-size:0.75rem;">${i === chosenIndex ? 'Dieses Tor hast du gewählt' : 'Hier lauerte der Alarm'}</small>
-          `;
-        } else {
-          content.innerHTML = `
-            <span style="font-size:2rem;">🌟</span>
-            <strong style="color:var(--hoermann-orange); font-size:1.1rem; margin-top:4px;">${i === chosenIndex ? 'Topf: ' + newPot : 'Sicher'}</strong>
-            <small style="color:#cbd5e1; font-size:0.75rem;">${i === chosenIndex ? 'Mut-Bonus!' : 'Hier war Mut'}</small>
-          `;
-        }
+        if (i === alarmDoorIndex && i === chosenIndex) d.classList.add('alarm');
+        document.getElementById(`door-content-${i}`).innerHTML = doorHtml(i === alarmDoorIndex ? 'alarm' : 'safe', i === chosenIndex);
       }
+
+      // Ergebnis-Ton/Effekt erst, wenn das Tor offen ist (kein Matsch aus Tor- und Ergebnis-Ton gleichzeitig).
+      const afterOpen = (fn) => HoermannGameSession.delay(fn, 420);
 
       if (isAlarm) {
         nerveOver = true;
-        HoermannGameSession.ended(0, 900);
         const lost = nerveCurrentStake;
-        playSound('alarm');
-        nerveTitle.textContent = lost > 0
-          ? `Zweifel-Alarm! Der Topf (${lost}) ist verloren – nächstes Mal früher sichern?`
-          : 'Zweifel-Alarm gleich beim ersten Tor! Neuer Versuch?';
-        nerveHint.textContent = 'Gewertet wird nur gesicherter Mut.';
+        nerveTitle.textContent = 'Zweifel-Alarm!';
+        nerveHint.textContent = lost > 0 ? `Der Topf (${lost}) ist verloren. Gewertet wird nur gesicherter Mut.` : 'Gleich beim ersten Tor. Gewertet wird nur gesicherter Mut.';
         nerveCurrentStake = 0;
         nerveCurrentSpan.textContent = '0';
         bankNerveBtn.style.display = 'none';
         nextNerveRoundBtn.style.display = 'none';
-        restartNerveBtn.style.display = 'inline-flex';
+        restartNerveBtn.style.display = 'none';
+        HoermannGameSession.endText({ score: '0 Punkte', detail: lost > 0 ? 'Nächstes Mal früher sichern?' : 'Neuer Versuch?' });
+        HoermannGameSession.ended(0, 800);
+        afterOpen(() => playSound('alarm'));
         // Nichts gesichert: kein Score. (Sichern beendet den Durchgang, daher ist banked hier immer 0.)
       } else {
-        playSound('powerup');
-        triggerParticleEffect('gold');
         nerveCurrentStake = newPot;
         nerveCurrentSpan.textContent = nerveCurrentStake;
-        nerveTitle.textContent = `Geschafft! Im Topf: ${nerveCurrentStake}. Sichern oder weiter wagen?`;
+        nerveTitle.textContent = 'Tor sicher – sichern oder weiter?';
         updateNerveHint();
+        setBankLabel();
+        afterOpen(() => { playSound('powerup'); triggerParticleEffect('gold'); });
 
         bankNerveBtn.style.display = 'inline-flex';
         bankNerveBtn.disabled = false;
@@ -146,9 +166,11 @@
     nextNerveRoundBtn.addEventListener('click', () => {
       if (nerveOver) return;
       nerveRound++;
-      nerveTitle.innerHTML = `Runde <span id="nerve-round">${nerveRound}</span>: Welches Tor wagst du zu öffnen?`;
+      nerveTitle.innerHTML = `Runde <span id="nerve-round">${nerveRound}</span>: Welches Tor wagst du?`;
       nextNerveRoundBtn.style.display = 'none';
       resetDoorsUI();
+      // Der Knopf verschwindet: Fokus auf das erste Tor, damit die Tastatur nicht ins Leere faellt.
+      document.getElementById('door-1').focus({ preventScroll: true });
     });
 
     bankNerveBtn.addEventListener('click', () => {
@@ -161,12 +183,13 @@
       nerveBankedSpan.textContent = nerveBanked;
       playSound('score');
       triggerParticleEffect('confetti');
-      nerveTitle.textContent = `Erfolgreich gesichert: ${nerveBanked} Punkte!`;
-      nerveHint.textContent = 'Mutig und klug – das ist dein Ergebnis.';
+      nerveTitle.textContent = 'Gesichert!';
+      nerveHint.textContent = `Du hast ${nerveRound} ${nerveRound === 1 ? 'Tor' : 'Tore'} gewagt. Mutig und klug.`;
       bankNerveBtn.style.display = 'none';
       nextNerveRoundBtn.style.display = 'none';
-      restartNerveBtn.style.display = 'inline-flex';
+      restartNerveBtn.style.display = 'none';
 
+      HoermannGameSession.endText({ score: `${nerveBanked} Punkte`, quote: nerveQuoteText() });
       promptScoreSubmit(nerveBanked, 'nerve_v02', 'Die Mut-Probe 0.2');
     });
 

@@ -46,7 +46,42 @@
     ]
   };
   Object.keys(notes02).forEach(game => { releases[game] = { version: '0.2', scoreCategory: game + '_v02', notes: notes02[game] }; });
-  const categories = Object.freeze(['forklift','tower','pacman','slots','mario','buster','nerve','parcours','buster_v02','forklift_v02','mario_v02','nerve_v02','parcours_v02']);
+  // Neuere Staende einzelner Spiele. Die Bestenlisten-Kategorie bleibt "<spiel>_v02", solange sich die Wertung nicht aendert.
+  const newer = {
+    forklift: { version: '0.3', notes: [
+      'Schärferes Spielfeld auf Laptops mit 125 % und 150 % Skalierung und auf dem Handy.',
+      'Auf dem Handy sind die Schriften im Spielfeld größer und besser lesbar.',
+      'Handy: Gas und Lenken gleichzeitig mit zwei Fingern klappt jetzt zuverlässig.',
+      'Punkte und Fahrverhalten sind unverändert, die Bestenliste bleibt gleich.'
+    ] },
+    nerve: { version: '0.9', notes: [
+      'Neues Ende: Eine Leiste unter den Toren zeigt dein Ergebnis, die Tore bleiben sichtbar.',
+      'Jedes Tor ist nach dem Öffnen beschriftet: Sicher, Alarm, Dein Tor.',
+      'Kürzere, klarere Texte. „Sichern“ zeigt jetzt den aktuellen Topfwert.',
+      'Ruhigerer Ton: Tor-Geräusch und Ergebnis-Ton kommen nacheinander.',
+      'Nach dem Sichern gibt es einen kurzen Mut-Spruch.',
+      'Besser auf dem Handy: alles bleibt erreichbar, auch mit Ergebnisblatt und Chat-Knopf.',
+      'Wertung und Bestenliste bleiben unverändert.'
+    ] },
+    parcours: { version: '0.9', notes: [
+      'Sanfterer Einstieg: Die ersten Tore sind weiter und liegen näher beieinander, das erste Tor kommt früher.',
+      'Deutlicheres Absturz-Feedback: roter Blitz und rote Kugel.',
+      'Punktestand und Starthinweis sind größer und besser lesbar, auch auf dem Handy.',
+      'Auf dem Handy vibriert es kurz bei Toren und beim Absturz (abschaltbar über „Bewegung reduzieren“).',
+      'Kein versehentlicher Neustart mehr nach dem Absturz.',
+      'Tore zählen wie bisher, die Bestenliste bleibt gleich.'
+    ] },
+    buster: { version: '0.3', notes: [
+      'Größere Trefferfläche auf dem Handy: auch kleine Blasen lassen sich mit dem Finger sicher treffen.',
+      'Neue Zeitleiste oben zeigt, wie viel von den 30 Sekunden noch übrig ist.',
+      'Combo-Anzeige mit Fortschritt bis zum nächsten Bonus.',
+      'Fehlklicks blitzen kurz rot auf, der Punktabzug ist gut lesbar.',
+      'Bei überlappenden Blasen wird die nächstliegende getroffen. Während Pause und Countdown zählen Tipps nicht.',
+      'Wertung und Bestenliste bleiben unverändert.'
+    ] }
+  };
+  Object.keys(newer).forEach(game => { releases[game] = Object.assign({}, releases[game], newer[game]); });
+  const categories = Object.freeze(['forklift','tower','pacman','mario','buster','nerve','parcours','buster_v02','forklift_v02','mario_v02','nerve_v02','parcours_v02']);
   const baseGame = category => String(category).replace(/_v02$/, '');
   const isVersioned = category => Boolean(releases[baseGame(category)]);
   function release(game) { return releases[game] || { version: '0.1', scoreCategory: game, notes: ['Erstveröffentlichung 0.1.'] }; }

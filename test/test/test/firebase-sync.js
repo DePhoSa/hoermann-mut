@@ -26,7 +26,7 @@
       const au = auth.getAuth(a);
       const db = fs.initializeFirestore(a, { experimentalAutoDetectLongPolling: true });
       if (!au.currentUser) await auth.signInAnonymously(au);
-      api = { fs, db, au };
+      api = { fs, db, au, auth };
       root.HoermannCloud.uid = au.currentUser && au.currentUser.uid;
       return api;
     })();
@@ -60,7 +60,27 @@
     async isAdmin() {
       const { fs, db, au } = await init();
       const snap = await fs.getDoc(fs.doc(db, 'config', 'admins'));
-      return snap.exists() && Array.isArray(snap.data().uids) && snap.data().uids.includes(au.currentUser.uid);
+      if (!snap.exists()) return false;
+      const d = snap.data(), u = au.currentUser;
+      const byUid = Array.isArray(d.uids) && d.uids.includes(u.uid);
+      const byMail = u.email && u.emailVerified && Array.isArray(d.emails) && d.emails.includes(u.email);
+      return Boolean(byUid || byMail);
+    },
+    // Feste Admin-Anmeldung per Google. Die anonyme Spieler-ID bleibt erhalten (Konto wird verknüpft),
+    // auf einem neuen Gerät führt dieselbe Google-Anmeldung wieder zum selben Admin-Konto.
+    async adminSignIn() {
+      const { au, auth } = await init();
+      const provider = new auth.GoogleAuthProvider();
+      try {
+        await auth.linkWithPopup(au.currentUser, provider);
+      } catch (e) {
+        if (e && e.code === 'auth/credential-already-in-use') {
+          const cred = auth.GoogleAuthProvider.credentialFromError(e);
+          await auth.signInWithCredential(au, cred);
+        } else { throw e; }
+      }
+      cloud.uid = au.currentUser.uid;
+      return { email: au.currentUser.email || '' };
     },
     // onItems(payloads[]) bekommt alle neuen/geänderten Daten, setBadge(status) den Verbindungsstatus.
     async start(onItems, setBadge) {

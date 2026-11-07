@@ -16,7 +16,6 @@
     const tabForkliftBtn = document.getElementById('tab-forklift-btn');
     const tabTowerBtn = document.getElementById('tab-tower-btn');
     const tabPacmanBtn = document.getElementById('tab-pacman-btn');
-    const tabSlotsBtn = document.getElementById('tab-slots-btn');
     const tabMarioBtn = document.getElementById('tab-mario-btn');
     const tabBusterBtn = document.getElementById('tab-buster-btn');
     const tabNerveBtn = document.getElementById('tab-nerve-btn');
@@ -48,13 +47,6 @@
         { name: "Pellet-Pionierin Anna", score: 1250, date: "Startwert", isNpc: true },
         { name: "Geister-Jäger Kai", score: 850, date: "Startwert", isNpc: true },
         { name: "Azubi Kevin", score: 450, date: "Startwert", isNpc: true }
-      ],
-      slots: [
-        { name: "Jackpot-Jürgen", score: 1250, date: "Startwert", isNpc: true },
-        { name: "Lagermeister Nico", score: 950, date: "Startwert", isNpc: true },
-        { name: "Dennis Ressemann", score: 720, date: "Startwert", isNpc: true },
-        { name: "Risiko-Rudi", score: 540, date: "Startwert", isNpc: true },
-        { name: "Azubi Kevin", score: 300, date: "Startwert", isNpc: true }
       ],
       mario: [
         { name: "Dennis Ressemann", score: 850, date: "Startwert", isNpc: true },
@@ -240,10 +232,6 @@
           { name: "Jensiboi", score: 2255, date: "23.10.", isUser: true }
         ],
         pacman: [],
-        slots: [
-          { name: "Mary", score: 1910, date: "23.10.", isUser: true },
-          { name: "d.ressemann.n15@hoer", score: 760, date: "23.10.", isUser: true }
-        ],
         mario: [
           { name: "MMR15", score: 5780, date: "23.10.", isUser: true },
           { name: "Meister Manni", score: 5770, date: "23.10.", isUser: true },

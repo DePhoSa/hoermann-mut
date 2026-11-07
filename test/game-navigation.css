@@ -131,7 +131,7 @@ body:has(#online-side-chat.open) #chat-fab { visibility: hidden; }
 .game-choice-card .game-state-label { width: fit-content; }
 /* Bei Skalierung wie 125 %/150 % (häufig bei Laptops) nicht kantig hochziehen, sondern glatt */
 @media (min-resolution: 1.1dppx) {
-  #forkliftCanvas, #towerCanvas, #pacmanCanvas, #slotsCanvas { image-rendering: auto !important; }
+  #forkliftCanvas, #towerCanvas, #pacmanCanvas { image-rendering: auto !important; }
 }
 
 /* Pausierte Spiele ("Coming soon" / "Überarbeitung") wirken klar deaktiviert */
@@ -221,13 +221,13 @@ footer .version-btn:hover, footer .version-btn:focus-visible { color: #fff; text
 
 /* Bestenliste ist universell über den Knopf oben rechts erreichbar: Links in den Spielleisten entfallen */
 #forklift-leaderboard-btn, #mario-leaderboard-btn, #buster-leaderboard-btn, #nerve-leaderboard-btn, #parcours-leaderboard-btn,
-#tower-leaderboard-btn, #pacman-leaderboard-btn, #slots-leaderboard-btn { display: none !important; }
+#tower-leaderboard-btn, #pacman-leaderboard-btn { display: none !important; }
 /* Ergebnis-Dialog: zwei ruhige Zusatzaktionen unter dem Hauptknopf */
 .score-dialog-actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; width: 100%; max-width: 460px; }
 .score-dialog-actions button { min-height: 44px; }
 
 /* "✕ Menü" in den Spielleisten entfällt (Rückweg: ✕ oben rechts, Pausen-Dialog, Spielende) */
-#exit-forklift-btn, #exit-slots-btn, #exit-tower-btn, #exit-pacman-btn, #exit-mario-btn, #exit-buster-btn, #exit-nerve-btn, #exit-parcours-btn { display: none !important; }
+#exit-forklift-btn, #exit-tower-btn, #exit-pacman-btn, #exit-mario-btn, #exit-buster-btn, #exit-nerve-btn, #exit-parcours-btn { display: none !important; }
 
 /* ===== Rundenende-Karte & Neustart im Spiel (statt kleinem "Neustart"-Link) ===== */
 #restart-mario-btn, #restart-buster-btn, #restart-forklift-btn, #restart-nerve-btn, #restart-parcours-btn {
@@ -295,9 +295,31 @@ body:has(#score-submit-dialog.show) #chat-fab { visibility: hidden; }
 .game-card-foot .game-rank-ribbon[hidden] { display: none; }
 .games-update-notice { display: flex; align-items: center; min-height: 44px; margin: 0 0 6px; padding: 0 4px; background: none; border: 0; color: #0b4f9c; font: inherit; font-size: .9rem; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 .games-update-notice:hover { color: #002d62; }
-/* Mut-Probe: nach dem Ende sagt die Endkarte alles; keine zweite Ueberschrift, Karte deckend (Tore schimmern nicht durch). */
-#nerve-view:has(#game-end-card:not([hidden])) #nerve-title, #nerve-view:has(#game-end-card:not([hidden])) #nerve-hint { display: none; }
-#nerve-view #game-end-card { background: #00264d; }
+/* Endkarte als Leiste UNTER dem Spielfeld (END_LAYOUT in game-session.js, z. B. Mut-Probe): Tore bleiben sichtbar. */
+#game-end-card.is-bar { position: static; inset: auto; z-index: auto; display: block; width: 100%; max-width: 660px; margin: 12px auto 0; padding: 12px 14px; overflow: visible; background: #00264d; border-radius: 8px; animation: game-end-in .3s ease-out; }
+#game-end-card.is-bar[hidden] { display: none; }
+#game-end-card.is-bar .game-end-panel { width: 100%; margin: 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(190px, 250px); column-gap: 16px; row-gap: 4px; align-items: center; text-align: left; }
+#game-end-card.is-bar .game-end-kicker { display: none; }
+#game-end-card.is-bar .game-end-score, #game-end-card.is-bar .game-end-record, #game-end-card.is-bar .game-end-detail, #game-end-card.is-bar .game-end-quote { grid-column: 1; }
+#game-end-card.is-bar .game-end-score { font-size: clamp(1.3rem, 5vw, 1.8rem); }
+#game-end-card.is-bar .game-end-detail { font-size: .92rem; color: #dbe8f6; }
+#game-end-card.is-bar .game-end-quote { font-size: .88rem; font-style: italic; color: #ffd269; line-height: 1.4; }
+#game-end-card.is-bar .game-end-detail[hidden], #game-end-card.is-bar .game-end-quote[hidden] { display: none; }
+#game-end-card.is-bar .game-end-primary, #game-end-card.is-bar .game-end-row { grid-column: 2; grid-row: 1 / span 3; }
+#game-end-card.is-bar .game-end-primary { grid-row: 1 / span 2; align-self: end; }
+#game-end-card.is-bar .game-end-row { grid-row: 3; align-self: start; margin-top: 6px; }
+/* Ergebnisblatt liegt fest am unteren Rand: Platz schaffen, damit die Leiste darueber scrollbar bleibt. */
+body:has(#score-submit-dialog.show) #nerve-view:has(#game-end-card.is-bar:not([hidden])) { padding-bottom: 320px; }
+@media (max-width: 640px) { #nerve-view .doors-arena .mystery-door { height: 100px; } #game-end-card.is-bar { margin-bottom: 84px; } }
+@media (max-width: 560px) {
+  #game-end-card.is-bar .game-end-panel { grid-template-columns: minmax(0, 1fr); text-align: center; }
+  #game-end-card.is-bar .game-end-primary, #game-end-card.is-bar .game-end-row { grid-column: 1; grid-row: auto; }
+  #game-end-card.is-bar .game-end-primary { margin-top: 6px; }
+  /* Handy: Zweitaktionen links halten, rechts unten liegt der schwebende Chat-Knopf */
+  #game-end-card.is-bar .game-end-row { margin-top: 0; justify-content: flex-start; padding-right: 108px; }
+  #game-end-card.is-bar .game-end-secondary { flex: 1 1 auto; white-space: nowrap; padding: 8px 8px; }
+  #game-end-card.is-bar .game-end-text { padding: 8px 8px; white-space: nowrap; }
+}
 /* Handy: unten Platz fuer den schwebenden Chat-Knopf (56px + Rand) */
 @media (max-width: 640px) { footer { padding-bottom: 6rem; } }
 .idea-ticket-badge[hidden] { display: none; }
@@ -309,3 +331,4 @@ body:has(#score-submit-dialog.show) #chat-fab { visibility: hidden; }
 /* Update-Hinweis je Kachel: ruhiger Textlink zwischen Beschreibung und Knopf */
 .game-choice-card .game-update-link { align-self: flex-start; display: inline-flex; align-items: center; min-height: 44px; margin: -6px 0 0; padding: 0 2px; background: none; border: 0; color: #0b4f9c; font: inherit; font-size: .85rem; font-weight: 700; text-decoration: underline; cursor: pointer; }
 .game-choice-card .game-update-link:hover { color: #002d62; }
+.changelog-privacy { margin: 12px 0 0; font-size: .78rem; line-height: 1.35; color: #5b6778; }

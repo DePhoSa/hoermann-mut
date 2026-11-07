@@ -1,7 +1,7 @@
     /* ==========================================================
        7b. GLOBAL ONLINE CLOUD HUB (HIGHSCORES, IDEEN-BOX, LIVE-CHAT & ZWANGSUPDATE)
        ========================================================== */
-    const APP_VERSION           = '3.4.0';
+    const APP_VERSION           = '3.5.0';
     const cloudSyncBadge        = document.getElementById('cloud-sync-badge');
     const submitHighscoreFeedback = document.getElementById('submit-highscore-feedback');
     const ideaTicketBox         = document.getElementById('idea-ticket-box');
@@ -508,7 +508,7 @@
 
     // Prüft, ob der Spieler sich gerade mitten in einem der 6 Spiele befindet (damit ein Live-Update ihn NIEMALS aus einer laufenden Runde wirft!)
     function isPlayerCurrentlyInGame() {
-      const activeGameViews = [forkliftView, towerView, pacmanView, slotsView, marioView, busterView, nerveView, parcoursView];
+      const activeGameViews = [forkliftView, towerView, pacmanView, marioView, busterView, nerveView, parcoursView];
       const inAnyGameView = activeGameViews.some(v => v && v.style.display === 'flex');
       const inSubmitDialog = scoreSubmitDialog && scoreSubmitDialog.classList.contains('show');
       return Boolean(inAnyGameView || inSubmitDialog);
@@ -1157,7 +1157,6 @@
       tabForkliftBtn.classList.toggle('active', HoermannGameReleases.baseGame(category) === 'forklift');
       if (tabTowerBtn) tabTowerBtn.classList.toggle('active', category === 'tower');
       if (tabPacmanBtn) tabPacmanBtn.classList.toggle('active', category === 'pacman');
-      if (tabSlotsBtn) tabSlotsBtn.classList.toggle('active', category === 'slots');
       tabMarioBtn.classList.toggle('active', HoermannGameReleases.baseGame(category) === 'mario');
       tabBusterBtn.classList.toggle('active', HoermannGameReleases.baseGame(category) === 'buster');
       tabNerveBtn.classList.toggle('active', HoermannGameReleases.baseGame(category) === 'nerve');
@@ -1167,7 +1166,6 @@
         forklift: "🏆 Lagermeister Nico · 0.1 (bisherige Rekorde)",
         tower: "🏆 Bestenliste: 🏰 Tower of Mut (Resse im Schicksalsturm • Tutorial + 5 Level)",
         pacman: "🏆 Bestenliste: 🟡 Hörmann Mut-Man (Labyrinth, Zweifel-Geister & Power-Tore)",
-        slots: "🏆 Bestenliste: 🎰 Der Hörmann Mut-Automat (Walzen & Risiko-Jackpot)",
         mario: "🏆 Super Dennis · 0.1 (bisherige Rekorde)",
         buster: "🏆 Zweifel-Buster · 0.1 (bisherige Rekorde)",
         buster_v02: "🏆 Zweifel-Buster · Update 0.2",
@@ -1228,7 +1226,6 @@
     tabForkliftBtn.addEventListener('click', () => switchLeaderboardTab(HoermannGameReleases.release('forklift').scoreCategory));
     if (tabTowerBtn) tabTowerBtn.addEventListener('click', () => switchLeaderboardTab('tower'));
     if (tabPacmanBtn) tabPacmanBtn.addEventListener('click', () => switchLeaderboardTab('pacman'));
-    if (tabSlotsBtn) tabSlotsBtn.addEventListener('click', () => switchLeaderboardTab('slots'));
     tabMarioBtn.addEventListener('click', () => switchLeaderboardTab(HoermannGameReleases.release('mario').scoreCategory));
     tabBusterBtn.addEventListener('click', () => switchLeaderboardTab('buster_v02'));
     tabNerveBtn.addEventListener('click', () => switchLeaderboardTab(HoermannGameReleases.release('nerve').scoreCategory));
@@ -1249,8 +1246,6 @@
     if (towerLbBtn) towerLbBtn.addEventListener('click', () => openGlobalLeaderboard('tower'));
     const pacmanLbBtn = document.getElementById('pacman-leaderboard-btn');
     if (pacmanLbBtn) pacmanLbBtn.addEventListener('click', () => openGlobalLeaderboard('pacman'));
-    const slotsLbBtn = document.getElementById('slots-leaderboard-btn');
-    if (slotsLbBtn) slotsLbBtn.addEventListener('click', () => openGlobalLeaderboard('slots'));
     document.getElementById('mario-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('mario_v02'));
     document.getElementById('buster-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('buster_v02'));
     document.getElementById('nerve-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('nerve_v02'));

@@ -3,7 +3,6 @@ const portalGameNavigation = {
   forklift: { title: 'Lagermeister Nico malocht', start: startForkliftGame },
   tower: { title: 'Tower of Mut', status: 'Überarbeitung' },
   pacman: { title: 'Hörmann Mut-Man', status: 'Coming soon' },
-  slots: { title: 'Hörmann Mut-Automat', status: 'Überarbeitung' },
   mario: { title: 'Super Dennis', start: startMarioGame },
   buster: { title: 'Zweifel-Buster', start: startBusterGame },
   nerve: { title: 'Die Mut-Probe', start: startNerveGame },
@@ -101,7 +100,6 @@ for (const [category, game] of Object.entries(portalGameNavigation)) {
     forklift: 'Entlade LKWs und staple Hörmann-Paletten sicher ins Lager. Schaffst du 100 %?',
     tower: 'Klettere mit Resse durch den Schicksalsturm: Tutorial und fünf Level.',
     pacman: 'Sammle Mut-Punkte im Labyrinth und weiche den Zweifel-Geistern aus.',
-    slots: 'Walzen, Risiko und Jackpot im Hörmann Mut-Automaten.',
     mario: 'Hüpfe mit Dennis durch die Hörmann-Welt, knacke Blöcke und erreiche das Werkstor.',
     buster: 'Zerschlage Zweifel per Klick und baue deine Treffer-Combo für mehr Punkte aus.',
     nerve: 'Wähle eines von drei Toren: Gewinne Punkte und entscheide, wann du sie sicherst.',
@@ -221,7 +219,7 @@ document.getElementById('header-leaderboard-btn').addEventListener('click', even
   const chips = document.createElement('div'); chips.id = 'version-highlights'; chips.className = 'version-highlights';
   for (const text of latest.highlights.slice(0, 4)) chips.append(Object.assign(document.createElement('span'), {className: 'version-chip', textContent: text}));
   const dialog = document.createElement('dialog'); dialog.id = 'changelog-dialog'; dialog.setAttribute('aria-labelledby', 'changelog-title');
-  dialog.innerHTML = '<h2 id="changelog-title">Was ist neu?</h2><div id="changelog-highlights"></div><div id="changelog-body"></div><button type="button" class="submit-btn" id="changelog-close">Schließen</button><button type="button" id="changelog-admin-link" class="changelog-admin-link">Admin</button>';
+  dialog.innerHTML = '<h2 id="changelog-title">Was ist neu?</h2><div id="changelog-highlights"></div><div id="changelog-body"></div><p id="changelog-privacy" class="changelog-privacy">Datenschutz: Anonyme Spielstatistik, keine Namen, nur Zähler (Runden, Spieldauer, Neustarts, Abbrüche je Spiel und Tag). Es werden keine Namen oder persönlichen Daten gespeichert, nur zufällige Geräte-Kennungen zum Zählen der Spieler. Einsehbar nur für die Admins.</p><button type="button" class="submit-btn" id="changelog-close">Schließen</button><button type="button" id="changelog-admin-link" class="changelog-admin-link">Admin</button>';
   document.body.append(dialog);
   const body = dialog.querySelector('#changelog-body');
   dialog.querySelector('#changelog-highlights').append(chips);

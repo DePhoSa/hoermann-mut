@@ -9,28 +9,47 @@
   /* Rundenende-Karte: Nochmal spielen / Bestenliste / Menue, im Spielfeld (.game-stage). */
   const NO_COUNTDOWN={parcours:true};
   const END_GAMES={mario:'Punkte',buster:'Mut-Punkte',forklift:'Punkte',nerve:'Punkte',parcours:'Tore'};
+  /* Layout je Spiel: Standard = Karte im Spielfeld (Overlay). 'bar' = kompakte Leiste UNTER dem Spielfeld, das Feld bleibt sichtbar (Mut-Probe). */
+  const END_LAYOUT={nerve:'bar'};
   const endCard=document.createElement('div');endCard.id='game-end-card';endCard.hidden=true;endCard.setAttribute('role','group');endCard.setAttribute('aria-label','Runde beendet');
-  endCard.innerHTML='<div class=game-end-panel><span class=game-end-kicker>Runde beendet</span><strong class=game-end-score></strong><span class=game-end-record hidden></span><button type=button id=game-end-again class=game-end-primary>🔁 Nochmal spielen</button><div class=game-end-row><button type=button id=game-end-lb class=game-end-secondary>🏆 Bestenliste</button><button type=button id=game-end-menu class=game-end-text>✕ Menü</button></div></div>';
-  let endTimer=0,endScore=null,endNote='',endName='';
+  endCard.innerHTML='<div class=game-end-panel><span class=game-end-kicker>Runde beendet</span><strong class=game-end-score></strong><span class=game-end-record hidden></span><span class=game-end-detail hidden></span><span class=game-end-quote hidden></span><button type=button id=game-end-again class=game-end-primary>🔁 Nochmal spielen</button><div class=game-end-row><button type=button id=game-end-lb class=game-end-secondary>🏆 Bestenliste</button><button type=button id=game-end-menu class=game-end-text>✕ Menü</button></div></div>';
+  let viaCountdown=false,endTimer=0,endScore=null,endNote='',endName='',endExtra=null;
   const noteEl=endCard.querySelector('.game-end-record');
-  function paintNote(){noteEl.textContent=endNote;noteEl.hidden=!endNote;}
+  function paintNote(){noteEl.textContent=endNote;noteEl.hidden=!endNote;if(!endCard.hidden){fitBar();requestAnimationFrame(fitBar);}}
   /* Neuer Rekord/Platz direkt auf der Endkarte (statt Vollbild-Bestenliste). */
   function recordNote(text,name){endNote=text||'';endName=name||'';paintNote();}
-  function hideEnd(){clearTimeout(endTimer);endTimer=0;endCard.hidden=true;endNote='';endName='';paintNote();}
+  /* Optionale Texte der Endkarte (vor ended()/finish() setzen, wird beim Schliessen geleert): {kicker, score, detail, quote} */
+  function endText(extra){endExtra=extra||null;}
+  function hideEnd(){clearTimeout(endTimer);endTimer=0;endCard.hidden=true;endNote='';endName='';endExtra=null;paintNote();}
   function endVisible(){return !endCard.hidden&&endCard.offsetParent!==null&&!document.querySelector('#highscore-card.show');}
   function keyReady(){return endVisible()&&!document.querySelector('#score-submit-dialog.show');} /* Tastatur nur ohne offenen Punkte-Dialog, damit kein Rekord versehentlich verfaellt */
+  /* Leiste ins Bild holen: auf dem Handy mit Luft fuer den schwebenden Chat-Knopf, bei offenem Ergebnisblatt darueber. */
+  function fitBar(){
+    if(endCard.hidden||!endCard.classList.contains('is-bar')||endCard.offsetParent===null)return;
+    const gap=innerWidth<=640?84:12,r=endCard.getBoundingClientRect();
+    if(r.bottom>innerHeight-gap)window.scrollBy(0,r.bottom-innerHeight+gap);
+    if(document.querySelector('#score-submit-dialog.show')&&typeof keepEndCardInView==='function')keepEndCardInView();
+  }
+  const sheetEl=document.getElementById('score-submit-dialog');
+  if(sheetEl)new MutationObserver(()=>{fitBar();requestAnimationFrame(fitBar);}).observe(sheetEl,{attributes:true,attributeFilter:['class']});
   function revealEnd(){
     if(!END_GAMES[game]||phase!=='finished')return;
     let score=endScore;if(score===null&&typeof pendingScoreToSave!=='undefined'&&Number.isFinite(pendingScoreToSave))score=pendingScoreToSave;
-    endCard.querySelector('.game-end-score').textContent=score===null?'Das war deine Runde.':score+' '+END_GAMES[game];
-    stageOf().append(endCard);paintNote();endCard.hidden=false;
+    const x=endExtra||{};
+    endCard.querySelector('.game-end-kicker').textContent=x.kicker||'Runde beendet';
+    endCard.querySelector('.game-end-score').textContent=x.score||(score===null?'Das war deine Runde.':score+' '+END_GAMES[game]);
+    for(const key of ['detail','quote']){const el=endCard.querySelector('.game-end-'+key);el.textContent=x[key]||'';el.hidden=!x[key];}
+    const bar=END_LAYOUT[game]==='bar';endCard.classList.toggle('is-bar',bar);
+    if(bar)stageOf().after(endCard);else stageOf().append(endCard);
+    paintNote();endCard.hidden=false;
+    if(bar){requestAnimationFrame(fitBar);setTimeout(fitBar,350);setTimeout(fitBar,1000);} /* spaetere Nachlaeufer: Rekordzeile/Layout kommen nach dem Einblenden */
     if(keyReady())endCard.querySelector('#game-end-again').focus({preventScroll:true});
   }
   function showEnd(score,ms){if(!END_GAMES[game])return;endScore=Number.isFinite(score)?score:null;clearTimeout(endTimer);endTimer=setTimeout(revealEnd,ms??700);}
-  function ended(score,ms){if(!game||!END_GAMES[game]||!['playing','finished'].includes(phase))return;clearTimers();close();phase='finished';showEnd(score,ms);}
+  function ended(score,ms){if(!game||!END_GAMES[game]||!['playing','finished'].includes(phase))return;clearTimers();close();phase='finished';root.HoermannStats?.finish();showEnd(score,ms);}
   function restartWithCountdown(){
     if(!game||!END_GAMES[game])return;const btn=document.getElementById('restart-'+game+'-btn');if(!btn)return;
-    hideEnd();btn.click(); /* Capture-Listener setzt phase=playing; danach Zeitgeber einfrieren wie in resume() */
+    hideEnd();viaCountdown=true;btn.click();viaCountdown=false; /* Capture-Listener setzt phase=playing; danach Zeitgeber einfrieren wie in resume() */
     if(NO_COUNTDOWN[game])return; /* Tor-Parcours hat einen eigenen Wartezustand (Tippen zum Starten) */
     for(const timer of timers)clearTimeout(timer.id);held=new Set(timers);timers.clear();holdStart=performance.now();countdown();
   }
@@ -65,7 +84,7 @@
   function clearTimers() { for(const timer of timers) clearTimeout(timer.id); timers.clear(); held.clear(); }
   function blocked() { return ['preview','countdown','paused','update'].includes(phase); }
   function close() { if(dialog.open) dialog.close();countdownElement.hidden=true; }
-  function stop() { hideEnd(); clearTimers(); close(); phase='idle'; game=null; next=null; }
+  function stop() { root.HoermannStats?.abort(); hideEnd(); clearTimers(); close(); phase='idle'; game=null; next=null; }
   function resume() {
     if(phase!=='paused') return;
     const pausedMs=performance.now()-pauseAt;
@@ -89,14 +108,14 @@
   }
   function pause(silent) {
     if(!game || !['playing','countdown'].includes(phase)) return;
-    beforePause=phase;phase='paused';pauseAt=performance.now();
+    beforePause=phase;phase='paused';pauseAt=performance.now();root.HoermannStats?.pause();
     for(const timer of timers){clearTimeout(timer.id);timer.remaining=Math.max(0,timer.remaining-(pauseAt-timer.started));}
     if(typeof mKeys!=='undefined'){mKeys.left=false;mKeys.right=false;mKeys.up=false;mKeys.jumpPressed=false;}
     if(typeof flKeys!=='undefined') for(const key of Object.keys(flKeys)) flKeys[key]=false;
     if(silent!==true) modal('Spiel pausiert',pauseCopy(),'Weiter spielen',resume,true);
   }
   function reopenPause() { if(phase==='paused' && game) modal('Spiel pausiert',pauseCopy(),'Weiter spielen',resume,true); }
-  function beginPlaying(){phase='playing';close();releaseHeld();}
+  function beginPlaying(){phase='playing';close();releaseHeld();root.HoermannStats?.begin(game);}
   function countdown(){phase='countdown';let remaining=3;
     const step=()=>{countdownValue=remaining>0?String(remaining):'Los!';showCountdown();
       if(remaining>0){remaining--;cdTimer=delay(step,1000);}else cdTimer=delay(beginPlaying,350);}; step();
@@ -104,7 +123,7 @@
   function enter(category, origin) {
     /* Immer zuerst Bereitschaftszustand; der Countdown startet erst nach „Jetzt spielen“. */
     stop(); game=category; phase='preview';
-    modal('Bereit für die nächste Runde?','Dein Spiel wartet im Hintergrund. Es läuft erst nach deinem Start.','Jetzt spielen',()=>{if(phase==='preview'){close();if(NO_COUNTDOWN[game])phase='playing';else countdown();}});
+    modal('Bereit für die nächste Runde?','Dein Spiel wartet im Hintergrund. Es läuft erst nach deinem Start.','Jetzt spielen',()=>{if(phase==='preview'){close();if(NO_COUNTDOWN[game]){phase='playing';root.HoermannStats?.begin(game);}else countdown();}});
   }
   function update(category, automatic, done) {
     const release=HoermannGameReleases.release(category), name=getLockedPlayerName();
@@ -138,8 +157,8 @@
     if(blocked()&&!event.target.closest('#game-session-dialog')&&!(phase==='countdown'&&event.target.closest('.game-actions-bar'))){event.preventDefault();event.stopImmediatePropagation();}
   },true);
   document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();});
-  document.addEventListener('click',event=>{if(event.target.closest('[id^="restart-"]') && game){hideEnd();clearTimers();phase='playing';close();}},true);
-  root.HoermannGameSession=Object.freeze({delay,blocked,stop,enter,update,pause,reopenPause,resume,state:()=>({game,phase}),ended,recordNote,restartWithCountdown,finish:()=>{clearTimers();phase='finished';close();showEnd(null);},restart:()=>{hideEnd();clearTimers();phase='playing';close();}});
+  document.addEventListener('click',event=>{if(event.target.closest('[id^="restart-"]') && game){hideEnd();clearTimers();phase='playing';close();root.HoermannStats?.restart(game,!viaCountdown||!!NO_COUNTDOWN[game]);}},true);
+  root.HoermannGameSession=Object.freeze({delay,blocked,stop,enter,update,pause,reopenPause,resume,state:()=>({game,phase}),ended,endText,recordNote,restartWithCountdown,finish:()=>{clearTimers();phase='finished';close();root.HoermannStats?.finish();showEnd(null);},restart:()=>{hideEnd();clearTimers();phase='playing';close();}});
 })(globalThis);
 
 
