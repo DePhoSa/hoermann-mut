@@ -15,6 +15,7 @@ node tests/lb-in-game-browser.cjs
 node tests/score-dialog-browser.cjs
 node tests/game-session-browser.cjs
 node tests/restart-browser.cjs
+node tests/buster-browser.cjs
 node tests/mut-effects-browser.cjs
 node tests/abnahme/run.js
 node tests/abnahme/selftest.js
