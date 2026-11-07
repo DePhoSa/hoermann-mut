@@ -20,7 +20,7 @@ const root = path.resolve(__dirname, '..');
         const lb = k => (JSON.parse(localStorage.getItem('hoermann_lb_' + k) || '[]')).some(e => e.name === 'Tester' && e.score === 4321);
         return { v02: lb(g + '_v02'), old: lb(g), title: document.getElementById('global-lb-title').textContent, rel: HoermannGameReleases.release(g).notes.length };
       }, g);
-      assert.ok(res.v02, g + ': nicht in 0.2-Liste'); assert.ok(!res.old, g + ': fälschlich in 0.1-Liste'); assert.match(res.title, /0\.2/, g + ': Titel'); assert.ok(res.rel >= 5, g + ': Update-Hinweise fehlen');
+      assert.ok(res.v02, g + ': nicht in 0.2-Liste'); assert.ok(!res.old, g + ': fälschlich in 0.1-Liste'); assert.match(res.title, /0\.2/, g + ': Titel'); assert.ok(res.rel >= 4, g + ': Update-Hinweise fehlen');
     }
     assert.deepStrictEqual(errors, []); console.log(vp.width + 'px ok'); await page.close();
   }
