@@ -15,6 +15,9 @@
 
     let targets = [];
     let splats = [];
+    let busterMissFlash = 0;   // 0..1, kurzes rotes Aufblitzen bei Fehlklick
+    let busterComboPulse = 0;  // 0..1, kurzes Aufleuchten bei Combo-Stufe
+    const BUSTER_MIN_HIT_CSS_PX = 24; // Treffer-Radius mindestens 24 CSS-px (48 px Durchmesser)
 
     const doubtsList = [
       "Zweifel", "Angst", "Aufschieberitis", "Bequemlichkeit",
@@ -30,6 +33,7 @@
       busterTimeSpan.textContent = '30s';
       targets = [];
       splats = [];
+      busterMissFlash = 0; busterComboPulse = 0;
       scoreSubmitDialog.classList.remove('show');
       highscoreCard.classList.remove('show');
 
@@ -75,18 +79,27 @@
 
     busterCanvas.addEventListener('pointerdown', (e) => {
       if (!busterActive) return;
+      if (window.HoermannGameSession && HoermannGameSession.blocked()) return;
+      if (e.cancelable) e.preventDefault();
       const rect = busterCanvas.getBoundingClientRect();
       const scaleX = busterCanvas.width / rect.width;
       const scaleY = busterCanvas.height / rect.height;
       const clickX = (e.clientX - rect.left) * scaleX;
       const clickY = (e.clientY - rect.top) * scaleY;
 
+      // Wirksame Trefferfläche: sichtbarer Radius + 8, aber auf dem Handy (Canvas verkleinert) mind. 24 CSS-px.
+      const minHit = BUSTER_MIN_HIT_CSS_PX * scaleX;
       let hit = false;
-      for (let i = targets.length - 1; i >= 0; i--) {
+      let bestIdx = -1, bestDist = Infinity;
+      for (let i = 0; i < targets.length; i++) {
         const t = targets[i];
         const dist = Math.hypot(clickX - t.x, clickY - t.y);
-        if (dist <= t.radius + 8) {
-          hit = true; busterCombo++; updateBusterCombo();
+        if (dist <= Math.max(t.radius + 8, minHit) && dist < bestDist) { bestDist = dist; bestIdx = i; }
+      }
+      if (bestIdx >= 0) {
+        const i = bestIdx, t = targets[i];
+        {
+          hit = true; busterCombo++; updateBusterCombo(); if (busterCombo % 5 === 0 && busterCombo <= 25) busterComboPulse = 1;
           const award = HoermannGameReleases.award(t.isPowerup ? 100 : 35, busterCombo);
           if (t.isPowerup) {
             busterScore += award;
@@ -100,13 +113,12 @@
           }
           busterScoreSpan.textContent = busterScore;
           targets.splice(i, 1);
-          break;
         }
       }
 
       if (!hit) {
-        const lostPoints = Math.min(15, busterScore); busterScore = HoermannGameReleases.miss(busterScore); busterCombo = 0; updateBusterCombo(); busterScoreSpan.textContent = busterScore;
-        splats.push({ x: clickX, y: clickY, text: `DANEBEN! −${lostPoints} · COMBO 0`, color: "#9ca3af", alpha: 0.8 });
+        const lostPoints = Math.min(15, busterScore); busterScore = HoermannGameReleases.miss(busterScore); busterCombo = 0; updateBusterCombo(); busterScoreSpan.textContent = busterScore; busterMissFlash = 1;
+        splats.push({ x: Math.min(busterCanvas.width - 90, Math.max(90, clickX)), y: Math.max(40, clickY), text: lostPoints ? `DANEBEN! −${lostPoints} · COMBO 0` : 'DANEBEN! · COMBO 0', color: "#fca5a5", alpha: 0.8 });
       }
     });
 
@@ -138,6 +150,8 @@
         busterCtx.lineTo(x, busterCanvas.height);
         busterCtx.stroke();
       }
+
+      drawBusterHud(advance); // unter den Zielen, verdeckt nie ein Ziel
 
       for (let i = targets.length - 1; i >= 0; i--) {
         const t = targets[i];
@@ -177,9 +191,13 @@
           busterCtx.stroke();
 
           busterCtx.fillStyle = '#ffffff';
-          busterCtx.font = 'bold 11px Inter, sans-serif';
           busterCtx.textAlign = 'center';
           busterCtx.textBaseline = 'middle';
+          let fs = 14;
+          busterCtx.font = `bold ${fs}px Inter, sans-serif`;
+          const maxW = currentR * 1.7;
+          const w = busterCtx.measureText(t.text).width;
+          if (w > maxW) { fs = Math.max(8, Math.floor(fs * maxW / w)); busterCtx.font = `bold ${fs}px Inter, sans-serif`; }
           busterCtx.fillText(t.text, 0, 0);
         }
         busterCtx.restore();
@@ -202,7 +220,45 @@
       }
     }
 
+    // Zeitleiste oben, Combo-Anzeige unten links (Fortschritt bis zur nächsten +5%-Stufe), roter Blitz bei Fehlklick.
+    function drawBusterHud(advance) {
+      const w = busterCanvas.width, h = busterCanvas.height;
+      if (busterMissFlash > 0) {
+        busterCtx.save();
+        busterCtx.globalAlpha = busterMissFlash * 0.28;
+        busterCtx.fillStyle = '#ef4444';
+        busterCtx.fillRect(0, 0, w, h);
+        busterCtx.restore();
+        if (advance) busterMissFlash = Math.max(0, busterMissFlash - 0.08);
+      }
+      const frac = Math.max(0, Math.min(1, busterTimeLeft / 30));
+      busterCtx.fillStyle = 'rgba(255,255,255,0.12)';
+      busterCtx.fillRect(0, 0, w, 8);
+      busterCtx.fillStyle = busterTimeLeft <= 5 ? '#ef4444' : '#f59c00';
+      busterCtx.fillRect(0, 0, w * frac, 8);
+
+      if (busterCombo > 0) {
+        const factor = HoermannGameReleases.comboFactor(busterCombo);
+        const inStep = busterCombo >= 25 ? 5 : busterCombo % 5;
+        busterCtx.save();
+        busterCtx.fillStyle = 'rgba(0,24,48,0.75)';
+        busterCtx.fillRect(10, h - 42, 170, 32);
+        busterCtx.fillStyle = busterComboPulse > 0 ? '#ffffff' : '#f59c00';
+        busterCtx.font = '800 16px Inter, sans-serif';
+        busterCtx.textAlign = 'left';
+        busterCtx.textBaseline = 'middle';
+        busterCtx.fillText(`Combo ${busterCombo} · ×${factor.toFixed(2)}`, 18, h - 31);
+        busterCtx.fillStyle = 'rgba(255,255,255,0.2)';
+        busterCtx.fillRect(18, h - 19, 154, 4);
+        busterCtx.fillStyle = '#f59c00';
+        busterCtx.fillRect(18, h - 19, 154 * inStep / 5, 4);
+        busterCtx.restore();
+        if (advance) busterComboPulse = Math.max(0, busterComboPulse - 0.05);
+      }
+    }
+
     function endBusterGame() {
+      busterTimeLeft = 0; busterTimeSpan.textContent = '0s';
       stopBusterGame();
       playSound('score');
       triggerParticleEffect('confetti');
@@ -210,14 +266,7 @@
       busterCtx.fillStyle = 'rgba(0, 31, 59, 0.9)';
       busterCtx.fillRect(0, 0, busterCanvas.width, busterCanvas.height);
 
-      busterCtx.fillStyle = '#f59c00';
-      busterCtx.font = '800 28px Inter, sans-serif';
-      busterCtx.textAlign = 'center';
-      busterCtx.fillText('ZEIT ABGELAUFEN!', busterCanvas.width / 2, 120);
-
-      busterCtx.fillStyle = '#ffffff';
-      busterCtx.font = '700 20px Inter, sans-serif';
-      busterCtx.fillText(`Zweifel zerschlagen: ${busterScore} Mut-Punkte!`, busterCanvas.width / 2, 165);
+      // Ergebnis zeigt die Endkarte (HTML); hier nur abdunkeln, keine doppelten Texte auf der Leinwand.
 
       promptScoreSubmit(busterScore, 'buster_v02', 'Zweifel-Buster 0.2');
     }
