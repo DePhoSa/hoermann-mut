@@ -528,6 +528,9 @@
       touch-action: none;
     }
 
+    /* Lagermeister Nico 0.3: Leinwand hat intern bis zu 2x Pixel (scharf bei 125 %/150 % und auf dem Handy), CSS-Groesse bleibt 780 x 470 (schrumpft auf schmalen Bildschirmen). Glatt skalieren statt kantig. */
+    #forklift-view #forkliftCanvas { width: 786px; /* 780 + 2 x 3 px Rahmen */ height: auto; image-rendering: auto; }
+
     /* Lagermeister Nico 0.2: grosse Touch-Steuerung */
     #forklift-view .fl-pad .touch-btn { width: 52px; height: 46px; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
     #forklift-view .fl-controls .btn-card-start { touch-action: manipulation; }

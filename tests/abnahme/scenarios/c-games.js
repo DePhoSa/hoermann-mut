@@ -2,6 +2,7 @@
 //    -> Endkarte -> Nochmal -> Pause/Weiter -> Kopf-Bestenliste im Spiel -> Ergebnis speichern.
 // Zeit laeuft mit page.clock (echte Zeit + runFor zum Beschleunigen). Zufall ist festgelegt, Spielzustand wird nie gesetzt.
 const { makeInput } = require('../input');
+const { deliveryBot } = require('./c-forklift-bot');
 const NAMES = { forklift: 'Lagermeister Nico', mario: 'Super Dennis', buster: 'Zweifel-Buster', nerve: 'Die Mut-Probe', parcours: 'Tor-Parcours' };
 const NO_COUNTDOWN = { parcours: true };
 
@@ -161,11 +162,11 @@ async function headerLeaderboardInPlay(s, g, inp) {
 
 // ---- Spieler-Roboter (nur echte Eingaben; Zustand wird nur gelesen) ----
 const BOTS = {
-  async forklift(s, inp) { // ein Stueck fahren, Oelfleck weghupen (+120), dann Schicht abgeben (echtes Rundenende)
-    await inp.hold('down', 'ArrowDown', '#fl-btn-down'); await T(s)(500); await inp.release('down', 'ArrowDown'); await inp.releaseAll(); await T(s)(300);
-    await inp.tap('h', '#fl-btn-horn'); await T(s)(400); await s.step('forklift-gehupt');
-    s.expect(+(await s.page.locator('#fl-score-stat').textContent()) > 0, 'forklift: Hupen am Oelfleck bringt keine Punkte');
-    await inp.press('#fl-finish-shift-btn'); return 'Schicht abgegeben';
+  async forklift(s, inp) { // echte Lieferung: Palette vom LKW aufnehmen, Oelfleck weghupen (+120), ins Regal B1 setzen, dann Schicht abgeben (echtes Rundenende)
+    const r = await deliveryBot(s, inp, 'forklift');
+    if (typeof r !== 'object') return r;
+    await inp.releaseAll(); await T(s)(200);
+    await inp.press('#fl-finish-shift-btn'); return 'Lieferung ' + r.delivered.gained + ' Pkt, Schicht abgegeben';
   },
   async mario(s, inp) { // nach rechts laufen und springen, bis Level geschafft oder alle Leben weg
     await inp.hold('right', 'ArrowRight', '#btn-right');
@@ -245,6 +246,7 @@ const RUN = { forklift: genericGame, mario: genericGame, buster: busterGame, ner
 
 exports.run = async ({ open, vp }) => {
   for (const g of Object.keys(NAMES)) {
+    if (process.env.ABNAHME_GAME && process.env.ABNAHME_GAME !== g) continue; // nur zum Entwickeln
     const s = await open('C-' + g, { clock: true, seedRandom: 20260611 });
     try { await s.goto(); const inp = makeInput(s); await RUN[g](s, g, inp); }
     finally { await s.close(); }
