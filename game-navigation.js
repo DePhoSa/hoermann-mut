@@ -7,7 +7,7 @@ const portalGameNavigation = {
   buster: { title: 'Zweifel-Buster', start: startBusterGame },
   nerve: { title: 'Die Mut-Probe', start: startNerveGame },
   parcours: { title: 'Tor-Parcours', start: startParcoursGame },
-  bomber: { title: 'Bomber-Arena', status: 'Coming soon' }
+  bomber: { title: 'Bomber-Arena', multiplayer: true, href: 'bomber-arena.html' }
 };
 let selectedLaunchGame = null;
 const launchView = document.createElement('section');
@@ -20,6 +20,7 @@ function openGamePreview(category, origin = 'leaderboard') {
   const game = portalGameNavigation[category];
   if (!game) return;
   if (game.status) return; /* pausierte Spiele öffnen nie das Spiel */
+  if (game.href) { location.href = game.href; return; } /* eigenständige Seite (Bomber-Arena) */
   if (scoreSubmitDialog.classList.contains('show') && !confirm('Dein Ergebnis ist noch nicht abgeschlossen. Zum Spiel wechseln, ohne es jetzt zu speichern?')) return;
   hideAllViews();
   if (!game.status) {
@@ -116,7 +117,7 @@ for (const [category, game] of Object.entries(portalGameNavigation)) {
   card.append(head);
   card.append(Object.assign(document.createElement('p'), {className:'game-card-desc',textContent:descriptions[category]}));
   if (game.status) card.classList.add('game-unavailable');
-  if (!game.status && HoermannGameReleases.isVersioned(category)) {
+  if (!game.status && !game.href && HoermannGameReleases.isVersioned(category)) {
     const note = document.createElement('button'); note.type = 'button'; note.className = 'game-update-link';
     note.textContent = 'Update ' + HoermannGameReleases.release(category).version + ' · Was ist neu? ›';
     note.addEventListener('click', event => { event.stopPropagation(); HoermannGameSession.update(category, false); });
@@ -132,13 +133,31 @@ for (const [category, game] of Object.entries(portalGameNavigation)) {
   }
   const action = card.querySelector('.btn-card-start') || document.createElement('button');
   action.style.cssText = ''; action.type = 'button'; action.className = 'game-open-action';
-  action.textContent = game.status ? game.status : 'Spielen'; action.disabled = Boolean(game.status);
+  action.textContent = game.status ? game.status : game.href ? 'Online spielen' : 'Spielen'; action.disabled = Boolean(game.status);
   action.addEventListener('click', event => { event.stopPropagation(); openGamePreview(category, 'menu'); });
   foot.append(action);
   card.append(foot);
   card.addEventListener('click', event => { if (!game.status && !event.target.closest('button')) openGamePreview(category, 'menu'); });
-  if(!game.status){const pause=document.createElement('button');pause.type='button';pause.className='utility-link game-pause-button';pause.textContent=matchMedia('(pointer: coarse)').matches?'Pause':'Pause · P / Esc';pause.addEventListener('click',()=>HoermannGameSession.pause());const bar=document.querySelector('#'+category+'-view .game-actions-bar');bar.append(pause);const upd=document.createElement('button');upd.type='button';upd.className='utility-link game-update-button';upd.textContent='Update '+HoermannGameReleases.release(category).version;upd.addEventListener('click',()=>HoermannGameSession.update(category,false));bar.append(upd);}
+  if(!game.status && !game.href){const pause=document.createElement('button');pause.type='button';pause.className='utility-link game-pause-button';pause.textContent=matchMedia('(pointer: coarse)').matches?'Pause':'Pause · P / Esc';pause.addEventListener('click',()=>HoermannGameSession.pause());const bar=document.querySelector('#'+category+'-view .game-actions-bar');bar.append(pause);const upd=document.createElement('button');upd.type='button';upd.className='utility-link game-update-button';upd.textContent='Update '+HoermannGameReleases.release(category).version;upd.addEventListener('click',()=>HoermannGameSession.update(category,false));bar.append(upd);}
 }
+
+/* ===== Umschalter Solospiele / Multiplayerspiele ===== */
+const modeBar = document.createElement('div');
+modeBar.id = 'games-mode-switch'; modeBar.className = 'games-mode-switch'; modeBar.setAttribute('role', 'tablist');
+const gamesGrid = gamesMenuView.querySelector('.games-grid');
+function setGamesMode(mode) {
+  for (const b of modeBar.children) { const on = b.dataset.mode === mode; b.classList.toggle('active', on); b.setAttribute('aria-selected', String(on)); }
+  for (const [category, game] of Object.entries(portalGameNavigation)) {
+    const card = gamesGrid.querySelector('[data-game="' + category + '"]');
+    if (card) card.hidden = Boolean(game.multiplayer) !== (mode === 'multi');
+  }
+}
+for (const [mode, label] of [['solo', 'Solospiele'], ['multi', 'Multiplayerspiele']]) {
+  const b = document.createElement('button'); b.type = 'button'; b.dataset.mode = mode; b.textContent = label; b.setAttribute('role', 'tab');
+  b.addEventListener('click', () => setGamesMode(mode)); modeBar.append(b);
+}
+gamesGrid.insertAdjacentElement('beforebegin', modeBar);
+setGamesMode('solo');
 const leaderboardGameLink = document.createElement('button');
 leaderboardGameLink.type = 'button'; leaderboardGameLink.id = 'leaderboard-game-link'; leaderboardGameLink.className = 'submit-btn';
 highscoreCard.querySelector('.leaderboard-tabs').insertAdjacentElement('beforebegin', leaderboardGameLink);

@@ -1,5 +1,8 @@
 # Abnahme vor jeder Übergabe an den Product Owner
 
+**Schwerpunkt PC:** Entwicklung und Abnahme richten sich dauerhaft nach der PC-Umsetzung (Desktop/Laptop). Die Spiele bleiben auf dem Handy spielbar, mobile Darstellung ist aber nicht mehr Schwerpunkt; dafür gibt es keine aufwendigen Handy-Tests mehr (Abnahme-Standard: `ABNAHME_VP=desktop,laptop15`).
+
+
 ## Regel (gilt ausnahmslos)
 
 Bevor eine Version, ein Branch oder ein Fix dem Product Owner gemeldet wird:

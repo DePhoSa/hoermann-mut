@@ -1,6 +1,8 @@
 # Merkliste (offene Entscheidungen)
 
-## Bomber-Arena (derzeit nur Platzhalter "Coming soon")
+## Bomber-Arena (wieder aktiv, ohne Lobby-Backend)
+- Aktiviert wurde die Fassung 62c560f: PeerJS/WebRTC, Raum per Link, kein Firebase. Die spätere Lobby mit offenen Räumen (Realtime Database, Commit 937a71e) bleibt bewusst draußen.
+- Hinweis: Der PeerJS-Vermittlungsserver ist extern; im Netz-gesperrten Testlauf konnte kein echtes 2-Spieler-Match geprüft werden.
 - Die Git-Historie (Commits 163e7ce, 937a71e, 62c560f) zeigt eine frühere Version: WebRTC über PeerJS,
   Lobby mit offenen Räumen über Firebase Realtime Database (Spark), anonyme Identitäten, Regeln pro Besitzer.
 - Diese Dateien sind im aktuellen Stand nicht mehr vorhanden (`bomber-arena.html` ist ein Platzhalter).

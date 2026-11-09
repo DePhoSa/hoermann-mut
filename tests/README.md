@@ -1,5 +1,8 @@
 # Tests
 
+**Schwerpunkt PC:** Entwicklung und Abnahme richten sich dauerhaft nach der PC-Umsetzung (Desktop/Laptop). Die Spiele bleiben auf dem Handy spielbar, mobile Darstellung ist aber nicht mehr Schwerpunkt; dafür gibt es keine aufwendigen Handy-Tests mehr (Abnahme-Standard: `ABNAHME_VP=desktop,laptop15`).
+
+
 Alle Tests laufen ohne Netz und ohne echte Daten (externe Anfragen blockiert, Cloud als Attrappe).
 
 **Vor jeder Übergabe an den Product Owner zusätzlich:** `node tests/abnahme/run.js` (Abnahme-Lauf wie ein Mensch, Desktop und Handy, mit Screenshots), siehe `docs/ABNAHME.md`.
