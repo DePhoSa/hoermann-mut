@@ -185,15 +185,29 @@ const openGlobalLeaderboardOriginal = openGlobalLeaderboard;
 openGlobalLeaderboard = function (...args) {
   const phase = HoermannGameSession.state().phase;
   if (phase === 'playing' || phase === 'countdown') HoermannGameSession.pause(true);
-  return openGlobalLeaderboardOriginal.apply(this, args);
+  const result = openGlobalLeaderboardOriginal.apply(this, args);
+  placeRoundPanels();
+  return result;
 };
 document.body.append(highscoreCard);
-document.body.append(scoreSubmitDialog); /* Ergebnisblatt liegt fest am Bildschirmrand, unabhaengig vom Seitenaufbau */
+document.body.append(scoreSubmitDialog);
+/* Rundenende: Ergebnisblatt und Bestenliste liegen im Seitenfluss direkt unter dem Spielfeld (kein Ueberlappen). Die Bestenliste als Overlay (Kopf-Knopf) bleibt am Seitenende. */
+function placeRoundPanels() {
+  const view = document.getElementById((HoermannGameSession.state().game || '') + '-view');
+  const inline = highscoreCard.classList.contains('in-round');
+  if (view && (inline || scoreSubmitDialog.classList.contains('show'))) {
+    if (scoreSubmitDialog.previousElementSibling !== view) view.after(scoreSubmitDialog);
+  } else if (scoreSubmitDialog.parentElement !== document.body) document.body.append(scoreSubmitDialog);
+  if (view && inline) { if (highscoreCard.previousElementSibling !== scoreSubmitDialog) scoreSubmitDialog.after(highscoreCard); }
+  else if (highscoreCard.parentElement !== document.body) document.body.append(highscoreCard);
+}
+new MutationObserver(placeRoundPanels).observe(scoreSubmitDialog, {attributes: true, attributeFilter: ['class']});
 const lbOverlay = { opener: null };
-const lbOpen = () => highscoreCard.classList.contains('show');
+const lbOpen = () => highscoreCard.classList.contains('show') && !highscoreCard.classList.contains('in-round');
 const lbFocusables = () => [...highscoreCard.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')].filter(el => !el.disabled && !el.hidden && el.getClientRects().length);
 function closeLeaderboardOverlay() { highscoreCard.classList.remove('show'); }
 new MutationObserver(() => {
+  if (highscoreCard.classList.contains('in-round')) { document.documentElement.classList.remove('lb-overlay-open'); return; }
   if (lbOpen()) {
     if (!lbOverlay.opener || !lbOverlay.opener.isConnected) lbOverlay.opener = document.activeElement !== document.body ? document.activeElement : null;
     document.documentElement.classList.add('lb-overlay-open');

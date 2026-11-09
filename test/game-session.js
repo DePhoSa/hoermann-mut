@@ -20,8 +20,9 @@
   function recordNote(text,name){endNote=text||'';endName=name||'';paintNote();}
   /* Optionale Texte der Endkarte (vor ended()/finish() setzen, wird beim Schliessen geleert): {kicker, score, detail, quote} */
   function endText(extra){endExtra=extra||null;}
-  function hideEnd(){clearTimeout(endTimer);endTimer=0;endCard.hidden=true;endNote='';endName='';endExtra=null;paintNote();}
-  function endVisible(){return !endCard.hidden&&endCard.offsetParent!==null&&!document.querySelector('#highscore-card.show');}
+  function closeInlineLb(){const lb=document.getElementById('highscore-card');if(lb?.classList.contains('in-round'))lb.classList.remove('show','in-round');}
+  function hideEnd(){closeInlineLb();clearTimeout(endTimer);endTimer=0;endCard.hidden=true;endNote='';endName='';endExtra=null;paintNote();}
+  function endVisible(){return !endCard.hidden&&endCard.offsetParent!==null&&!document.querySelector('#highscore-card.show:not(.in-round)');}
   function keyReady(){return endVisible()&&!document.querySelector('#score-submit-dialog.show');} /* Tastatur nur ohne offenen Punkte-Dialog, damit kein Rekord versehentlich verfaellt */
   /* Leiste ins Bild holen: auf dem Handy mit Luft fuer den schwebenden Chat-Knopf, bei offenem Ergebnisblatt darueber. */
   function fitBar(){
@@ -42,6 +43,8 @@
     const bar=END_LAYOUT[game]==='bar';endCard.classList.toggle('is-bar',bar);
     if(bar)stageOf().after(endCard);else stageOf().append(endCard);
     paintNote();endCard.hidden=false;
+    /* Bestenliste direkt offen unter dem Spielfeld */
+    if(typeof openGlobalLeaderboard==='function')openGlobalLeaderboard(HoermannGameReleases.release(game).scoreCategory,endName||getLockedPlayerName(),{inline:true});
     if(bar){requestAnimationFrame(fitBar);setTimeout(fitBar,350);setTimeout(fitBar,1000);} /* spaetere Nachlaeufer: Rekordzeile/Layout kommen nach dem Einblenden */
     if(keyReady())endCard.querySelector('#game-end-again').focus({preventScroll:true});
   }
@@ -54,7 +57,7 @@
     for(const timer of timers)clearTimeout(timer.id);held=new Set(timers);timers.clear();holdStart=performance.now();countdown();
   }
   endCard.querySelector('#game-end-again').addEventListener('click',restartWithCountdown);
-  endCard.querySelector('#game-end-lb').addEventListener('click',()=>{if(game)openGlobalLeaderboard(HoermannGameReleases.release(game).scoreCategory,endName||getLockedPlayerName());});
+  endCard.querySelector('#game-end-lb').addEventListener('click',()=>{if(game)openGlobalLeaderboard(HoermannGameReleases.release(game).scoreCategory,endName||getLockedPlayerName(),{inline:true});});
   endCard.querySelector('#game-end-menu').addEventListener('click',()=>document.getElementById('exit-'+game+'-btn')?.click());
   for(const name of Object.keys(END_GAMES)){const old=document.getElementById('restart-'+name+'-btn');if(old){old.tabIndex=-1;old.setAttribute('aria-hidden','true');}}
   const timers = new Set(), memorySeen = new Set();
@@ -146,7 +149,7 @@
     if((event.key==='Enter'||event.key===' ')&&keyReady()&&(event.target===document.body||endCard.contains(event.target))){
       event.preventDefault();event.stopImmediatePropagation();if(!event.repeat)restartWithCountdown();return;
     }
-    if(typing || event.repeat || (!game && !dialog.open) || document.querySelector('#highscore-card.show'))return;
+    if(typing || event.repeat || (!game && !dialog.open) || document.querySelector('#highscore-card.show:not(.in-round)'))return;
     if(event.key==='Escape'||event.key.toLowerCase()==='p'){
       event.preventDefault();event.stopImmediatePropagation();
       if(phase==='paused' && !document.hidden)resume();else pause();return;

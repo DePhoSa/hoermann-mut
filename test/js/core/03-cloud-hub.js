@@ -1231,14 +1231,16 @@
     tabNerveBtn.addEventListener('click', () => switchLeaderboardTab(HoermannGameReleases.release('nerve').scoreCategory));
     tabParcoursBtn.addEventListener('click', () => switchLeaderboardTab(HoermannGameReleases.release('parcours').scoreCategory));
 
-    function openGlobalLeaderboard(category = 'forklift', highlightName = "") {
+    /* inline: Bestenliste liegt im Seitenfluss unter dem Spielfeld (Rundenende) statt als Vollbild-Overlay. */
+    function openGlobalLeaderboard(category = 'forklift', highlightName = "", options = {}) {
       switchLeaderboardTab(category, highlightName);
+      highscoreCard.classList.toggle('in-round', !!options.inline);
       highscoreCard.classList.add('show');
       syncOnlineLeaderboards(false);
     }
 
     closeLeaderboardBtn.addEventListener('click', () => {
-      highscoreCard.classList.remove('show');
+      highscoreCard.classList.remove('show', 'in-round');
     });
 
     document.getElementById('forklift-leaderboard-btn').addEventListener('click', () => openGlobalLeaderboard('forklift_v02'));
@@ -1383,12 +1385,8 @@
     // Das Ergebnisblatt liegt fest am unteren Rand: die Endkarte mit "Nochmal spielen" bleibt darueber sichtbar.
     function keepEndCardInView() {
       requestAnimationFrame(() => {
-        const again = document.getElementById('game-end-again');
-        if (!again || again.getClientRects().length === 0) return;
-        const sheetTop = scoreSubmitDialog.getBoundingClientRect().top;
-        const panel = document.querySelector('#game-end-card .game-end-panel');
-        const bottom = (panel || again).getBoundingClientRect().bottom;
-        if (bottom > sheetTop - 8) window.scrollBy(0, bottom - sheetTop + 12);
+        const r = scoreSubmitDialog.getBoundingClientRect();
+        if (r.height && (r.bottom > innerHeight || r.top < 0)) scoreSubmitDialog.scrollIntoView({ block: 'nearest' });
       });
     }
     playerNameInput.addEventListener('keydown', (e) => {
