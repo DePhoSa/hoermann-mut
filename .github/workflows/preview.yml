@@ -18,7 +18,7 @@ jobs:
         run: |
           rm -rf site/test && mkdir site/test
           cd src
-          cp -r $(ls | grep -vE '^(tests|docs|firebase|README.md|RELEASE-.*|bomber-arena-README.md)$') ../site/test/
+          cp -r $(ls | grep -vE '^(tests|docs|firebase|README.md|RELEASE-.*|bomber-arena-README.md|relay)$') ../site/test/
       - name: Auf main committen
         run: |
           cd site

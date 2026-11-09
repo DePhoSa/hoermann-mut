@@ -1,0 +1,19 @@
+# Veröffentlicht den kostenlosen Bomber-Arena-Relay (Cloudflare Worker). Manuell starten: Actions -> "Bomber-Relay veröffentlichen" -> Run workflow.
+# Benötigt die Repository-Secrets CLOUDFLARE_API_TOKEN und CLOUDFLARE_ACCOUNT_ID (siehe relay/README.md).
+name: Bomber-Relay veröffentlichen
+on:
+  workflow_dispatch:
+  push:
+    branches: [test]
+    paths: ['relay/**']
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: relay
+          command: deploy

@@ -1,0 +1,11 @@
+name = "hoermann-arena-relay"
+main = "worker.js"
+compatibility_date = "2025-01-01"
+
+[[durable_objects.bindings]]
+name = "ARENA_ROOM"
+class_name = "ArenaRoom"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["ArenaRoom"]
