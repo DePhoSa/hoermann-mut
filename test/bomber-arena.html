@@ -151,7 +151,7 @@ let muted=true,audio=null,keys=new Set(),touch={x:0,y:0};
 const net=new Network(onMessage,text=>$('status').textContent=text);
 const storage={get(k){try{return localStorage.getItem(k)||'';}catch{return '';}},set(k,v){try{localStorage.setItem(k,v);}catch{}}};
 $('name').value=storage.get('arena-name');
-const params=new URLSearchParams(location.search);$('code').value=params.get('room')||'';const DEFAULT_RELAY='';/* wss://…workers.dev eintragen, siehe relay/README.md */if(params.get('relay')||DEFAULT_RELAY){$('relay').value=params.get('relay')||DEFAULT_RELAY;$('network-options').open=!!params.get('relay');}
+const params=new URLSearchParams(location.search);$('code').value=params.get('room')||'';const DEFAULT_RELAY='wss://hoermann-arena-relay.saschasibbel.workers.dev';/* wss://…workers.dev eintragen, siehe relay/README.md */if(params.get('relay')||DEFAULT_RELAY){$('relay').value=params.get('relay')||DEFAULT_RELAY;$('network-options').open=!!params.get('relay');}
 function showError(message){$('error').textContent=message;$('error').hidden=false;}
 function controlsBusy(value){connecting=value;$('create').disabled=value;$('join').disabled=value;}
 async function connect(create){if(connecting)return;if(!$('name').reportValidity())return;$('error').hidden=true;controlsBusy(true);myId=null;state=null;hasSnapshot=false;lastEvent=0;storage.set('arena-name',$('name').value.trim());
