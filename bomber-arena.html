@@ -108,7 +108,7 @@ class Network {
   if(relay)return this.connectRelay({name,create,relay},gen);
   if(!globalThis.Peer)throw Error('Die Netzwerkbibliothek konnte nicht geladen werden. Bitte Seite neu laden.');
   return new Promise((resolve,reject)=>{let settled=false;const fail=message=>{if(gen!==this.generation)return;if(!settled){settled=true;reject(Error(message));}else this.onMessage({type:'error',message});};const timer=setTimeout(()=>fail('Keine direkte Verbindung möglich. Prüfe den Code oder nutze unter „Verbindungsoptionen“ einen eigenen Relay-Server. Firmennetze und bestimmte Router können WebRTC blockieren.'),18000);this.connectTimer=timer;
-   const peer=this.peer=new Peer(create?PREFIX+this.code:undefined,{debug:0,config:{iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun.cloudflare.com:3478'}]}});
+   const peer=this.peer=new Peer(create?PREFIX+this.code:undefined,{debug:0,config:{iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun.cloudflare.com:3478'},{urls:['turn:openrelay.metered.ca:80','turn:openrelay.metered.ca:443','turn:openrelay.metered.ca:443?transport=tcp'],username:'openrelayproject',credential:'openrelayproject'}]}});
    const connected=()=>{if(gen!==this.generation)return;clearTimeout(timer);if(!settled){settled=true;resolve();}this.onStatus('Direkt verbunden');};
    peer.on('error',e=>fail(e.type==='unavailable-id'?'Dieser Raumcode ist bereits vergeben. Erstelle einen neuen Raum.':e.type==='peer-unavailable'?'Raum nicht gefunden. Der Gastgeber muss den Raum geöffnet lassen.':`Verbindung fehlgeschlagen (${e.type||'Netzwerk'}). Prüfe Netzwerk und Raumcode.`));
    peer.on('disconnected',()=>{if(gen===this.generation)this.onStatus('Vermittlungsdienst getrennt. Bestehende Verbindungen können weiterlaufen.');});
@@ -208,7 +208,7 @@ let lastDraw=0;function frame(now){if(now-lastDraw>15){renderer.draw(state,myId,
         <button id="create" class="primary" type="button">Raum erstellen <span aria-hidden="true">→</span></button>
         <div class="separator"><span>oder mitspielen</span></div>
         <label for="code">Raumcode</label><div class="join-row"><input id="code" maxlength="10" placeholder="8-stelliger Code" autocomplete="off" spellcheck="false"><button id="join" type="submit">Beitreten</button></div>
-        <details id="network-options"><summary>Verbindungsoptionen</summary><p>Direktverbindungen sind kostenlos. Falls dein Netzwerk sie blockiert, können alle Spieler denselben eigenen Relay-Server verwenden.</p><label for="relay">Relay-Adresse (optional)</label><input id="relay" type="text" placeholder="wss://dein-server.example" autocomplete="off"><p><a href="bomber-arena-README.md" target="_blank" rel="noopener">Kostenlosen eigenen Server einrichten</a></p></details>
+        <details id="network-options"><summary>Verbindungsoptionen</summary><p>Direktverbindungen sind kostenlos. Falls dein Netzwerk sie blockiert, können alle Spieler denselben eigenen Relay-Server verwenden.</p><label for="relay">Relay-Adresse (optional)</label><input id="relay" type="text" placeholder="wss://dein-server.example" autocomplete="off"><p><a href="https://github.com/DePhoSa/hoermann-mut/blob/test/bomber-arena-README.md" target="_blank" rel="noopener">Kostenlosen eigenen Server einrichten</a></p></details>
         </form>
       </section>
       <section id="room-panel" hidden>
