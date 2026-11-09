@@ -78,9 +78,11 @@ async function recordOnEndCard(s, g) {
   await s.page.locator('#game-end-card').waitFor({ state: 'visible', timeout: 4000 }).catch(() => s.fail(g + ': Endkarte fehlt nach dem Speichern'));
   const line = (await s.page.locator('#game-end-card .game-end-record').innerText().catch(() => '')).trim();
   s.expect(/Neuer Rekord · Platz \d+/.test(line), `${g}: Endkarte zeigt keine Rekordzeile (steht: "${line}")`);
-  s.expect(!(await s.page.locator('#highscore-card.show').count()), g + ': Nach dem Speichern oeffnet sich die Bestenliste ueber der Endkarte');
+  s.expect(!(await s.page.locator('#highscore-card.show:not(.in-round)').count()), g + ': Nach dem Speichern oeffnet sich die Bestenliste ueber der Endkarte');
+  s.expect(!!(await s.page.locator('#highscore-card.show.in-round').count()), g + ': Bestenliste liegt nicht offen unter dem Spielfeld');
   s.expect(!(await s.page.locator('#score-submit-dialog.show').count()), g + ': Ergebnisblatt bleibt nach dem Speichern offen');
   await s.step(`${g}-rekord-auf-endkarte`);
+  await s.page.locator('#close-leaderboard-btn').click(); await T(s)(200);
   await s.page.locator('#game-end-lb').scrollIntoViewIfNeeded(); await s.page.locator('#game-end-lb').click();
   await s.page.locator('#highscore-card.show').waitFor({ timeout: 3000 }).catch(() => s.fail(g + ': Bestenliste-Knopf der Endkarte oeffnet nichts'));
   await T(s)(300); s.expect((await s.page.locator('#leaderboard-body tr.highlight').count()) >= 1, g + ': Bestenliste von der Endkarte hebt den Spieler nicht hervor');

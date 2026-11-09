@@ -28,7 +28,7 @@ const GAMES = {
     const cardCheck = async tag => {
       const s = await page.locator('#game-end-card').evaluate(el => ({ sh: el.scrollHeight, ch: el.clientHeight, sw: el.scrollWidth, cw: el.clientWidth }));
       assert.ok(s.sh <= s.ch + 1 && s.sw <= s.cw + 1, 'Karte ueberlaeuft (' + tag + ') ' + JSON.stringify(s));
-      for (const id of ['#game-end-again', '#game-end-lb', '#game-end-menu']) { const bb = await page.locator(id).boundingBox(); assert.ok(bb.height >= 43.5 && bb.width >= 43.5, id + ' < 44px (' + tag + ') ' + JSON.stringify(bb)); }
+      for (const id of ['#game-end-again', '#game-end-lb', '#game-end-menu']) { const bb = await page.locator(id).boundingBox(); if (!bb && id === '#game-end-lb') continue; /* Bestenliste liegt offen unter dem Spielfeld: Knopf entfaellt */ assert.ok(bb.height >= 43.5 && bb.width >= 43.5, id + ' < 44px (' + tag + ') ' + JSON.stringify(bb)); }
     };
     const afterEnd = async savesScore => {
       if (!savesScore) return;
@@ -56,9 +56,13 @@ const GAMES = {
         await page.waitForTimeout(500); await cardCheck(tag); await noOverflow(tag);
         await page.screenshot({ path: path.join(shots, `restart-${vp.name}-${game}-${n}.png`) });
         if (n === 1) {
-          await page.locator('#game-end-lb').click(); await page.locator('#highscore-card.show').waitFor();
-          assert.equal(await page.locator('#game-end-card').isVisible(), false);
-          await page.locator('#close-leaderboard-btn').click(); await page.locator('#game-end-card').waitFor({ state: 'visible' });
+          /* Bestenliste ist beim Rundenende direkt offen, im Seitenfluss (nicht fixed) und verdeckt die Endkarte nicht */
+          await page.locator('#highscore-card.show.in-round').waitFor();
+          assert.equal(await page.evaluate(() => getComputedStyle(document.getElementById('highscore-card')).position), 'static');
+          assert.equal(await page.locator('#game-end-card').isVisible(), true);
+          await page.locator('#close-leaderboard-btn').click(); await page.locator('#game-end-lb').waitFor({ state: 'visible' });
+          await page.locator('#game-end-lb').click(); await page.locator('#highscore-card.show.in-round').waitFor();
+          assert.equal(await page.locator('#game-end-card').isVisible(), true);
         }
         if (n === 1 && !vp.isMobile && !savesScore) await page.keyboard.press(game === 'parcours' ? ' ' : 'Enter'); else await page.locator('#game-end-again').click();
         assert.equal(await phase(), game === 'parcours' ? 'playing' : 'countdown', 'Zustand nach Nochmal spielen ' + tag);
