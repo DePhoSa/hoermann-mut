@@ -9,6 +9,6 @@ Spiellogik wird aus `bomber-arena.html` übernommen (`sh relay/build.sh` erzeugt
 3. API-Token: „My Profile → API Tokens → Create Token“, Vorlage **Edit Cloudflare Workers**.
 4. In GitHub: Repository → Settings → Secrets and variables → Actions → Secrets `CLOUDFLARE_API_TOKEN` und `CLOUDFLARE_ACCOUNT_ID` anlegen.
 5. Actions → „Bomber-Relay veröffentlichen“ → Run workflow. Die Adresse steht danach im Log: `https://hoermann-arena-relay.<konto>.workers.dev`.
-6. In `bomber-arena.html` die Konstante `DEFAULT_RELAY` auf `wss://hoermann-arena-relay.<konto>.workers.dev` setzen (oder in der Arena unter „Verbindungsoptionen“ eintragen).
+6. Erledigt: `DEFAULT_RELAY` in `bomber-arena.html` zeigt auf `wss://hoermann-arena-relay.saschasibbel.workers.dev`.
 
 Grenzen Free-Tarif: ca. 100.000 Anfragen pro Tag, Räume liegen nur im Arbeitsspeicher (Neustart beendet Räume).
